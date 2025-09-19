@@ -1,0 +1,53 @@
+/* Překryv přes celou plochu – okno se vycentruje uprostřed */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;            /* snadné centrování */
+  place-items: center;
+  background: rgba(0,0,0,.35);   /* poloprůhledné pozadí */
+  z-index: 1000;
+}
+
+/* Vlastní „vyskakovací“ okno */
+.vybiraciGUI {
+  position: relative;        /* pro absolutně umístěné zavírací tlačítko */
+  inline-size: max(min(90vw, 720px), 280px); /* šířka dle obsahu, s rozumnými limity */
+  max-block-size: 85vh;      /* když je obsah dlouhý, okno se nebude rozpadat */
+  overflow: auto;            /* scroll uvnitř, když je potřeba */
+  padding: 16px 20px 20px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0,0,0,.2);
+  font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Horní řádek + akce (volitelné, jen pro lepší vzhled) */
+.vybiraciGUI h2 {
+  margin: 0 36px 8px 0; /* nechává místo pro X vpravo */
+  font-size: 1.125rem;
+}
+.vybiraciGUI__content { margin-block: 4px 12px; }
+.vybiraciGUI__actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* Schovávací (zavírací) tlačítko nahoře */
+.vybiraciGUI__hide {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.vybiraciGUI__hide:hover,
+.vybiraciGUI__hide:focus-visible {
+  background: rgba(0,0,0,.06);
+  outline: none;
+}
+
+/* Pomocné třídy pro otevírání/zavírání bez inline stylů */
+.overlay[hidden] { display: none; }

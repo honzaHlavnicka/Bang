@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bang!</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="vybyraciGUI.css">
+
+    <style>
+        html,body{
+            padding:0;
+            margin:0;
+        }
+        .zprava:hover{
+            color:green;
+        }
+        .schovany{
+            display:none;
+        }
+        .hra{
+            display:none;
+        }
+
+        .karta{
+            width:7em;
+            transition: all .3s;
+            margin:8px;
+            border-radius:.5em;
+            box-shadow: -2px 2px 2px black;
+            position: relative;
+        }
+        .karta:hover.zvetsitelna{
+            transform: scale(2);
+            z-index: 5;
+            
+        }
+        #GUIkarty .karta.zvetsitelna:hover{
+            transform: scale(2)translateY(-4em);
+        }
+        #GUIkarty .karta{
+           transform:scale(1.3)rotate(3deg)translateY(-3em);
+        }
+
+        .spodniPanel{
+            x-width:100%;
+            x-position:absolute;
+            x-bottom:0;
+            x-left:0;
+            display: flex;
+            flex-direction:row;
+            align-items: center;
+        }
+        .spodniPanel *{
+            flex:1 0 auto;
+        }
+        .x-horniopanel{
+            top:0;
+            bottom:auto;
+        }
+        .hracuvobal{
+            display:inline-block;
+        }
+
+        .obalHry {
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* nebo 100% rodiče */
+            width:100vw;
+        }
+
+        .horniopanel {
+            flex: 0 0 auto;
+        }
+
+        .prostredniPanel {
+            flex: 1 1 auto;
+            display: flex;          /* i on je flexbox */
+            flex-direction: row;    /* nebo column podle potřeby */
+            overflow: auto;         /* aby se dalo scrollovat pokud obsah přeroste */
+            align-items: center; justify-content: center;
+        }
+
+        .spodniPanel {
+            flex: 0 0 auto;
+        }
+
+        @keyframes prijetiKarty {
+            from {transform:scale(.2)translateY(-50vh)}
+            50%{transform:scale(2)translateY(-4em)}
+            to {transform:scale(1.3)rotate(3deg)translateY(-3em)}
+        }
+
+        #GUIkarty .karta{
+            animation: prijetiKarty 1.3s;
+        }
+
+        .malekarty{
+            height: 15em;
+            
+        }
+
+        .jmeno{
+            background-color: white;
+            border-radius: .2em;
+            font-size: large;
+            padding: 10px;
+            display: block;
+            width:fit-content;
+            margin-top: 5px;
+            margin-bottom: -1em;
+            
+        }
+
+
+        
+    </style>
+</head>
+<body class="">
+    <div style="display:none">
+    <div id="debugtools" style="display:none;background-color:azure;padding:10px">
+        <h3>debug tools</h3>
+        <div id="zpravy"></div>
+        <div class="odeslaci">
+            <input id="input"><button onclick="socket.send(input.value);">odeslat</button>
+        </div>
+        <div class="odeslaci">
+            <input placeholder="123456" id="kodHry"><button onclick="socket.send('pripojeniKeHre:'+kodHry.value);">připojit se ke hře</button>
+        </div>
+        <div class="odeslaci">
+            <input  id="chat"><button onclick="socket.send('chat:'+chat.value);">poslat všem</button>
+        </div>
+        <div class="odeslaci">
+
+            <input  id="jmeno"><button onclick="socket.send('noveJmeno:'+jmeno.value);">změnit jméno</button>
+        </div>
+        <div class="odeslaci">
+            <button onclick="socket.send('novaHra');">nová hra</button>
+            <button onclick="socket.send('nactiHru');">znovu načíst hru</button>
+            <button onclick="socket.send('zahajeniHry');">spustit hru</button>
+            <button onclick="socket.send('getIdHry');">get id hry</button>
+        </div>
+        <button onclick="debugtools.style.display = 'none'">schovat devtools</button>
+    </div>
+    <button onclick="debugtools.style.display = 'block'">zobrazit devtools</button>
+
+    <hr>
+    <div id="chatWindow">
+
+    </div>
+    <hr>
+    </div>
+    <div class="kontent" id="GUIpredHrou">
+    <main >
+        <h1>Bang!</h1>
+        <p>tadyto bude text, který bude něco říkat. Teď sice něco říká, ale doopravdy o hře neřekne nic. jenom zabírá místo. </p>
+        <hr>
+        <div>
+            Kód hry, kam se chceš přihlásit:<br>
+            <input id="HerniKod"><br>
+            Tvoje jméno:<br>
+            <input id="UzivatelskeJmeno"><br> 
+            <button class="btn-primary" onclick="pripojitKeHre(HerniKod.value,UzivatelskeJmeno.value)">Připojit se ke hře</button>
+        </div>
+        <hr>
+        Tvoje jméno:
+        <input id="UzivatelskeJmeno2"><br> 
+        <button class="btn-primary" onclick="vytvoritHru(UzivatelskeJmeno2.value)">vytvořit hru</button>
+        
+
+    </main>
+    </div>
+    <!-- ZAČÁTEK KODIU HRY-->
+    <div class="hra" id="herniObal">
+        <span id="ukazatelPinu" ></span>
+        
+        <div class="overlay" id="overlay" hidden>
+            <div class="vybiraciGUI" role="dialog" aria-modal="true" aria-labelledby="vybirac-title">
+                <button class="vybiraciGUI__hide" type="button" aria-label="Zavřít" data-close>&times;</button>
+                <h2 id="vybirac-title">Výběr možností</h2>
+                    <div id=GUIvyberPostavu class="vybiraciGUI__content">
+                    <!-- obsah okna sem -->
+                    <p>Nějaký obsah…</p>
+                </div>
+                <div class="vybiraciGUI__actions">
+                    <button>OK</button>
+                    <button data-close>Zrušit</button>
+                </div>
+            </div>
+        </div>
+        <button style="height:10em;position:absolute;top:40%;bottom:50%" onclick="socket.send('zahajeniHry');">spustit hru</button>
+        <div class="obalHry">
+            <div class="spodniPanel horniopanel hraci">
+               <!--takto vypada struktura:
+                <div class="hracuvobal" data-id="hrac.id" data-maximumZivotu="hrac.maximumZivotu">
+                    <img class="karta" src="img/karty/zezadu.png" >
+                    <span class="jmeno">hrac.jmeno</span>
+                    <span class="zivoty">hrac.zivoty + "/" + </span>
+                    <img class="karta postava" src="img/postavy/ + hrac.postava + .png">
+                    <img class="malekarty" src="img/maleKarty/ + hrac.pocetKaret + .png">
+                </div>
+                -->
+            </div>
+            <div class="prostredniPanel">
+                <div class="tlacitka">
+                    <button onclick="socket.send('konecTahu')">Ukončit tah</button>
+                </div>
+                <canvas width="300" height="300" id="odhazovaciBalicek"></canvas>
+                <img class="karta balicek" src="img/karty/zezadu.png" onclick="socket.send('liznuti')">
+            </div>
+            <div class="spodniPanel">
+                <div><img class=karta id="roleIMG"><span id=roleText ></span></div>
+                <div id="GUIkarty"></div>
+                <div></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        mojeIdHrace = -1;
+        existujiciHraci = [];
+
+
+
+        socket = new WebSocket("ws://localhost:8887");
+        socket.addEventListener("open", (ev) => {
+            let token = localStorage.getItem("token");
+            if(token != null){
+                socket.send("vraceniSe:" + token);
+            }
+
+        });
+
+
+
+        socket.onmessage = (event) => {
+            console.log(event.data);
+            zpravy.innerHTML += event.data + "<br>"
+
+
+
+            if(event.data.startsWith("chat:")){
+                let msg = event.data.replace("chat",new Date);
+                chatWindow.innerHTML += "<span class=zprava >"+msg+"</span>"
+            }
+            
+            else if(event.data.startsWith("pripojenKeHre")){
+                GUIpredHrou.style.display = "none";
+                herniObal.style.display = "block"
+            }
+
+            else if(event.data.startsWith("vyberPostavu:")){
+
+
+                let json = JSON.parse(event.data.replace("vyberPostavu:",""))
+                console.log(json)
+
+                overlay.hidden = false;
+                let htmlNaVyber = "";
+                json.forEach(element => {
+                    htmlNaVyber += "<div onclick='overlay.hidden = true;socket.send(\"setPostava:"+element.jmeno+"\")' style='display:inline-block;margin:10px;max-width:14em;padding:10px;border-radius:20px;border:10px solid #888760;background:whitesmoke;transform: rotate("+nahodneCislo(-7,7)+"deg)'><img style='float:right;width:3em;' src='img/maleZivoty/"+element.zivoty+"naboje.png'><h3>"+element.jmeno+"</h3>"
+                    /*for(let i = 0;i < element.zivoty;i++){
+                        htmlNaVyber += "<img src='img/bangNaboj.png' style='width:70px;transform: rotate("+nahodneCislo(-97,-83)+"deg)'>";
+                    }*/
+                   
+                    htmlNaVyber += "<img style='width:90%;margin: auto' src='img/postava.png' ><p>"+element.popis+"</p></div>"
+                });
+                console.log(htmlNaVyber)
+                GUIvyberPostavu.innerHTML = htmlNaVyber;
+            }
+            else if(event.data.startsWith("novaKarta:")){
+                let json = JSON.parse(event.data.replace("novaKarta:",""))
+
+                const img = document.createElement("img");
+                img.dataset.id = json.id;
+                img.draggable = true;
+                img.onclick = () => odehratKartu(img,true);
+                img.src = "img/karty/" + json.obrazek + ".png";
+                img.className = "karta zvetsitelna";
+                GUIkarty.appendChild(img);
+            }
+
+            else if(event.data.startsWith("novyPocetKaret:")){
+                event.data.replace("novyPocetKaret:","").split(",")
+                //TODO: zobrazit ostatnim hracu pocet karet
+
+            }
+
+            else if(event.data.startsWith("novaHra:")){
+                ukazatelPinu.innerHTML = event.data.replace("novaHra:","")
+            }
+
+            else if(event.data.startsWith("role:")){
+                roleIMG.src = "img/karty/role/" + event.data.replace("role:","") + ".png"
+                roleText =  event.data.replace("role:","");
+            }
+            else if(event.data.startsWith("token:")){
+                localStorage.setItem("token",event.data.replace("token:",""))
+            }
+
+            else if(event.data.startsWith("tahZacal")){
+                
+
+            }
+
+            else if(event.data.startsWith("hraci:")){
+                console.log(event.data.replace("hraci:",""))
+                let json = JSON.parse(event.data.replace("hraci:",""))
+                json.forEach(nactiHrace)
+            }
+
+            else if(event.data.startsWith("noveJmeno:")){
+                let data = event.data.replace("noveJmeno:","").split(",");
+                ziskejElementHrace(data[0]).querySelector(".jmeno").innerText = data[1];
+            }
+
+            else if(event.data.startsWith("noveIdHrace:")){
+                mojeIdHrace = parseInt(event.data.replace("noveIdHrace:",""));
+                console.log("nové id hráče:",mojeIdHrace)
+
+            }
+
+            else if(event.data.startsWith("setPocetKaret:")){
+                let data = event.data.replace("setPocetKaret:","").split(",");
+                ziskejElementHrace(data[0]).querySelector("img.malekarty").src = "img/maleKarty/" + data[1] + ".png";
+            }
+
+            else if(event.data.startsWith("odehrat:")){
+                let data = event.data.replace("odehrat:","").split("|");
+                let json = JSON.parse(data[1])
+
+                //TODO: animace přijetí od hráče (jeho id je v data[0])
+
+                const img = document.createElement("img");
+                img.src = "img/karty/" + json.obrazek + ".png";
+                odehratKartu(img,false);
+
+            }
+
+
+
+            Toastify({
+                text: event.data,
+                duration: 3000,
+                gravity:"bottom",
+                style:(event.data.startsWith("error") ? {background:"red"} : {})
+            }).showToast();
+
+
+        };
+
+
+
+
+        socket.addEventListener("close", (event) => {
+            console.log("The connection has been closed.");
+            if(confirm("spojeni se serverem ukončeno.\nok pro restartování stránky")){
+                location.reload();
+            }
+            
+        });
+
+        function pripojitKeHre(id,jmeno){
+            socket.send('pripojeniKeHre:'+id);
+            socket.send("noveJmeno:"+jmeno);
+        }
+
+        function vytvoritHru(jmeno){
+            socket.send('novaHra');
+            socket.send("noveJmeno:"+jmeno);
+        }
+
+
+
+        function nahodneCislo(min, max) {
+            return Math.random() * (max - min) + min;
+        }   
+
+        function nactiHrace(hrac){
+            let element;
+            console.log("nacist hrace: jeho id:",hrac.id,"moje ID:",mojeIdHrace)
+            if(mojeIdHrace == hrac.id){
+                //todo: napsat aktualizaci
+                return;
+            }
+            if(existujiciHraci.includes(hrac.id)){ 
+                element = ziskejElementHrace(hrac.id)
+                //todo: napsat aktualizaci
+            }else{
+                console.log(hrac)
+                existujiciHraci.push(hrac.id);
+                document.getElementsByClassName("hraci")[0].appendChild(vytvorHracElement(hrac))
+                
+            }
+            
+        }
+
+        function ziskejElementHrace(id) {
+            console.log("ziskej element hrace",id)
+            for (const value of document.getElementsByClassName("hracuvobal")) {
+                console.log(value, value.dataset.id, value.dataset.id == id.toString());
+                if (value.dataset.id == id.toString()) {
+                    return value;
+                }
+            }
+            console.error("nenalezen žádný hráč s id ", id, id.toString());
+        }
+
+        
+    </script>
+    <script src="vykreslovani.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</body>
+</html>

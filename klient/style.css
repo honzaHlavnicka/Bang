@@ -1,0 +1,143 @@
+/* Styly platí pouze v kontejneru s třídou .kontent */
+.kontent {
+  /* čitelné systémové písmo, dobrý řádkování, respekt k light/dark */
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+               Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  line-height: 1.5;
+  color-scheme: light dark;
+  padding: clamp(12px, 2vw, 24px); /* okraje kolem obsahu na malých i velkých displejích */
+}
+html{
+    x-background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+                  url("img/pozadi.jpg");
+    background-image:url("img/pozadi.jpg");
+    background-size: cover;
+}
+.kontent *, .kontent *::before, .kontent *::after { box-sizing: border-box; }
+
+/* Téma (snadno rozšiřitelné) */
+.kontent {
+  --bg: #ffffff;
+  --fg: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --accent: #2563eb;
+  --accent-foreground: #ffffff;
+  --focus: #93c5fd;
+}
+
+
+/* Vycentrované <main> s pevnou max. šířkou a responzivní šířkou na mobilech */
+.kontent main,.vybyraciGUI {
+  width: min(500px, 100%);   /* max 500 px, jinak 100 % šířky */
+  margin-inline: auto;       /* horizontální centrování */
+  background-color: white;
+  border-radius: 40px;
+  padding:40px
+}
+
+/* Volitelné: mezery uvnitř mainu, ať se obsah nadechne */
+.kontent main,.vybyraciGUI { padding: clamp(12px, 2.5vw, 24px); }
+
+/* Základní barvy textu/pozadí (necháváme průhledné pozadí, aby se dalo snadno doladit) */
+.kontent body, .kontent main,.vybyraciGUI {
+  color: var(--fg);
+}
+
+/* Form prvky – velké, pohodlné touch targety */
+.kontent input,
+.kontent select,
+.kontent textarea {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.75rem 0.9rem;           /* dostatečně velké */
+  font-size: 1rem;
+  line-height: 1.4;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--fg);
+  outline: none;
+  transition: box-shadow 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.kontent input::placeholder,
+.kontent textarea::placeholder { color: var(--muted); }
+
+.kontent input:focus,
+.kontent select:focus,
+.kontent textarea:focus {
+  border-color: var(--focus);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 30%, transparent);
+}
+
+.kontent textarea { min-height: 120px; resize: vertical; }
+
+/* Tlačítka – default a primární varianta */
+.kontent button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.1rem;            /* pohodlné i na mobilu (≈48px výška) */
+  min-height: 44px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease, border-color 120ms ease;
+  user-select: none;
+}
+
+.kontent button:hover { transform: translateY(-1px); }
+.kontent button:active { transform: translateY(0); }
+
+.kontent button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 30%, transparent);
+  border-color: var(--focus);
+}
+
+/* Primární tlačítko */
+.kontent .btn-primary {
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: color-mix(in srgb, var(--accent) 60%, var(--border));
+}
+.kontent .btn-primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+/* Stav disabled */
+.kontent button:disabled,
+.kontent input:disabled,
+.kontent select:disabled,
+.kontent textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Skupiny polí (volitelné, pro hezké rozestupy ve formulářích) */
+.kontent .field { margin-block: 12px; }
+.kontent label {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+/* Malé utility */
+.kontent .full { width: 100%; }                   /* pro 100% šířky u tlačítek apod. */
+.kontent .muted { color: var(--muted); }
+
+/* Lepší tap highlight na mobilech */
+.kontent { -webkit-tap-highlight-color: transparent; }
+
+/* Preferované omezení animací pro uživatele s omezením pohybu */
+@media (prefers-reduced-motion: reduce) {
+  .kontent *, .kontent *::before, .kontent *::after { transition: none !important; }
+}
