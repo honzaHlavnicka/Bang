@@ -1,4 +1,3 @@
-*/img/*
-*.psd
-*.jpg
-*.png
+img/*.psd
+img/*.jpg
+img/*.png
