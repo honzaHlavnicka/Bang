@@ -173,6 +173,10 @@ public class KomunikatorHry {
         return true;
     }
     
+    //AKCE:
+    
+    
+    
     
     
 }
