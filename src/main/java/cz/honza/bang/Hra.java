@@ -35,6 +35,8 @@ public class Hra {
     private Balicek<Karta> balicek = new Balicek<Karta>();
     private Balicek<Karta> odhazovaciBalicek = new Balicek();
     private SpravceTahu spravceTahu;
+    private HerniPravidla herniPravidla;
+    
 
     public Balicek<Karta> getOdhazovaciBalicek() {
         return odhazovaciBalicek;
@@ -43,13 +45,16 @@ public class Hra {
     public SpravceTahu getSpravceTahu() {
         return spravceTahu;
     }
+    
+   
 
     
     
     
     public Hra(KomunikatorHry komunikator){
         this.komunikator = komunikator;
-        
+        //this.herniPravidla = herniPravidla;
+        //herniPravidla.setHra(this);
         
         //vytvoří a zamíchá balíček postav
         balicekPostav = new Stack<>();

@@ -19,7 +19,7 @@ public class ServerApp {
 
     public static void main(String[] args) throws Exception {
         // vytvoření serveru
-        WebSocketServer server = new  SocketServer(new InetSocketAddress("0.0.0.0", 8887));// tvá implementace WebSocketServer
+        WebSocketServer server = new  SocketServer(new InetSocketAddress("0.0.0.0", 9999));// tvá implementace WebSocketServer
         server.setReuseAddr(true);
         server.start();
 
