@@ -178,6 +178,7 @@ public class Hrac {
                 if (karta instanceof HratelnaKarta hratelna) {
                     hratelna.odehrat(this);
                     hra.getKomunikator().posliVsem("odehrat:"+id+'|' + karta.toJSON(),this);
+                    hra.getKomunikator().posliVsem("novyPocetKaret:"+id+","+karty.size(), this);
                     //FIX: předpokládá, že v karta.toJSON() není znak |, ale co když je?
                 } else {
                     hra.getKomunikator().posli(this, "error{\"error\":\"tuto kartu nelze zahrát\"}");
