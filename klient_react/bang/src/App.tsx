@@ -1,17 +1,26 @@
-import { useState } from 'react'
-
-import './App.css'
+import GamePage from './pages/GamePage';
+import LoginPage from './pages/LoginPage'
+import { useState, createContext, useContext } from 'react';import WaitingRoom from './pages/WaitingRoom';
+import Card from './components/Card';
+import Cards from './components/Cards';
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const GameContext = createContext<{
+    //parametry hry:
+    jeSpustenaHra: boolean;
+  } | null>(null);
   return (
-    <>
-     <span  style={{fontSize:(count*3+15) + "px"}} onClick={() => setCount((count) => count + 1)}> {count != 0 ? `Už jsi kliknul ${count}krát` : `tady se bude spouštět bang aplikace`}</span>
-     <div>
-      {/* <button style={{fontSize:(count*3+15) + "px"}} onClick={() => setCount((count) => count + 1)}> {count != 0 ? `Už jsi kliknul ${count}krát` : `Klikni!`}</button> */}
-     </div>
-    </>
+    <GameContext.Provider value={{ jeSpustenaHra: false }}>
+      <>
+        {useContext(GameContext)?.jeSpustenaHra ? (
+          <WaitingRoom>Připojování se k serveru...</WaitingRoom>
+        ) : (<>
+          {/*<LoginPage spustitHru={() => {}} />*/}
+          <GamePage />
+          </>
+        )}
+      </>
+    </GameContext.Provider>
   )
 }
 
