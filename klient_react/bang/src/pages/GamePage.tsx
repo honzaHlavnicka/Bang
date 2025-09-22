@@ -1,15 +1,13 @@
+
 import MyThings from "../components/game/MyThings";
-import Player from "../components/game/Player";
+import Players from "../components/game/Players";
+import CentralPanel from "../components/game/CentralPanel";
 
 export default function GamePage() {
-    
     return (
         <div style={{display:"flex",flexDirection:"column",height:"100vh"}}>
-
-            <div style={{flex:"1",backgroundColor:"lightblue"}}>
-                <Player />
-            </div>
-            <div style={{flex:"1",backgroundColor:"lightgreen"}}>prostredi</div>
+            <Players />
+            <CentralPanel />
             <MyThings />
         </div>
     );

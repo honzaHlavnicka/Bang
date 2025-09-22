@@ -5,3 +5,6 @@ html,body{
     width:100%;
     font-family: Arial, Helvetica, sans-serif;
 }
+.testing{
+    outline: 1px solid blue;
+}
