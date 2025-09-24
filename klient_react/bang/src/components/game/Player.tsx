@@ -2,6 +2,7 @@ import { useState } from "react";
 import Card from "../Card";
 import SmallCards from "./SmallCards";
 import NameTag from "./NameTag";
+import Cards from "../Cards";
 
 
 export default function Player({jmeno,postava = "TESTOVACI",pocetKaret = 3,pocetZivotu = 0}:{jmeno:string,postava?:string,pocetKaret?:number,pocetZivotu?:number}) {
@@ -9,17 +10,24 @@ export default function Player({jmeno,postava = "TESTOVACI",pocetKaret = 3,pocet
 
     return (
         
-            <div >
+            <div style={{display:"flex",flexDirection:"column"}}>
                 <div style={{ display: "flex" , justifyContent:"center"}}>
                     <div>
                     <NameTag jmeno={jmeno} />
                     <div style={{display:"flex",flexDirection:"row"}}>
-                        <Card image={"/img/karty/postavy/"+postava+".png"} />
-                        <Card image={"/img/velkeZivoty/"+pocetZivotu+"zivoty.png"} />
+                        <Card name={"postava:" + postava.toLowerCase()} image={`/img/karty/postavy/${postava}.png`} />
+                        <Card name={`${pocetZivotu} životů.`} image={`/img/velkeZivoty/${pocetZivotu}zivoty.png`} />
                     </div>
                     </div>
                
                     <SmallCards count={pocetKaret1} />
+                </div>
+                <div
+                    style={{ transform: "scale(0.7)", transition: "transform 0.2s" }}
+                    onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.1)")}
+                    onMouseLeave={e => (e.currentTarget.style.transform = "scale(0.7)")}
+                >
+                    <Cards isRotated={false} />
                 </div>
             </div>
     );

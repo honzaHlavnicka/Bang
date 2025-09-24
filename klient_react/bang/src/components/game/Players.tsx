@@ -11,8 +11,8 @@ export default function Players() {
                 padding:"0 10px"
             }}>
                 <Player jmeno="honza" />
-                <Player jmeno="pepasdsjhdgshuaghsdgahsjgdjhasgdhjhfgj" />
-                <Player jmeno="krokouš" />
+                <Player jmeno="Někdo, kdo má hodně dlouhé jméno" />
+                <Player jmeno="František" />
             </div>
     );
 }

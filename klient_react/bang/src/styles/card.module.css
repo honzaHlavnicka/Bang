@@ -13,10 +13,13 @@
             
         }
         .jeDole .karta.zvetsitelna:hover{
-            transform: scale(2)translateY(-4em);
+            transform: scale(2)translateY(-3em);
+        }
+        .jeDole .karta.pootocena{
+            transform:rotate(3deg)scale(1.3)translateY(-1em);
         }
         .jeDole .karta{
-           transform:scale(1.3)rotate(3deg)translateY(-3em);
+           transform:scale(1.3)translateY(-1em);
         }
 
         @keyframes prijetiKarty {
@@ -28,3 +31,5 @@
         .animacePrijeti .karta{
             animation: prijetiKarty 1.3s;
         }
+
+        

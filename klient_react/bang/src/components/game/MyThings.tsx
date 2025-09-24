@@ -9,7 +9,7 @@ import NameTag from "./NameTag";
         <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
             <div style={{ marginRight: "32px" }}>
                 <NameTag jmeno={jmeno} />
-                <Card image={`img/karty/role/${role}.png`} />
+                <Card image={`/img/karty/role/${role}.png`} />
             </div>
             <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
                 <Cards />

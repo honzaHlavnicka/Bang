@@ -12,13 +12,13 @@ const cards: Card[] = [
     { img: "wellsfargo", key: 31 },
 ];
 
-export default function Cards() {
+export default function Cards({isRotated = true}: {isRotated?: boolean}) {
     return (
         <div style={{display: "flex",
             flexDirection:"row",
             alignItems: "center"}}>
             {cards.map(card => (
-                <Card image={"/img/karty/" + card.img + ".png"} key={card.key} animationOnStart biggerOnHover isInLine />
+                <Card image={"/img/karty/" + card.img + ".png"} key={card.key} animationOnStart biggerOnHover isInLine isRotated={isRotated} />
             ))}
         </div>
     );
