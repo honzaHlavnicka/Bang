@@ -16,7 +16,10 @@ const nameCss = {
 export default function NameTag({jmeno,style,}: {jmeno: string;style?: React.CSSProperties;}) {
     const displayName = jmeno.length > 13 ? jmeno.slice(0, 12) + "…" : jmeno;
     return (
-        <span style={{...nameCss, ...style}}>
+        <span
+            style={{ ...nameCss, ...style }}
+            title={jmeno}
+        >
             {displayName}
         </span>
     );

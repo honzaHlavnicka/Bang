@@ -5,7 +5,7 @@ import NameTag from "./NameTag";
 import Cards from "../Cards";
 
 
-export default function Player({jmeno,postava = "TESTOVACI",pocetKaret = 3,pocetZivotu = 0}:{jmeno:string,postava?:string,pocetKaret?:number,pocetZivotu?:number}) {
+export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,pocetZivotu = 0}:{jmeno:string,postava?:string,pocetKaret?:number,pocetZivotu?:number}) {
     const [pocetKaret1, setPocetKaret] = useState<number>(pocetKaret);
 
     return (

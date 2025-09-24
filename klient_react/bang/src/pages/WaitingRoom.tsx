@@ -14,7 +14,7 @@ export default function WaitingRoom({ children }: { children: React.ReactNode })
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite'
                 }} />*/}
-                <div style={{ marginTop: 24, fontSize: 18 , backgroundColor: 'white', padding: 16, borderRadius: 8, boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+                <div style={{ marginTop: 24, fontSize:  20, backgroundColor: '#918080', padding: 16, borderRadius: 8, boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
                 {children}
                 </div>
                 <style>

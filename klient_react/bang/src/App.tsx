@@ -16,7 +16,7 @@ function App() {
           <WaitingRoom>Připojování se k serveru...</WaitingRoom>
         ) : (<>
           {/*<LoginPage spustitHru={() => {}} />*/}
-          <GamePage />
+          {<GamePage />}
           </>
         )}
       </>

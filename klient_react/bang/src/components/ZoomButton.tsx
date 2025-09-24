@@ -17,7 +17,7 @@ export default function ZoomToggleButton() {
       onClick={toggleZoomMode}
     >
       
-      {isZoomMode ? "Vypnout lupu" : "Zapnout lupu"}
+      {isZoomMode ? <>🔎lupa zapnuta🔍</> : "🔎Zapnout lupu"}
     </button>
   );
 }

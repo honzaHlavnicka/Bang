@@ -1,0 +1,8 @@
+.scrollable {
+  -ms-overflow-style: none;  /* IE, Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.scrollable::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, nový Edge */
+}
