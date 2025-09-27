@@ -1,5 +1,6 @@
 import css from '../styles/card.module.css';
 import { useZoom } from "../modules/ZoomContext";
+import { useGame } from '../modules/GameKontext';
 
 
 type CardProps = {
@@ -15,7 +16,7 @@ type CardProps = {
 
 export default function Card({
     image,
-    name = (image.match(/([^\/\\]+)\.[^\/\\]+$/)?.[1]) ?? image, //vrátí pouze jméno souboru. Pokud se soubor jmenuje nejak necekane, tak se vrátí celá cesta.
+    name = (image.match(/([^/\\]+)\.[^/\\]+$/)?.[1]) ?? image, //vrátí pouze jméno souboru. Pokud se soubor jmenuje nejak necekane, tak se vrátí celá cesta.
     isRotated = false,
     style,
     animationOnStart = false,
@@ -25,6 +26,8 @@ export default function Card({
 }: CardProps) {
     const nic = "";
     const { isZoomMode, zoomedCard, setZoomedCard } = useZoom();
+    const {socket} = useGame()
+
 
     function handleClick(e: React.MouseEvent<HTMLDivElement>) {
         if (isZoomMode) {
@@ -35,6 +38,8 @@ export default function Card({
                 setZoomedCard(image);
                 //TODO: zazoomovat
             }
+        }else{
+            socket.send("dddd")
         }
         if (onClick) {
             onClick(e);

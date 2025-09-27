@@ -35,6 +35,7 @@ public class SocketServer extends WebSocketServer {
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         System.out.println("New connection from " + conn.getRemoteSocketAddress());
+        conn.send("welcome");
     }
 
     @Override
