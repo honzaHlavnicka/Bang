@@ -78,12 +78,16 @@ public class Hrac {
         //vytvoří json ve formátu vyberPostavu[{"jmeno":"jmeno","popis":"popis"},..]
         StringBuilder sb = new StringBuilder("vyberPostavu:[{\"jmeno\":\"");
         sb.append(p1.jmeno);
+        sb.append("\",\"obrazek\":\"");
+        sb.append(p1.name());
         sb.append("\",\"popis\":\"");
         sb.append(p1.popis);
         sb.append("\",\"zivoty\":\"");
         sb.append(p1.maximumZivotu);
         sb.append("\"},{\"jmeno\":\"");
         sb.append(p2.jmeno);
+        sb.append("\",\"obrazek\":\"");
+        sb.append(p2.name());
         sb.append("\",\"popis\":\"");
         sb.append(p2.popis);
         sb.append("\",\"zivoty\":\"");
@@ -152,7 +156,7 @@ public class Hrac {
             hra.getKomunikator().posli(this, "error{\"error\":\"postava už je nastavená\"}");
         }
         for (Postava postava : postavyNaVyber) {
-            if(postava.jmeno.equals(jmeno)){
+            if(postava.name().equals(jmeno)){
                 this.postava = postava;
                 return;
             }

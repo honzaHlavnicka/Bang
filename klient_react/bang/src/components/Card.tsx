@@ -1,6 +1,6 @@
 import css from '../styles/card.module.css';
 import { useZoom } from "../modules/ZoomContext";
-import { useGame } from '../modules/GameKontext';
+import { useGame } from "../modules/GameContext";
 
 
 type CardProps = {
@@ -26,7 +26,7 @@ export default function Card({
 }: CardProps) {
     const nic = "";
     const { isZoomMode, zoomedCard, setZoomedCard } = useZoom();
-    const {socket} = useGame()
+    const {setGameValue} = useGame()
 
 
     function handleClick(e: React.MouseEvent<HTMLDivElement>) {
@@ -39,7 +39,7 @@ export default function Card({
                 //TODO: zazoomovat
             }
         }else{
-            socket.send("dddd")
+            setGameValue({card:image}, "DRAW_CARD");
         }
         if (onClick) {
             onClick(e);

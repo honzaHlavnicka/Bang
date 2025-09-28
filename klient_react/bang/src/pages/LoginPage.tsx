@@ -1,28 +1,26 @@
 import { useState } from 'react';
 import css from './loginPage.module.css';
+import { useGame } from '../modules/GameContext';
 
-type LoginPageProps = {
-    spustitHru: (vytvorit: boolean) => void;
-};
-
-export default function LoginPage({ spustitHru }: LoginPageProps) {
+export default function LoginPage() {
     const [gameCode, setGameCode] = useState('');
     const [jmeno, setJmeno] = useState('');
+    const { connectToGame } = useGame();
     function zkontroluj(kodTaky: boolean = false) {
         if(jmeno.trim().length < 3){
             alert("Udělej to jméno delší, prosím");
-            return;
+            return false;
         }
         if(jmeno.trim().length > 15){
             alert("Udělej to jméno kratší, prosím");
-            return;
+            return false;
         }
         if(gameCode.trim().length != 6 && kodTaky){
             if (!window.confirm("Kód hry musí mít 6 číslic. Pokud si nejsi jistý, zkontroluj ho prosím ještě jednou. Pokračovat?")) {
-                return;
+                return false;
             }
         }
-        spustitHru(true);
+        return true;
     }
 
     return (
@@ -35,33 +33,28 @@ export default function LoginPage({ spustitHru }: LoginPageProps) {
                 </p>
                 <hr />
                 <div>
-                    Kód hry, kam se chceš přihlásit:<br />
+                    <h4>Kód hry, kam se chceš přihlásit:</h4>
                     <input 
                         type="text" 
                         inputMode="numeric" 
                         pattern="[0-9]*"
                         value={gameCode}
                         onChange={e => setGameCode(e.target.value.replace(/[^0-9]/g, ''))}
-                    /><br />
-                    
-                    Tvoje jméno:<br />
-                    <input
-                        value={jmeno}
-                        onChange={e => setJmeno(e.target.value)}
-                    /><br />
-                    
-                    <button className="btn-primary" onClick={() => { zkontroluj(true) }} 
-                    
-                    >Připojit se ke hře</button>
+                    />
+                    <h4>Tvoje jméno:</h4>
+                    <input value={jmeno} onChange={e => setJmeno(e.target.value)}/><br />
+                    <button className="btn-primary" onClick={() => { if(zkontroluj(true)) connectToGame(gameCode,jmeno) }} >
+                        Připojit se ke hře
+                    </button>
                 </div>
-                <hr />
-                Tvoje jméno:
+                <hr/>
+                <h4>Tvoje jméno:</h4>
                 <input
                     value={jmeno}
                     onChange={e => setJmeno(e.target.value)}
                 /><br />
                 <button 
-                    onClick={() => { zkontroluj(false) }} 
+                    onClick={() => { if(zkontroluj(false)) connectToGame("111", jmeno); }} 
                     className="btn-primary"
                 >
                     vytvořit hru

@@ -41,11 +41,8 @@ public class SocketServer extends WebSocketServer {
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         System.out.println("Closed connection: " + reason);
-        
+        //FIX: java.lang.NullPointerException: Cannot invoke "cz.honza.bang.net.KomunikatorHry.hracOdpojen(org.java_websocket.WebSocket)" because the return value of "java.util.Map.remove(Object)" is null
         komunikatoryHracu.remove(conn).hracOdpojen(conn);
-        
-       
-        
         
        
     }
@@ -53,7 +50,29 @@ public class SocketServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         System.out.println("zpráva: " + message);
-        
+
+        if(message.startsWith("pripojeniKeHre:222")){ //TODO: ODSTRANIT! POUZE PRO TESTY, BESPEČNOSTNÍ CHYBA. 
+            conn.send("popoup:zde je seznam všech her\n" + hryPodleId);
+            return;
+        }
+                        
+
+        if (message.startsWith("novaHra") || message.startsWith("pripojeniKeHre:111")) {
+            KomunikatorHry komunikatorCoAsiNeexistuje = komunikatoryHracu.get(conn); //pro kontrolu, jestli už hrač hru nehraje
+            if (komunikatorCoAsiNeexistuje != null) {
+                conn.send("error{\"error\":\"už jsi připojen ke hře\"}");
+                return;
+            }
+            int kodKry = nahodneIdHry();
+            KomunikatorHry komunikator = new KomunikatorHry(this, kodKry);
+            hryPodleId.put(Integer.toString(kodKry), komunikator);
+            System.out.println("novaHra:" + kodKry);
+            conn.send("novaHra:" + kodKry);
+            komunikator.novyHrac(conn);
+            komunikatoryHracu.put(conn, komunikator);
+            komunikator.nactiHru(conn);
+            return;
+        }
         
         if(message.startsWith("pripojeniKeHre:")){
             String idHry = message.replace("pripojeniKeHre:", "");
@@ -66,8 +85,6 @@ public class SocketServer extends WebSocketServer {
             KomunikatorHry komunikatorHry = hryPodleId.get(idHry);
             if(komunikatorHry == null){
                 conn.send("error{\"error\":\"Hra neexistuje\"}");
-                conn.send("existujici hry:" + hryPodleId);
-                conn.send("id co jsi poslal: " + idHry);
                 return;
             }
             if(komunikatorHry.novyHrac(conn)){ //přidá nového hráče, pokud se to nepovede, tak ho to nebude ukládat k dané hře, aby se ještě mohl připojit.
@@ -75,22 +92,6 @@ public class SocketServer extends WebSocketServer {
                 komunikatorHry.nactiHru(conn);
             }
 
-            return;
-        }
-        if (message.startsWith("novaHra")) {
-            KomunikatorHry komunikatorCoAsiNeexistuje = komunikatoryHracu.get(conn); //pro kontrolu, jestli už hrač hru nehraje
-            if (komunikatorCoAsiNeexistuje != null) {
-                conn.send("error{\"error\":\"už jsi připojen ke hře\"}");
-                return;
-            }
-            int kodKry = nahodneIdHry();
-            KomunikatorHry komunikator = new KomunikatorHry(this,kodKry);
-            hryPodleId.put(Integer.toString(kodKry),komunikator); 
-            System.out.println("novaHra:" + kodKry);
-            conn.send("novaHra:" + kodKry);
-            komunikator.novyHrac(conn);
-            komunikatoryHracu.put(conn, komunikator);
-            komunikator.nactiHru(conn);
             return;
         }
         
