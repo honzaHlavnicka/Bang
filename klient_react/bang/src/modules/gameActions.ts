@@ -1,202 +1,253 @@
 import type { GameStateType } from "./GameContext";
+import type { RefObject } from "react";
 
-export function handleGameMessage(event: MessageEvent,setGameState: (state: any) => void, gameState: GameStateType) {
+// Helper types for server payloads
+type ServerPlayer = {
+    jmeno: string;
+    zivoty: number;
+    maximumZivotu: number;
+    role: string;
+    id: number;
+    pocetKaret?: number;
+    postava?: string;
+};
+
+type ServerCard = { obrazek: string; id: number };
+
+type Player = NonNullable<GameStateType["players"]>[number];
+
+export function handleGameMessage(
+    event: MessageEvent,
+    setGameState: (updater: (prev: GameStateType) => GameStateType) => void,
+    stateRef: RefObject<GameStateType>
+) {
     console.log("%c" + event.data, "color: green");
 
     let type = "";
     let payload = "";
     if (event.data.includes(":")) {
-        const i = event.data.indexOf(':');
-        type = event.data.slice(0,i);
-        payload = event.data.slice(i+1);  
+        const i = event.data.indexOf(":");
+        type = event.data.slice(0, i);
+        payload = event.data.slice(i + 1);
     } else {
         type = event.data;
     }
 
     switch (type) {
-        case "popoup":
-            //server si nadiktoval popup
-            alert(payload)
+        case "popoup": {
+            alert(payload);
             break;
-        case "error":
+        }
+        case "error": {
             console.error("Chyba ze serveru: " + payload);
             break;
-        case "novaHra":
-            setGameState((prevState: any) => ({ ...prevState, inGame: true, gameCode: payload }));
+        }
+        case "novaHra": {
+            setGameState(prev => ({ ...prev, inGame: true, gameCode: payload }));
             break;
-        case "pripojenKeHre":
-            setGameState((prevState: any) => ({ ...prevState, inGame: true }));
+        }
+        case "pripojenKeHre": {
+            setGameState(prev => ({ ...prev, inGame: true }));
             break;
-        case "vyberPostavu":
+        }
+        case "vyberPostavu": {
             try {
-                const json = JSON.parse(payload);
-                setGameState((prevState: any) => ({ ...prevState, characters:json  }));
+                const json = JSON.parse(payload) as GameStateType["characters"];
+                setGameState(prev => ({ ...prev, characters: json }));
                 console.log(json);
             } catch (error) {
-                console.error("chyba při parsování",error,payload)
+                console.error("chyba při parsování", error, payload);
             }
             break;
-        case "hraci":
+        }
+        case "hraci": {
             try {
-                const json = JSON.parse(payload);
-                const mappedPlayers = json.map((player: any) => ({
-                    name: player.jmeno,
-                    lives: player.zivoty,
-                    maxLives: player.maximumZivotu,
-                    role: player.role,
+                const json = JSON.parse(payload) as ServerPlayer[];
+                const mappedPlayers: Player[] = json.map((player) => ({
                     id: player.id,
+                    name: player.jmeno,
+                    role: player.role,
+                    health: player.zivoty,
+                    cardsInHand: player.pocetKaret ?? 0,
+                    character: player.postava ?? "",
+                    isCurrentTurn: false,
+                    inPlayCards: [],
                 }));
-                setGameState((prevState: any) => ({ ...prevState, players: mappedPlayers }));
+                setGameState(prev => ({ ...prev, players: mappedPlayers }));
                 console.log(json);
             } catch (error) {
-                console.error("chyba při parsování",error,payload)
+                console.error("chyba při parsování", error, payload);
             }
             break;
-        case "novyHrac":
+        }
+        case "novyHrac": {
             try {
-                const json = JSON.parse(payload);
-                const newPlayer = {
-                    name: json.jmeno,
-                    lives: json.zivoty,
-                    maxLives: json.maximumZivotu,
+                const json = JSON.parse(payload) as ServerPlayer;
+                const newPlayer: Player = {
                     id: json.id,
-                    cardsIndHand: json.pocetKaret,
-                    character: json.postava,
+                    name: json.jmeno,
+                    role: json.role,
+                    health: json.zivoty,
+                    cardsInHand: json.pocetKaret ?? 0,
+                    character: json.postava ?? "",
                     isCurrentTurn: false,
                     inPlayCards: [],
                 };
-                setGameState((prevState: any) => ({
-                    ...prevState,
-                    players: prevState.players ? [...prevState.players, newPlayer] : [newPlayer],
+                setGameState(prev => ({
+                    ...prev,
+                    players: prev.players ? [...prev.players, newPlayer] : [newPlayer],
                 }));
-                console.log("nový hráč",json);
+                console.log("nový hráč", json);
             } catch (error) {
-                console.error("chyba při parsování",error,payload)
+                console.error("chyba při parsování", error, payload);
             }
             break;
-        case "hraSpustena":
-            setGameState((prevState: any) => ({ ...prevState, gameStarted:true }));
+        }
+        case "hraSpustena": {
+            setGameState(prev => ({ ...prev, gameStarted: true }));
             break;
-
-        case "noveJmeno":{
+        }
+        case "noveJmeno": {
             const parts = payload.split(",");
             const playerId = parts[0] ?? "";
             const newName = parts[1] ?? "";
-            
             console.log("zpracovávám noveJmeno", payload, playerId, newName);
 
-            if(playerId === gameState.currentPlayerId?.toString()){
-                setGameState((prev:GameStateType) => ({...prev, name:newName}))
-            }
-            updatePlayerProperty(setGameState, playerId, "name", newName);
+            setGameState(prev => {
+                const isMe = String(prev.currentPlayerId ?? "") === playerId;
+                const base = isMe ? { ...prev, name: newName } : { ...prev };
+                return {
+                    ...base,
+                    players: base.players
+                        ? base.players.map((p) => (String(p.id) === playerId ? { ...p, name: newName } : p))
+                        : base.players,
+                };
+            });
             break;
         }
-        case "setPostava":{
+        case "setPostava": {
             const parts = payload.split(",");
             const playerId = parts[0] ?? "";
             const character = parts[1] ?? "";
             updatePlayerProperty(setGameState, playerId, "character", character);
-
             break;
-        }  
-        case "noveIdHrace":
+        }
+        case "noveIdHrace": {
             alert("server ti přidělil id " + payload);
-            setGameState((prev:GameStateType) => ({...prev, currentPlayerId:parseInt(payload)}))
+            setGameState(prev => ({ ...prev, currentPlayerId: parseInt(payload) }));
             break;
-        case "novaKarta":{
+        }
+        case "novaKarta": {
             try {
-                const json = JSON.parse(payload);
-                const card = {image:json.obrazek,id:json.id};
-                setGameState((prev:GameStateType) => ({...prev, handCards: prev.handCards ? [...prev.handCards, card] : [card]}))
+                const json = JSON.parse(payload) as ServerCard;
+                const card = { image: json.obrazek, id: json.id };
+                setGameState(prev => ({
+                    ...prev,
+                    handCards: prev.handCards ? [...prev.handCards, card] : [card]
+                }));
             } catch (error) {
-                console.error("chyba při parsování",error,payload)
+                console.error("chyba při parsování", error, payload);
             }
             break;
         }
-        case "role":
-            setGameState((prev:GameStateType) => ({...prev, role:payload}))
+        case "role": {
+            setGameState(prev => ({ ...prev, role: payload }));
             break;
-        case "zmenaPoctuKaret":{
+        }
+        case "zmenaPoctuKaret": {
             const parts = payload.split(",");
             const playerId = parts[0] ?? "";
             const newCardCount = parseInt(parts[1] ?? "0");
             updatePlayerProperty(setGameState, playerId, "cardsInHand", newCardCount);
             break;
         }
-        case "hraZacala":
-            setGameState((prev:GameStateType) => ({...prev, gameStarted:true}))
+        case "hraZacala": {
+            setGameState(prev => ({ ...prev, gameStarted: true }));
             break;
-        case "novyPocetKaret":{
+        }
+        case "novyPocetKaret": {
             const parts = payload.split(",");
             const playerId = parts[0] ?? "";
             const newCardCount = parseInt(parts[1] ?? "0");
             updatePlayerProperty(setGameState, playerId, "cardsInHand", newCardCount);
             break;
         }
-        case "odehrat":{
+        case "odehrat": {
             const parts = payload.split("|");
             const playerId = parts[0] ?? "";
             try {
-                const json = JSON.parse(parts[1] ?? "0");
-                const card = {image:json.obrazek,id:json.id};
-                alert("server říká, že hráč " + playerId + " odehrál kartu " + card.image)
-                console.log("zpracovávám odehrat",json,card)
-                console.log("pleyerId",playerId,"currentPlayerId",gameState.currentPlayerId,gameState)
-                if(playerId == gameState.currentPlayerId?.toString()){
-                    setGameState((prev:GameStateType) => ({...prev, handCards: prev.handCards ? prev.handCards.filter(c => c.id !== card.id) : [] , inPlayCards: prev.inPlayCards ? [...prev.inPlayCards, card] : [card]}))
-                    alert("odehrál jsi kartu " + card.image)
-                }
-                
-                setGameState((prev:GameStateType) => ({ ...prev, discardPile:card.image} ));
+                const json = JSON.parse(parts[1] ?? "0") as ServerCard;
+                const card = { image: json.obrazek, id: json.id };
+                alert("server říká, že hráč " + playerId + " odehrál kartu " + card.image);
+                console.log("zpracovávám odehrat", json, card);
+                console.log("pleyerId", playerId, "currentPlayerId", stateRef.current?.currentPlayerId, stateRef.current);
+
+                setGameState(prev => {
+                    const isCurrent = String(prev.currentPlayerId ?? "") === String(playerId);
+                    const nextDiscard = [...prev.discardPile, card.image];
+                    if (!isCurrent) {
+                        return { ...prev, discardPile: nextDiscard };
+                    }
+                    return {
+                        ...prev,
+                        handCards: (prev.handCards ?? []).filter((c) => c.id !== card.id),
+                        inPlayCards: [...(prev.inPlayCards ?? []), card],
+                        discardPile: nextDiscard,
+                    };
+                });
             } catch (error) {
-                console.error("chyba při parsování",error,payload)
+                console.error("chyba při parsování", error, payload);
             }
             break;
         }
-            
-        case "Echo":
+        case "Echo": {
             break;
-        default:
-            console.log("=> klient nezná")
+        }
+        default: {
+            console.log("=> klient nezná");
             break;
+        }
     }
-    
-
 }
 
 export function updatePlayerProperty(
-    setGameState: (state: any) => void,
+    setGameState: (updater: (prev: GameStateType) => GameStateType) => void,
     playerId: string,
-    property: string,
-    value: any
+    property: keyof Player,
+    value: Player[keyof Player]
 ) {
-    setGameState((prevState: any) => ({
+    setGameState((prevState) => ({
         ...prevState,
         players: prevState.players
-            ? prevState.players.map((player: any) =>
-                player.id == playerId
-                    ? { ...player, [property]: value }
+            ? prevState.players.map((player) =>
+                String(player.id) == String(playerId)
+                    ? { ...player, [property]: value } as Player
                     : player
             )
             : prevState.players
     }));
 }
 
-
-export function setGameValue(ws: WebSocket | null, data: any, type: string) {
+export function setGameValue(ws: WebSocket | null, data: unknown, type: string) {
     if (ws !== null) {
-        if(type === "DRAW_CARD") {
+        if (type === "DRAW_CARD") {
             ws.send("linuti");
-        } else if(type === "CONNECT") {
-            ws.send("pripojeni:" + data.kod);
-            ws.send("noveJmeno:" + data.jmeno);
+        } else if (type === "CONNECT") {
+            const d = data as { kod: string; jmeno: string };
+            ws.send("pripojeni:" + d.kod);
+            ws.send("noveJmeno:" + d.jmeno);
         }
     }
 }
 
-export function connectToGame(ws: WebSocket | null, setGameState: (state: any) => void, gameCode: string, name: string) {
+export function connectToGame(
+    ws: WebSocket | null,
+    setGameState: (updater: (prev: GameStateType) => GameStateType) => void,
+    gameCode: string,
+    name: string
+) {
     if (ws !== null) {
-        setGameState((prevState: any) => ({ ...prevState, gameCode: gameCode, inGame:true }));
+        setGameState(prevState => ({ ...prevState, gameCode: gameCode, inGame: true }));
         ws.send("pripojeniKeHre:" + gameCode);
         ws.send("noveJmeno:" + name);
     }
@@ -215,19 +266,22 @@ export function changePlayerName(ws: WebSocket | null, newName: string) {
     }
 }
 
-export function chooseCharacter(ws: WebSocket | null, changeGameState: (state: any) => void, character: string) {
-    changeGameState((prev) => ({ ...prev, character:character, characters:[] }));
+export function chooseCharacter(
+    ws: WebSocket | null,
+    changeGameState: (updater: (prev: GameStateType) => GameStateType) => void,
+    character: string
+) {
+    changeGameState((prev) => ({ ...prev, character: character, characters: [] }));
     if (ws !== null) {
         ws.send("setPostava:" + character);
     }
 }
-export function startGame(ws: WebSocket | null, setGameState: (state: any) => void) {
+export function startGame(ws: WebSocket | null) {
     if (ws !== null) {
         ws.send("zahajeniHry");
     }
-    //setGameState((prevState:GameStateType) => ({ ...prevState,gameStarted: true}));
 }
-export function playCard(ws: WebSocket | null, setGameState: (state: any) => void, cardId: number) {
+export function playCard(ws: WebSocket | null, cardId: number) {
     if (ws !== null) {
         ws.send("odehrani:" + cardId);
     }

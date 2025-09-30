@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { GameContext } from "./GameContext";
 import type { GameStateType } from "./GameContext";
 import { handleGameMessage, setGameValue, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard } from "./gameActions";
@@ -21,11 +21,20 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const [gameState, setGameState] = useState<GameStateType>(gameStateDefault);
     const [ws, setWs] = useState<WebSocket | null>(null);
 
+    // drž aktuální stav ve ref, aby ho onmessage vždy četl aktuální
+    const stateRef = useRef<GameStateType>(gameState);
+    useEffect(() => {
+        stateRef.current = gameState;
+    }, [gameState]);
+
     useEffect(() => {
         const socket = new WebSocket("ws://localhost:9999");
         console.log("pokus o připojení k ws serveru");
-        socket.onopen = () => {setWs(socket);window.ws=socket};//TODO: odstranit testovací přiřazení
-        socket.onmessage = (event) => {handleGameMessage(event, setGameState,gameState);};
+        socket.onopen = () => { 
+            setWs(socket); 
+            (window as unknown as { ws: WebSocket }).ws = socket; //TODO: odstranit testovací přiřazení
+        };
+        socket.onmessage = (event) => { handleGameMessage(event, setGameState, stateRef); };
         socket.onclose = () => {
             console.log("WebSocket disconnected");
             setWs(null);
@@ -37,14 +46,14 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         <GameContext.Provider value={{
             gameState,
             setGameValue: (data, type) => setGameValue(ws, data, type),
-            connectToGame: (gameCode, name) => connectToGame(ws,setGameState, gameCode, name),
+            connectToGame: (gameCode, name) => connectToGame(ws, setGameState, gameCode, name),
             changePlayerName: (newName) => changePlayerName(ws, newName),
             chooseCharacter: (characterName) => chooseCharacter(ws, setGameState, characterName),
-            startGame: () => {startGame(ws, setGameState)},
-            endTurn: () => {/* implementace nebo prázdná funkce */},
+            startGame: () => { startGame(ws) },
+            endTurn: () => { /* implementace nebo prázdná funkce */ },
             createGame: (name) => createGame(ws, name),
-            drawCard: () => {/* implementace nebo prázdná funkce */},
-            playCard: (cardId) => playCard(ws, setGameState, cardId),
+            drawCard: (cardId: number) => { void cardId; /* implementace nebo prázdná funkce */ },
+            playCard: (cardId) => playCard(ws, cardId),
         }}>
             {children}
         </GameContext.Provider>
