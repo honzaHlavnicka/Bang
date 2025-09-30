@@ -5,7 +5,7 @@ import { useGame } from '../modules/GameContext';
 export default function LoginPage() {
     const [gameCode, setGameCode] = useState('');
     const [jmeno, setJmeno] = useState('');
-    const { connectToGame } = useGame();
+    const { connectToGame, createGame } = useGame();
     function zkontroluj(kodTaky: boolean = false) {
         if(jmeno.trim().length < 3){
             alert("Udělej to jméno delší, prosím");
@@ -54,7 +54,7 @@ export default function LoginPage() {
                     onChange={e => setJmeno(e.target.value)}
                 /><br />
                 <button 
-                    onClick={() => { if(zkontroluj(false)) connectToGame("111", jmeno); }} 
+                    onClick={() => { if(zkontroluj(false)) createGame(jmeno); }} 
                     className="btn-primary"
                 >
                     vytvořit hru

@@ -20,13 +20,14 @@ public class BangNaVsechny extends Bang{
         super(hra, balicek);
     }
     @Override
-    public void odehrat(Hrac kym){
+    public boolean odehrat(Hrac kym){
         for (Hrac hrac : hra.getHraci()) {
             if(!hrac.equals(kym)){
                 hrac.odeberZivot();
             }
             
         }
+        return true;
     }
     @Override
     public String getObrazek(){

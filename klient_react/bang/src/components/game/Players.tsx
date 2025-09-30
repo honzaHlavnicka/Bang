@@ -1,9 +1,11 @@
 import Player from "./Player";
 import { useRef, useEffect } from "react";
 import css from "../../styles/scrolable.module.css"
+import { useGame } from "../../modules/GameContext";
 
 export default function Players() {
     const containerRef = useRef<HTMLDivElement>(null);
+    const {gameState} = useGame();
 
     // Přesměrování vertikálního scrollu na horizontální
     function handleWheel(e: React.WheelEvent<HTMLDivElement>) {
@@ -40,16 +42,20 @@ export default function Players() {
             }}
             onWheel={handleWheel}
         >
-            <div style={{ width: 500, flexShrink: 0 }} />
-            <Player jmeno="honza" />
-            <Player jmeno="Někdo, kdo má hodně dlouhé jméno" />
-            <Player jmeno="František" />
-            <Player jmeno="Pepa" />
-            <Player jmeno="Karel" />
-            <Player jmeno="Jirka" />
-            <Player jmeno="Martin" />
-            <Player jmeno="Tonda" />
-            <div style={{ width: 500, flexShrink: 0 }} />
+           {gameState.players!.map((player)=>{
+            if(player.id != gameState.currentPlayerId){
+                   return <Player 
+                            jmeno={player.name}
+                            key={player.id} 
+                            pocetZivotu={player.health} 
+                            pocetKaret={player.cardsInHand} 
+                            postava={player.character} 
+                        
+                            vylozeneKarty={player.inPlayCards}
+                        />
+            }
+           })}
+
         </div>
     );
 }

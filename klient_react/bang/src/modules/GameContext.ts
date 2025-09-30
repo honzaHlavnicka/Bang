@@ -3,21 +3,34 @@ import { createContext, useContext } from "react";
 
 export type GameValueType = "PLAYER_ACTION" | "DRAW_CARD" | "CONNECT" | "CHANGE_NAME" | "START_GAME" | "END_TURN";
 
+export type CardType = {
+    image:string;
+    id:number;
+}
 
 export type GameStateType = {
     inGame:boolean;
     gameStarted:boolean;
 
-    gameCode: string;
+    gameCode: string | null;
 
-
+    name?:string;
+    role?:string;
+    health?:number;
+    maxHealth?:number;
     character?:string;
+    handCards?: Array<CardType> | null;
+    inPlayCards?: Array<CardType> | null;
+    currentPlayerId: number| null;
+
+
+
     characters?: Array<{jmeno:string,obrazek:string,popis:string}> | null;
-    players: Array<{ id: string; name: string; role: string; health: number }>;
-    currentPlayerId: string;
+    players: Array<{ id: number; name: string; role: string; health: number;cardsInHand:number; character: string; isCurrentTurn: boolean; inPlayCards: Array<CardType> | null;}> | null;
     turnOrder: string[];
     deckCount: number;
     discardPile: Array<string>;
+
 
 };
 
@@ -29,6 +42,11 @@ export const GameContext = createContext<{
     startGame: () => void;
     endTurn: () => void;
     chooseCharacter: (characterName: string) => void;
+    createGame: (name: string) => void;
+    drawCard: (cardId:number) => void;
+    playCard: (cardId:number) => void;
+
+
 } | null>(null);
 
 export const useGame = () => {

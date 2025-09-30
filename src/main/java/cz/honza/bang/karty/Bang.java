@@ -26,8 +26,10 @@ public class Bang extends Karta implements HratelnaKarta{
 
     
     @Override
-    public void odehrat(Hrac kym){
+    public boolean odehrat(Hrac kym){
         //TODO: získej hráče
+        
+        return true;
  
     }
     

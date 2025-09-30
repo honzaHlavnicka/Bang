@@ -9,6 +9,7 @@ package cz.honza.bang;
 import cz.honza.bang.karty.BangNaVsechny;
 import cz.honza.bang.karty.Karta;
 import cz.honza.bang.karty.Pivo;
+import cz.honza.bang.karty.UnoKarta;
 import cz.honza.bang.karty.WellsFarkgo;
 import cz.honza.bang.net.KomunikatorHry;
 import cz.honza.bang.postavy.Postava;
@@ -112,6 +113,7 @@ public class Hra {
                 hraci.get(i).pripravKeHre(role[i]);                
             }
             
+            komunikator.posliVsem("hraZacala");
             spravceTahu = new SpravceTahu(hraci);
             spravceTahu.dalsiHracPodleRole(Role.SERIF).tah();
             System.out.println("zahájen tah v setzahajena");
@@ -161,7 +163,7 @@ public class Hra {
      * naplní balíček kartami hry.
      */
     private void pripravBalicek(){
-        balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
+        /*balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
@@ -180,7 +182,20 @@ public class Hra {
         balicek.vratNahoru(new BangNaVsechny(this,balicek));
         balicek.vratNahoru(new BangNaVsechny(this,balicek));
         balicek.vratNahoru(new BangNaVsechny(this,balicek));
-        balicek.vratNahoru(new BangNaVsechny(this,balicek));
+        balicek.vratNahoru(new BangNaVsechny(this,balicek));*/
+        
+        for (int i = 0; i < 10; i++) {
+           balicek.vratNahoru(new UnoKarta(i,"red",this,balicek));
+        }
+        for (int i = 0; i < 10; i++) {
+           balicek.vratNahoru(new UnoKarta(i,"green",this,balicek));
+        }
+        for (int i = 0; i < 10; i++) {
+           balicek.vratNahoru(new UnoKarta(i,"blue",this,balicek));
+        }
+        for (int i = 0; i < 10; i++) {
+           balicek.vratNahoru(new UnoKarta(i,"yellow",this,balicek));
+        }
         
         balicek.zamichej();
         

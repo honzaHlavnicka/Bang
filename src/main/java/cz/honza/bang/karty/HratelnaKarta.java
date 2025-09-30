@@ -13,5 +13,5 @@ import cz.honza.bang.Hrac;
  * @author honza
  */
 public interface HratelnaKarta {
-    public void odehrat(Hrac kym);
+    public boolean odehrat(Hrac kym);
 }

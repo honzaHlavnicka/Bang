@@ -107,7 +107,7 @@ public class KomunikatorHry {
         websocket.send("token:" + idHry + identifikator);
         hraciPodlIdentifikatoru.put(identifikator, hrac);
         hra.hracVytvoren(hrac);
-        posliVsem(hrac.toJSON()); //FIX: co to dělá???
+        posliVsem("novyHrac:"+hrac.toJSON()); 
         return true;
     }
     

@@ -29,9 +29,10 @@ public class Dostavnik extends Karta implements HratelnaKarta{
     }
 
     @Override
-    public void odehrat(Hrac kym) {
+    public boolean odehrat(Hrac kym) {
         kym.lizni();
         kym.lizni();
+        return true;
     }
     
 }

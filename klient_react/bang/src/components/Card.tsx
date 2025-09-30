@@ -11,6 +11,7 @@ type CardProps = {
     biggerOnHover?: boolean;
     animationOnStart?: boolean;
     isInLine?: boolean;
+    id?:number;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
 };
 
@@ -22,32 +23,28 @@ export default function Card({
     animationOnStart = false,
     biggerOnHover = false,
     isInLine = false,
+    id,
     onClick,
 }: CardProps) {
     const nic = "";
     const { isZoomMode, zoomedCard, setZoomedCard } = useZoom();
-    const {setGameValue} = useGame()
 
+    const key = id || -1;
 
     function handleClick(e: React.MouseEvent<HTMLDivElement>) {
         if (isZoomMode) {
             if(zoomedCard == image){
                 setZoomedCard(null);
-                //TODO: odzoomovat
             }else{
                 setZoomedCard(image);
-                //TODO: zazoomovat
             }
-        }else{
-            setGameValue({card:image}, "DRAW_CARD");
-        }
-        if (onClick) {
+        }else if (onClick) {
             onClick(e);
         }
     }
 
     return (
-        <div onClick={handleClick} className={` ${animationOnStart ? css.animacePrijeti : ""} ${isInLine ? css.jeDole : ""}`}>
+        <div data-id={key} onClick={handleClick} className={` ${animationOnStart ? css.animacePrijeti : ""} ${isInLine ? css.jeDole : ""}`}>
             <img className={`${css.karta} ${(biggerOnHover ? css.zvetsitelna : nic)} ${(isRotated ? css.pootocena : nic)} `} style={style} src={image} alt={name ?? undefined} title={name ?? undefined} />
         </div>
     );

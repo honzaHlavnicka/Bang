@@ -1,24 +1,27 @@
+import type { CardType } from "../modules/GameContext";
 import Card from "./Card";
 
-interface Card {
-    img: string;
-    key: number;
-}
 
-const cards: Card[] = [
-    { img: "bang", key: 27 },
-    { img: "pivo", key: 29 },
-    { img: "barel", key: 30 },
-    { img: "wellsfargo", key: 31 },
-];
-
-export default function Cards({isRotated = true}: {isRotated?: boolean}) {
+export default function Cards({isRotated = true,cards,onClickCard}: {isRotated?: boolean,cards:Array<CardType>,onClickCard?:{(e: React.MouseEvent<HTMLDivElement>): void}}) {
+    console.log(cards)
+    if(cards === undefined || cards.length === 0 || cards === null){
+        return;
+    }
     return (
         <div style={{display: "flex",
             flexDirection:"row",
             alignItems: "center"}}>
             {cards.map(card => (
-                <Card image={"/img/karty/" + card.img + ".png"} key={card.key} animationOnStart biggerOnHover isInLine isRotated={isRotated} />
+            <Card
+                {...(onClickCard ? { onClick: onClickCard } : {})}
+                image={"/img/karty/" + card.image + ".png"}
+                key={card.id}
+                id={card.id}
+                animationOnStart
+                biggerOnHover
+                isInLine
+                isRotated={isRotated}
+            />
             ))}
         </div>
     );

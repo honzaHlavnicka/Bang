@@ -57,16 +57,13 @@ public class Hrac {
         this.role = role;
         zivoty = maximumZivotu;
         
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < maximumZivotu; i++) {
             Karta karta = hra.getBalicek().lizni();
             karty.add(karta);
             hra.getKomunikator().posli(this, karta.toJSONold());
             hra.getKomunikator().posliVsem("zmenaPoctuKaret:"+id+","+karty.size(),this);
         }
-        
-        
-        //FIX: tolik karet kolik ma zivotu
-        
+                
         pripravenyKeHre = true;
         
         
@@ -177,19 +174,28 @@ public class Hrac {
         int idKarty = Integer.parseInt(id);
         for (Karta karta  : karty) {
             if(karta.getId() == idKarty){
-                hra.getOdhazovaciBalicek().vratNahoru(karta);
-                karty.remove(karta);
                 if (karta instanceof HratelnaKarta hratelna) {
-                    hratelna.odehrat(this);
-                    hra.getKomunikator().posliVsem("odehrat:"+id+'|' + karta.toJSON(),this);
-                    hra.getKomunikator().posliVsem("novyPocetKaret:"+id+","+karty.size(), this);
-                    //FIX: předpokládá, že v karta.toJSON() není znak |, ale co když je?
+                    if(hratelna.odehrat(this)){ //provede efekt karty, karta zkontroluje jestli je hratelna v tomto kontextu.
+                        hra.getOdhazovaciBalicek().vratNahoru(karta);
+                        karty.remove(karta);
+                        
+                        hra.getKomunikator().posliVsem("odehrat:" + id + '|' + karta.toJSON());
+                        hra.getKomunikator().posliVsem("novyPocetKaret:" + id + "," + karty.size(), this);
+                        //FIX: předpokládá, že v karta.toJSON() není znak |, ale co když je?
+                        return;
+                    }else{
+                        hra.getKomunikator().posli(this, "error{\"error\":\"tuto kartu nelze zahrát\"}");
+                        return;
+                    }
+
                 } else {
                     hra.getKomunikator().posli(this, "error{\"error\":\"tuto kartu nelze zahrát\"}");
+                    return;
                 }
-                break;
+                
             }
         }
+        hra.getKomunikator().posli(this, "error{\"error\":\"tato karta neexistuje.\"}");
     }
     
     /**

@@ -31,7 +31,8 @@ public class Pivo extends Karta implements HratelnaKarta{
     }
 
     @Override
-    public void odehrat(Hrac kym) {
+    public boolean odehrat(Hrac kym) {
         kym.pridejZivot();
+        return true;
     }
 }
