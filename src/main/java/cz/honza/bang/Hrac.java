@@ -179,8 +179,8 @@ public class Hrac {
                         hra.getOdhazovaciBalicek().vratNahoru(karta);
                         karty.remove(karta);
                         
-                        hra.getKomunikator().posliVsem("odehrat:" + id + '|' + karta.toJSON());
-                        hra.getKomunikator().posliVsem("novyPocetKaret:" + id + "," + karty.size(), this);
+                        hra.getKomunikator().posliVsem("odehrat:" + this.id + '|' + karta.toJSON());
+                        hra.getKomunikator().posliVsem("novyPocetKaret:" + this.id + "," + karty.size(), this);
                         //FIX: předpokládá, že v karta.toJSON() není znak |, ale co když je?
                         return;
                     }else{
