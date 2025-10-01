@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 
 export function Deck({ images }: { images: string[] }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -21,29 +21,12 @@ export function Deck({ images }: { images: string[] }) {
         ctx.scale(dpr, dpr);
     }, []);
 
-    useEffect(() => {
-        if (images.length === 0) return;
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-
-        const dpr = window.devicePixelRatio || 1;
-        const src = images[images.length - 1]; // poslední karta
-        const img = new window.Image();
-        img.src = src;
-        img.onload = () => {
-            loadedImagesRef.current.push(img);
-            vykresli(ctx, img, canvas, dpr);
-        };
-    }, [images]);
-
-    function vykresli(
+    const vykresli = useCallback((
         ctx: CanvasRenderingContext2D,
         img: HTMLImageElement,
         canvas: HTMLCanvasElement,
         dpr: number
-    ) {
+    ) => {
         const origW = img.naturalWidth || img.width;
         const origH = img.naturalHeight || img.height;
         const targetW = 112;
@@ -53,7 +36,7 @@ export function Deck({ images }: { images: string[] }) {
         const dx = nahodneCislo(-30, 30);
         const dy = nahodneCislo(-30, 30);
         const deg = nahodneCislo(-30, 30);
-        const rad = deg * Math.PI / 180;
+        const rad = (deg * Math.PI) / 180;
 
         ctx.save();
         ctx.translate(cx + dx, cy + dy);
@@ -71,8 +54,9 @@ export function Deck({ images }: { images: string[] }) {
         const h = targetH;
 
         ctx.beginPath();
-        if ((ctx as any).roundRect) {
-            (ctx as any).roundRect(x, y, w, h, r);
+        const rr = (ctx as unknown as { roundRect?: (x:number,y:number,w:number,h:number,r:number)=>void }).roundRect;
+        if (rr) {
+            rr.call(ctx, x, y, w, h, r);
         } else {
             ctx.moveTo(x + r, y);
             ctx.lineTo(x + w - r, y);
@@ -90,7 +74,25 @@ export function Deck({ images }: { images: string[] }) {
         ctx.drawImage(img, x, y, w, h);
 
         ctx.restore();
-    }
+    }, []);
+
+    useEffect(() => {
+        if (images.length === 0) return;
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        const dpr = window.devicePixelRatio || 1;
+        const raw = images[images.length - 1]; // poslední karta (může být jen slug)
+        const src = raw.startsWith("/") || raw.startsWith("http") ? raw : `/img/karty/${raw}.png`;
+        const img = new window.Image();
+        img.src = src;
+        img.onload = () => {
+            loadedImagesRef.current.push(img);
+            vykresli(ctx, img, canvas, dpr);
+        };
+    }, [images, vykresli]);
 
     function nahodneCislo(min: number, max: number) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
