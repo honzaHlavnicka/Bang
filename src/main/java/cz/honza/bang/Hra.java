@@ -54,7 +54,7 @@ public class Hra {
     
     public Hra(KomunikatorHry komunikator){
         this.komunikator = komunikator;
-        //this.herniPravidla = herniPravidla;
+        this.herniPravidla = new PravidlaUNO(this); //TODO: herní pravidla by se měla vzít odněkud zvbenku.
         //herniPravidla.setHra(this);
         
         //vytvoří a zamíchá balíček postav
@@ -100,6 +100,11 @@ public class Hra {
     public boolean isZahajena() {
         return zahajena;
     }
+
+    public HerniPravidla getHerniPravidla() {
+        return herniPravidla;
+    }
+    
 
     public void setZahajena(boolean zahajena) {
         

@@ -51,8 +51,10 @@ public class SpravceTahu {
     public Hrac dalsiHrac(){
         if(kolikatyTah >= nasobicTahu){
             Tah tah = poradiHracu.getFirst();
+            
             naTahu = tah.hrac;
             if(!tah.jednorazovy){
+                poradiHracu.removeFirst();
                 poradiHracu.addLast(tah);
             }
             kolikatyTah = 1;

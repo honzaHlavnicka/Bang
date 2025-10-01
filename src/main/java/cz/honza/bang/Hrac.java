@@ -172,16 +172,25 @@ public class Hrac {
      */
     public void odehranaKarta(String id) {
         int idKarty = Integer.parseInt(id);
+        if(!hra.getSpravceTahu().getNaTahu().equals(this)){
+            hra.getKomunikator().posli(this, "error{\"error\":\"nejsi na tahu.\"}");
+            return;
+        }
         for (Karta karta  : karty) {
             if(karta.getId() == idKarty){
                 if (karta instanceof HratelnaKarta hratelna) {
                     if(hratelna.odehrat(this)){ //provede efekt karty, karta zkontroluje jestli je hratelna v tomto kontextu.
+                        
+                        
                         hra.getOdhazovaciBalicek().vratNahoru(karta);
                         karty.remove(karta);
                         
                         hra.getKomunikator().posliVsem("odehrat:" + this.id + '|' + karta.toJSON());
                         hra.getKomunikator().posliVsem("novyPocetKaret:" + this.id + "," + karty.size(), this);
                         //FIX: předpokládá, že v karta.toJSON() není znak |, ale co když je?
+                        
+                        hra.getHerniPravidla().poOdehrani();
+
                         return;
                     }else{
                         hra.getKomunikator().posli(this, "error{\"error\":\"tuto kartu nelze zahrát\"}");
