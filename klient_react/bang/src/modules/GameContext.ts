@@ -21,10 +21,11 @@ export type GameStateType = {
     character?:string;
     handCards?: Array<CardType> | null;
     inPlayCards?: Array<CardType> | null;
-    currentPlayerId: number| null;
+    playerId: number| null;
 
 
 
+    turnPlayerId?: number | null;
     characters?: Array<{jmeno:string,obrazek:string,popis:string}> | null;
     players: Array<{ id: number; name: string; role: string; health: number;cardsInHand:number; character: string; isCurrentTurn: boolean; inPlayCards: Array<CardType> | null;}> | null;
     turnOrder: string[];
@@ -43,7 +44,7 @@ export const GameContext = createContext<{
     endTurn: () => void;
     chooseCharacter: (characterName: string) => void;
     createGame: (name: string) => void;
-    drawCard: (cardId:number) => void;
+    drawCard: () => void;
     playCard: (cardId:number) => void;
 
 

@@ -6,14 +6,14 @@ import { useGame } from "../../modules/GameContext";
 
 export default function CentralPanel() {
     const [deckImages, setDeckImages] =  React.useState<string[]>([]);
-    const {gameState} = useGame();
+    const {gameState, drawCard} = useGame();
 
     const imagesForDeck = deckImages.length ? deckImages : gameState.discardPile;
 
     return (
         <div style={{flex:1, minHeight:0, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", }}>
             <Deck images={imagesForDeck} />
-            <Card image={"/img/karty/zezadu.png"} name="dobírací balíček" />
+            <Card image={"/img/karty/zezadu.png"} name="dobírací balíček" onClick={e=>drawCard()}/>
             <button
                 style={{}}
                 onClick={() => {

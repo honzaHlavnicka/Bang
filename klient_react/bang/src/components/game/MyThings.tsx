@@ -21,7 +21,7 @@ import NameTag from "./NameTag";
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
             <div style={{ marginRight: "32px" }}>
-                <NameTag jmeno={jmeno || "nepojmenovaný hráč"} />
+                <NameTag jmeno={jmeno || "nepojmenovaný hráč"} style={{backgroundColor:(gameState.playerId === gameState.turnPlayerId)?"yellow":"white"}} />
                 <div style={{display:"flex",justifyContent:"center"}}>
                     <Card image={`/img/karty/role/${role}.png`} />
                     <Card image={`/img/karty/postavy/${postava}.png`} />

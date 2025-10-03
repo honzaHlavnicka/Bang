@@ -43,14 +43,14 @@ export default function Players() {
             onWheel={handleWheel}
         >
            {gameState.players!.map((player)=>{
-            if(player.id != gameState.currentPlayerId){
+            if(player.id != gameState.playerId){
                    return <Player 
                             jmeno={player.name}
                             key={player.id} 
                             pocetZivotu={player.health} 
                             pocetKaret={player.cardsInHand} 
                             postava={player.character} 
-                        
+                            naTahu={gameState.turnPlayerId === player.id}
                             vylozeneKarty={player.inPlayCards}
                         />
             }

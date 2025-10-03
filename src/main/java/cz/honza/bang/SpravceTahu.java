@@ -66,6 +66,10 @@ public class SpravceTahu {
         return naTahu;
     }
     
+    public void dalsiHracSUpozornenim(){
+        naTahu.konecTahu();
+    }
+    
     /**
      * další hráč bude přeskočen. Stávající hráč hraje dál, neukončí to jeho tah.
      * @return hráč, který byl přeskočen.

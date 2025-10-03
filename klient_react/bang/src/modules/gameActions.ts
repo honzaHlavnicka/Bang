@@ -23,6 +23,12 @@ export function handleGameMessage(
 ) {
     console.log("%c" + event.data, "color: green");
 
+    if(event.data.startsWith("error")) {
+        console.error("Chyba ze serveru: " + event.data);
+        //TODO: UPRAVIT aby server posílal i dvotečku.
+        event.data.replace("error:",":");
+    }
+
     let type = "";
     let payload = "";
     if (event.data.includes(":")) {
@@ -114,7 +120,7 @@ export function handleGameMessage(
             console.log("zpracovávám noveJmeno", payload, playerId, newName);
 
             setGameState(prev => {
-                const isMe = String(prev.currentPlayerId ?? "") === playerId;
+                const isMe = String(prev.playerId ?? "") === playerId;
                 const base = isMe ? { ...prev, name: newName } : { ...prev };
                 return {
                     ...base,
@@ -133,8 +139,7 @@ export function handleGameMessage(
             break;
         }
         case "noveIdHrace": {
-            alert("server ti přidělil id " + payload);
-            setGameState(prev => ({ ...prev, currentPlayerId: parseInt(payload) }));
+            setGameState(prev => ({ ...prev, playerId: parseInt(payload) }));
             break;
         }
         case "novaKarta": {
@@ -178,12 +183,11 @@ export function handleGameMessage(
             try {
                 const json = JSON.parse(parts[1] ?? "0") as ServerCard;
                 const card = { image: json.obrazek, id: json.id };
-                alert("server říká, že hráč " + playerId + " odehrál kartu " + card.image);
                 console.log("zpracovávám odehrat", json, card);
-                console.log("pleyerId", playerId, "currentPlayerId", stateRef.current?.currentPlayerId, stateRef.current);
+                console.log("pleyerId", playerId, "currentPlayerId", stateRef.current?.playerId, stateRef.current);
 
                 setGameState(prev => {
-                    const isCurrent = String(prev.currentPlayerId ?? "") === String(playerId);
+                    const isCurrent = String(prev.playerId ?? "") === String(playerId);
                     const nextDiscard = [...prev.discardPile, card.image];
                     if (!isCurrent) {
                         return { ...prev, discardPile: nextDiscard };
@@ -198,6 +202,24 @@ export function handleGameMessage(
             } catch (error) {
                 console.error("chyba při parsování", error, payload);
             }
+            break;
+        }
+        case "tvujTahZacal": {
+            setGameState(prev => ({ ...prev, turnPlayerId: prev.playerId ?? null }));
+            break;
+        }
+        case "tahZacal": {
+            const playerId = payload;
+            setGameState(prev => ({
+                ...prev,
+                turnPlayerId: parseInt(playerId),
+                players: prev.players
+                    ? prev.players.map((p) => ({
+                        ...p,
+                        isCurrentTurn: String(p.id) === String(playerId),
+                    }))
+                    : prev.players,
+            }));
             break;
         }
         case "Echo": {
@@ -284,5 +306,11 @@ export function startGame(ws: WebSocket | null) {
 export function playCard(ws: WebSocket | null, cardId: number) {
     if (ws !== null) {
         ws.send("odehrani:" + cardId);
+    }
+}
+
+export function drawCard(ws: WebSocket | null) {
+    if (ws !== null) {
+        ws.send("linuti");
     }
 }

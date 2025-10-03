@@ -20,7 +20,7 @@ public class PravidlaUNO implements HerniPravidla{
 
     @Override
     public void poOdehrani() {
-        hra.getSpravceTahu().dalsiHrac();
+        hra.getSpravceTahu().dalsiHracSUpozornenim();
     }
     
 }

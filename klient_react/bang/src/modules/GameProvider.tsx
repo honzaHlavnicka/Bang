@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { GameContext } from "./GameContext";
 import type { GameStateType } from "./GameContext";
-import { handleGameMessage, setGameValue, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard } from "./gameActions";
+import { handleGameMessage, setGameValue, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard, drawCard } from "./gameActions";
 
 const gameStateDefault: GameStateType = {
     gameStarted: false,
@@ -11,7 +11,7 @@ const gameStateDefault: GameStateType = {
 
     
     players: [],
-    currentPlayerId: null,
+    playerId: null,
     turnOrder: [],
     deckCount: 0,
     discardPile: [],
@@ -30,8 +30,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         const socket = new WebSocket("ws://localhost:9999");
         console.log("pokus o připojení k ws serveru");
-        socket.onopen = () => { 
-            setWs(socket); 
+        socket.onopen = () => {
+            setWs(socket);
             (window as unknown as { ws: WebSocket }).ws = socket; //TODO: odstranit testovací přiřazení
         };
         socket.onmessage = (event) => { handleGameMessage(event, setGameState, stateRef); };
@@ -52,7 +52,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             startGame: () => { startGame(ws) },
             endTurn: () => { /* implementace nebo prázdná funkce */ },
             createGame: (name) => createGame(ws, name),
-            drawCard: (cardId: number) => { void cardId; /* implementace nebo prázdná funkce */ },
+            drawCard: () => drawCard(ws),
             playCard: (cardId) => playCard(ws, cardId),
         }}>
             {children}

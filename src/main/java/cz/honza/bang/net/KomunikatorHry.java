@@ -61,6 +61,9 @@ public class KomunikatorHry {
         if(message.startsWith("konecTahu")){
             hrac.konecTahu();
         }
+        if(message.startsWith("linuti")){
+            hrac.lizniKontrolovane();
+        }
         //TODO
     }
     
@@ -143,6 +146,11 @@ public class KomunikatorHry {
             }, SMAZAT_NEAKTIVNI_HRU_MS); 
 
         }
+    }
+    
+    public void posiChybu(Hrac komu,Chyba chyba){
+        WebSocket conn = websocketPodleHracu.get(komu);
+        
     }
     
     /**

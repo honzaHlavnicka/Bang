@@ -163,7 +163,8 @@ public class Hrac {
 
     public void tah() {
         System.out.println("zahájen tah v tah");
-        hra.getKomunikator().posli(this, "tahZacal");
+        hra.getKomunikator().posli(this, "tvujTahZacal");
+        hra.getKomunikator().posliVsem("tahZacal:"+id,this);
     }
     
     /**
@@ -216,6 +217,20 @@ public class Hrac {
         System.out.println("lizani si");
         hra.getKomunikator().posli(this,karta.toJSONold());
         hra.getKomunikator().posliVsem("setPocetKaret:" + id +  ',' + karty.size(),this);
+    }
+    
+    /**
+     * Lízne si kartu, ale pouze pokud hráč má právo na to si lí
+     */
+    public void lizniKontrolovane(){
+        if(hra.getSpravceTahu().getNaTahu().equals(this)){
+            lizni();
+            //TODO: kontrola od pravidel hry.
+            konecTahu();
+            
+        }else{
+            hra.getKomunikator().posli(this, "error{\"error\":\"nejsi na tahu\"}}");
+        }
     }
 
     /**
