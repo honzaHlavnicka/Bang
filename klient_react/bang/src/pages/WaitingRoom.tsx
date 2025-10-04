@@ -4,7 +4,7 @@ export default function WaitingRoom({ children }: { children: React.ReactNode })
     return (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',borderRadius: '8px',padding: '20px' }}>
-                <FlippingCard pauseOnHover={false} frontImage={["/img/karty/bang.png"]} backImage={"/img/karty/zezadu.png"}  width={110}/>
+                <FlippingCard pauseOnHover={false} frontImage={"/img/karty/bang.png"} backImage={"/img/karty/zezadu.png"}  width={110}/>
 
                 {/*<div className="spinner" style={{
                 width: 70,

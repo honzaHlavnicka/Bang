@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { GameContext } from "./GameContext";
 import type { GameStateType } from "./GameContext";
 import { handleGameMessage, setGameValue, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard, drawCard } from "./gameActions";
+import toast from "react-hot-toast";
 
 const gameStateDefault: GameStateType = {
     gameStarted: false,
@@ -28,16 +29,19 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     }, [gameState]);
 
     useEffect(() => {
+        const socketAdress =  "ws://localhost:9999";
         const socket = new WebSocket("ws://localhost:9999");
-        console.log("pokus o připojení k ws serveru");
+        console.log("pokus o připojení k ws serveru na adrese " + socketAdress);
         socket.onopen = () => {
             setWs(socket);
+            toast.success("Připojeno k serveru");
             (window as unknown as { ws: WebSocket }).ws = socket; //TODO: odstranit testovací přiřazení
         };
         socket.onmessage = (event) => { handleGameMessage(event, setGameState, stateRef); };
         socket.onclose = () => {
             console.log("WebSocket disconnected");
             setWs(null);
+            toast.error("Byl jsi odpojen od serveru");
         };
         return () => socket.close();
     }, []);

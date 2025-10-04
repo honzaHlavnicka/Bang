@@ -2,9 +2,9 @@ import { createPortal } from "react-dom";
 import { useZoom } from "../modules/ZoomContext";
 
 export default function ZoomDialog() {
-    const {isZoomMode,zoomedCard ,setZoomedCard} = useZoom()
+    const {zoomedCard ,setZoomedCard} = useZoom()
     return createPortal(
-        <div onClick={e=>{setZoomedCard(null)}}  style={{
+        <div onClick={()=>{setZoomedCard(null)}}  style={{
             position: "fixed",
             top: 0,
             left: 0,

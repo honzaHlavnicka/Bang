@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 // FlippingCard.jsx
 // React component that shows a continuously rotating 3D card
@@ -15,7 +15,18 @@ export default function FlippingCard({
   className = "",
   altFront = "Front image",
   altBack = "Back image",
+}: {
+  frontImage: string;
+  backImage: string;
+  width?: number;
+  duration?: number;
+  autoPlay?: boolean;
+  pauseOnHover?: boolean;
+  className?: string;
+  altFront?: string;
+  altBack?: string;
 }) {
+  // State to hold the aspect ratio of the front image
   const [aspectRatio, setAspectRatio] = useState(0.666); // fallback 3:2
 
   useEffect(() => {

@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import type { GameStateType } from "./GameContext";
 import type { RefObject } from "react";
 
@@ -25,6 +26,8 @@ export function handleGameMessage(
 
     if(event.data.startsWith("error")) {
         console.error("Chyba ze serveru: " + event.data);
+        
+
         //TODO: UPRAVIT aby server posílal i dvotečku.
         event.data.replace("error:",":");
     }
@@ -46,6 +49,12 @@ export function handleGameMessage(
         }
         case "error": {
             console.error("Chyba ze serveru: " + payload);
+            try {
+                const json = JSON.parse(payload) as { error: string };
+                toast.error(json.error);
+            } catch (err) {
+                toast.error("Chyba ze serveru: " + payload);
+            }
             break;
         }
         case "novaHra": {
@@ -104,6 +113,7 @@ export function handleGameMessage(
                     players: prev.players ? [...prev.players, newPlayer] : [newPlayer],
                 }));
                 console.log("nový hráč", json);
+                toast.success(`Připojil se hráč ${json.jmeno}!`);
             } catch (error) {
                 console.error("chyba při parsování", error, payload);
             }
@@ -168,6 +178,7 @@ export function handleGameMessage(
         }
         case "hraZacala": {
             setGameState(prev => ({ ...prev, gameStarted: true }));
+            toast.success('Hra zahájena!')
             break;
         }
         case "novyPocetKaret": {
@@ -201,11 +212,14 @@ export function handleGameMessage(
                 });
             } catch (error) {
                 console.error("chyba při parsování", error, payload);
+                toast.error('Chybná odpověď serveru')
+
             }
             break;
         }
         case "tvujTahZacal": {
             setGameState(prev => ({ ...prev, turnPlayerId: prev.playerId ?? null }));
+            toast.success('Tvůj tah začal!')
             break;
         }
         case "tahZacal": {

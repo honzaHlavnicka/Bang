@@ -1,6 +1,5 @@
 import css from '../styles/card.module.css';
 import { useZoom } from "../modules/ZoomContext";
-import { useGame } from "../modules/GameContext";
 
 
 type CardProps = {

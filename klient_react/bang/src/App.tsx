@@ -10,7 +10,7 @@ function App() {
 
   return (
       <>
-          {gameState.inGame ? (gameState.gameStarted ? <GamePage /> : <WaitingRoom> čekání na další hráče<br/>Nasdílej jim kód: {gameState.gameCode} <CharacterPicker /><PlayersWaitingGame/></WaitingRoom>) : <LoginPage /> }
+          {gameState.inGame ? (gameState.gameStarted ? <GamePage /> : <WaitingRoom> čekání na další hráče<br/>Nasdílej jim kód: <a style={{color:"green",fontWeight: "bold",textDecoration: "none"}} href={"/?code=" + gameState.gameCode} target="_blank" > {gameState.gameCode} </a> <CharacterPicker /><PlayersWaitingGame/></WaitingRoom>) : <LoginPage /> }
       </>
   )
 }
