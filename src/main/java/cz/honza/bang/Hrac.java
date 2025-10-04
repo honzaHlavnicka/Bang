@@ -10,6 +10,7 @@ import cz.honza.bang.karty.Efekt;
 import cz.honza.bang.karty.Karta;
 import cz.honza.bang.postavy.Postava;
 import cz.honza.bang.karty.HratelnaKarta;
+import cz.honza.bang.net.Chyba;
 import cz.honza.bang.net.KomunikatorHry;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,10 @@ public class Hrac {
         nextId++;
     }
     
-    
+    /**
+     * Připraví se ke hře, dobere si karty. Mělo by se spustit pře začátkem hry.
+     * @param role
+     */
     public void pripravKeHre(Role role ) {
         if(role != Role.SERIF){
             this.maximumZivotu = postava.maximumZivotu;
@@ -69,6 +73,12 @@ public class Hrac {
         
         
     }
+    
+    /**
+     * Nechá hráče vybrat z postav.
+     * @param p1 postava na výběr
+     * @param p2 postava na výběr
+     */
     public void vyberZPostav(Postava p1, Postava p2){
         postavyNaVyber = new Postava[]{p1,p2};
         
@@ -93,24 +103,31 @@ public class Hrac {
 
         hra.getKomunikator().posli(this,sb.toString());
     }
-    
+    /**
+     * Odebere hráči život a upozorní na to ostatní. Obsahuje kontrolu smrti i přebytku životů.
+     * @return počet životů
+     */
     public int odeberZivot(){
-        if(zivoty <= 0){
+        if(zivoty <= 0){//TODO: kdyz ma moc zivotu, nez kolik muze mit
             //TODO: prohra
         }else{
             zivoty--;
-            //TODO: poslat upozornení přes socket
+            hra.getKomunikator().posliVsem("pocetZivotu:" + id + "," + zivoty);
         }
         return zivoty;
         
     }
     
-    public int pridejZivot(){
+    /**
+     * Přidá hráči život a upozorní na to ostatní. Obsahuje kontrolu smrti i přebytku životů.
+     * @return počet životů
+     */
+    public int pridejZivot(){//TODO: kdyz ma moc zivotu, nez kolik muze mit
         if(zivoty >= maximumZivotu){
             
         }else{
             zivoty ++;
-            //TODO: poslat upozornení přes socket
+            hra.getKomunikator().posliVsem("pocetZivotu:" + id + "," + zivoty);
         }
         return zivoty;
     }
@@ -148,17 +165,18 @@ public class Hrac {
         this.jmeno = jmeno;
     }
     
+    /**
+     * Nastaví hráčovu postavu, neinformuje o tom nikoho.
+     * @param jmeno name() postavy.
+     */
     public void setPostava(String jmeno){
-        if(pripravenyKeHre){
-            hra.getKomunikator().posli(this, "error{\"error\":\"postava už je nastavená\"}");
-        }
         for (Postava postava : postavyNaVyber) {
             if(postava.name().equals(jmeno)){
                 this.postava = postava;
                 return;
             }
         }
-        hra.getKomunikator().posli(this, "error{\"error\":\"postava není na výběr\"}");
+        hra.getKomunikator().posiChybu(this, Chyba.POSTAVA_NENI_NA_VYBER);
     }
 
     public void tah() {
@@ -174,7 +192,7 @@ public class Hrac {
     public void odehranaKarta(String id) {
         int idKarty = Integer.parseInt(id);
         if(!hra.getSpravceTahu().getNaTahu().equals(this)){
-            hra.getKomunikator().posli(this, "error{\"error\":\"nejsi na tahu.\"}");
+            hra.getKomunikator().posiChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
         }
         for (Karta karta  : karty) {
@@ -194,18 +212,18 @@ public class Hrac {
 
                         return;
                     }else{
-                        hra.getKomunikator().posli(this, "error{\"error\":\"tuto kartu nelze zahrát\"}");
+                        hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEJDE_ZAHRAT);
                         return;
                     }
 
                 } else {
-                    hra.getKomunikator().posli(this, "error{\"error\":\"tuto kartu nelze zahrát\"}");
+                    hra.getKomunikator().posiChybu(this, Chyba.KARTA_NENI_HRATELNA);
                     return;
                 }
                 
             }
         }
-        hra.getKomunikator().posli(this, "error{\"error\":\"tato karta neexistuje.\"}");
+        hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
     }
     
     /**
@@ -229,7 +247,7 @@ public class Hrac {
             konecTahu();
             
         }else{
-            hra.getKomunikator().posli(this, "error{\"error\":\"nejsi na tahu\"}}");
+            hra.getKomunikator().posiChybu(this, Chyba.NEJSI_NA_TAHU);
         }
     }
 

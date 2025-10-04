@@ -64,7 +64,6 @@ public class KomunikatorHry {
         if(message.startsWith("linuti")){
             hrac.lizniKontrolovane();
         }
-        //TODO
     }
     
     /**
@@ -98,7 +97,7 @@ public class KomunikatorHry {
     
     public boolean novyHrac(WebSocket websocket){
         if(hra.isZahajena()){
-            websocket.send("error{\"error\":\"tato hra už byla zahájena. Bohužel se už nejde připojit.\"}");
+            websocket.send("error:{\"error\":\"tato hra už byla zahájena. Bohužel se už nejde připojit.\"}");
             return false;
         }
         
@@ -148,8 +147,14 @@ public class KomunikatorHry {
         }
     }
     
+    /**
+     * Pošle klientovi chybovou zprávu.
+     * @param komu komu se má chyba doručit.
+     * @param chyba chyba, která se posílá.
+     */
     public void posiChybu(Hrac komu,Chyba chyba){
         WebSocket conn = websocketPodleHracu.get(komu);
+        conn.send("error:{\"error\":\"" + chyba.getZprava() + "\",\"kod\":" + chyba.getKod() + ",\"skupina:\":" + chyba.getSkupina()+ "}");
         
     }
     
@@ -163,7 +168,7 @@ public class KomunikatorHry {
     public boolean vraciSeHrac(WebSocket conn, String token){
         Hrac hrac = hraciPodlIdentifikatoru.get(token);
         if(hrac == null){
-            conn.send("error{\"erroro\":\"hráč v této hře nenalezen\"}");
+            conn.send("error:{\"error\":\"hráč v této hře nenalezen\"}");
             return false;
         }
         
@@ -181,7 +186,16 @@ public class KomunikatorHry {
         return true;
     }
     
+    
+    
     //AKCE:
+
+    public int getIdHry() {
+        return idHry;
+    }
+    public int pocetHracu(){
+        return hraciPodlIdentifikatoru.size();
+    }
     
     
     

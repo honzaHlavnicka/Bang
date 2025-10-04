@@ -7,6 +7,7 @@ Toto je domácí verze souborů z programování.
 package cz.honza.bang;
 
 import cz.honza.bang.karty.BangNaVsechny;
+import cz.honza.bang.karty.Eso;
 import cz.honza.bang.karty.Karta;
 import cz.honza.bang.karty.Pivo;
 import cz.honza.bang.karty.UnoKarta;
@@ -66,17 +67,24 @@ public class Hra {
         pripravBalicek();
     }
 
-
-    
+    /**
+     * Vytvoří hráče. Po zavolání této metody by se měla zavolat metoda hracVytvoren()
+     * @return nový hráč
+     */
     public Hrac novyHrac(){
         //v této metodě se nesmí volat nic, co by způsobovalo, že by se něco posílalo klientovi. Misto toho použij metodu hracVytvoren, která se spouští hned poté.
         Hrac hrac = new Hrac(this);
         hraci.add(hrac);
         return hrac;
     }
+    
+    /**
+     * Připravý hráče poté, co už je spojen se serverm. měla by se volat hned po novyHrac()
+     * @param hrac hráč, který by se měl připravit
+     */
     public void hracVytvoren(Hrac hrac){
         //metoda co se spouští po vytvoření hráče a zařazení ho do komunikátoru
-        
+
         
         if(balicekPostav.size() < 2){//pokud už nezbide postava, tak to tam nejakou soupne. nemelo by se to stat kvuli maximalnimu poctu hracu, ten ale nemusí bít dodren.
             balicekPostav.add(Postava.TESTOVACI);
@@ -105,7 +113,10 @@ public class Hra {
         return herniPravidla;
     }
     
-
+    /**
+     * Spustí hru.
+     * @param zahajena pokud true, tak zahájí hru.
+     */
     public void setZahajena(boolean zahajena) {
         
         
@@ -168,16 +179,26 @@ public class Hra {
      * naplní balíček kartami hry.
      */
     private void pripravBalicek(){
-        /*balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
+        balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
+        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
+        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
+        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
+        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
+        /*balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));
+        balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));*/
+        balicek.vratNahoru(new WellsFarkgo(this,balicek));
+        balicek.vratNahoru(new WellsFarkgo(this,balicek));
+        balicek.vratNahoru(new WellsFarkgo(this,balicek));
+        balicek.vratNahoru(new WellsFarkgo(this,balicek));
+        balicek.vratNahoru(new WellsFarkgo(this,balicek));
+        balicek.vratNahoru(new WellsFarkgo(this,balicek));
         balicek.vratNahoru(new WellsFarkgo(this,balicek));
         balicek.vratNahoru(new Pivo(this,balicek));
         balicek.vratNahoru(new Pivo(this,balicek));
@@ -187,7 +208,17 @@ public class Hra {
         balicek.vratNahoru(new BangNaVsechny(this,balicek));
         balicek.vratNahoru(new BangNaVsechny(this,balicek));
         balicek.vratNahoru(new BangNaVsechny(this,balicek));
-        balicek.vratNahoru(new BangNaVsechny(this,balicek));*/
+        balicek.vratNahoru(new BangNaVsechny(this,balicek));
+        balicek.vratNahoru(new Eso(this, balicek));
+        balicek.vratNahoru(new Eso(this, balicek));
+        balicek.vratNahoru(new Eso(this, balicek));
+        balicek.vratNahoru(new Eso(this, balicek));
+        balicek.vratNahoru(new Eso(this, balicek));
+        balicek.vratNahoru(new Eso(this, balicek));
+        balicek.vratNahoru(new Eso(this, balicek));
+        balicek.vratNahoru(new Eso(this, balicek));
+        balicek.vratNahoru(new Eso(this, balicek));
+        
         
         for (int i = 0; i < 10; i++) {
            balicek.vratNahoru(new UnoKarta(i,"red",this,balicek));

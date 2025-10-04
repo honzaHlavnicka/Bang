@@ -19,8 +19,12 @@ public class PravidlaUNO implements HerniPravidla{
     
 
     @Override
-    public void poOdehrani() {
+    public void poOdehrani(Hrac kym) {
         hra.getSpravceTahu().dalsiHracSUpozornenim();
+        if(kym.getKarty().isEmpty()){
+            hra.skoncil(kym);
+            hra.vyhral(kym);
+        }
     }
     
 }

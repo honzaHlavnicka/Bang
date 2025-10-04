@@ -9,5 +9,5 @@ package cz.honza.bang;
  * @author jan.hlavnicka.s
  */
 public interface HerniPravidla {
-    public void poOdehrani();
+    public void poOdehrani(Hrac kym);
 }
