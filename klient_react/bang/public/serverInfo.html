@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BangServerInfo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #ffffff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #e9e9e9;
+        }
+        h1 {
+            color: #333;
+        }
+        h2{
+            color: #555;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            background-color: aqua;
+            border: none;
+            border-radius: 5px;
+            color: #000000;
+
+        }
+
+        
+    </style>
+</head>
+<body>
+    <script>
+        ws = new WebSocket("ws://localhost:9999/");
+        console.log("Connecting to ws://localhost:9999/");
+        console.log(ws);
+        ws.onopen = function() {
+            document.body.innerHTML = "<h1>Connected to Bang Server</h1><button onclick='ws.send(\"serverInfo\")'>načíst</button>";
+        };
+        ws.onmessage = function(event) {
+            console.log("Received: " + event.data);
+            if(event.data.startsWith("serverDataHTML:")) {
+                let info = event.data.substring("serverInfoHTML:".length);
+                document.body.innerHTML = info + "<button onclick='ws.send(\"serverInfo\")'>načíst znovu</button>";
+            }
+        };
+    </script>
+</body>
+</html>
