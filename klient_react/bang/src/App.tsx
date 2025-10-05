@@ -2,15 +2,15 @@ import GamePage from './pages/GamePage';
 import { useGame } from './modules/GameContext';
 import LoginPage from './pages/LoginPage';
 import WaitingRoom from './pages/WaitingRoom';
-import CharacterPicker from './components/CharacterPicker';
-import PlayersWaitingGame from './components/PlayersWaitingGame';
+
+import BeforeGameWaiting from './pages/BeforeGameWaiting';
 
 function App() {
   const {gameState} = useGame();
 
   return (
       <>
-          {gameState.inGame ? (gameState.gameStarted ? <GamePage /> : <WaitingRoom> čekání na další hráče<br/>Nasdílej jim kód: <a style={{color:"green",fontWeight: "bold",textDecoration: "none"}} href={"/?code=" + gameState.gameCode} target="_blank" > {gameState.gameCode} </a> <CharacterPicker /><PlayersWaitingGame/></WaitingRoom>) : <LoginPage /> }
+          {gameState.inGame ? (gameState.gameStarted ? <GamePage /> : <BeforeGameWaiting/>) : <LoginPage /> }
       </>
   )
 }

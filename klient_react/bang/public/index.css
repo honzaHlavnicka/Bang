@@ -2,3 +2,7 @@ html{
     background-image:url("img/pozadi2.jpg");
     background-size: cover;
 }
+html.darkMode{
+    background-image:url("img/pozadi-tmave.jpg");
+    background-size: cover;
+}

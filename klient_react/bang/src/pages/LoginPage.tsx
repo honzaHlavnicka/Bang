@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import css from './loginPage.module.css';
 import { useGame } from '../modules/GameContext';
+import toast from 'react-hot-toast';
 
 export default function LoginPage() {
     const [gameCode, setGameCode] = useState('');
     const [jmeno, setJmeno] = useState('');
-    const { connectToGame, createGame } = useGame();
+    const { connectToGame, createGame, gameState } = useGame();
 
     const params = location.search
         .substring(1)
@@ -24,16 +25,19 @@ export default function LoginPage() {
         }
     }
 
+    const gameToken = localStorage.getItem("gameToken");
+
+
     function zkontroluj(kodTaky: boolean = false) {
-        if(jmeno.trim().length < 3){
-            alert("Udělej to jméno delší, prosím");
+        if (jmeno.trim().length < 3) {
+            toast.error("Udělej to jméno delší, prosím");
             return false;
         }
-        if(jmeno.trim().length > 15){
-            alert("Udělej to jméno kratší, prosím");
+        if (jmeno.trim().length > 15) {
+            toast.error("Udělej to jméno kratší, prosím");
             return false;
         }
-        if(gameCode.trim().length != 6 && kodTaky){
+        if (gameCode.trim().length != 6 && kodTaky) {
             if (!window.confirm("Kód hry musí mít 6 číslic. Pokud si nejsi jistý, zkontroluj ho prosím ještě jednou. Pokračovat?")) {
                 return false;
             }
@@ -50,6 +54,15 @@ export default function LoginPage() {
                     ale doopravdy o hře neřekne nic. jenom zabírá místo.
                 </p>
                 <hr />
+                {gameToken && !gameState.inGame && !gameState.playerId && (
+                    <div>
+                        <h4>Vrátit se k rozehrané hře</h4>
+                        <button 
+                            className={css.btnPrimary + " " + css.btnRight} 
+                            onClick={() => connectToGame()}
+                        >Připojit</button>
+                    </div>
+                )}
                 <div>
                     <h4>Kód hry, kam se chceš přihlásit:</h4>
                     <input 
@@ -61,23 +74,25 @@ export default function LoginPage() {
                     />
                     <h4>Tvoje jméno:</h4>
                     <input value={jmeno} onChange={e => setJmeno(e.target.value)}/><br />
-                    <button className="btn-primary" onClick={() => { if(zkontroluj(true)) connectToGame(gameCode,jmeno) }} >
+                    <button className={css.btnPrimary} onClick={() => { if(zkontroluj(true)) connectToGame(gameCode,jmeno); }} >
                         Připojit se ke hře
                     </button>
                 </div>
                 <hr/>
-                <h4>Tvoje jméno:</h4>
-                <input
-                    value={jmeno}
-                    onChange={e => setJmeno(e.target.value)}
-                /><br />
-                <button 
-                    onClick={() => { if(zkontroluj(false)) createGame(jmeno); }} 
-                    className="btn-primary"
-                >
-                    vytvořit hru
-                </button>
-            </main>
-        </div>
+                <div>
+                    <h4>Tvoje jméno:</h4>
+                    <input
+                        value={jmeno}
+                        onChange={e => setJmeno(e.target.value)}
+                    /><br />
+                    <button 
+                        onClick={() => { if(zkontroluj(false)) createGame(jmeno); }} 
+                        className={css.btnPrimary}
+                    >
+                        vytvořit hru
+                    </button>
+                </div>
+            </main >
+        </div >
     );
 }

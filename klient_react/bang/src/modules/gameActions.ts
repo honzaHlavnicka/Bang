@@ -239,6 +239,11 @@ export function handleGameMessage(
         case "Echo": {
             break;
         }
+        case "token": {
+            localStorage.setItem("gameToken", payload);
+            console.log("uložen token", payload);
+            break;
+        }
         default: {
             console.log("=> klient nezná");
             break;

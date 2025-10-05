@@ -22,11 +22,23 @@
 }
 
 
+:global(.darkMode)  .kontent {
+    --bg: #1e293b;
+    --fg: #f1f5f9;
+    --muted: #9ca3af;
+    --border: #334155;
+    --accent: #3b82f6;
+    --accent-foreground: #ffffff;
+    --focus: #60a5fa;
+}
+
+
+
 /* Vycentrované <main> s pevnou max. šířkou a responzivní šířkou na mobilech */
 .kontent main,.vybyraciGUI {
   width: min(500px, 100%);   /* max 500 px, jinak 100 % šířky */
   margin-inline: auto;       /* horizontální centrování */
-  background-color: white;
+  background-color: var(--bg);
   border-radius: 40px;
   padding:40px
 }
@@ -98,12 +110,12 @@
 }
 
 /* Primární tlačítko */
-.kontent .btn-primary {
+.kontent .btnPrimary {
   background: var(--accent);
   color: var(--accent-foreground);
   border-color: color-mix(in srgb, var(--accent) 60%, var(--border));
 }
-.kontent .btn-primary:hover {
+.kontent .btnPrimary:hover {
   filter: brightness(1.05);
   transform: translateY(-1px);
 }
@@ -135,4 +147,8 @@
 /* Preferované omezení animací pro uživatele s omezením pohybu */
 @media (prefers-reduced-motion: reduce) {
   .kontent *, .kontent *::before, .kontent *::after { transition: none !important; }
+}
+.btnRight {
+    align-self: flex-end;
+    margin-right: 10px;
 }
