@@ -208,7 +208,7 @@ public class Hrac {
                         hra.getKomunikator().posliVsem("novyPocetKaret:" + this.id + "," + karty.size(), this);
                         //FIX: předpokládá, že v karta.toJSON() není znak |, ale co když je?
                         
-                        hra.getHerniPravidla().poOdehrani();
+                        hra.getHerniPravidla().poOdehrani(this);
 
                         return;
                     }else{

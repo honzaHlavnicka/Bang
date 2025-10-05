@@ -175,6 +175,24 @@ public class Hra {
           conn.send("role:" + hrac.getRole().name());
         }
     }
+
+    /**
+     * Vyřadí hráče z herní smičky. Nezávisle na tom jestli vyhrál nebo prohrál, ale už nebude hrát.
+     * @param kdo
+     */
+    public void skoncil(Hrac kdo){
+        //TODO: vyřadit ze správce tahu, informovat klienta/y
+    }
+    
+    /**
+     * Zařídí problematiku výhry, ale nevyřadí hráče z hrací smyčky. 
+     * @param kdo
+     */
+    public void vyhral(Hrac kdo){
+        komunikator.posliVsem("vyhral:" + kdo.getId());
+        //TODO: zapsat do tabulky výsledků, vytvořit tabulku výsledků
+    }
+    
     /**
      * naplní balíček kartami hry.
      */

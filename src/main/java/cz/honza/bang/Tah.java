@@ -13,10 +13,12 @@ package cz.honza.bang;
 public class Tah {
     public final Hrac hrac;
     public final boolean jednorazovy;
+    public boolean docasneZruseny;
 
     public Tah(Hrac hrac, boolean jednorazovy) {
         this.hrac = hrac;
         this.jednorazovy = jednorazovy;
+        this.docasneZruseny = false;
     }
     
 }

@@ -52,14 +52,24 @@ public class SpravceTahu {
         if(kolikatyTah >= nasobicTahu){
             Tah tah = poradiHracu.getFirst();
             
-            naTahu = tah.hrac;
+            
+            poradiHracu.removeFirst();
+            
             if(!tah.jednorazovy){
-                poradiHracu.removeFirst();
                 poradiHracu.addLast(tah);
             }
-            kolikatyTah = 1;
-            System.out.println("zahájen tah v spravcitahu: "+ tah);
-            return tah.hrac;
+            
+            naTahu = tah.hrac;
+            if(!tah.docasneZruseny){
+                kolikatyTah = 1;
+                System.out.println("zahájen tah v spravcitahu: " + tah);
+                return tah.hrac;
+            }else{
+                return dalsiHrac();
+                //TODO: udelat limit poctu hracu treba 30, aby nemohlo nastata preteceni zasobniku
+            }
+            
+            
         }
         
         kolikatyTah++;
@@ -91,4 +101,6 @@ public class SpravceTahu {
     public Hrac getNaTahu(){
         return naTahu;
     }
+    
+
 }
