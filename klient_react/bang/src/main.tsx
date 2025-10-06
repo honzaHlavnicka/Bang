@@ -4,12 +4,17 @@ import './index.css'
 import App from './App.tsx'
 import { GameProvider } from './modules/GameProvider.tsx'
 import { Toaster } from 'react-hot-toast'
+import { DialogProvider } from './modules/DialogProvider.tsx'
+import Dialog from './components/Dialog.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <GameProvider>
-      <Toaster position={'top-right'} containerStyle={{fontSize:"1.4em"}}/>
-      <App />
-    </GameProvider>
+    <DialogProvider>
+      <GameProvider>
+        <Dialog />
+        <Toaster position={'top-right'} containerStyle={{fontSize:"1.4em"}}/>
+        <App />
+      </GameProvider>
+    </DialogProvider>
   </StrictMode>,
 )

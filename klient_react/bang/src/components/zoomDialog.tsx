@@ -15,7 +15,7 @@ export default function ZoomDialog() {
             alignItems: "center",
             justifyContent: "center",
             backdropFilter: "blur(3px)",
-            zIndex: 1000,
+            zIndex: 1001,
             cursor:"zoom-out"}}>
                 <div style={{
                     maxWidth: "800px",

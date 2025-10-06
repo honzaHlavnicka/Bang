@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, use } from "react";
 import { GameContext } from "./GameContext";
 import type { GameStateType } from "./GameContext";
-import { handleGameMessage, setGameValue, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard, drawCard } from "./gameActions";
+import { handleGameMessage, setGameValue, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard, drawCard, returnToGame } from "./gameActions";
 import toast from "react-hot-toast";
+import { useDialog } from "./DialogContext";
 
 const gameStateDefault: GameStateType = {
     gameStarted: false,
@@ -21,6 +22,7 @@ const gameStateDefault: GameStateType = {
 export function GameProvider({ children }: { children: React.ReactNode }) {
     const [gameState, setGameState] = useState<GameStateType>(gameStateDefault);
     const [ws, setWs] = useState<WebSocket | null>(null);
+    const {openDialog} = useDialog();
 
     // drž aktuální stav ve ref, aby ho onmessage vždy četl aktuální
     const stateRef = useRef<GameStateType>(gameState);
@@ -29,6 +31,11 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     }, [gameState]);
 
     useEffect(() => {
+        //TODO: odstranit testovací dialog
+        openDialog("SELECT_CARD", {cards:[{img:"/img/bang.png",id:70},{img:"/img/dostavnik.png",id:71}],countMin:1,countMax:1});
+
+
+
         const socketAdress =  "ws://localhost:9999";
         const socket = new WebSocket("ws://localhost:9999");
         console.log("pokus o připojení k ws serveru na adrese " + socketAdress);
@@ -58,6 +65,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             createGame: (name) => createGame(ws, name),
             drawCard: () => drawCard(ws),
             playCard: (cardId) => playCard(ws, cardId),
+            returnToGame: () => { returnToGame(ws) },
         }}>
             {children}
         </GameContext.Provider>
