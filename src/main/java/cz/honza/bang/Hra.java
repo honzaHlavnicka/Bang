@@ -112,6 +112,7 @@ public class Hra {
     public HerniPravidla getHerniPravidla() {
         return herniPravidla;
     }
+
     
     /**
      * Spustí hru.

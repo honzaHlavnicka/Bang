@@ -108,6 +108,7 @@ public class SocketServer extends WebSocketServer {
             }
             if(komunikator.vraciSeHrac( conn,message.substring(16))){
                 komunikatoryHracu.put(conn, komunikator);
+               
             }
             return;
         }

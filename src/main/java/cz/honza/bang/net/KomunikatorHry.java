@@ -182,6 +182,11 @@ public class KomunikatorHry {
         websocketPodleHracu.put(hrac, conn);
         
         conn.send("pripojenKeHre");
+        
+        if(hra.isZahajena()){
+            conn.send("hraZacala");
+        }
+        
         nactiHru(conn);
         return true;
     }
