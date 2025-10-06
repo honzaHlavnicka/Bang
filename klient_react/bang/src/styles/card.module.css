@@ -32,4 +32,8 @@
             animation: prijetiKarty 1.3s;
         }
 
+        :global(.darkMode) .karta{
+            filter: brightness(0.8) contrast(1.1);
+        }
+
         

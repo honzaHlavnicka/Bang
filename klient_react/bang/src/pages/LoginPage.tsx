@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 export default function LoginPage() {
     const [gameCode, setGameCode] = useState('');
     const [jmeno, setJmeno] = useState('');
-    const { connectToGame, createGame, gameState } = useGame();
+    const { connectToGame, createGame, gameState, returnToGame } = useGame();
 
     const params = location.search
         .substring(1)
@@ -59,7 +59,7 @@ export default function LoginPage() {
                         <h4>Vrátit se k rozehrané hře</h4>
                         <button 
                             className={css.btnPrimary + " " + css.btnRight} 
-                            onClick={() => connectToGame()}
+                            onClick={() => returnToGame()}
                         >Připojit</button>
                     </div>
                 )}

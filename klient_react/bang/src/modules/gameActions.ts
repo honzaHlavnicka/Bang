@@ -333,3 +333,18 @@ export function drawCard(ws: WebSocket | null) {
         ws.send("linuti");
     }
 }
+
+export function returnToGame(ws: WebSocket | null) {
+    console.log("pokouším se vrátit do hry");
+    if (ws !== null) {
+        const token = localStorage.getItem("gameToken");
+        if (!token) {
+            console.error("Nelze se vrátit do hry, protože není uložen token");
+            toast.error("Nelze se vrátit do hry, protože není uložen token");
+            return;
+        }
+        
+        console.log("posílám vraceniSe s tokenem", token);
+        ws.send("vraceniSe:" + token);
+    }
+}
