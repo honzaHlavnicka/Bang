@@ -3,7 +3,6 @@ import Card from "./Card";
 
 
 export default function Cards({isRotated = true,cards,onClickCard}: {isRotated?: boolean,cards:Array<CardType>,onClickCard?:{(e: React.MouseEvent<HTMLDivElement>): void}}) {
-    console.log(cards)
     if(cards === undefined || cards.length === 0 || cards === null){
         return;
     }

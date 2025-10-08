@@ -1,7 +1,6 @@
 import GamePage from './pages/GamePage';
 import { useGame } from './modules/GameContext';
 import LoginPage from './pages/LoginPage';
-import WaitingRoom from './pages/WaitingRoom';
 
 import BeforeGameWaiting from './pages/BeforeGameWaiting';
 

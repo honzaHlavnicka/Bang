@@ -2,8 +2,7 @@
 import MyThings from "../components/game/MyThings";
 import Players from "../components/game/Players";
 import CentralPanel from "../components/game/CentralPanel";
-import { ZoomProvider } from "../modules/ZoomContext";
-import ZoomDialog from "../components/zoomDialog";
+
 
 export default function GamePage() {
     
