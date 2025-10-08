@@ -23,11 +23,8 @@ public class SpravceTahu {
     public SpravceTahu(List<Hrac> hraci) {
         this.poradiHracu = new ArrayDeque<>();
         for (Hrac hrac : hraci) {
-            poradiHracu.addLast(new Tah(hrac,false));
-            
+            poradiHracu.addLast(new Tah(hrac,false));   
         }
-        
-
     }
     
     /**
@@ -67,6 +64,7 @@ public class SpravceTahu {
             }else{
                 return dalsiHrac();
                 //TODO: udelat limit poctu hracu treba 30, aby nemohlo nastata preteceni zasobniku
+                //TODO: udeat, aby kdyz zadny hrac neexistuje nenastalo owerflůowError
             }
             
             
@@ -102,5 +100,43 @@ public class SpravceTahu {
         return naTahu;
     }
     
+    /**
+     * Vyřadí hráče z koloběhu tahů.
+     * Jeho pořadí ve kterém byl se nezapomene, nic ze nezmění kromě toho, že se jeho tah bude pokaždé přeskakovat.
+     * @param koho
+     */
+    public void vyraditHrace(Hrac koho){
+        for (Tah tah : poradiHracu) {
+            if(tah.hrac.equals(koho)){
+                tah.docasneZruseny = true;
+            }
+        }
+    }
+    
+    /**
+     * Vratí vyřazeného hráče do koloběhu tahů.
+     * Pokud je parametr <code>koho</code> hráč, kterého už SpravceTahu zná a má pořadí,
+     * tak ho přestane přeskakovat. Hráč, který nikdy zařazený nebyl přidán nebude.
+     * @param koho
+     * @see pridatHrace
+     */
+    public void vratitHrace(Hrac koho){
+        for (Tah tah : poradiHracu) {
+            if (tah.hrac.equals(koho)) {
+                tah.docasneZruseny = false;
+            }
+        }
+    }
+    
+    /**
+     * Přidá nového hráče do koloběhu tahů. 
+     * Pouze pro hráče, který nikdy zařazen nebyl. Pro hráče co již někdy zařazen byl použít <code>vratitHrace</code>.
+     * Hráč bude přidán na poslení místo, tzn před hráče co aktuálně hraje.
+     * @param koho
+     */
+    public void pridatHrace(Hrac koho){
+        Tah novyTah = new Tah(koho, false);
+        poradiHracu.addLast(novyTah);
+    }
 
 }

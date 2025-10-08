@@ -12,6 +12,7 @@ import cz.honza.bang.karty.Karta;
 import cz.honza.bang.karty.Pivo;
 import cz.honza.bang.karty.UnoKarta;
 import cz.honza.bang.karty.WellsFarkgo;
+import cz.honza.bang.karty.unoZmenaBarvy;
 import cz.honza.bang.net.KomunikatorHry;
 import cz.honza.bang.postavy.Postava;
 import java.util.ArrayList;
@@ -182,7 +183,8 @@ public class Hra {
      * @param kdo
      */
     public void skoncil(Hrac kdo){
-        //TODO: vyřadit ze správce tahu, informovat klienta/y
+        spravceTahu.vyraditHrace(kdo);
+        komunikator.posliVsem("hracSkoncil:" + kdo.getId());
     }
     
     /**
@@ -198,9 +200,9 @@ public class Hra {
      * naplní balíček kartami hry.
      */
     private void pripravBalicek(){
+        /*balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
@@ -209,10 +211,10 @@ public class Hra {
         balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
-        /*balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));*/
-        balicek.vratNahoru(new WellsFarkgo(this,balicek));
+        //balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));
+        //balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));
+        //balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));
+        //balicek.vratNahoru(new WellsFarkgo(this,balicek));
         balicek.vratNahoru(new WellsFarkgo(this,balicek));
         balicek.vratNahoru(new WellsFarkgo(this,balicek));
         balicek.vratNahoru(new WellsFarkgo(this,balicek));
@@ -238,7 +240,7 @@ public class Hra {
         balicek.vratNahoru(new Eso(this, balicek));
         balicek.vratNahoru(new Eso(this, balicek));
         
-        
+        */
         for (int i = 0; i < 10; i++) {
            balicek.vratNahoru(new UnoKarta(i,"red",this,balicek));
         }
@@ -252,8 +254,24 @@ public class Hra {
            balicek.vratNahoru(new UnoKarta(i,"yellow",this,balicek));
         }
         
-        balicek.zamichej();
         
+        
+        balicek.vratNahoru(new unoZmenaBarvy(this,balicek));
+        balicek.vratNahoru(new unoZmenaBarvy(this,balicek));
+        balicek.vratNahoru(new unoZmenaBarvy(this,balicek));
+        balicek.vratNahoru(new unoZmenaBarvy(this,balicek));
+        balicek.vratNaSpodek(new Eso(this, balicek));
+        balicek.vratNaSpodek(new Eso(this, balicek));
+        balicek.vratNaSpodek(new Eso(this, balicek));
+        balicek.vratNaSpodek(new Eso(this, balicek));
+        balicek.vratNahoru(new WellsFarkgo(this, balicek));
+        balicek.vratNahoru(new WellsFarkgo(this, balicek));
+        balicek.vratNahoru(new WellsFarkgo(this, balicek));
+        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
+        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
+
+        balicek.vratNahoru(new WellsFarkgo(this, balicek));
+        balicek.zamichej();
     }
    
 }

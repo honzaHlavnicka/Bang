@@ -11,6 +11,7 @@ import cz.honza.bang.Hrac;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import org.java_websocket.WebSocket;
 
@@ -26,6 +27,8 @@ public class KomunikatorHry {
     private Map<String, Hrac> hraciPodlIdentifikatoru = new ConcurrentHashMap<>();
     private int idHry;
     private final long SMAZAT_NEAKTIVNI_HRU_MS = 300_000;
+    private final Map<Integer, CompletableFuture<String>> cekajiciOdpovedi = new ConcurrentHashMap<>();
+    private int podleniIdCekaciOdpovedi = 0;
     
     public KomunikatorHry(SocketServer socket,int id) {
         this.hra = new Hra(this);
@@ -63,6 +66,10 @@ public class KomunikatorHry {
         }
         if(message.startsWith("linuti")){
             hrac.lizniKontrolovane();
+        }
+        if(message.startsWith("dialog:")){ //očekávaný formát: "dialog:<ID>,<DATA>"
+            String[] data = message.replace("dialog:", "").split(",",2);
+            zpracujPozadanouOdpoved(Integer.valueOf(data[0]), data[1]);
         }
     }
     
@@ -191,7 +198,30 @@ public class KomunikatorHry {
         return true;
     }
     
+    public CompletableFuture<String> pozadejOdpoved(String otazka,Hrac komu) {
+        //připravý si id:
+        podleniIdCekaciOdpovedi++;
+        Integer id = podleniIdCekaciOdpovedi;
+        
+        
+        CompletableFuture<String> future = new CompletableFuture<>();
+        cekajiciOdpovedi.put(id, future);
+
+        posli(komu, otazka.replace("data-id", id.toString()));
+        
+
+        return future;
+    }
     
+    private void zpracujPozadanouOdpoved(Integer id, String odpoved) {
+        CompletableFuture<String> future = cekajiciOdpovedi.remove(id);
+        if (future != null) {
+            future.complete(odpoved);
+        } else {
+            System.err.println("Nepodařilo se najít čekající odpověď pro id: " + id);
+        }
+    }
+
     
     //AKCE:
 
@@ -201,9 +231,5 @@ public class KomunikatorHry {
     public int pocetHracu(){
         return hraciPodlIdentifikatoru.size();
     }
-    
-    
-    
-    
     
 }

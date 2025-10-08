@@ -11,5 +11,5 @@ package cz.honza.bang;
  * @author honza
  */
 public class CekaciAkce {
-  
+    
 }
