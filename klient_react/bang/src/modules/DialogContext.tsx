@@ -30,8 +30,16 @@ type confirmActionDialog = {
     }
     callback?:(selectedAction:number)=>void;
 }
+type infoDialog = {
+    type:"INFO",
+    data:{
+        header?:string;
+        message:string;
+        image?:string;
+    }
+}
 
-export type DialogState = (dialogBase & selectCardDialog) | (dialogBase & selectPlayerDialog) | (dialogBase & confirmActionDialog) | null;
+export type DialogState = (dialogBase & selectCardDialog) | (dialogBase & selectPlayerDialog) | (dialogBase & confirmActionDialog) | (dialogBase & infoDialog) | null;
 
 export type DialogContextType = {
     dialog: DialogState;

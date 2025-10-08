@@ -1,6 +1,7 @@
 import toast from "react-hot-toast";
 import type { GameStateType } from "./GameContext";
-import type { RefObject } from "react";
+import { useDialog, type DialogState } from "./DialogContext";
+
 
 // Helper types for server payloads
 type ServerPlayer = {
@@ -20,7 +21,8 @@ type Player = NonNullable<GameStateType["players"]>[number];
 export function handleGameMessage(
     event: MessageEvent,
     setGameState: (updater: (prev: GameStateType) => GameStateType) => void,
-    stateRef: RefObject<GameStateType>
+    stateRef: RefObject<GameStateType>,
+    openDialog: (dialog: DialogState) => void
 ) {
     console.log("%c" + event.data, "color: green");
 
@@ -239,6 +241,27 @@ export function handleGameMessage(
         case "token": {
             localStorage.setItem("gameToken", payload);
             console.log("uložen token", payload);
+            break;
+        }
+        case "vyberAkci": {
+            //TODO: neni dodelane a otestovane
+            try {
+                const json = JSON.parse(payload) as {id:number,akce:{ id: number; nazev: string }[]}; 
+                const actions = json.akce.map(a=>({id:a.id,name:a.nazev}));
+                openDialog({type:"CONFIRM_ACTION", data:{actions},dialogHeader:"Vyber akci kterou chceš provést.",notCloasable:false,callback:(selectedAction:number)=>{
+                    console.log("vybraná akce",selectedAction);
+                    if(stateRef.current?.playerId == null){
+                        toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
+                        return;
+                    }
+                    if (stateRef.current?.ws) {
+                        stateRef.current.ws.send(`vraceniDatDialogu:${json.id},${selectedAction}`);
+                    }
+                }});
+            }catch (error) {
+                console.error("chyba při parsování", error, payload);
+                toast.error('Chybná odpověď serveru')
+            }
             break;
         }
         default: {

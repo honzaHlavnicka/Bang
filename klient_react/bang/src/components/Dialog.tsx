@@ -7,6 +7,8 @@ import ZoomToggleButton from "./ZoomButton";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
+
+
 export default function Dialog() {
     const {closeDialog,dialog} = useDialog();
     const [seleckted,setSelected] = useState<Array<number>>([]);
@@ -82,7 +84,7 @@ export default function Dialog() {
         case "CONFIRM_ACTION":
             maxSelected = 1;
             content = (
-                <div style={{display:"flex",flexDirection:"column",alignItems:"flex-start"}} >
+                <div style={{display:"flex",flexDirection:"row",alignItems:"flex-start",flexWrap:"wrap",gap:10}} >
                     {dialog.data.actions.map((val:{id:number,name:string})=>(   
                             <button key={val.id} onClick={()=>{
                                 closeDialog();
@@ -96,9 +98,22 @@ export default function Dialog() {
                 </div>
             );
             break;
+        case "INFO":
+            content = (
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10}} >
+                    {dialog.data.image ? <img src={dialog.data.image} alt={dialog.data.header} style={{width:"100%"}}/>: null}
+                    {dialog.data.header ? <h2>{dialog.data.header}</h2> : null}
+                    <p>{dialog.data.message}</p>
+                    <button onClick={()=>{
+                        closeDialog();
+                    }}>OK</button>
+                </div>
+            );
+        break;
         default:
             break;
     }
+    
 
 
     return createPortal((
