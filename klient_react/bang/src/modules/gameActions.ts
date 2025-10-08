@@ -1,6 +1,7 @@
 import toast from "react-hot-toast";
 import type { GameStateType } from "./GameContext";
-import { useDialog, type DialogState } from "./DialogContext";
+import { type DialogState } from "./DialogContext";
+import type { RefObject } from "react";
 
 
 // Helper types for server payloads
@@ -22,7 +23,8 @@ export function handleGameMessage(
     event: MessageEvent,
     setGameState: (updater: (prev: GameStateType) => GameStateType) => void,
     stateRef: RefObject<GameStateType>,
-    openDialog: (dialog: DialogState) => void
+    openDialog: (dialog: DialogState) => void,
+    socket:WebSocket | null
 ) {
     console.log("%c" + event.data, "color: green");
 
@@ -254,14 +256,33 @@ export function handleGameMessage(
                         toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
                         return;
                     }
-                    if (stateRef.current?.ws) {
-                        stateRef.current.ws.send(`vraceniDatDialogu:${json.id},${selectedAction}`);
+                    if(socket == null){
+                        toast.error("Nelze provést akci, protože není navázáno spojení se serverem");
+                        return;
                     }
+                    socket.send(`dialog:${json.id},${selectedAction}`);
+                    
                 }});
             }catch (error) {
                 console.error("chyba při parsování", error, payload);
                 toast.error('Chybná odpověď serveru')
             }
+            break;
+        }
+        case "vyhral":{
+            const winnerId = payload;
+            const state = stateRef.current;
+            if(state == null){
+                toast.error("Někdo vyhrál, nevím kdo.");
+                return;
+            }
+            const winner = state.players?.find((p)=>String(p.id) === String(winnerId));
+            if(winner == null){
+                toast.error("Někdo vyhrál, nevím kdo.");
+                return;
+            }
+            openDialog({type:"INFO", data:{header:"Konec hry",message:`Hru vyhrál hráč ${winner.name}. Gratuluji!`},dialogHeader:"Konec hry",notCloasable:false});
+            //TODO: vylepšit dialog
             break;
         }
         default: {

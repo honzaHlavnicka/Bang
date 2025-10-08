@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 
 
 export default function Dialog() {
-    const {closeDialog,dialog} = useDialog();
+    const {closeDialog,dialog,openDialog} = useDialog();
     const [seleckted,setSelected] = useState<Array<number>>([]);
     let maxSelected = 0;
     if(dialog == null){
@@ -48,12 +48,6 @@ export default function Dialog() {
                     </div>
                     <div>Vybráno {seleckted.length} z {dialog.data.min}. (minimálně je potřeba {dialog.data.min}.)</div>
                     <ZoomToggleButton/>
-                    <button disabled={seleckted.length < dialog.data.min} onClick={()=>{
-                        if(seleckted.length >= dialog.data.min){
-                            closeDialog();
-                            setSelected([]);
-                        }
-                    }}>Potvrdit</button>
                 </div>
             );
             break;
@@ -107,6 +101,9 @@ export default function Dialog() {
                     <button onClick={()=>{
                         closeDialog();
                     }}>OK</button>
+                    <button onClick={()=>{
+                        openDialog({type:"INFO",data:{message:"Testovací dialog",header:"Test"},notCloasable:true});
+                    }}>znovu test dia</button>
                 </div>
             );
         break;
