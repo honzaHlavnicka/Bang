@@ -28,7 +28,7 @@ export default function Card({
     const nic = "";
     const { isZoomMode, zoomedCard, setZoomedCard } = useZoom();
 
-    const key = id || -1;
+    const key = typeof id === 'number' ? id : -1;
 
     function handleClick(e: React.MouseEvent<HTMLDivElement>) {
         if (isZoomMode) {
