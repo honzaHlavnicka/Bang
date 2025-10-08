@@ -12,6 +12,7 @@ type selectCardDialog = {
         min:number;
         max:number;
     }
+    callback?:(selectedCards:Array<number>)=>void;
 }
 
 type selectPlayerDialog = {
@@ -19,6 +20,7 @@ type selectPlayerDialog = {
     data:{
         players:Array<{id:number,name:string}> //TODO: předpřipravený typ
     }
+    callback:(selectedPlayer:number)=>void;
 }
 
 type confirmActionDialog = {
@@ -26,14 +28,16 @@ type confirmActionDialog = {
     data:{
         actions:Array<{id:number,name:string}>
     }
+    callback?:(selectedAction:number)=>void;
 }
 
-export type DialogState = (dialogBase & selectCardDialog) | (dialogBase & selectPlayerDialog) | (dialogBase & confirmActionDialog);
+export type DialogState = (dialogBase & selectCardDialog) | (dialogBase & selectPlayerDialog) | (dialogBase & confirmActionDialog) | null;
 
 export type DialogContextType = {
     dialog: DialogState;
-    openDialog: (type: DialogType, data?: any) => void;
+    openDialog: (dialog:DialogState) => void;
     closeDialog: () => void;
+
 };
 
 export const DialogContext = createContext<DialogContextType | null>(null);

@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { DialogContext, type DialogState, type DialogType } from "./DialogContext";
+import { DialogContext, type DialogState } from "./DialogContext";
 
 export function DialogProvider({ children }: { children: React.ReactNode }) {
-    const [dialog, setDialog] = useState<DialogState>({ type: null, data: null });
+    const [dialog, setDialog] = useState<DialogState>(null);
 
-    const openDialog = (type: DialogType, data: any = null) => {
+    const openDialog = (dialog:DialogState) => {
         //TODO: povolit čekání na uzavření původního dialogu
-        setDialog({ type, data });
+        setDialog(dialog);
     };
 
     const closeDialog = () => {
         //TODO: zkontrolovat, zda byla prvedena potřebná akce.
-        setDialog({ type: null, data: null });
+        setDialog(null);
     };
 
     return (

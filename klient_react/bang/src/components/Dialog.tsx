@@ -3,32 +3,107 @@ import css from "../styles/dialog.module.css";
 import { useDialog } from "../modules/DialogContext";
 import Card from "./Card";
 import type { CardType } from "../modules/GameContext";
+import ZoomToggleButton from "./ZoomButton";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 export default function Dialog() {
     const {closeDialog,dialog} = useDialog();
+    const [seleckted,setSelected] = useState<Array<number>>([]);
+    let maxSelected = 0;
+    if(dialog == null){
+        return;
+    }
 
     const header = dialog.dialogHeader || dialog.type || "Dialog";
+
+
+    const select = (id:number) => {
+        if(seleckted.includes(id)){
+            setSelected(seleckted.filter(v=>v!=id));
+        } else {
+            if(seleckted.length >= maxSelected){
+                setSelected([...seleckted.slice(1),id]);
+            }else{
+                setSelected([...seleckted,id]);
+            }
+        }
+    };
+
 
     let content: React.ReactNode;
     switch (dialog.type) {
         case "SELECT_CARD": 
+            maxSelected = dialog.data.max;
             content = (
-                <div style={{display:"flex",flexDirection:"row"}} >
-                    {dialog.data.cards.map((val:CardType)=>(
-                        <Card id={val.id} key={val.id} image={val.image}/>
+                <div>
+                    <div style={{display:"flex",flexDirection:"row"}} >
+                        {dialog.data.cards.map((val:CardType)=>(
+                            <div key={val.id} style={{background:(seleckted.includes(val.id) ? "brown" : "transparent"),borderRadius:10,margin:5,padding:2}} onClick={()=>select(val.id)} >
+                                <Card key={val.id} id={val.id}  image={val.image}/>
+                            </div>
+                        ))}
+                    </div>
+                    <div>Vybráno {seleckted.length} z {dialog.data.min}. (minimálně je potřeba {dialog.data.min}.)</div>
+                    <ZoomToggleButton/>
+                    <button disabled={seleckted.length < dialog.data.min} onClick={()=>{
+                        if(seleckted.length >= dialog.data.min){
+                            closeDialog();
+                            setSelected([]);
+                        }
+                    }}>Potvrdit</button>
+                </div>
+            );
+            break;
+        case "SELECT_PLAYER":
+                maxSelected = 1;
+                content = (
+                    <div style={{display:"flex",flexDirection:"column",alignItems:"flex-start"}} >
+
+                        {dialog.data.players.map((val:{id:number,name:string})=>(
+                            <>
+                            
+                                <label key={val.id} style={{background:(seleckted.includes(val.id) ? "grey" : "transparent"),borderRadius:10,margin:3,padding:2,cursor:"pointer"}} >
+                                    <input type="radio" name="player" value={val.id} style={{marginRight:10}} onChange={()=>select(val.id)} checked={seleckted.includes(val.id)}/>
+                                    {val.name}
+                                </label>
+                            
+                            <br/>
+                            </>
+                        ))}
+                        {seleckted.length > 0 ? <button onClick={()=>{
+                            closeDialog();
+                            dialog.callback(seleckted[0]);
+                            setSelected([]);
+                        }}>Potvrdit</button> : <div>Vyberte hráče.</div>}
+                    </div>
+                );
+            break;
+        case "CONFIRM_ACTION":
+            maxSelected = 1;
+            content = (
+                <div style={{display:"flex",flexDirection:"column",alignItems:"flex-start"}} >
+                    {dialog.data.actions.map((val:{id:number,name:string})=>(   
+                            <button key={val.id} onClick={()=>{
+                                closeDialog();
+                                if(dialog.callback){
+                                    dialog.callback(val.id);
+                                }
+                            }} >
+                                {val.name}
+                            </button>
                     ))}
                 </div>
             );
             break;
-    
         default:
             break;
     }
 
 
     return createPortal((
-        <div className={css.dialogBackground} style={{cursor:(dialog.notCloasable ? "not-allowed" : "auto"),display:(dialog.type == null ? "none" : "flex")}} onClick={()=>closeDialog()}>
-            <div className={css.dialogBox} onClick={e => e.stopPropagation()}>
+        <div className={css.dialogBackground} style={{cursor:(dialog.notCloasable ? "not-allowed" : "auto"),display:(dialog.type == null ? "none" : "flex")}} onClick={()=>{if(dialog.notCloasable){toast.error("Musíš si něco vybrat.")}else{closeDialog()}}}>
+            <div className={css.dialogBox} onClick={e => e.stopPropagation()} style={{cursor:"auto"}}>
                 <div className={css.dialogHeader}>
                     {header}
                 </div>
