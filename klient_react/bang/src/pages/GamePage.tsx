@@ -8,14 +8,10 @@ import ZoomDialog from "../components/zoomDialog";
 export default function GamePage() {
     
     return (
-        <ZoomProvider>
-            <ZoomDialog />
-
             <div style={{display:"flex",flexDirection:"column",height:"100vh"}}>
                 <Players />
                 <CentralPanel />
                 <MyThings />
             </div>
-        </ZoomProvider>
     );
 }

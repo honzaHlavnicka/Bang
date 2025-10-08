@@ -25,12 +25,9 @@ export function handleGameMessage(
     console.log("%c" + event.data, "color: green");
 
     if(event.data.startsWith("error")) {
-        console.error("Chyba ze serveru: " + event.data);
-        
-
         //TODO: UPRAVIT aby server posílal i dvotečku.
         event.data.replace("error:",":");
-    }
+    }//TODO: co to je za blbost?
 
     let type = "";
     let payload = "";
