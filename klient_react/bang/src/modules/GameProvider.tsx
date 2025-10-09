@@ -37,8 +37,16 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         //openDialog({type:"CONFIRM_ACTION", data:{actions:[{id:1,name:"Akce 1"},{id:2,name:"Akce 2"},{id:3,name:"Akce 3"},{id:4,name:"asdsd"},{id:5,name:"fkolod"},{id:6,name:"asddfsgsd"},{id:7,name:"dfb"}]},dialogHeader:"Co chceš udělat???!",notCloasable:false,callback:(selectedAction:number)=>{alert(selectedAction)}});
         //openDialog({type:"INFO", data:{header:"Něco se stalo",message:"Toto je informační hláška pro hráče."},dialogHeader:"Info",notCloasable:false});
 
-        const socketAdress =  "ws://localhost:9999";
-        const socket = new WebSocket("wss://alexzander-contemnible-tolerantly.ngrok-free.dev/ws");
+        //====================== nastavení režimu adresy serveru ===============================================
+        //socketAdress can be: wss://<thisHost>/ws or ws://localhost:9999 or ws://<ServerPcIpAddress>:9999    //
+        //const socketAdress =  "wss://" + window.location.host + "/ws";                                        //
+        const socketAdress =  "ws://" + window.location.host + "/ws";                                       //
+        //const socketAdress = "ws://localhost:9999";                                                         //
+        //const socketAdress = "ws://:9999";                                                                  //
+        //const socketAdress = "ws://192.168.0.118:9999";                                                     //
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        const socket = new WebSocket(socketAdress);
         console.log("pokus o připojení k ws serveru na adrese " + socketAdress);
         socket.onopen = () => {
             setWs(socket);
