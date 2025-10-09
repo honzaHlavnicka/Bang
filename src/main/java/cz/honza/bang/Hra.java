@@ -197,6 +197,17 @@ public class Hra {
     }
     
     /**
+     * Prohodí odhazovací a lízací balíčky. Novým lízacím balíčkem bude odhazovací balíček v opačném pořadí.
+     */
+    public void prohodBalicky(){
+        odhazovaciBalicek.otoc();
+        Balicek novyOdhazovaciBalicek = balicek;
+        balicek = odhazovaciBalicek;
+        odhazovaciBalicek = novyOdhazovaciBalicek;
+        
+    }
+    
+    /**
      * naplní balíček kartami hry.
      */
     private void pripravBalicek(){
