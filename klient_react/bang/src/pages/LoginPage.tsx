@@ -1,14 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import css from './loginPage.module.css';
 import { useGame } from '../modules/GameContext';
 import toast from 'react-hot-toast';
+import { useDialog } from '../modules/DialogContext';
 
 export default function LoginPage() {
     const [gameCode, setGameCode] = useState('');
     const [jmeno, setJmeno] = useState('');
     const { connectToGame, createGame, gameState, returnToGame } = useGame();
+    const {openDialog} = useDialog();
 
-    const params = location.search
+    useEffect(() => {
+        
+
+        const params = location.search
         .substring(1)
         .split("&")
         .map(param => param.split("="))
@@ -16,14 +21,16 @@ export default function LoginPage() {
             values[key] = decodeURIComponent(value);
             return values;
         }, {} as Record<string, string>);
-    if (params.code) {
-        // pokud je v URL kód hry, předvyplní ho do formuláře
-        if (params.code.match(/^[0-9]{6}$/)) {
-            if (gameCode !== params.code) {
-                setGameCode(params.code);
+        if (params.code) {
+            // pokud je v URL kód hry, předvyplní ho do formuláře
+            if (params.code.match(/^[0-9]{6}$/)) {
+                if (gameCode !== params.code) {
+                    setGameCode(params.code);
+                }
             }
         }
-    }
+    }, []);
+    
 
     const gameToken = localStorage.getItem("gameToken");
 
@@ -38,6 +45,8 @@ export default function LoginPage() {
             return false;
         }
         if (gameCode.trim().length != 6 && kodTaky) {
+            toast.error("Kód hry musí mít 6 číslic");
+        
             if (!window.confirm("Kód hry musí mít 6 číslic. Pokud si nejsi jistý, zkontroluj ho prosím ještě jednou. Pokračovat?")) {
                 return false;
             }
@@ -69,8 +78,10 @@ export default function LoginPage() {
                         type="text" 
                         inputMode="numeric" 
                         pattern="[0-9]*"
-                        value={gameCode}
-                        onChange={e => setGameCode(e.target.value.replace(/[^0-9]/g, ''))}
+                        value={(()=>{return gameCode})()}
+                        onChange={e =>  {
+                            setGameCode(e.target.value.replace(/[^0-9]/g, ''));
+                        }}
                     />
                     <h4>Tvoje jméno:</h4>
                     <input value={jmeno} onChange={e => setJmeno(e.target.value)}/><br />
