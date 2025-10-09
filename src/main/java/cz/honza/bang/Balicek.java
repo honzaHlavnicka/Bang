@@ -17,6 +17,7 @@ import java.util.*;
 
 public class Balicek<T> {
     private Deque<T> karty = new ArrayDeque<>();
+    private boolean jeOtoceny = false;
 
     /**
      * Vytvoří balíček a naplní ho kartami.
@@ -36,7 +37,7 @@ public class Balicek<T> {
     // zamíchání
 
     /**
-     * Zamíchá balíček
+     * Zamíchá balíček.
      */
     public void zamichej() {
         List<T> list = new ArrayList<>(karty);
@@ -46,24 +47,29 @@ public class Balicek<T> {
     }
 
     /**
-     * Lízne jednu kartu, odstraní ji z balíčku
+     * Lízne jednu kartu, odstraní ji z balíčku. Pokud je balíček prázdný, tak vrátí null.
      * @return líznutá karta
      */
     public T lizni() {
-        return karty.pollFirst(); // vrátí null, pokud je prázdný
+        if(jeOtoceny){
+            return karty.pollLast(); // vrátí null, pokud je prázdný
+        }else{
+            return karty.pollFirst(); // vrátí null, pokud je prázdný
+        }
+        
     }
 
     // líznutí N karet
 
     /**
-     * Lízne <code>n</code> karet a odstraní je z balíčku.
+     * Lízne <code>n</code> karet a odstraní je z balíčku. Pokud nejde líznout více karet, tak část kolekce bude null.
      * @param n počet karet k líznutí
      * @return kolekce líznutých karet seřazená tak, že karta, která se vytáhla jako první je první v kolekci
      */
     public List<T> lizni(int n) {
         List<T> tah = new ArrayList<>();
         for (int i = 0; i < n && !karty.isEmpty(); i++) {
-            tah.add(karty.pollFirst());
+            tah.add(lizni());
         }
         return tah;
     }
@@ -77,7 +83,7 @@ public class Balicek<T> {
     
     public List<T> nahledni(int n) {
         List<T> nahled = new ArrayList<>();
-        Iterator<T> it = karty.iterator();
+        Iterator<T> it = jeOtoceny ? karty.descendingIterator() : karty.iterator();
         for (int i = 0; i < n && it.hasNext(); i++) {
             nahled.add(it.next());
         }
@@ -91,7 +97,11 @@ public class Balicek<T> {
      * @param karta (nebo objekt), který se má vrátit dolů.
      */
     public void vratNaSpodek(T karta) {
-        karty.addLast(karta);
+        if (jeOtoceny) {
+            karty.addFirst(karta);
+        } else {
+            karty.addLast(karta);
+        }
     }
 
     /**
@@ -100,7 +110,12 @@ public class Balicek<T> {
      * @param karta (nebo objekt), který se má vrátit nahoru.
      */
     public void vratNahoru(T karta) {
-        karty.addFirst(karta);
+        if(jeOtoceny){
+            karty.addLast(karta);
+        }else{
+            karty.addFirst(karta);
+        }
+        
     }
 
     /**
@@ -120,9 +135,20 @@ public class Balicek<T> {
     }
     
     /**
-     * Vrací balíček jako Deque. Není to jeho kopie, ale přímí odkaz, tudíž jeho změna přepisuje balíček.
-     * @return
+     *  Otočí balíček tak, že karta, která byla doposud nahoře bude dole a karta, ktrá byla dole bude nahoře.
+     *  Není problém používat často, protože se v paměti neprohazuje, jenom se bere z druhé strany.
      */
+    public void otoc(){
+        jeOtoceny = !jeOtoceny;
+    }
+    
+    /**
+     * Vrací balíček jako Deque. Není to jeho kopie, ale přímí odkaz, tudíž jeho změna přepisuje balíček.
+     * <b>Pozor!</b> Balíček může být otočený.
+     * @return
+     * @deprecated 
+     */
+    @Deprecated
     public Deque<T> toDeque(){
         return karty;
     }

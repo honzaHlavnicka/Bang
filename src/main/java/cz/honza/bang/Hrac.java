@@ -231,10 +231,15 @@ public class Hrac {
      */
     public void lizni(){
         Karta karta = hra.getBalicek().lizni();
+        if(karta == null){
+            hra.prohodBalicky();
+            karta = hra.getBalicek().lizni();
+            //TODO: co kdyz jsou oba balicky prazdyn
+        }
         karty.add(karta);
         System.out.println("lizani si");
         hra.getKomunikator().posli(this,karta.toJSONold());
-        hra.getKomunikator().posliVsem("setPocetKaret:" + id +  ',' + karty.size(),this);
+        hra.getKomunikator().posliVsem("setPocetKaret:" + id +  ',' + karty.size(),this);//TODO: opravit na klientovi
     }
     
     /**
