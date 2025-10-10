@@ -6,3 +6,8 @@ html.darkMode{
     background-image:url("img/pozadi-tmave.jpg");
     background-size: cover;
 }
+.darkMode .toastsForCSS{
+    background-color: #2c2c2c;
+    color: #f0f0f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
