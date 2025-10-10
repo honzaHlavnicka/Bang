@@ -6,6 +6,7 @@ import type { CardType } from "../modules/GameContext";
 import ZoomToggleButton from "./ZoomButton";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import DarkModeSwitch from "./DarkModeSwitch";
 
 
 
@@ -54,6 +55,7 @@ export default function Dialog() {
         case "SELECT_PLAYER":
                 maxSelected = 1;
                 content = (
+                    
                     <div style={{display:"flex",flexDirection:"column",alignItems:"flex-start"}} >
 
                         {dialog.data.players.map((val:{id:number,name:string})=>(
@@ -114,6 +116,8 @@ export default function Dialog() {
 
 
     return createPortal((
+        <>
+        <DarkModeSwitch style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
         <div className={css.dialogBackground} style={{cursor:(dialog.notCloasable ? "not-allowed" : "auto"),display:(dialog.type == null ? "none" : "flex")}} onClick={()=>{if(dialog.notCloasable){toast.error("Musíš si něco vybrat.")}else{closeDialog()}}}>
             <div className={css.dialogBox} onClick={e => e.stopPropagation()} style={{cursor:"auto"}}>
                 <div className={css.dialogHeader}>
@@ -125,5 +129,6 @@ export default function Dialog() {
                
             </div>
         </div>
+        </>
     ),document.body);
 }

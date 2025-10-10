@@ -16,7 +16,7 @@ createRoot(document.getElementById('root')!).render(
         <ZoomProvider >
           <ZoomDialog />
           <Dialog />
-          <Toaster position={'top-right'} containerStyle={{fontSize:"1.4em"}}/>
+          <Toaster position={'top-right'} containerStyle={{fontSize:"1.4em"}} toastOptions={{className:"toastsForCSS"}}/>
           <App />
         </ZoomProvider>
       </GameProvider>

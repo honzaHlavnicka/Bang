@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import css from '../styles/loginPage.module.css';
 import { useGame } from '../modules/GameContext';
 import toast from 'react-hot-toast';
-import { useDialog } from '../modules/DialogContext';
+import DarkModeSwitch from '../components/DarkModeSwitch';
 
 export default function LoginPage() {
     const [gameCode, setGameCode] = useState('');
     const [jmeno, setJmeno] = useState('');
     const { connectToGame, createGame, gameState, returnToGame } = useGame();
-    const {openDialog} = useDialog();
 
     useEffect(() => {
         
@@ -56,6 +55,8 @@ export default function LoginPage() {
 
     return (
         <div className={css.kontent}>
+            <DarkModeSwitch style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
+
             <main>
                 <h1>Bang!</h1>
                 <p>
@@ -102,7 +103,7 @@ export default function LoginPage() {
                     >
                         vytvořit hru
                     </button>
-                </div>
+                </div>                
             </main >
         </div >
     );
