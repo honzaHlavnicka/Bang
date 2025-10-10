@@ -36,7 +36,9 @@ public class Bang extends Karta implements HratelnaKarta{
                 Hrac naKoho = hra.getHrac(Integer.parseInt(odpoved));
                 
                 //TODO: tady by mela probehnout nejaka kontrola barelu a podobne.
-
+                //TODO: tady by jsme se meli zeptat druheho hrace, zda nema vedle.
+                
+                naKoho.odeberZivot();
                 
                 hra.getSpravceTahu().dalsiHracSUpozornenim();
         });
@@ -66,10 +68,6 @@ public class Bang extends Karta implements HratelnaKarta{
 
     }
     
-    
-        
-        
-    }
     
     @Override
     public String getObrazek(){

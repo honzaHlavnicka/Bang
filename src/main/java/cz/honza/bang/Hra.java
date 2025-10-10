@@ -148,7 +148,7 @@ public class Hra {
             
             komunikator.posliVsem("hraZacala");
             spravceTahu = new SpravceTahu(hraci);
-            spravceTahu.dalsiHracPodleRole(Role.SERIF).tah();
+            spravceTahu.dalsiHracPodleRole(Role.SERIF).zahajitTah();
             System.out.println("zahájen tah v setzahajena");
             
             //TODO: dodelat
