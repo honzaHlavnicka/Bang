@@ -109,7 +109,7 @@ public class Hrac {
      */
     public int odeberZivot(){
         if(zivoty <= 0){//TODO: kdyz ma moc zivotu, nez kolik muze mit
-            //TODO: prohra
+            hra.getHerniPravidla().dosliZivoty(this);
         }else{
             zivoty--;
             hra.getKomunikator().posliVsem("pocetZivotu:" + id + "," + zivoty);
@@ -165,6 +165,9 @@ public class Hrac {
         this.jmeno = jmeno;
     }
     
+    public boolean jeNaTahu(){
+        return hra.getSpravceTahu().getNaTahu().equals(this);
+    }
     /**
      * Nastaví hráčovu postavu, neinformuje o tom nikoho.
      * @param jmeno name() postavy.
@@ -179,7 +182,10 @@ public class Hrac {
         hra.getKomunikator().posiChybu(this, Chyba.POSTAVA_NENI_NA_VYBER);
     }
 
-    public void tah() {
+    /**
+     *  Upozorní hráče na změnu zahájení tahu. Nemělo by se volat jinde, než ve společnosti správce tahů, jinak by mohli být klienti zmatení.
+     */
+    public void zahajitTah() {
         System.out.println("zahájen tah v tah");
         hra.getKomunikator().posli(this, "tvujTahZacal");
         hra.getKomunikator().posliVsem("tahZacal:"+id,this);
@@ -261,7 +267,7 @@ public class Hrac {
      */
     public void konecTahu() {
         if(hra.getSpravceTahu().getNaTahu().equals(this)){
-            hra.getSpravceTahu().dalsiHrac().tah();
+            hra.getSpravceTahu().dalsiHrac().zahajitTah();
         }
     }
     

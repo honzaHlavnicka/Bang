@@ -10,4 +10,7 @@ package cz.honza.bang;
  */
 public interface HerniPravidla {
     public void poOdehrani(Hrac kym);
+    public void dosliZivoty(Hrac komu);
+    public boolean hracChceUkoncitTah(Hrac kdo);
+    public boolean hracChceLiznout(Hrac kdo);
 }

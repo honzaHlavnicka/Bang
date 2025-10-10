@@ -26,5 +26,25 @@ public class PravidlaUNO implements HerniPravidla{
             hra.vyhral(kym);
         }
     }
+
+    @Override
+    public void dosliZivoty(Hrac komu) {
+        //Nezájem, nic jako životy UNO nemá
+    }
+
+    @Override
+    public boolean hracChceUkoncitTah(Hrac kdo) {
+        return false; //Hráč nemůže jen tak říct, že přeskakuje tah
+    }
+
+    @Override
+    public boolean hracChceLiznout(Hrac kdo) {
+        if(kdo.jeNaTahu()){
+            kdo.lizni();
+            return true;
+        }else{
+            return false;
+        }
+    }
     
 }
