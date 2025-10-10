@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { GameContext } from "./GameContext";
 import type { GameStateType } from "./GameContext";
-import { handleGameMessage, setGameValue, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard, drawCard, returnToGame } from "./gameActions";
+import { handleGameMessage, setGameValue, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard, drawCard, returnToGame, endTurn } from "./gameActions";
 import toast from "react-hot-toast";
 import { useDialog } from "./DialogContext";
 
@@ -71,7 +71,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             changePlayerName: (newName) => changePlayerName(ws, newName),
             chooseCharacter: (characterName) => chooseCharacter(ws, setGameState, characterName),
             startGame: () => { startGame(ws) },
-            endTurn: () => { /* implementace nebo prázdná funkce */ },
+            endTurn: () => { endTurn(ws) },
             createGame: (name) => createGame(ws, name),
             drawCard: () => drawCard(ws),
             playCard: (cardId) => playCard(ws, cardId),

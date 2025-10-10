@@ -413,3 +413,9 @@ export function returnToGame(ws: WebSocket | null) {
         ws.send("vraceniSe:" + token);
     }
 }
+
+export function endTurn(ws: WebSocket | null) {
+    if (ws !== null) {
+        ws.send("konecTahu");
+    }
+}
