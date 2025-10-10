@@ -269,6 +269,30 @@ export function handleGameMessage(
             }
             break;
         }
+        case "vyberHrace": {
+            try {
+                const json = JSON.parse(payload) as {id:number,hraci:number[], nadpis?:string}; 
+                const heading = json.nadpis ?? "Vyber hráče";
+                const players = (stateRef.current?.players ?? []).filter(p=>json.hraci.includes(p.id)).map(p=>({id:p.id,name:p.name}));
+                openDialog({type:"SELECT_PLAYER", data:{players},dialogHeader:heading,notCloasable:false,callback:(selectedAction:number)=>{
+                    console.log("vybraný hráč:",selectedAction);
+                    if(stateRef.current?.playerId == null){
+                        toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
+                        return;
+                    }
+                    if(socket == null){
+                        toast.error("Nelze provést akci, protože není navázáno spojení se serverem");
+                        return;
+                    }
+                    socket.send(`dialog:${json.id},${selectedAction}`);
+                    
+                }});
+            }catch (error) {
+                console.error("chyba při parsování", error, payload);
+                toast.error('Chybná odpověď serveru')
+            }
+            break;
+        }
         case "vyhral":{
             const winnerId = payload;
             const state = stateRef.current;
