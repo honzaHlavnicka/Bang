@@ -17,7 +17,8 @@ public enum Chyba {
     KARTA_NEJDE_ZAHRAT("Tuto kartu ted nemuzes zahrat.",4,3),
     HRA_NEEXISTUJE("Hra, ke které se snažíš připojit neexistuje.",5,1),
     POSTAVA_NENI_NA_VYBER("Postava není na výběr",6,1),
-    NEJSI_NA_TAHU("Nejsi na tahu.",7,3)
+    NEJSI_NA_TAHU("Nejsi na tahu.",7,3),
+    NEMUZES_UKONCIT_TAH("Takhle tah ukončit nejde.",8,3)
     ;
     private final String zprava;
     private final int kod;

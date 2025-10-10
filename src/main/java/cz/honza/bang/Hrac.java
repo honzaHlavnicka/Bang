@@ -266,8 +266,9 @@ public class Hrac {
      *Mělo by se zavolat pro ukončení tahu. Provede akce před ukončením tahu a nechá ukončit tah správcem tahu.
      */
     public void konecTahu() {
-        if(hra.getSpravceTahu().getNaTahu().equals(this)){
-            hra.getSpravceTahu().dalsiHrac().zahajitTah();
+        
+        if (!hra.getHerniPravidla().hracChceUkoncitTah(this)){
+            hra.getKomunikator().posiChybu(this,Chyba.NEMUZES_UKONCIT_TAH);
         }
     }
     
