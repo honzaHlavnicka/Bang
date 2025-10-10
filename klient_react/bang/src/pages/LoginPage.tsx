@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import css from './loginPage.module.css';
+import css from '../styles/loginPage.module.css';
 import { useGame } from '../modules/GameContext';
 import toast from 'react-hot-toast';
 import { useDialog } from '../modules/DialogContext';
