@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang;
 
+import cz.honza.bang.karty.Bang;
 import cz.honza.bang.karty.BangNaVsechny;
 import cz.honza.bang.karty.Eso;
 import cz.honza.bang.karty.Karta;
@@ -100,6 +101,20 @@ public class Hra {
 
     public List<Hrac> getHraci() {
         return hraci;
+    }
+    
+    /**
+     * Vrátí hráče podle jeho id.
+     * @param id id hráče
+     * @return Hrac nebo null
+     */
+    public Hrac getHrac(int id){
+        for (Hrac hrac : hraci) {
+            if(hrac.getId() == id){
+                return hrac;
+            }
+        }
+        return null;
     }
     
     public KomunikatorHry getKomunikator() {
@@ -267,7 +282,7 @@ public class Hra {
         
         
         
-        balicek.vratNahoru(new unoZmenaBarvy(this,balicek));
+        /*balicek.vratNahoru(new unoZmenaBarvy(this,balicek));
         balicek.vratNahoru(new unoZmenaBarvy(this,balicek));
         balicek.vratNahoru(new unoZmenaBarvy(this,balicek));
         balicek.vratNahoru(new unoZmenaBarvy(this,balicek));
@@ -281,7 +296,10 @@ public class Hra {
         balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
 
-        balicek.vratNahoru(new WellsFarkgo(this, balicek));
+        balicek.vratNahoru(new WellsFarkgo(this, balicek));*/
+        
+        
+        balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));
         balicek.zamichej();
     }
    
