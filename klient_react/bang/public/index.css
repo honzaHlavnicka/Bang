@@ -1,3 +1,18 @@
+:root{
+    --mainColor: #f0f0f0;
+    --secondColor: #2c2c2c;
+    --accentColor: #b22222;
+    --accentColorHover: #ff3030;
+
+}
+.darkMode{
+    --mainColor: #2c2c2c;
+    --secondColor: #f0f0f0;
+    --accentColor: #ff3030;
+    --accentColorHover: #b22222;
+}
+
+
 html{
     background-image:url("img/pozadi2.jpg");
     background-size: cover;
@@ -11,3 +26,5 @@ html.darkMode{
     color: #f0f0f0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
+
+

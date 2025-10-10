@@ -1,0 +1,16 @@
+.button{
+    background-color: #764300; 
+    border: none;
+    color: white;
+    padding: 13px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 3px 2px;
+    cursor: pointer;
+    border-radius: 12px;
+}
+:global(.darkMode) .button{
+    background-color: #037da5; 
+}

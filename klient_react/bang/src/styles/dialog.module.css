@@ -18,7 +18,7 @@
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     max-width: 90%;
-    width: 400px;
+    min-width: 400px;
     position: relative;
     z-index: 1001;
 }
@@ -37,10 +37,14 @@
     text-align: center;
 }
 
+:global(.darkMode) .dialogBackground {
+    background-color: rgba(99, 99, 99, 0.362);
+}
+
 :global(.darkMode) .dialogBox {
     background-color: #2c2c2c;
     color: #f0f0f0;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 120px rgba(255, 255, 255, 0.2);
 }
 :global(.darkMode) .dialogHeader {
     color: #f0f0f0;
@@ -48,3 +52,4 @@
 :global(.darkMode) .dialogContent {
     color: #d0d0d0;
 } 
+

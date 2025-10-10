@@ -3,6 +3,7 @@ import css from '../styles/loginPage.module.css';
 import { useGame } from '../modules/GameContext';
 import toast from 'react-hot-toast';
 import DarkModeSwitch from '../components/DarkModeSwitch';
+import globalCSS from "../styles/global.module.css";
 
 export default function LoginPage() {
     const [gameCode, setGameCode] = useState('');
@@ -63,17 +64,22 @@ export default function LoginPage() {
                     tadyto bude text, který bude něco říkat. Teď sice něco říká, 
                     ale doopravdy o hře neřekne nic. jenom zabírá místo.
                 </p>
+                
                 <hr />
                 {gameToken && !gameState.inGame && !gameState.playerId && (
-                    <div>
-                        <h4>Vrátit se k rozehrané hře</h4>
+                    
+                    <div className={css.box} >
+                        <h2>Vrátit se k rozehrané hře</h2>
                         <button 
-                            className={css.btnPrimary + " " + css.btnRight} 
+                            className={globalCSS.button + " " + css.btnRight} 
                             onClick={() => returnToGame()}
                         >Připojit</button>
                     </div>
+                    
                 )}
-                <div>
+                
+                <div className={css.box} >
+                    <h2>Připojit se ke hře</h2>
                     <h4>Kód hry, kam se chceš přihlásit:</h4>
                     <input 
                         type="text" 
@@ -86,12 +92,15 @@ export default function LoginPage() {
                     />
                     <h4>Tvoje jméno:</h4>
                     <input value={jmeno} onChange={e => setJmeno(e.target.value)}/><br />
-                    <button className={css.btnPrimary} onClick={() => { if(zkontroluj(true)) connectToGame(gameCode,jmeno); }} >
+                    <button className={globalCSS.button} onClick={() => { if(zkontroluj(true)) connectToGame(gameCode,jmeno); }} >
                         Připojit se ke hře
                     </button>
                 </div>
+            
+            
                 <hr/>
-                <div>
+                <div className={css.box} >
+                    <h2>Vytvořit novou hru</h2>
                     <h4>Tvoje jméno:</h4>
                     <input
                         value={jmeno}
@@ -99,7 +108,7 @@ export default function LoginPage() {
                     /><br />
                     <button 
                         onClick={() => { if(zkontroluj(false)) createGame(jmeno); }} 
-                        className={css.btnPrimary}
+                        className={globalCSS.button}
                     >
                         vytvořit hru
                     </button>

@@ -7,7 +7,7 @@ import ZoomToggleButton from "./ZoomButton";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import DarkModeSwitch from "./DarkModeSwitch";
-
+import globalCSS from "../styles/global.module.css";
 
 
 export default function Dialog() {
@@ -40,14 +40,14 @@ export default function Dialog() {
             maxSelected = dialog.data.max;
             content = (
                 <div>
-                    <div style={{display:"flex",flexDirection:"row"}} >
+                    <div style={{display:"flex",flexDirection:"row",flexWrap:"wrap"}} >
                         {dialog.data.cards.map((val:CardType)=>(
                             <div key={val.id} style={{background:(seleckted.includes(val.id) ? "brown" : "transparent"),borderRadius:10,margin:5,padding:2}} onClick={()=>select(val.id)} >
                                 <Card key={val.id} id={val.id}  image={val.image}/>
                             </div>
                         ))}
                     </div>
-                    <div>Vybráno {seleckted.length} z {dialog.data.min}. (minimálně je potřeba {dialog.data.min}.)</div>
+                    <div>Vybráno {seleckted.length} z {dialog.data.max}. (minimálně je potřeba {dialog.data.min}.)</div>
                     <ZoomToggleButton/>
                 </div>
             );
@@ -73,7 +73,7 @@ export default function Dialog() {
                             closeDialog();
                             dialog.callback(seleckted[0]);
                             setSelected([]);
-                        }}>Potvrdit</button> : <div>Vyberte hráče.</div>}
+                        }} className={globalCSS.button} >Potvrdit</button> : <div>Vyberte hráče.</div>}
                     </div>
                 );
             break;
@@ -82,7 +82,7 @@ export default function Dialog() {
             content = (
                 <div style={{display:"flex",flexDirection:"row",alignItems:"flex-start",flexWrap:"wrap",gap:10}} >
                     {dialog.data.actions.map((val:{id:number,name:string})=>(   
-                            <button key={val.id} onClick={()=>{
+                            <button className={globalCSS.button} key={val.id} onClick={()=>{
                                 closeDialog();
                                 if(dialog.callback){
                                     dialog.callback(val.id);
@@ -100,12 +100,11 @@ export default function Dialog() {
                     {dialog.data.image ? <img src={dialog.data.image} alt={dialog.data.header} style={{width:"100%"}}/>: null}
                     {dialog.data.header ? <h2>{dialog.data.header}</h2> : null}
                     <p>{dialog.data.message}</p>
-                    <button onClick={()=>{
+                    <button className={globalCSS.button} onClick={()=>{
                         closeDialog();
                     }}>OK</button>
-                    <button onClick={()=>{
-                        openDialog({type:"INFO",data:{message:"Testovací dialog",header:"Test"},notCloasable:true});
-                    }}>znovu test dia</button>
+                    <button onClick={()=>{openDialog({type:"SELECT_CARD", data:{cards:[{image:"/img/karty/bang.png",id:70},{image:"/img/karty/dostavnik.png",id:71},{image:"img/karty/uno/red4.png",id:1},{image:"img/karty/postavy/testovaci2.png",id:5},{image:"img/karty/uno/menic.png",id:6}],min:1,max:2},dialogHeader:"Vyber si jednu kartu co se ti zlíbí!",notCloasable:true});}} >Testovací dialog</button>
+
                 </div>
             );
         break;
