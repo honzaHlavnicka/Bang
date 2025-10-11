@@ -8,9 +8,11 @@ package cz.honza.bang;
  *
  * @author jan.hlavnicka.s
  */
-public interface HerniPravidla {
+public interface HerniPravidla {    
     public void poOdehrani(Hrac kym);
     public void dosliZivoty(Hrac komu);
     public boolean hracChceUkoncitTah(Hrac kdo);
     public boolean hracChceLiznout(Hrac kdo);
+    
+    
 }

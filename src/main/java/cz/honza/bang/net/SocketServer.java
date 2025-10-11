@@ -10,6 +10,7 @@ package cz.honza.bang.net;
  *
  * @author honza
  */
+import cz.honza.bang.SpravceHernichPravidel;
 import org.java_websocket.server.WebSocketServer;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -56,11 +57,18 @@ public class SocketServer extends WebSocketServer {
             return;
         }
         
-        if(message.startsWith("serverInfo")){
+        if(message.startsWith("serverInfo")){//TODO: omezit přístup heslem
             conn.send("serverDataHTML:"+serverDataHTML());
             return;
         }
-                        
+           
+        if(message.startsWith("infoHer")){
+            StringBuilder sb = new StringBuilder("infoHer:{\"verze\":\"0.0.7\",\"hry\":");
+            sb.append(SpravceHernichPravidel.getJSONVytvoritelneHry());
+            //tady jsou přidávat další data o serveru.
+            sb.append("}");
+            conn.send(sb.toString());
+        }
 
         if (message.startsWith("novaHra") || message.startsWith("pripojeniKeHre:111")) {
             KomunikatorHry komunikatorCoAsiNeexistuje = komunikatoryHracu.get(conn); //pro kontrolu, jestli už hrač hru nehraje
