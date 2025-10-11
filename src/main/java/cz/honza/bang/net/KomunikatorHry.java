@@ -31,9 +31,13 @@ public class KomunikatorHry {
     private int podleniIdCekaciOdpovedi = 0;
     
     public KomunikatorHry(SocketServer socket,int id) {
-        this.hra = new Hra(this);
         this.socket = socket;
         idHry = id;
+    }
+    public static KomunikatorHry vytvor(SocketServer socket,int id,int typHry){
+        KomunikatorHry komunikator = new KomunikatorHry(socket, id);
+        komunikator.hra = Hra.vytvor(komunikator, id);
+        return komunikator;
     }
     
     public void prislaZprava(WebSocket conn, String message) {

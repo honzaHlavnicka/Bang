@@ -28,6 +28,11 @@ public class SpravceHernichPravidel {
                     "UNO",
                     "Rychlá karetní hra, kde se snažíš zbavit všech svých karet tím, že hraješ podle barvy nebo čísla.",
                     PravidlaUNO::new
+            ),
+            new InfoOHre(2,
+                    "Volná hra",
+                    "Hra, která neblokuje téměř nic a obsahuje někajé náhodné karty",
+                    PravidlaUNO::new //TODO: jína pravidla
             )
     );
 

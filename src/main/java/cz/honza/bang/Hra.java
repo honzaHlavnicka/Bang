@@ -55,18 +55,27 @@ public class Hra {
     
     
     
-    public Hra(KomunikatorHry komunikator){
+    private Hra(KomunikatorHry komunikator){
         this.komunikator = komunikator;
-        this.herniPravidla = new PravidlaUNO(this); //TODO: herní pravidla by se měla vzít odněkud zvbenku.
-        //herniPravidla.setHra(this);
         
-        //vytvoří a zamíchá balíček postav
+        //vytvoří a zamíchá balíček postav //TODO:nemělo by být v pravidlech?
         balicekPostav = new Stack<>();
         balicekPostav.addAll(Arrays.asList(Postava.values()));
         Collections.shuffle(balicekPostav);
         
-        //vytvoří a zamíchá hrací balíček.
-        pripravBalicek();
+    }
+    
+    /**
+     * Vytvoří a vrátí novou instanci hry
+     * @param typHry
+     * @param komunikator 
+     * @return new Hra();
+     */
+    public static Hra vytvor(KomunikatorHry komunikator,int typHry){
+        Hra hra = new Hra(komunikator);
+        hra.herniPravidla = SpravceHernichPravidel.vytvorHerniPravidla(typHry, hra);
+        hra.pripravBalicek();
+        return hra;
     }
 
     /**

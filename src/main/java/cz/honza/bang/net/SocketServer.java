@@ -68,6 +68,7 @@ public class SocketServer extends WebSocketServer {
             //tady jsou přidávat další data o serveru.
             sb.append("}");
             conn.send(sb.toString());
+            return;
         }
 
         if (message.startsWith("novaHra") || message.startsWith("pripojeniKeHre:111")) {
@@ -76,8 +77,15 @@ public class SocketServer extends WebSocketServer {
                 conn.send("error:{\"error\":\"už jsi připojen ke hře\"}");
                 return;
             }
+            int typHry;
+            try{
+                typHry = Integer.parseInt(message.replace("novaHra", ""));
+            }catch(NumberFormatException ex){
+                typHry = 0;
+            }
+            
             int kodKry = nahodneIdHry();
-            KomunikatorHry komunikator = new KomunikatorHry(this, kodKry);
+            KomunikatorHry komunikator = KomunikatorHry.vytvor(this, kodKry, typHry);
             hryPodleId.put(Integer.toString(kodKry), komunikator);
             System.out.println("novaHra:" + kodKry);
             conn.send("novaHra:" + kodKry);
