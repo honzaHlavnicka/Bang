@@ -1,5 +1,6 @@
 # Hra bang
 Server engine pro podporu karetních her využívajících prvků Bangu nebo méně. K němu klient vyvíjený souběžně.
+
 V současné době moje ročníková práce (IOČ)
 
 # jak spustit
