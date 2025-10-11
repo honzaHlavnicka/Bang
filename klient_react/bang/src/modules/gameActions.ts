@@ -309,6 +309,23 @@ export function handleGameMessage(
             //TODO: vylepšit dialog
             break;
         }
+        case "welcome": {
+            //toto by měl přijít jako první po připojení
+            if(socket != null){
+                socket.send("infoHer");
+            }
+            break;
+        }
+        case "infoHer": {
+            try {
+                const json = JSON.parse(payload) as {verze:string,hry:{jmeno:string,id:number,popis:string}[]};
+                setGameState(prev=>({...prev, gameTypesAvailable: json.hry.map(h=>({id:h.id,name:h.jmeno,description:h.popis}))}));
+            }catch (error) {
+                console.error("chyba při parsování", error, payload);
+                toast.error('Chybná odpověď serveru')
+            }
+            break;
+        }
         default: {
             console.log("=> klient nezná");
             break;
@@ -359,9 +376,9 @@ export function connectToGame(
     }
 }
 
-export function createGame(ws: WebSocket | null, name: string) {
+export function createGame(ws: WebSocket | null,gameTypeId:number, name: string) {
     if (ws !== null) {
-        ws.send("novaHra");
+        ws.send("novaHra:"+gameTypeId);
         ws.send("noveJmeno:" + name);
     }
 }

@@ -8,7 +8,10 @@ import globalCSS from "../styles/global.module.css";
 export default function LoginPage() {
     const [gameCode, setGameCode] = useState('');
     const [jmeno, setJmeno] = useState('');
+    const [idTypuHry, setIdTypuHry] = useState<number>(0);
     const { connectToGame, createGame, gameState, returnToGame } = useGame();
+
+    
 
     useEffect(() => {
         
@@ -29,13 +32,13 @@ export default function LoginPage() {
                 }
             }
         }
-    }, []);
+    }, );
     
 
     const gameToken = localStorage.getItem("gameToken");
 
 
-    function zkontroluj(kodTaky: boolean = false) {
+    function zkontroluj(isToConnect: boolean = false) {
         if (jmeno.trim().length < 3) {
             toast.error("Udělej to jméno delší, prosím");
             return false;
@@ -44,12 +47,17 @@ export default function LoginPage() {
             toast.error("Udělej to jméno kratší, prosím");
             return false;
         }
-        if (gameCode.trim().length != 6 && kodTaky) {
+        if (gameCode.trim().length != 6 && isToConnect) {
             toast.error("Kód hry musí mít 6 číslic");
         
             if (!window.confirm("Kód hry musí mít 6 číslic. Pokud si nejsi jistý, zkontroluj ho prosím ještě jednou. Pokračovat?")) {
                 return false;
             }
+        }
+
+        if(!isToConnect && idTypuHry === -1){
+            toast.error("Vyber typ hry, prosím");
+            return false;
         }
         return true;
     }
@@ -101,13 +109,27 @@ export default function LoginPage() {
                 <hr/>
                 <div className={css.box} >
                     <h2>Vytvořit novou hru</h2>
+                    <h4>Typ hry</h4>
+                    <select 
+                        value={idTypuHry === -1 ? "" : String(idTypuHry)}
+                        onChange={(e)=>{ setIdTypuHry(parseInt((e.target as HTMLSelectElement).value)); }}
+                    >
+                        {gameState.gameTypesAvailable ? gameState.gameTypesAvailable.map((val)=>(
+                            <option key={val.id} value={val.id} title={val.description}>{val.name}</option>
+                        )) : <option disabled>Načítám...</option>}
+                    </select>
+                    <p>
+                        {gameState.gameTypesAvailable && idTypuHry !== -1
+                            ? gameState.gameTypesAvailable.find(gt => gt.id === idTypuHry)?.description ?? ""
+                            : ""}
+                    </p>
                     <h4>Tvoje jméno:</h4>
                     <input
                         value={jmeno}
                         onChange={e => setJmeno(e.target.value)}
                     /><br />
                     <button 
-                        onClick={() => { if(zkontroluj(false)) createGame(jmeno); }} 
+                        onClick={() => { if(zkontroluj(false)) createGame(idTypuHry,jmeno); }} 
                         className={globalCSS.button}
                     >
                         vytvořit hru

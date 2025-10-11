@@ -72,7 +72,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             chooseCharacter: (characterName) => chooseCharacter(ws, setGameState, characterName),
             startGame: () => { startGame(ws) },
             endTurn: () => { endTurn(ws) },
-            createGame: (name) => createGame(ws, name),
+            createGame: (gameTypeId,name) => createGame(ws,gameTypeId, name),
             drawCard: () => drawCard(ws),
             playCard: (cardId) => playCard(ws, cardId),
             returnToGame: () => { returnToGame(ws) },

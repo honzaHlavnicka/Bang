@@ -11,6 +11,7 @@ export type CardType = {
 export type GameStateType = {
     inGame:boolean;
     gameStarted:boolean;
+    gameTypesAvailable?:Array<{id:number,name:string,description:string}>
 
     gameCode: string | null;
 
@@ -43,7 +44,7 @@ export const GameContext = createContext<{
     startGame: () => void;
     endTurn: () => void;
     chooseCharacter: (characterName: string) => void;
-    createGame: (name: string) => void;
+    createGame: (gameTypeId:number,name: string) => void;
     drawCard: () => void;
     playCard: (cardId:number) => void;
     returnToGame (): void;
