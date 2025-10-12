@@ -326,6 +326,18 @@ export function handleGameMessage(
             }
             break;
         }
+        case "pocetZivotu": {
+            const parts = payload.split(",");
+            const playerId = parts[0] ?? "";
+            const newHealth = parseInt(parts[1] ?? "0");
+            if(parseInt(playerId) === stateRef.current?.playerId){
+                setGameState(prev=>({...prev, health:newHealth}));
+                toast(`Máš nyní ${newHealth} životů`,{icon:"❤️"});
+            }else{
+                updatePlayerProperty(setGameState, playerId, "health", newHealth);
+            }
+            break;
+        }
         default: {
             console.log("=> klient nezná");
             break;

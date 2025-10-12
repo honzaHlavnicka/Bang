@@ -22,7 +22,7 @@ export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,poce
                         <Card name={`${pocetZivotu} životů.`} image={`/img/velkeZivoty/${pocetZivotu}zivoty.png`} />
                     </div>
                     </div>
-               
+                    
                     <SmallCards count={pocetKaret} />
                 </div>
                 <div

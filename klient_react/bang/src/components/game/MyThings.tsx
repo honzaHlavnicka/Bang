@@ -25,6 +25,7 @@ import NameTag from "./NameTag";
                 <div style={{display:"flex",justifyContent:"center"}}>
                     <Card image={`/img/karty/role/${role}.png`} />
                     <Card image={`/img/karty/postavy/${postava}.png`} />
+                    <Card image={`/img/velkeZivoty/${gameState.health}zivoty.png`} />
                 </div>
             </div>
             <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
