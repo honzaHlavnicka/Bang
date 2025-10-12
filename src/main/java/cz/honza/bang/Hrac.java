@@ -106,8 +106,11 @@ public class Hrac {
     /**
      * Odebere hráči život a upozorní na to ostatní. Obsahuje kontrolu smrti i přebytku životů.
      * @return počet životů
+     * @deprecated 
+     * @see #odeberZivot()
      */
-    public int odeberZivot(){
+    @Deprecated
+    public int odeberZivot_old(){
         if(zivoty <= 0){//TODO: kdyz ma moc zivotu, nez kolik muze mit
             hra.getHerniPravidla().dosliZivoty(this);
         }else{
@@ -121,8 +124,11 @@ public class Hrac {
     /**
      * Přidá hráči život a upozorní na to ostatní. Obsahuje kontrolu smrti i přebytku životů.
      * @return počet životů
+     * @deprecated 
+     * @see #pridejZivot()
      */
-    public int pridejZivot(){//TODO: kdyz ma moc zivotu, nez kolik muze mit
+    @Deprecated
+    public int pridejZivot_old(){//TODO: kdyz ma moc zivotu, nez kolik muze mit
         if(zivoty >= maximumZivotu){
             
         }else{
@@ -130,6 +136,41 @@ public class Hrac {
             hra.getKomunikator().posliVsem("pocetZivotu:" + id + "," + zivoty);
         }
         return zivoty;
+    }
+    
+    /**
+     * Odebere hráči život a upozorní na to ostatní. Obsahuje kontrolu smrti i
+     * přebytku životů.
+     *
+     * @return odebral se život úspěšně
+     */
+    public boolean odeberZivot() {
+        if (zivoty <= 0) {//TODO: kdyz ma moc zivotu, nez kolik muze mit
+            hra.getHerniPravidla().dosliZivoty(this);
+            return false;
+        } else {
+            zivoty--;
+            hra.getKomunikator().posliVsem("pocetZivotu:" + id + "," + zivoty);
+            return true;
+        }
+
+    }
+
+    /**
+     * Přidá hráči život a upozorní na to ostatní. Obsahuje kontrolu smrti i
+     * přebytku životů.
+     *
+     * @return přidal se život úspěšně.
+     */
+    public boolean pridejZivot() {//TODO: kdyz ma moc zivotu, nez kolik muze mit
+        if (zivoty >= maximumZivotu) {
+            return false; 
+        } else {
+            zivoty++;
+            hra.getKomunikator().posliVsem("pocetZivotu:" + id + "," + zivoty);
+            return true;
+        }
+        
     }
     
     
@@ -263,13 +304,12 @@ public class Hrac {
     }
 
     /**
-     *Mělo by se zavolat pro ukončení tahu. Provede akce před ukončením tahu a nechá ukončit tah správcem tahu.
+     * Provede akce před koncem tahu a ukončí tah. Upozorní na to všechny.
+     * Měl by volat pouze správce tahu, nebo pokud se ví, že je tento hráč vážně na tahu.
+     * 
      */
     public void konecTahu() {
-        
-        if (!hra.getHerniPravidla().hracChceUkoncitTah(this)){
-            hra.getKomunikator().posiChybu(this,Chyba.NEMUZES_UKONCIT_TAH);
-        }
+        hra.getSpravceTahu().dalsiHrac().zahajitTah();
     }
     
     /**

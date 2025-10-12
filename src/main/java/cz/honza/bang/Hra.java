@@ -55,8 +55,10 @@ public class Hra {
     
     
     
-    private Hra(KomunikatorHry komunikator){
+    private Hra(KomunikatorHry komunikator,int id){
         this.komunikator = komunikator;
+        
+        //TODO: proč se sem posílá id hry, když ho k ničemu nepotřebuju :D
         
         //vytvoří a zamíchá balíček postav //TODO:nemělo by být v pravidlech?
         balicekPostav = new Stack<>();
@@ -69,12 +71,13 @@ public class Hra {
      * Vytvoří a vrátí novou instanci hry
      * @param typHry
      * @param komunikator 
+     * @param id id hry.
      * @return new Hra();
      */
-    public static Hra vytvor(KomunikatorHry komunikator,int typHry){
-        Hra hra = new Hra(komunikator);
+    public static Hra vytvor(KomunikatorHry komunikator,int id,int typHry){
+        Hra hra = new Hra(komunikator,id);
         hra.herniPravidla = SpravceHernichPravidel.vytvorHerniPravidla(typHry, hra);
-        hra.pripravBalicek();
+        hra.herniPravidla.pripravBalicek(hra.balicek);
         return hra;
     }
 
@@ -233,7 +236,9 @@ public class Hra {
     
     /**
      * naplní balíček kartami hry.
+     * @deprecated 
      */
+    @Deprecated
     private void pripravBalicek(){
         /*balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
         balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));

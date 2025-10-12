@@ -50,7 +50,7 @@ public class unoZmenaBarvy extends UnoKarta {
                     System.out.println("zlutá");
                     break;
             }
-            
+            hra.getKomunikator().posliVsem("popup:Barva změněna na " + podleniBarva, kym);
             
         });//toto nmůže blokovat thred!
         //TODO: udelat, aby neslo hrat, nez se slib splní
@@ -64,6 +64,7 @@ public class unoZmenaBarvy extends UnoKarta {
 
     @Override
     public String getObrazek() {
+        
         return "uno/menic";
     }
 
