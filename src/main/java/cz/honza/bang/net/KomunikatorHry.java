@@ -36,7 +36,7 @@ public class KomunikatorHry {
     }
     public static KomunikatorHry vytvor(SocketServer socket,int id,int typHry){
         KomunikatorHry komunikator = new KomunikatorHry(socket, id);
-        komunikator.hra = Hra.vytvor(komunikator, id);
+        komunikator.hra = Hra.vytvor(komunikator, id,typHry);
         return komunikator;
     }
     
@@ -66,7 +66,8 @@ public class KomunikatorHry {
             hrac.odehranaKarta(message.replace("odehrani:", ""));
         }
         if(message.startsWith("konecTahu")){
-            hrac.konecTahu();
+            if(!hra.getHerniPravidla().hracChceUkoncitTah(hrac))
+                posiChybu(hrac,Chyba.NEMUZES_UKONCIT_TAH);
         }
         if(message.startsWith("linuti")){
             hrac.lizniKontrolovane();

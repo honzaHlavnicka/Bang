@@ -79,7 +79,7 @@ public class SocketServer extends WebSocketServer {
             }
             int typHry;
             try{
-                typHry = Integer.parseInt(message.replace("novaHra", ""));
+                typHry = Integer.parseInt(message.replace("novaHra:", ""));
             }catch(NumberFormatException ex){
                 typHry = 0;
             }
