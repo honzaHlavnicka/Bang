@@ -6,6 +6,11 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang;
 
+import cz.honza.bang.karty.Eso;
+import cz.honza.bang.karty.Karta;
+import cz.honza.bang.karty.UnoKarta;
+import cz.honza.bang.karty.unoZmenaBarvy;
+
 /**
  *
  * @author honza
@@ -47,4 +52,32 @@ public class PravidlaUNO implements HerniPravidla{
         }
     }
     
+    @Override
+    public void pripravBalicek(Balicek<Karta> balicek){
+        for (int i = 0; i < 10; i++) {
+            balicek.vratNahoru(new UnoKarta(i, "red", hra, balicek));
+        }
+        for (int i = 0; i < 10; i++) {
+            balicek.vratNahoru(new UnoKarta(i, "green", hra, balicek));
+        }
+        for (int i = 0; i < 10; i++) {
+            balicek.vratNahoru(new UnoKarta(i, "blue", hra, balicek));
+        }
+        for (int i = 0; i < 10; i++) {
+            balicek.vratNahoru(new UnoKarta(i, "yellow", hra, balicek));
+        }
+        balicek.vratNahoru(new Eso(hra, balicek));
+        balicek.vratNahoru(new unoZmenaBarvy(hra, balicek));
+        balicek.vratNahoru(new Eso(hra, balicek));
+        balicek.vratNahoru(new unoZmenaBarvy(hra, balicek));
+        balicek.vratNahoru(new Eso(hra, balicek));
+        balicek.vratNahoru(new unoZmenaBarvy(hra, balicek));
+        balicek.vratNahoru(new Eso(hra, balicek));
+        balicek.vratNahoru(new unoZmenaBarvy(hra, balicek));
+        balicek.vratNahoru(new Eso(hra, balicek));
+        balicek.vratNahoru(new unoZmenaBarvy(hra, balicek));
+        
+        balicek.zamichej();
+        
+    }
 }
