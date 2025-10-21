@@ -30,7 +30,9 @@ import org.java_websocket.WebSocket;
  * 
  */
 public class Hra {
-    private ProstrediHry prostredi;
+    /**
+     * Hráči ve hře. Pořadí určuje pořadí hráčů. Nemělo by se měnit po zahájení hry respektive vytvoření správce tahu.
+     */
     private List<Hrac> hraci = new ArrayList<>();
     private boolean zahajena = false;
             //FIX: neco lepsiho nes seznam
@@ -51,9 +53,7 @@ public class Hra {
     }
     
    
-
-    
-    
+   
     
     private Hra(KomunikatorHry komunikator,int id){
         this.komunikator = komunikator;
@@ -105,10 +105,6 @@ public class Hra {
             balicekPostav.add(Postava.TESTOVACI);
         }
         hrac.vyberZPostav(balicekPostav.pop(),balicekPostav.pop());//nechá hráče vybrat ze dvou postav
-    }
-
-    public ProstrediHry getProstredi() {
-        return prostredi;
     }
 
     public List<Hrac> getHraci() {
@@ -232,89 +228,6 @@ public class Hra {
         balicek = odhazovaciBalicek;
         odhazovaciBalicek = novyOdhazovaciBalicek;
         
-    }
-    
-    /**
-     * naplní balíček kartami hry.
-     * @deprecated 
-     */
-    @Deprecated
-    private void pripravBalicek(){
-        /*balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Bang(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
-        //balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));
-        //balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));
-        //balicek.vratNahoru(new cz.honza.bang.karty.Barel(this, balicek));
-        //balicek.vratNahoru(new WellsFarkgo(this,balicek));
-        balicek.vratNahoru(new WellsFarkgo(this,balicek));
-        balicek.vratNahoru(new WellsFarkgo(this,balicek));
-        balicek.vratNahoru(new WellsFarkgo(this,balicek));
-        balicek.vratNahoru(new WellsFarkgo(this,balicek));
-        balicek.vratNahoru(new WellsFarkgo(this,balicek));
-        balicek.vratNahoru(new WellsFarkgo(this,balicek));
-        balicek.vratNahoru(new Pivo(this,balicek));
-        balicek.vratNahoru(new Pivo(this,balicek));
-        balicek.vratNahoru(new Pivo(this,balicek));
-        balicek.vratNahoru(new BangNaVsechny(this,balicek));
-        balicek.vratNahoru(new BangNaVsechny(this,balicek));
-        balicek.vratNahoru(new BangNaVsechny(this,balicek));
-        balicek.vratNahoru(new BangNaVsechny(this,balicek));
-        balicek.vratNahoru(new BangNaVsechny(this,balicek));
-        balicek.vratNahoru(new BangNaVsechny(this,balicek));
-        balicek.vratNahoru(new Eso(this, balicek));
-        balicek.vratNahoru(new Eso(this, balicek));
-        balicek.vratNahoru(new Eso(this, balicek));
-        balicek.vratNahoru(new Eso(this, balicek));
-        balicek.vratNahoru(new Eso(this, balicek));
-        balicek.vratNahoru(new Eso(this, balicek));
-        balicek.vratNahoru(new Eso(this, balicek));
-        balicek.vratNahoru(new Eso(this, balicek));
-        balicek.vratNahoru(new Eso(this, balicek));
-        
-        */
-        for (int i = 0; i < 10; i++) {
-           balicek.vratNahoru(new UnoKarta(i,"red",this,balicek));
-        }
-        for (int i = 0; i < 10; i++) {
-           balicek.vratNahoru(new UnoKarta(i,"green",this,balicek));
-        }
-        for (int i = 0; i < 10; i++) {
-           balicek.vratNahoru(new UnoKarta(i,"blue",this,balicek));
-        }
-        for (int i = 0; i < 10; i++) {
-           balicek.vratNahoru(new UnoKarta(i,"yellow",this,balicek));
-        }
-        
-        
-        
-        /*balicek.vratNahoru(new unoZmenaBarvy(this,balicek));
-        balicek.vratNahoru(new unoZmenaBarvy(this,balicek));
-        balicek.vratNahoru(new unoZmenaBarvy(this,balicek));
-        balicek.vratNahoru(new unoZmenaBarvy(this,balicek));
-        balicek.vratNaSpodek(new Eso(this, balicek));
-        balicek.vratNaSpodek(new Eso(this, balicek));
-        balicek.vratNaSpodek(new Eso(this, balicek));
-        balicek.vratNaSpodek(new Eso(this, balicek));
-        balicek.vratNahoru(new WellsFarkgo(this, balicek));
-        balicek.vratNahoru(new WellsFarkgo(this, balicek));
-        balicek.vratNahoru(new WellsFarkgo(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
-        balicek.vratNahoru(new cz.honza.bang.karty.Dostavnik(this, balicek));
-
-        balicek.vratNahoru(new WellsFarkgo(this, balicek));*/
-        
-        
-        balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));balicek.vratNahoru(new Bang(this, balicek));
-        balicek.zamichej();
     }
    
 }
