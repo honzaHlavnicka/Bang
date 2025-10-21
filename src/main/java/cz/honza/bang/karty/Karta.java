@@ -66,6 +66,13 @@ public abstract class Karta {
         return sb.toString();
     }
     
+    /**
+     *  Akce, které by se měli provést před spálením.
+     */
+    public void predSpalenim(){
+        //Obecně karta nic dělat nemusí
+    }
+    
     public abstract String getObrazek();
     public abstract String getJmeno();
 }

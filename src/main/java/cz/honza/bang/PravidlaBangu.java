@@ -84,5 +84,12 @@ public class PravidlaBangu implements HerniPravidla{
     public void skoncilTah(Hrac komu) {
         //zatím nic
     }
+
+    @Override
+    public boolean muzeSpalit(Karta co) {
+        return true;
+    }
+    
+    
     
 }

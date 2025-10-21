@@ -18,7 +18,8 @@ public enum Chyba {
     HRA_NEEXISTUJE("Hra, ke které se snažíš připojit neexistuje.",5,1),
     POSTAVA_NENI_NA_VYBER("Postava není na výběr",6,1),
     NEJSI_NA_TAHU("Nejsi na tahu.",7,3),
-    NEMUZES_UKONCIT_TAH("Takhle tah ukončit nejde.",8,3)
+    NEMUZES_UKONCIT_TAH("Takhle tah ukončit nejde.",8,3),
+    KARTA_NEJDE_SPALIT("Tuhle kartu bohužel nemůžeš spálit.",9,1)
     ;
     private final String zprava;
     private final int kod;

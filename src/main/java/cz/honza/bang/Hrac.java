@@ -230,6 +230,7 @@ public class Hrac {
         System.out.println("zahájen tah v tah");
         hra.getKomunikator().posli(this, "tvujTahZacal");
         hra.getKomunikator().posliVsem("tahZacal:"+id,this);
+        hra.getHerniPravidla().zacalTah(this);
     }
     
     /**
@@ -274,6 +275,44 @@ public class Hrac {
     }
     
     /**
+     * Pokud je hráč na tahu, tak spálí kartu, tzn. přesune ji na vyhazovací baliček, ale neprovede její efekt.
+     * @param id karty
+     */
+    public void spalitKartu(String id){
+        int idKarty = Integer.parseInt(id);
+        if (!hra.getSpravceTahu().getNaTahu().equals(this)) {
+            hra.getKomunikator().posiChybu(this, Chyba.NEJSI_NA_TAHU);
+            return;
+        }
+        for (Karta karta : karty) {
+            if(karta.getId() == idKarty){
+                if (hra.getHerniPravidla().muzeSpalit(karta)){
+                    karty.remove(karta);
+                    hra.getOdhazovaciBalicek().vratNahoru(karta);
+                    //TODO: informovat hráče
+                }else{
+                    hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEJDE_SPALIT);
+                }
+                return;
+            }
+        }
+        
+        for (Karta karta : vylozeneKarty) { //TODO: DRY
+            if (karta.getId() == idKarty) {
+                if (hra.getHerniPravidla().muzeSpalit(karta)) {
+                    karty.remove(karta);
+                    hra.getOdhazovaciBalicek().vratNahoru(karta);
+
+                    //TODO: informovat hráče
+                } else {
+                    hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEJDE_SPALIT);
+                }
+                return;
+            }
+        }
+        hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
+    }
+    /**
      * Přidá hráči karu z balíčku hry. Pošle o tom upozornění všem hráčům.
      */
     public void lizni(){
@@ -306,10 +345,10 @@ public class Hrac {
     /**
      * Provede akce před koncem tahu a ukončí tah. Upozorní na to všechny.
      * Měl by volat pouze správce tahu, nebo pokud se ví, že je tento hráč vážně na tahu.
-     * 
      */
     public void konecTahu() {
         hra.getSpravceTahu().dalsiHrac().zahajitTah();
+        hra.getHerniPravidla().skoncilTah(this);
     }
     
     /**
