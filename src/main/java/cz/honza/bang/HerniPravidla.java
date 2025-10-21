@@ -47,4 +47,8 @@ public interface HerniPravidla {
      */
     public void pripravBalicek(Balicek<Karta> balicek);
     
+    default public void zacalTah(Hrac komu){};
+    default public void skoncilTah(Hrac komu){};
+    default public boolean muzeSpalit(Karta co){return false;}
+   
 }

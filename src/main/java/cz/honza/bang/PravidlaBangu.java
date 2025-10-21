@@ -32,6 +32,16 @@ public class PravidlaBangu implements HerniPravidla{
     public void dosliZivoty(Hrac komu) {
         hra.getSpravceTahu().vyraditHrace(komu);
         
+        if(komu.getRole() == Role.SERIF){
+            //banditi nebo odpadlík vyhráli
+        }
+        if(komu.getRole() == Role.BANDITA){
+            //TODO: spočítat bandity: možná šerif vyhrál
+        }
+        if(komu.getRole() == Role.POMOCNIK){
+            //mozna vyhral ospadlik
+        }
+        
         //TODO: prohra
         
     }
@@ -60,6 +70,19 @@ public class PravidlaBangu implements HerniPravidla{
             balicek.vratNahoru(new Pivo(hra, balicek));
         }
         balicek.zamichej();
+    }
+
+    @Override
+    public void zacalTah(Hrac komu) {
+        komu.lizni();
+        komu.lizni();
+        komu.lizni();
+        komu.lizni();
+    }
+
+    @Override
+    public void skoncilTah(Hrac komu) {
+        //zatím nic
     }
     
 }
