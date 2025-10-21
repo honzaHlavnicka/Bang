@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useDialog } from "./DialogContext";
 
 const gameStateDefault: GameStateType = {
+    startedConection:false,
     gameStarted: false,
     inGame: false,
 

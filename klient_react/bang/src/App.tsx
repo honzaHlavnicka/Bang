@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { useGame } from './modules/GameContext';
+import { useGame, type GameStateType } from './modules/GameContext';
 import WaitingRoom from "./pages/WaitingRoom";
 
 // Lazy importy těžkých stránek
@@ -30,10 +30,22 @@ function App() {
           <BeforeGameWaiting />
         )
       ) : (
-        <LoginPage />
+        <SafeLoginPage startedConection={gameState.startedConection} />
       )}
     </Suspense>
   );
+}
+
+function SafeLoginPage({ startedConection }: { startedConection: boolean }) {
+  if (!startedConection) {
+    return <WaitingRoom>
+      <h1>Probíhá připojování k serveru...</h1>
+      <hr />
+      Pokud se tato obrazovka nezmění během několika sekund, zkontroluj prosím připojení k internetu a zda není server vypnutý.
+      </WaitingRoom>;
+  } else {
+    return <LoginPage />;
+  }
 }
 
 export default App;

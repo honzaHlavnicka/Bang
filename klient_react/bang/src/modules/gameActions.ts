@@ -312,6 +312,7 @@ export function handleGameMessage(
         case "welcome": {
             //toto by měl přijít jako první po připojení
             if(socket != null){
+                stateRef.current.startedConection = true;
                 socket.send("infoHer");
             }
             break;

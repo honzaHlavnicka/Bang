@@ -9,6 +9,7 @@ export type CardType = {
 }
 
 export type GameStateType = {
+    startedConection:boolean;
     inGame:boolean;
     gameStarted:boolean;
     gameTypesAvailable?:Array<{id:number,name:string,description:string}>
