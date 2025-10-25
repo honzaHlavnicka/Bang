@@ -11,7 +11,6 @@ import cz.honza.bang.karty.Karta;
 import cz.honza.bang.postavy.Postava;
 import cz.honza.bang.karty.HratelnaKarta;
 import cz.honza.bang.net.Chyba;
-import cz.honza.bang.net.KomunikatorHry;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -145,7 +144,7 @@ public class Hrac {
      * @return odebral se život úspěšně
      */
     public boolean odeberZivot() {
-        if (zivoty <= 0) {//TODO: kdyz ma moc zivotu, nez kolik muze mit
+        if (zivoty < 0) {//TODO: kdyz ma moc zivotu, nez kolik muze mit
             hra.getHerniPravidla().dosliZivoty(this);
             return false;
         } else {
@@ -276,6 +275,7 @@ public class Hrac {
     
     /**
      * Pokud je hráč na tahu, tak spálí kartu, tzn. přesune ji na vyhazovací baliček, ale neprovede její efekt.
+     * Dává možnost kartě na spálení reagovat.
      * @param id karty
      */
     public void spalitKartu(String id){
@@ -287,6 +287,7 @@ public class Hrac {
         for (Karta karta : karty) {
             if(karta.getId() == idKarty){
                 if (hra.getHerniPravidla().muzeSpalit(karta)){
+                    karta.predSpalenim();
                     karty.remove(karta);
                     hra.getOdhazovaciBalicek().vratNahoru(karta);
                     //TODO: informovat hráče
@@ -300,6 +301,7 @@ public class Hrac {
         for (Karta karta : vylozeneKarty) { //TODO: DRY
             if (karta.getId() == idKarty) {
                 if (hra.getHerniPravidla().muzeSpalit(karta)) {
+                    karta.predSpalenim();
                     karty.remove(karta);
                     hra.getOdhazovaciBalicek().vratNahoru(karta);
 
@@ -350,6 +352,15 @@ public class Hrac {
         hra.getSpravceTahu().dalsiHrac().zahajitTah();
         hra.getHerniPravidla().skoncilTah(this);
     }
+
+    public List<Karta> getVylozeneKarty() {
+        return vylozeneKarty;
+    }
+
+    public List<Efekt> getEfekty() {
+        return efekty;
+    }
+    
     
     /**
      * vrátí všechny veřejné informace o hráči ve formátu JSON
