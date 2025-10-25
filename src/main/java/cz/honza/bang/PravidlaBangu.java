@@ -11,6 +11,7 @@ import cz.honza.bang.karty.Dostavnik;
 import cz.honza.bang.karty.Karta;
 import cz.honza.bang.karty.Pivo;
 import cz.honza.bang.karty.WellsFarkgo;
+import java.util.List;
 
 /**
  *
@@ -44,6 +45,22 @@ public class PravidlaBangu implements HerniPravidla{
         
         //TODO: prohra
         
+        List<Karta> karty = komu.getKarty();
+        for (Karta karta : karty) {
+            hra.getOdhazovaciBalicek().vratNahoru(karta);
+            hra.getKomunikator().posli(komu, "odehrat:" + komu.getId() + "," + karta.toJSON());
+        }
+        karty.clear();
+        //TODO:DRY
+        karty = komu.getVylozeneKarty();
+        for (Karta karta : karty) {
+            hra.getOdhazovaciBalicek().vratNahoru(karta);
+            hra.getKomunikator().posli(komu,"odehrat:"+komu.getId()+ "," + karta.toJSON()); //TODO: to asi nebude odehrat 
+       }
+       karty.clear();     
+        
+        //TODO: poslat smrt, poslat karty
+        
     }
 
     @Override
@@ -74,8 +91,6 @@ public class PravidlaBangu implements HerniPravidla{
 
     @Override
     public void zacalTah(Hrac komu) {
-        komu.lizni();
-        komu.lizni();
         komu.lizni();
         komu.lizni();
     }
