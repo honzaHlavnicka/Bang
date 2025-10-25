@@ -226,8 +226,23 @@ public class Hra {
         odhazovaciBalicek.otoc();
         Balicek novyOdhazovaciBalicek = balicek;
         balicek = odhazovaciBalicek;
-        odhazovaciBalicek = novyOdhazovaciBalicek;
-        
+        odhazovaciBalicek = novyOdhazovaciBalicek;   
     }
-   
+    
+    public int vzdalenostHracu(Hrac zPohledu, Hrac komu) throws IllegalArgumentException {
+        //TODO: pouze hrací hráči, neměl by to dělat správce tahu
+        int velikost = hraci.size();
+        int i1 = hraci.indexOf(zPohledu);
+        int i2 = hraci.indexOf(komu);
+
+        if (i1 == -1 || i2 == -1) {
+            throw new IllegalArgumentException("Hráč nebyl nalezen v seznamu");
+        }
+
+        int rozdil = Math.abs(i1 - i2);
+        int zpetnaVzdalenost = velikost - rozdil;
+        
+        int rozdilPodleMist = Math.min(rozdil, zpetnaVzdalenost);
+        return rozdilPodleMist;
+    }
 }
