@@ -213,17 +213,14 @@ public class Hrac {
             if(karta.getId() == idKarty){
                 if (karta instanceof HratelnaKarta hratelna) {
                     if(hratelna.odehrat(this)){ //provede efekt karty, karta zkontroluje jestli je hratelna v tomto kontextu.
-                        
-                        
+ 
                         hra.getOdhazovaciBalicek().vratNahoru(karta);
                         karty.remove(karta);
                         
                         hra.getKomunikator().posliVsem("odehrat:" + this.id + '|' + karta.toJSON());
                         hra.getKomunikator().posliVsem("novyPocetKaret:" + this.id + "," + karty.size(), this);
                         //FIX: předpokládá, že v karta.toJSON() není znak |, ale co když je?
-                        
                         hra.getHerniPravidla().poOdehrani(this);
-
                         return;
                     }else{
                         hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEJDE_ZAHRAT);
@@ -282,16 +279,21 @@ public class Hrac {
         hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
     }
     
-    public void vylozitKartu(String id){
+    public void vylozitKartu(String id, String idHrace){ //TODO: asi by mohlo brát objekty a prevodni metoda by mela byt jina
         int idKarty = Integer.parseInt(id);
+        int idPredKoho = Integer.parseInt(idHrace);      //TODO: try/chatch -> Chyba
         if (!hra.getSpravceTahu().getNaTahu().equals(this)) {
             hra.getKomunikator().posiChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
         }
         for (Karta karta : karty) {
             if (karta.getId() == idKarty) {
-                if(karta instanceof VylozitelnaKarta){
-                    //TODO: doělat
+                if(karta instanceof VylozitelnaKarta vylozena){
+                     if(vylozena.vylozit(this, hra.getHrac(idPredKoho))){
+                         efekty.add(vylozena.getEfekt());
+                     }else{
+                         hra.getKomunikator().posiChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);
+                     }
                 }else{
                     hra.getKomunikator().posiChybu(this, Chyba.NENI_VYLOZITELNA);
                     return;
