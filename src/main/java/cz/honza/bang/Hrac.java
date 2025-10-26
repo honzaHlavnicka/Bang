@@ -139,7 +139,6 @@ public class Hrac {
         
     }
     
-    
     public int getZivoty() {
         return zivoty;
     }
@@ -204,7 +203,12 @@ public class Hrac {
      * @param id id karty
      */
     public void odehranaKarta(String id) {
-        int idKarty = Integer.parseInt(id);
+        try{
+            int idKarty = Integer.parseInt(id);
+        }catch(NumberFormatException ex){
+            hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
+            return;
+        }
         if(!hra.getSpravceTahu().getNaTahu().equals(this)){
             hra.getKomunikator().posiChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
@@ -217,16 +221,15 @@ public class Hrac {
                         hra.getOdhazovaciBalicek().vratNahoru(karta);
                         karty.remove(karta);
                         
-                        hra.getKomunikator().posliVsem("odehrat:" + this.id + '|' + karta.toJSON());
+                        hra.getKomunikator().posliVsem("odehrat:" + this.id + '|' + karta.toJSON());//FIX: změnit "|" na ","
                         hra.getKomunikator().posliVsem("novyPocetKaret:" + this.id + "," + karty.size(), this);
-                        //FIX: předpokládá, že v karta.toJSON() není znak |, ale co když je?
+                        
                         hra.getHerniPravidla().poOdehrani(this);
                         return;
                     }else{
                         hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEJDE_ZAHRAT);
                         return;
                     }
-
                 } else {
                     hra.getKomunikator().posiChybu(this, Chyba.KARTA_NENI_HRATELNA);
                     return;
@@ -243,7 +246,13 @@ public class Hrac {
      * @param id karty
      */
     public void spalitKartu(String id){
-        int idKarty = Integer.parseInt(id);
+        int idKarty;
+        try{
+            idKarty = Integer.parseInt(id);
+        }catch(NumberFormatException ex){
+            hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
+            return;
+        }
         if (!hra.getSpravceTahu().getNaTahu().equals(this)) {
             hra.getKomunikator().posiChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
@@ -279,8 +288,15 @@ public class Hrac {
     }
     
     public void vylozitKartu(String id, String idHrace){ //TODO: asi by mohlo brát objekty a prevodni metoda by mela byt jina
-        int idKarty = Integer.parseInt(id);
-        int idPredKoho = Integer.parseInt(idHrace);      //TODO: try/chatch -> Chyba
+        int idKarty;
+        int idPredKoho;
+        try{
+            idKarty = Integer.parseInt(id);
+            idPredKoho = Integer.parseInt(idHrace);
+        }catch(NumberFormatException ex){
+            hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
+            return;
+        }
         if (!hra.getSpravceTahu().getNaTahu().equals(this)) {
             hra.getKomunikator().posiChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
