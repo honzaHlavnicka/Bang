@@ -35,7 +35,7 @@ public class ProstrediHry {
     }
     */
    /* public Karta liznoutKartu(){
-        //TODO
+       
         
     }*/
     

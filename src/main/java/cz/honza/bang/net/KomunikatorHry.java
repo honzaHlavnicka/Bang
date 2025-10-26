@@ -141,7 +141,7 @@ public class KomunikatorHry {
         hra.nactiHru(conn,hraciPodleWebsocketu.get(conn));
         
         
-        //TODO: načtení hry
+  
     }
     
     public void hracOdpojen(WebSocket conn){

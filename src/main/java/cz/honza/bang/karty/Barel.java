@@ -42,7 +42,7 @@ public class Barel extends Karta implements VylozitelnaKarta{
         return efekt;
     }
     public void spalitVylozenou(){
-        //TODO: udělat něco
+        // udělat něco
     }
     
 }

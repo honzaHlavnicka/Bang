@@ -52,10 +52,6 @@ public class SocketServer extends WebSocketServer {
     public void onMessage(WebSocket conn, String message) {
         System.out.println("zpráva: " + message);
 
-        if(message.startsWith("pripojeniKeHre:222")){ //TODO: ODSTRANIT! POUZE PRO TESTY, BESPEČNOSTNÍ CHYBA. 
-            conn.send("popoup:zde je seznam všech her\n" + hryPodleId);
-            return;
-        }
         
         if(message.startsWith("serverInfo")){//TODO: omezit přístup heslem
             conn.send("serverDataHTML:"+serverDataHTML());

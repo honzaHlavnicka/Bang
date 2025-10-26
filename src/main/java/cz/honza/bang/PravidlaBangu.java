@@ -55,7 +55,7 @@ public class PravidlaBangu implements HerniPravidla{
         karty = komu.getVylozeneKarty();
         for (Karta karta : karty) {
             hra.getOdhazovaciBalicek().vratNahoru(karta);
-            hra.getKomunikator().posli(komu,"odehrat:"+komu.getId()+ "," + karta.toJSON()); //TODO: to asi nebude odehrat 
+            hra.getKomunikator().posli(komu,"odehrat:"+komu.getId()+ "," + karta.toJSON()); //TODO: to asi nebude odehrat, bude to spalit, ale ještě namám protokol.
        }
        karty.clear();     
         
