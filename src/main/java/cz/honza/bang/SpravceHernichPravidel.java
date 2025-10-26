@@ -32,7 +32,7 @@ public class SpravceHernichPravidel {
             new InfoOHre(2,
                     "Volná hra",
                     "Hra, která neblokuje téměř nic a obsahuje někajé náhodné karty",
-                    PravidlaUNO::new //TODO: jína pravidla
+                    PravidlaVolna::new //TODO: jína pravidla
             )
     );
 

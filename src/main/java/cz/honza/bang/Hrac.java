@@ -10,6 +10,7 @@ import cz.honza.bang.karty.Efekt;
 import cz.honza.bang.karty.Karta;
 import cz.honza.bang.postavy.Postava;
 import cz.honza.bang.karty.HratelnaKarta;
+import cz.honza.bang.karty.VylozitelnaKarta;
 import cz.honza.bang.net.Chyba;
 import java.util.ArrayList;
 import java.util.List;
@@ -314,8 +315,28 @@ public class Hrac {
         }
         hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
     }
+    
+    public void vylozitKartu(String id){
+        int idKarty = Integer.parseInt(id);
+        if (!hra.getSpravceTahu().getNaTahu().equals(this)) {
+            hra.getKomunikator().posiChybu(this, Chyba.NEJSI_NA_TAHU);
+            return;
+        }
+        for (Karta karta : karty) {
+            if (karta.getId() == idKarty) {
+                if(karta instanceof VylozitelnaKarta){
+                    //TODO: doělat
+                }else{
+                    hra.getKomunikator().posiChybu(this, Chyba.NENI_VYLOZITELNA);
+                    return;
+                }
+                return;
+            }
+        }
+    }
+    
     /**
-     * Přidá hráči karu z balíčku hry. Pošle o tom upozornění všem hráčům.
+     * Přidá hráči karu z balíčku hry. Pošle o tom upozornění všem hráčům, nekontroluje zda hráč může lízat.
      */
     public void lizni(){
         Karta karta = hra.getBalicek().lizni();

@@ -19,7 +19,9 @@ public enum Chyba {
     POSTAVA_NENI_NA_VYBER("Postava není na výběr",6,1),
     NEJSI_NA_TAHU("Nejsi na tahu.",7,3),
     NEMUZES_UKONCIT_TAH("Takhle tah ukončit nejde.",8,3),
-    KARTA_NEJDE_SPALIT("Tuhle kartu bohužel nemůžeš spálit.",9,1)
+    KARTA_NEJDE_SPALIT("Tuhle kartu bohužel nemůžeš spálit.",9,1),
+    NENI_VYLOZITELNA("Tahle karta není vyložitelná.",10,1),
+    KARTU_NEJDE_VYLOZIT("Tuhle kartu teď nemůžeš vyložit.",11,3)
     ;
     private final String zprava;
     private final int kod;
