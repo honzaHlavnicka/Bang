@@ -251,7 +251,6 @@ public class Hrac {
         for (Karta karta : karty) {
             if(karta.getId() == idKarty){
                 if (hra.getHerniPravidla().muzeSpalit(karta)){
-                    karta.predSpalenim();
                     karty.remove(karta);
                     hra.getOdhazovaciBalicek().vratNahoru(karta);
                     //TODO: informovat hráče
@@ -265,11 +264,11 @@ public class Hrac {
         for (Karta karta : vylozeneKarty) { //TODO: DRY
             if (karta.getId() == idKarty) {
                 if (hra.getHerniPravidla().muzeSpalit(karta)) {
-                    karta.predSpalenim();
-                    karty.remove(karta);
+                    ((VylozitelnaKarta) karta).spalitVylozenou();
+                    vylozeneKarty.remove(karta);
                     hra.getOdhazovaciBalicek().vratNahoru(karta);
 
-                    //TODO: informovat hráče
+                    hra.getKomunikator().posliVsem("spalenaVylozena:" + karta.getId() + "," + this.id);
                 } else {
                     hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEJDE_SPALIT);
                 }

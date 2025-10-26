@@ -12,7 +12,7 @@ import cz.honza.bang.Hrac;
  *
  * @author honza
  */
-public interface VylozitelnaKarta {
+public interface VylozitelnaKarta{
     public boolean vylozit(Hrac predKoho,Hrac kym);
     public Efekt getEfekt();
     public void spalitVylozenou();
