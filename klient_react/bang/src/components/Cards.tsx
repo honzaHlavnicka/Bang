@@ -1,8 +1,19 @@
 import type { CardType } from "../modules/GameContext";
-import Card from "./Card";
+import Card, { type CardSizeType } from "./Card";
 
 
-export default function Cards({isRotated = true,cards,onClickCard}: {isRotated?: boolean,cards:Array<CardType>,onClickCard?:{(e: React.MouseEvent<HTMLDivElement>): void}}) {
+export default function Cards({
+    isRotated = true,
+    cards,
+    onClickCard,
+    isAnimated = true,
+    size = "NORMAL"
+}: {isRotated?: boolean,
+    isAnimated?:boolean,
+    cards:Array<CardType>,
+    size:CardSizeType,
+    onClickCard?:{(e: React.MouseEvent<HTMLDivElement>): void}}
+) {
     if(cards === undefined || cards.length === 0 || cards === null){
         return;
     }
@@ -16,10 +27,11 @@ export default function Cards({isRotated = true,cards,onClickCard}: {isRotated?:
                 image={"/img/karty/" + card.image + ".png"}
                 key={card.id}
                 id={card.id}
-                animationOnStart
+                animationOnStart={isAnimated}
                 biggerOnHover
                 isInLine
                 isRotated={isRotated}
+                size={size}
             />
             ))}
         </div>

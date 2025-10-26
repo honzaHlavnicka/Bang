@@ -1,6 +1,7 @@
 import css from '../styles/card.module.css';
 import { useZoom } from "../modules/ZoomContext";
 
+export type CardSizeType = "NORMAL"|"SMALL"|"BIG"
 
 type CardProps = {
     image: string;
@@ -12,6 +13,7 @@ type CardProps = {
     isInLine?: boolean;
     id?:number;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
+    size:CardSizeType
 };
 
 export default function Card({
@@ -24,6 +26,7 @@ export default function Card({
     isInLine = false,
     id,
     onClick,
+    size = "NORMAL"
 }: CardProps) {
     const nic = "";
     const { isZoomMode, zoomedCard, setZoomedCard } = useZoom();
