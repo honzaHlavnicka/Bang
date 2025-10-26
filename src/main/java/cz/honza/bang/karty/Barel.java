@@ -32,8 +32,17 @@ public class Barel extends Karta implements VylozitelnaKarta{
     
 
     @Override
-    public Efekt vylozit(Hrac predKoho, Hrac kym) {
+    public boolean vylozit(Hrac predKoho, Hrac kym) {
+        return predKoho.equals(kym);
+    }
+    
+    
+    @Override
+    public Efekt getEfekt(){
         return efekt;
+    }
+    public void spalitVylozenou(){
+        //TODO: udělat něco
     }
     
 }
