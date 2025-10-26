@@ -22,6 +22,7 @@ export type GameStateType = {
     maxHealth?:number;
     character?:string;
     handCards?: Array<CardType> | null;
+    vylozeneCards?:Array<CardType> | null;
     inPlayCards?: Array<CardType> | null;
     playerId: number| null;
 

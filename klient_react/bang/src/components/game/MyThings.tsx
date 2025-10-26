@@ -9,6 +9,7 @@ import NameTag from "./NameTag";
     const jmeno = gameState.name;
     const karty = gameState.handCards || [];
     const postava = gameState.character || "TESTOVACI";
+    const vylozeneKarty = gameState.vylozeneCards || [];
 
     function CardClick(e: React.MouseEvent<HTMLDivElement>){
         const cardId = parseInt((e.currentTarget as HTMLDivElement).getAttribute("data-id") || "-1");
@@ -28,7 +29,8 @@ import NameTag from "./NameTag";
                     <Card image={`/img/velkeZivoty/${gameState.health}zivoty.png`} />
                 </div>
             </div>
-            <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+            <div style={{flex: 1, display: "flex", justifyContent: "center",flexDirection:"column" }}>
+                <Cards isRotated={false} onClickCard={alert} cards={vylozeneKarty}/>
                 <Cards onClickCard={CardClick} cards={karty}/>
             </div>
         </div>

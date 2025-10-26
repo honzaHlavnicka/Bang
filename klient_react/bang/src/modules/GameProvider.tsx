@@ -12,7 +12,7 @@ const gameStateDefault: GameStateType = {
 
     gameCode: "",
 
-    
+    vylozeneCards:[{id:770,image:"nahodna"},{id:771,image:"nahodna"}],
     players: [],
     playerId: null,
     turnOrder: [],
