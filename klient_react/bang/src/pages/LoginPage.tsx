@@ -4,13 +4,14 @@ import { useGame } from '../modules/GameContext';
 import toast from 'react-hot-toast';
 import DarkModeSwitch from '../components/DarkModeSwitch';
 import globalCSS from "../styles/global.module.css";
+import ContextMenu from '../components/ContextMenu';
 
 export default function LoginPage() {
     const [gameCode, setGameCode] = useState('');
     const [jmeno, setJmeno] = useState('');
     const [idTypuHry, setIdTypuHry] = useState<number>(0);
     const { connectToGame, createGame, gameState, returnToGame } = useGame();
-
+    const [menu, setMenu] = useState({x:0,y:0,visible:false})
     
 
     useEffect(() => {
@@ -60,13 +61,14 @@ export default function LoginPage() {
             return false;
         }
         return true;
+
     }
 
     return (
-        <div className={css.kontent}>
+        <div onContextMenu={(e)=>{setMenu({visible:true,x:e.clientX,y:e.clientY});e.preventDefault()}} className={css.kontent}>
             <DarkModeSwitch style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
 
-            <main>
+            <main  >
                 <h1>Bang!</h1>
                 <p>
                     tadyto bude text, který bude něco říkat. Teď sice něco říká, 
@@ -136,6 +138,7 @@ export default function LoginPage() {
                     </button>
                 </div>                
             </main >
+            <ContextMenu x={menu.x} y={menu.y} />
         </div >
     );
 }
