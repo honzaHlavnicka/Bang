@@ -103,41 +103,7 @@ public class Hrac {
 
         hra.getKomunikator().posli(this,sb.toString());
     }
-    /**
-     * Odebere hráči život a upozorní na to ostatní. Obsahuje kontrolu smrti i přebytku životů.
-     * @return počet životů
-     * @deprecated 
-     * @see #odeberZivot()
-     */
-    @Deprecated
-    public int odeberZivot_old(){
-        if(zivoty <= 0){//TODO: kdyz ma moc zivotu, nez kolik muze mit
-            hra.getHerniPravidla().dosliZivoty(this);
-        }else{
-            zivoty--;
-            hra.getKomunikator().posliVsem("pocetZivotu:" + id + "," + zivoty);
-        }
-        return zivoty;
-        
-    }
-    
-    /**
-     * Přidá hráči život a upozorní na to ostatní. Obsahuje kontrolu smrti i přebytku životů.
-     * @return počet životů
-     * @deprecated 
-     * @see #pridejZivot()
-     */
-    @Deprecated
-    public int pridejZivot_old(){//TODO: kdyz ma moc zivotu, nez kolik muze mit
-        if(zivoty >= maximumZivotu){
-            
-        }else{
-            zivoty ++;
-            hra.getKomunikator().posliVsem("pocetZivotu:" + id + "," + zivoty);
-        }
-        return zivoty;
-    }
-    
+     
     /**
      * Odebere hráči život a upozorní na to ostatní. Obsahuje kontrolu smrti i
      * přebytku životů.
