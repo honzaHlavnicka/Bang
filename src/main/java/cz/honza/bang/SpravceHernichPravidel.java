@@ -8,6 +8,7 @@ package cz.honza.bang;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
  * @author honza
  */
 public class SpravceHernichPravidel {
+    private record InfoOHre(int id, String jmeno, String popis, Function<Hra, HerniPravidla> tvurce){}
 
     private static final List<InfoOHre> HRY = List.of(
             new InfoOHre(
