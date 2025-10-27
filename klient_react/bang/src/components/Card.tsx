@@ -13,7 +13,7 @@ type CardProps = {
     isInLine?: boolean;
     id?:number;
     onClick?: React.MouseEventHandler<HTMLDivElement>;
-    size:CardSizeType
+    size?:CardSizeType
 };
 
 export default function Card({

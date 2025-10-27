@@ -13,6 +13,7 @@ export default function CentralPanel() {
         <div style={{flex:1, minHeight:0, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", }}>
             <button className={globalCSS.button}  onClick={()=>{endTurn();}} style={{marginRight:20}}>Ukončit tah</button>
             <Deck images={imagesForDeck} />
+            
             <Card image={"/img/karty/zezadu.png"} name="dobírací balíček" onClick={()=>drawCard()}/>
             <ZoomToggleButton />
         </div>

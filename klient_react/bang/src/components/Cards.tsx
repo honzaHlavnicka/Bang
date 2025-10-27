@@ -11,7 +11,7 @@ export default function Cards({
 }: {isRotated?: boolean,
     isAnimated?:boolean,
     cards:Array<CardType>,
-    size:CardSizeType,
+    size?:CardSizeType,
     onClickCard?:{(e: React.MouseEvent<HTMLDivElement>): void}}
 ) {
     if(cards === undefined || cards.length === 0 || cards === null){
