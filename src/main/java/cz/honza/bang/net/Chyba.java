@@ -21,7 +21,8 @@ public enum Chyba {
     NEMUZES_UKONCIT_TAH("Takhle tah ukončit nejde.",8,3),
     KARTA_NEJDE_SPALIT("Tuhle kartu bohužel nemůžeš spálit.",9,1),
     NENI_VYLOZITELNA("Tahle karta není vyložitelná.",10,1),
-    KARTU_NEJDE_VYLOZIT("Tuhle kartu teď nemůžeš vyložit.",11,3)
+    KARTU_NEJDE_VYLOZIT("Tuhle kartu teď nemůžeš vyložit.",11,3),
+    CHYBA_PROTOKOLU("Nastala chyba při komunikaci.\nZkontrolujte, zda používáte správnou verzi.",12,1)
     ;
     private final String zprava;
     private final int kod;

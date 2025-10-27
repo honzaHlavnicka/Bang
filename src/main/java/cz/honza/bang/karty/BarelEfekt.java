@@ -13,4 +13,5 @@ package cz.honza.bang.karty;
 public class BarelEfekt implements Efekt {
     //TODO: naprogramovat tento efekt :)
     
+    
 }

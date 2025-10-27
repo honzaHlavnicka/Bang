@@ -203,8 +203,9 @@ public class Hrac {
      * @param id id karty
      */
     public void odehranaKarta(String id) {
+        int idKarty;
         try{
-            int idKarty = Integer.parseInt(id);
+            idKarty = Integer.parseInt(id);
         }catch(NumberFormatException ex){
             hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
             return;
@@ -304,8 +305,9 @@ public class Hrac {
         for (Karta karta : karty) {
             if (karta.getId() == idKarty) {
                 if(karta instanceof VylozitelnaKarta vylozena){
-                     if(vylozena.vylozit(this, hra.getHrac(idPredKoho))){
-                         efekty.add(vylozena.getEfekt());
+                     Hrac predKoho = hra.getHrac(idPredKoho);
+                     if(vylozena.vylozit(this, predKoho)){ //todo: efekt se prida tomuto hraci, ale vyklada se pred jineho???
+                         predKoho.pridejEfekt(vylozena.getEfekt());
                      }else{
                          hra.getKomunikator().posiChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);
                      }
@@ -316,6 +318,7 @@ public class Hrac {
                 return;
             }
         }
+        hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
     }
     
     /**
@@ -346,6 +349,10 @@ public class Hrac {
         }else{
             hra.getKomunikator().posiChybu(this, Chyba.NEJSI_NA_TAHU);
         }
+    }
+    
+    public void pridejEfekt(Efekt efekt){
+        efekty.add(efekt);
     }
 
     /**

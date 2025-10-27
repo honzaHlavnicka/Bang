@@ -76,6 +76,16 @@ public class KomunikatorHry {
             String[] data = message.replace("dialog:", "").split(",",2);
             zpracujPozadanouOdpoved(Integer.valueOf(data[0]), data[1]);
         }
+        if(message.startsWith("vylozeni:")){
+            String[] data = message.replace("vylozeni:", "").split(",",2);
+            if(data.length == 1){
+                data = new String[]{data[0],Integer.toString(hrac.getId())};
+            }else if(data.length == 0){
+                posiChybu(hrac, Chyba.CHYBA_PROTOKOLU);
+                return;
+            }
+            hrac.vylozitKartu(data[0], data[1]);
+        }
     }
     
     /**

@@ -30,7 +30,6 @@ public class Barel extends Karta implements VylozitelnaKarta{
         return "barel";
     }
     
-
     @Override
     public boolean vylozit(Hrac predKoho, Hrac kym) {
         return predKoho.equals(kym);
