@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import type { GameStateType } from "./GameContext";
+import type { CardType, GameStateType } from "./GameContext";
 import { type DialogState } from "./DialogContext";
 import type { RefObject } from "react";
 
@@ -27,11 +27,6 @@ export function handleGameMessage(
     socket:WebSocket | null
 ) {
     console.log("%c" + event.data, "color: green");
-
-    if(event.data.startsWith("error")) {
-        //TODO: UPRAVIT aby server posílal i dvotečku.
-        event.data.replace("error:",":");
-    }//TODO: co to je za blbost?
 
     let type = "";
     let payload = "";
@@ -207,8 +202,7 @@ export function handleGameMessage(
                     return {
                         ...prev,
                         handCards: (prev.handCards ?? []).filter((c) => c.id !== card.id),
-                        inPlayCards: [...(prev.inPlayCards ?? []), card],
-                        discardPile: nextDiscard,
+                        discardPile: nextDiscard
                     };
                 });
             } catch (error) {
@@ -337,6 +331,20 @@ export function handleGameMessage(
             }else{
                 updatePlayerProperty(setGameState, playerId, "health", newHealth);
             }
+            break;
+        }
+        case "vylozit":{
+            const parts = payload.split(",",3);
+            const predKoho = Number(parts[0]);
+            const kym = Number(parts[1]);      //todo: out of index error
+            const co = JSON.parse(parts[2])
+            const card:CardType = {id:co.id,image:co.obrazek}
+            if(predKoho == stateRef.current.playerId){
+                setGameState((prev)=>({...prev, inPlayCards:[...prev.inPlayCards, card]}));
+            }else{
+                //todo: Doplnění karty ostatním.
+            }
+
             break;
         }
         default: {
