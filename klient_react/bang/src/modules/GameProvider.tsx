@@ -11,7 +11,7 @@ const gameStateDefault: GameStateType = {
     inGame: false,
 
     gameCode: "",
-
+    handCards:[],
     inPlayCards:[{id:770,image:"nahodna"},{id:771,image:"nahodna"}],
     players: [],
     playerId: null,
