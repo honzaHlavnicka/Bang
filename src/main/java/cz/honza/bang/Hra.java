@@ -230,7 +230,7 @@ public class Hra {
     }
     
     public int vzdalenostHracu(Hrac zPohledu, Hrac komu) throws IllegalArgumentException {
-        //TODO: pouze hrací hráči, neměl by to dělat správce tahu
+        //TODO: pouze hrací hráči, neměl by to dělat správce tahu?
         int velikost = hraci.size();
         int i1 = hraci.indexOf(zPohledu);
         int i2 = hraci.indexOf(komu);
@@ -244,5 +244,12 @@ public class Hra {
         
         int rozdilPodleMist = Math.min(rozdil, zpetnaVzdalenost);
         return rozdilPodleMist;
+    }
+    
+    public Karta sejmiKartu(){
+        Karta sejmuta = balicek.lizni();
+        odhazovaciBalicek.vratNahoru(sejmuta);
+        //TODO: informovat hráče.
+        return sejmuta;
     }
 }
