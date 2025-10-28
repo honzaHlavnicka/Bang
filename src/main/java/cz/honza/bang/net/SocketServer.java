@@ -42,10 +42,12 @@ public class SocketServer extends WebSocketServer {
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         System.out.println("Closed connection: " + reason);
-        //FIX: java.lang.NullPointerException: Cannot invoke "cz.honza.bang.net.KomunikatorHry.hracOdpojen(org.java_websocket.WebSocket)" because the return value of "java.util.Map.remove(Object)" is null
-        komunikatoryHracu.remove(conn).hracOdpojen(conn);
-        
        
+        KomunikatorHry komunikator = komunikatoryHracu.remove(conn);
+        
+        if(komunikator != null){           //Pokud byl uživatel připojen ke hře.
+            komunikator.hracOdpojen(conn);
+        }
     }
 
     @Override
