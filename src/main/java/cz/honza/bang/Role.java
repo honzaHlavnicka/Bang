@@ -6,6 +6,9 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author honza
@@ -13,11 +16,19 @@ package cz.honza.bang;
 public enum Role {
     SERIF,BANDITA,ODPADLIK,POMOCNIK;
     private static Role[] poradiZiskavaniRoli = new Role[]{Role.SERIF,Role.BANDITA,Role.ODPADLIK,Role.BANDITA,Role.POMOCNIK,Role.BANDITA,Role.POMOCNIK};
-    public static Role[] poleRoli(int kolik){
-        Role[] role = new Role[kolik];
+    
+    /**
+     * Vytvoří pole obsahující role pro určitý počet hráčů v bangu //TODO:přesunout do pravidel bangu
+     * @param kolik hráčů hraje = kolik rolí je potřeba
+     * @return pole rolí.
+     */
+    public static List<Role> poleRoliBangu(int kolik){
+        List<Role> role = new ArrayList<>(kolik);
         for (int i = 0; i < kolik; i++) {
-            role[i] = poradiZiskavaniRoli[i];
+            role.add(poradiZiskavaniRoli[i]);
         }
+        
+        System.out.println(role.toString());
         
         return role;
     }

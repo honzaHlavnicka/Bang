@@ -144,15 +144,18 @@ public class Hra {
      */
     public void setZahajena(boolean zahajena) {
         
-        
         if(!this.zahajena && zahajena){
             this.zahajena = zahajena;
             //zahájení hry:
-            Role[] role = Role.poleRoli(hraci.size());
             
-            for (int i = 0; i < role.length; i++) {
-                hraci.get(i).pripravKeHre(role[i]);                
-            }
+            List<Role> role =  new ArrayList<Role>(Role.poleRoliBangu(hraci.size()));
+            Collections.shuffle(role);
+            
+            //todo: přesunout do pravidel
+            
+            for (int i = 0; i < role.size(); i++) {
+                hraci.get(i).pripravKeHre(role.get(i));
+            }   
             
             komunikator.posliVsem("hraZacala");
             spravceTahu = new SpravceTahu(hraci);
