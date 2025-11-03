@@ -49,7 +49,7 @@ export function handleGameMessage(
                 const json = JSON.parse(payload) as { error: string };
                 toast.error(json.error);
             } catch (err) {
-                toast.error("Chyba ze serveru: " + payload);
+                toast.error("Chyba ze serveru: " + payload, + " chyba je: " + err);
             }
             break;
         }

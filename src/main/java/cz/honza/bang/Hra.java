@@ -6,14 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang;
 
-import cz.honza.bang.karty.Bang;
-import cz.honza.bang.karty.BangNaVsechny;
-import cz.honza.bang.karty.Eso;
 import cz.honza.bang.karty.Karta;
-import cz.honza.bang.karty.Pivo;
-import cz.honza.bang.karty.UnoKarta;
-import cz.honza.bang.karty.WellsFarkgo;
-import cz.honza.bang.karty.unoZmenaBarvy;
 import cz.honza.bang.net.KomunikatorHry;
 import cz.honza.bang.postavy.Postava;
 import java.util.ArrayList;
