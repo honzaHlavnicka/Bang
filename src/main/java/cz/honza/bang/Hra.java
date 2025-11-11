@@ -227,7 +227,7 @@ public class Hra {
     }
     
     public int vzdalenostHracu(Hrac zPohledu, Hrac komu) throws IllegalArgumentException {
-        //TODO: pouze hrací hráči, neměl by to dělat správce tahu?
+        //TODO: pouze hrací hráči, neměl by to dělat správce tahu? asi ne. měl by to dělat hráč a ST by měl vracet pole hrajících hráčů v pořadí.
         int velikost = hraci.size();
         int i1 = hraci.indexOf(zPohledu);
         int i2 = hraci.indexOf(komu);
@@ -242,6 +242,17 @@ public class Hra {
         int rozdilPodleMist = Math.min(rozdil, zpetnaVzdalenost);
         return rozdilPodleMist;
     }
+    
+   /* public List<Hrac> hraciNaDosahZbrane(Hrac zPohledu){
+        List<Hrac> hraciNaDosah = new ArrayList<>();
+        int i1 = hraci.indexOf(zPohledu);
+
+        for (Hrac hrac : hraci) {
+            if(hrac){
+                
+            }
+        }
+    }*/
     
     public Karta sejmiKartu(){
         Karta sejmuta = balicek.lizni();
