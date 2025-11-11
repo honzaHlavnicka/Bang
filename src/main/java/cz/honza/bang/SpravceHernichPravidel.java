@@ -6,6 +6,10 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang;
 
+import cz.honza.bang.pravidla.PravidlaUNO;
+import cz.honza.bang.pravidla.HerniPravidla;
+import cz.honza.bang.pravidla.PravidlaBangu;
+import cz.honza.bang.pravidla.PravidlaVolna;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;

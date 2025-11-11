@@ -4,8 +4,11 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang;
+package cz.honza.bang.pravidla;
 
+import cz.honza.bang.Balicek;
+import cz.honza.bang.Hra;
+import cz.honza.bang.Hrac;
 import cz.honza.bang.karty.Eso;
 import cz.honza.bang.karty.Karta;
 import cz.honza.bang.karty.UnoKarta;

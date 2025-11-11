@@ -2,8 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package cz.honza.bang;
+package cz.honza.bang.pravidla;
 
+import cz.honza.bang.Balicek;
+import cz.honza.bang.Hra;
+import cz.honza.bang.Hrac;
+import cz.honza.bang.Role;
 import cz.honza.bang.karty.Bang;
 import cz.honza.bang.karty.BangNaVsechny;
 import cz.honza.bang.karty.Barel;
