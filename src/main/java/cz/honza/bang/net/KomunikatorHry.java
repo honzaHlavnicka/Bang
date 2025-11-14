@@ -36,7 +36,7 @@ public class KomunikatorHry {
     }
     public static KomunikatorHry vytvor(SocketServer socket,int id,int typHry){
         KomunikatorHry komunikator = new KomunikatorHry(socket, id);
-        komunikator.hra = Hra.vytvor(komunikator, id,typHry);
+        komunikator.hra = Hra.vytvor(komunikator,typHry);
         return komunikator;
     }
     

@@ -30,7 +30,7 @@ public class PravidlaBangu implements HerniPravidla{
     
     @Override
     public void poOdehrani(Hrac kym) {
-        return; //TODO: nemělo by se něco stát?
+        return; 
     }
 
     @Override

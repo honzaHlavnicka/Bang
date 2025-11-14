@@ -50,10 +50,8 @@ public class Hra {
    
    
     
-    private Hra(KomunikatorHry komunikator,int id){
+    private Hra(KomunikatorHry komunikator){
         this.komunikator = komunikator;
-        
-        //TODO: proč se sem posílá id hry, když ho k ničemu nepotřebuju :D
         
         //vytvoří a zamíchá balíček postav //TODO:nemělo by být v pravidlech?
         balicekPostav = new Stack<>();
@@ -69,8 +67,8 @@ public class Hra {
      * @param id id hry.
      * @return new Hra();
      */
-    public static Hra vytvor(KomunikatorHry komunikator,int id,int typHry){
-        Hra hra = new Hra(komunikator,id);
+    public static Hra vytvor(KomunikatorHry komunikator,int typHry){
+        Hra hra = new Hra(komunikator);
         hra.herniPravidla = SpravceHernichPravidel.vytvorHerniPravidla(typHry, hra);
         hra.herniPravidla.pripravBalicek(hra.balicek);
         return hra;
@@ -156,9 +154,7 @@ public class Hra {
             spravceTahu = new SpravceTahu(hraci);
             spravceTahu.dalsiHracPodleRole(Role.SERIF).zahajitTah();
             System.out.println("zahájen tah v setzahajena");
-            
-            //TODO: dodelat
-            
+                        
             
         }
     }
