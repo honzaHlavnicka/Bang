@@ -26,7 +26,7 @@ public class SpravceTahu {
     private List<Hrac> hrajiciHraciCache;
     private boolean poradiAktualni = false;
 
-   private int nasobicTahu = 1;
+    private int nasobicTahu = 1;
     private int kolikatyTah = 1;
 
     public SpravceTahu(List<Hrac> hraci) {

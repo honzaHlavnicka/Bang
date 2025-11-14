@@ -13,6 +13,7 @@ import cz.honza.bang.karty.HratelnaKarta;
 import cz.honza.bang.karty.VylozitelnaKarta;
 import cz.honza.bang.net.Chyba;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -355,7 +356,16 @@ public class Hrac {
         efekty.add(efekt);
     }
     
-    public int cistaVzdalenostK(Hrac komu)throws IllegalArgumentException{
+    /**
+     * Vrátí fyickou vzdálenost k dalšímu hráči. Nebere v potaz žádné efekty. Funguje
+     * zpětně. Pokud hráči sedí vedle sebe, tak je vzdálenst 1.
+     * @param komu vůči komu se vzdálenost počítá
+     * @return vzdálenost k požadovnému hráči
+     * @throws IllegalArgumentException
+     * @see #vzdalenostPod(int)
+     * @see #vzdalenostKCista(cz.honza.bang.Hrac) 
+     */
+    public int fyzickaVzdalenostK(Hrac komu)throws IllegalArgumentException{
         List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
         
         int velikost = hraci.size();
@@ -375,8 +385,38 @@ public class Hrac {
     
     public int vzdalenostKCista(Hrac komu){
         //TODO: neignorovat efekty
-        return cistaVzdalenostK(komu);
+        return fyzickaVzdalenostK(komu);
     }
+    
+    /**
+     * Vrací List hráčů, jejichš vzdálenost je větší než <code>max</code>.
+     * Mezi tyto hráče se nepočítá <code>this</code>.
+     * @param max jaká maximální vzdálenost má být akceptovaná (včetně)
+     * @return List hráčů, kteří spn
+     * @see #fyzickaVzdalenostK(cz.honza.bang.Hrac) 
+     */
+    public List<Hrac> vzdalenostPod(int max){
+        List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
+
+        int velikost = hraci.size();
+        int i1 = hraci.indexOf(this);
+        if(i1 == -1){
+            throw new IllegalArgumentException("Hráč nebyl nalezen v seznamu");
+        }
+        
+        List<Hrac> vysledniHraci = new ArrayList<>();
+        
+        for (int i = 0; i < hraci.size(); i++) {
+            int rozdil = Math.abs(i1 - i);
+            int zpetnaVzdalenost = velikost - rozdil;
+            int rozdilPodleMist = Math.min(rozdil, zpetnaVzdalenost);
+            if(rozdilPodleMist >= max && i != i1){
+                vysledniHraci.add(hraci.get(i));
+            }
+        }
+        return vysledniHraci;
+    }
+    
 
     /**
      * Provede akce před koncem tahu a ukončí tah. Upozorní na to všechny.
@@ -384,7 +424,7 @@ public class Hrac {
      */
     public void konecTahu() {
         hra.getSpravceTahu().dalsiHrac().zahajitTah();
-        hra.getHerniPravidla().skoncilTah(this);
+        hra.getHerniPravidla().skoncilTah(this);        
     }
 
     public List<Karta> getVylozeneKarty() {

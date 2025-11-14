@@ -56,11 +56,8 @@ public class Bang extends Karta implements HratelnaKarta{
         json.put("id", "data-id");
         json.put("nadpis", "Vyber koho chceš zastřelit!");
         JSONArray hraciNaVyber = new JSONArray();
-        for (Hrac hrac : hra.getHraci()) {
-            if (!hrac.equals(hracCoOdehral))//TODO: zkontrolovat zda je nadosah
-            {
-                hraciNaVyber.put(hrac.getId());
-            }
+        for (Hrac hrac : hracCoOdehral.vzdalenostPod(1)) {
+           hraciNaVyber.put(hrac.getId());
         }
         json.put("hraci", hraciNaVyber);
         return json.toString();
