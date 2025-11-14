@@ -20,3 +20,10 @@ V současné době moje ročníková práce (IOČ)
 Zatím radši nijak, ale můžeme:
 1) buildnout javu
 2) ve složce `/klient-react/bang/` spustit `npm run build`
+
+
+# obsažené hry
+- **Bang!**: Hra Bangu. Nejdůležitější a nejsložitější.
+- **UNO**: Zjednodušená verze Una. Neobsahuje `+2`, `+4` a eso lze dát na každou kartu.
+- **prší**: Nedodělané.
+- **volná hra**: Hra pro testování, která nám nenastavuje moc hranice
