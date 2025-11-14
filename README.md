@@ -3,14 +3,18 @@ Server engine pro podporu karetních her využívajících prvků Bangu nebo mé
 
 V současné době moje ročníková práce (IOČ)
 
-# jak spustit
+# jak spustit  v dev režimu
 1) nejprve je potřeba otevřít a spustit java projekt v nějakém IDE (například Netbeans)
-2) poté je třeba najít soubor `/klient_react/bang/src/modules/GameProvider.tsx` a v něm nastavení režimu adresy serveru. V něm odkomentovat řádek obsahující `const socketAdress = "ws://localhost:9999";`.
+2) poté je třeba najít soubor `/klient_react/bang/src/modules/GameProvider.tsx` a v něm nastavení režimu adresy serveru. V něm odkomentovat řádek obsahující `const socketAdress = "ws://localhost:9999";` pokud chceme používat lokákální vezi.
 3) pak se můžou nainstalovat závislosti klienta a spustit jeho server.
 
     ```bash
    cd klient_react/bang/
-   nmp install
+   npm install
    npm run dev
   ```
  
+# jak udělat build
+Zatím radši nijak, ale můžeme:
+1) buildnout javu
+2) ve složce `/klient-react/bang/` spustit `npm run build`
