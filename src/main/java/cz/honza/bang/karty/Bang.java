@@ -32,6 +32,7 @@ public class Bang extends Karta implements HratelnaKarta{
                 System.out.println("Hráč odpověděl: " + odpoved);
                 Hrac naKoho = hra.getHrac(Integer.parseInt(odpoved));
                 
+
                 
                 //TODO: tady by mela probehnout nejaka kontrola barelu a podobne.
                 //TODO: tady by jsme se meli zeptat druheho hrace, zda nema vedle.

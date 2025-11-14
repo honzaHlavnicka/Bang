@@ -372,6 +372,11 @@ public class Hrac {
         int rozdilPodleMist = Math.min(rozdil, zpetnaVzdalenost);
         return rozdilPodleMist;
     }
+    
+    public int vzdalenostKCista(Hrac komu){
+        //TODO: neignorovat efekty
+        return cistaVzdalenostK(komu);
+    }
 
     /**
      * Provede akce před koncem tahu a ukončí tah. Upozorní na to všechny.
