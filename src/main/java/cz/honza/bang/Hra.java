@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang;
 
+import cz.honza.bang.pravidla.SpravceHernichPravidel;
 import cz.honza.bang.pravidla.HerniPravidla;
 import cz.honza.bang.karty.Karta;
 import cz.honza.bang.net.KomunikatorHry;
@@ -142,7 +143,7 @@ public class Hra {
             this.zahajena = zahajena;
             //zahájení hry:
             
-            List<Role> role =  new ArrayList<Role>(Role.poleRoliBangu(hraci.size()));
+            List<Role> role =  new ArrayList<>(Role.poleRoliBangu(hraci.size()));
             Collections.shuffle(role);
             
             //todo: přesunout do pravidel
@@ -225,7 +226,7 @@ public class Hra {
         balicek = odhazovaciBalicek;
         odhazovaciBalicek = novyOdhazovaciBalicek;   
     }
-    
+    @Deprecated
     public int vzdalenostHracu(Hrac zPohledu, Hrac komu) throws IllegalArgumentException {
         //TODO: pouze hrací hráči, neměl by to dělat správce tahu? asi ne. měl by to dělat hráč a ST by měl vracet pole hrajících hráčů v pořadí.
         int velikost = hraci.size();

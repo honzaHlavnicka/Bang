@@ -10,7 +10,7 @@ package cz.honza.bang.net;
  *
  * @author honza
  */
-import cz.honza.bang.SpravceHernichPravidel;
+import cz.honza.bang.pravidla.SpravceHernichPravidel;
 import org.java_websocket.server.WebSocketServer;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;

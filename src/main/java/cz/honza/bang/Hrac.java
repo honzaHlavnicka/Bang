@@ -354,6 +354,24 @@ public class Hrac {
     public void pridejEfekt(Efekt efekt){
         efekty.add(efekt);
     }
+    
+    public int cistaVzdalenostK(Hrac komu)throws IllegalArgumentException{
+        List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
+        
+        int velikost = hraci.size();
+        int i1 = hraci.indexOf(this);
+        int i2 = hraci.indexOf(komu);
+
+        if (i1 == -1 || i2 == -1) {
+            throw new IllegalArgumentException("Hráč nebyl nalezen v seznamu");
+        }
+
+        int rozdil = Math.abs(i1 - i2);
+        int zpetnaVzdalenost = velikost - rozdil;
+
+        int rozdilPodleMist = Math.min(rozdil, zpetnaVzdalenost);
+        return rozdilPodleMist;
+    }
 
     /**
      * Provede akce před koncem tahu a ukončí tah. Upozorní na to všechny.
