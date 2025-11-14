@@ -54,9 +54,11 @@ public class SocketServer extends WebSocketServer {
     public void onMessage(WebSocket conn, String message) {
         System.out.println("zpráva: " + message);
 
-        
-        if(message.startsWith("serverInfo")){//TODO: omezit přístup heslem
-            conn.send("serverDataHTML:"+serverDataHTML());
+        if(message.startsWith("serverInfo:")){//TODO: omezit přístup heslem
+            if(message.replace("serverInfo:", "") == "heslo123"){ //TODO: později přidat heslo do env.
+                conn.send("serverDataHTML:"+serverDataHTML());
+            }
+            conn.send("error:{\"error\":\"špatné heslo\"}");
             return;
         }
            
