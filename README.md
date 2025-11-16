@@ -27,3 +27,6 @@ Zatím radši nijak, ale můžeme:
 - **UNO**: Zjednodušená verze Una. Neobsahuje `+2`, `+4` a eso lze dát na každou kartu.
 - **prší**: Nedodělané.
 - **volná hra**: Hra pro testování, která nám nenastavuje moc hranice
+
+# dokumentace
+- **[Protokol síťové komunikace](docs/protocol/README.md)**: Kompletní dokumentace WebSocket protokolu mezi klientem a serverem
