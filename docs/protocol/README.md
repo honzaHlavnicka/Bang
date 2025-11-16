@@ -2,7 +2,7 @@
 
 Tato složka obsahuje kompletní dokumentaci komunikačního protokolu mezi klientem a serverem pro hru Bang.
 
-** Předem je třeba varovat, že byla z velké části vytvořena Copilotem. Byla celá zkontrolována, ale mohou se v ní nacházet chyby **
+**Předem je třeba varovat, že byla z velké části vytvořena Copilotem. Byla celá zkontrolována, ale mohou se v ní nacházet chyby**
 
 ## Přehled souborů
 
