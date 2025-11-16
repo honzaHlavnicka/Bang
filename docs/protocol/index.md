@@ -657,6 +657,8 @@ Chybová zpráva.
 error:{"error":"Hra neexistuje"}
 ```
 
+**Poznámka:** Podrobné informace o všech chybách, jejich kódech a skupinách naleznete v [chyby.md](chyby.md).
+
 ---
 
 ### 2.5 Ostatní zprávy
@@ -674,7 +676,7 @@ Echo: konecTahu
 ---
 
 ##### `popoup:<text>` (překlep v implementaci)
-Vyskakovací okno s textem.
+Vyskakovací okno s textem. Tato zpráva je určena pouze pro speciální účely a běžný uživatel by se s ní neměl setkat.
 
 **Payload:** text zprávy
 
@@ -753,7 +755,7 @@ popoup:Nějaká důležitá zpráva
 - Timeout neaktivní hry: 300 000 ms (5 minut)
 
 ### 4.3 JSON formát
-Všechny JSON objekty v payload jsou bez mezer a v jednom řádku.
+JSON objekty v payload jsou obvykle bez mezer a v jednom řádku (doporučeno, ale není zaručeno).
 
 ### 4.4 Budoucí vylepšení
 - Odstranění Echo zpráv

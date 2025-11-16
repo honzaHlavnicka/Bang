@@ -40,6 +40,15 @@ Stručný přehled pro rychlou orientaci:
 
 **Kdy použít:** Pro rychlé vyhledání konkrétní zprávy nebo struktury.
 
+### [chyby.md](chyby.md)
+Dokumentace chybových zpráv:
+- Formát chybových zpráv
+- Skupiny a kódy chyb
+- Přehled všech běžných chyb s popisy
+- Doporučené postupy pro zpracování chyb
+
+**Kdy použít:** Při implementaci error handlingu a zpracování chybových stavů.
+
 ## Rychlý start
 
 ### Pro vývojáře klienta
@@ -103,8 +112,8 @@ Všechny zprávy jsou textové (String) ve dvou formátech:
 
 ### JSON formát
 
-Všechny JSON objekty v payload jsou:
-- V jednom řádku
+Všechny JSON objekty v payload jsou obvykle:
+- V jednom řádku (doporučeno pro server, ale není zaručeno)
 - Bez zbytečných mezer
 - V UTF-8 kódování
 
@@ -195,7 +204,7 @@ Všechny chyby mají formát:
 
 **Aktuální verze:** 0.0.7
 
-Protokol je stále ve vývoji. Změny v budoucích verzích:
+Protokol je stále ve vývoji. Možné změny v budoucích verzích (nejsou zaručené):
 - Heartbeat mechanismus
 - Lepší error handling s kódy
 - Autentizace a autorizace
@@ -206,7 +215,6 @@ Protokol je stále ve vývoji. Změny v budoucích verzích:
 
 Pro otázky nebo návrhy ohledně protokolu:
 - Vytvořte issue v GitHub repozitáři
-- Kontaktujte vývojový tým
 
 ## Licence
 

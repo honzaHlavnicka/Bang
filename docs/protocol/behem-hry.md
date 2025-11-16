@@ -1,6 +1,6 @@
 # Fáze během hry
 
-Tato fáze začíná po zahájení hry (zpráva `hraZacala`) a trvá až do konce hry (zpráva `vyhral`). V této fázi probíhá samotná hra s tahy hráčů, hraním karet, líznutím karet a dalšími herními akcemi.
+Tato fáze začíná po zahájení hry (zpráva `hraZacala`). I po zprávě `vyhral` může fáze pokračovat, protože hráči mohou pozorovat dohrávanou hru. V této fázi probíhá samotná hra s tahy hráčů, hraním karet, líznutím karet a dalšími herními akcemi.
 
 ## Zahájení fáze
 
@@ -15,7 +15,7 @@ Po odeslání zprávy `zahajeniHry` serverem a následné odpovědi `hraZacala` 
 
 ## Struktura tahu
 
-Typický tah hráče probíhá takto:
+Typický tah hráče ve hře Bang probíhá takto (struktura se může lišit hra od hry):
 
 1. **Začátek tahu** - server oznámí začátek tahu
 2. **Líznutí karet** - hráč líže karty (obvykle 2)
@@ -183,7 +183,7 @@ hraZacala
 
 **Payload:** identifikátor role (String)
 
-**Možné role:**
+**Možné role (pro hru Bang, mohou se měnit v budoucích verzích):**
 - `šerif` - šerif
 - `bandita` - bandita
 - `zrádce` - zrádce
@@ -456,6 +456,8 @@ vyhral:0
 vyhral:2
 ```
 
+**Poznámka:** V budoucích verzích bude server pravděpodobně posílat více zpráv s podrobnostmi o konci hry.
+
 ---
 
 #### `chat:<zprava> [od: <jmeno>]`
@@ -500,6 +502,8 @@ error:{"error":"Už jsi líznul maximální počet karet"}
 error:{"error":"Tuto kartu nemůžeš odehrát"}
 error:{"error":"Musíš zahodit karty"}
 ```
+
+**Poznámka:** Podrobné informace o kódech chyb a jejich skupinách naleznete v [chyby.md](chyby.md).
 
 ---
 
