@@ -53,7 +53,7 @@ public class Hra {
     private Hra(KomunikatorHry komunikator){
         this.komunikator = komunikator;
         balicekPostav = new Stack<>();
-
+        
     }
     
     /**
