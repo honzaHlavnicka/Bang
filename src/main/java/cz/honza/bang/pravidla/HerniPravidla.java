@@ -7,6 +7,10 @@ package cz.honza.bang.pravidla;
 import cz.honza.bang.Balicek;
 import cz.honza.bang.Hrac;
 import cz.honza.bang.karty.Karta;
+import cz.honza.bang.postavy.Postava;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Stack;
 
 /**
  *
@@ -48,6 +52,11 @@ public interface HerniPravidla {
      * @param balicek
      */
     public void pripravBalicek(Balicek<Karta> balicek);
+    
+    default public void pripravBalicekPostav(Stack<Postava> balicekPostav){
+        balicekPostav.addAll(Arrays.asList(Postava.values()));
+        Collections.shuffle(balicekPostav);
+    };
     
     default public void zacalTah(Hrac komu){};
     default public void skoncilTah(Hrac komu){};

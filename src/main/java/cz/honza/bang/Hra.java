@@ -52,12 +52,8 @@ public class Hra {
     
     private Hra(KomunikatorHry komunikator){
         this.komunikator = komunikator;
-        
-        //vytvoří a zamíchá balíček postav //TODO:nemělo by být v pravidlech?
         balicekPostav = new Stack<>();
-        balicekPostav.addAll(Arrays.asList(Postava.values()));
-        Collections.shuffle(balicekPostav);
-        
+
     }
     
     /**
@@ -71,6 +67,7 @@ public class Hra {
         Hra hra = new Hra(komunikator);
         hra.herniPravidla = SpravceHernichPravidel.vytvorHerniPravidla(typHry, hra);
         hra.herniPravidla.pripravBalicek(hra.balicek);
+        hra.herniPravidla.pripravBalicekPostav(hra.balicekPostav);
         return hra;
     }
 

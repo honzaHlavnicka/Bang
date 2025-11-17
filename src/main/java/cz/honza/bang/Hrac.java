@@ -335,7 +335,8 @@ public class Hrac {
         karty.add(karta);
         System.out.println("lizani si");
         hra.getKomunikator().posli(this,karta.toJSONold());
-        hra.getKomunikator().posliVsem("setPocetKaret:" + id +  ',' + karty.size(),this);//TODO: opravit na klientovi
+        hra.getKomunikator().posliVsem("novyPocetKaret:" + this.id + "," + karty.size(), this);
+
     }
     
     /**
