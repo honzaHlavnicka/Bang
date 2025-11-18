@@ -14,6 +14,7 @@ import org.java_websocket.server.WebSocketServer;
 import javax.swing.*;
 import java.awt.*;
 import java.net.InetSocketAddress;
+import java.net.URL;
 
 public class ServerApp {
 
@@ -40,7 +41,7 @@ public class ServerApp {
         frame.setLayout(new FlowLayout());
         frame.add(new JLabel("Server běží!"));
         frame.add(stopButton);
-
+       
         frame.setSize(300, 100);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);

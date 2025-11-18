@@ -55,7 +55,7 @@ public class SocketServer extends WebSocketServer {
         System.out.println("zpráva: " + message);
 
         if(message.startsWith("serverInfo:")){
-            if(message.replace("serverInfo:", "") == "heslo123"){ //TODO: později přidat heslo do env.
+            if(message.replace("serverInfo:", "").equals("heslo123")){ //TODO: později přidat heslo do env.
                 conn.send("serverDataHTML:"+serverDataHTML());
             }
             conn.send("error:{\"error\":\"špatné heslo\"}");

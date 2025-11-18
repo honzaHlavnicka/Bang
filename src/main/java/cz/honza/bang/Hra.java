@@ -12,7 +12,6 @@ import cz.honza.bang.karty.Karta;
 import cz.honza.bang.net.KomunikatorHry;
 import cz.honza.bang.postavy.Postava;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
@@ -20,7 +19,7 @@ import org.java_websocket.WebSocket;
 
 
 /**
- *
+ * Třída samotné hry.
  * @author honza
  * 
  */
