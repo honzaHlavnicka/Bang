@@ -25,6 +25,8 @@
         }
         th {
             background-color: #f2f2f2;
+            position:sticky;
+            top:0;
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
@@ -37,6 +39,9 @@
         }
         h2{
             color: #555;
+            position:sticky;
+            top:0px;
+
         }
         button {
             padding: 10px 20px;
@@ -49,23 +54,44 @@
             color: #000000;
 
         }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap:1em;
+        }
+        #container {
+            margin-top: 20px;
+            border-top:3px solid #000000;
+            padding-top:20px;
+        }
 
-        
+      
     </style>
 </head>
 <body>
+    <h1>Connecting to Bang Server...</h1>
+    <p>Pokud trvá moc dlouho, server není možná zapnutý.</p>
     <script>
         ws = new WebSocket("ws://localhost:9999/");
         console.log("Connecting to ws://localhost:9999/");
         console.log(ws);
         ws.onopen = function() {
-            document.body.innerHTML = "<h1>Connected to Bang Server</h1><button onclick='ws.send(\"serverInfo\")'>načíst</button>";
+            document.body.innerHTML = "<h1>Connected to Bang Server</h1><form><input autofocus id=heslo type=password><button onclick='ws.send(\"serverInfo:\" + heslo.value);return false'>načíst</button></form><div id=container></div>";
         };
         ws.onmessage = function(event) {
             console.log("Received: " + event.data);
             if(event.data.startsWith("serverDataHTML:")) {
                 let info = event.data.substring("serverInfoHTML:".length);
-                document.body.innerHTML = info + "<button onclick='ws.send(\"serverInfo\")'>načíst znovu</button>";
+                container.innerHTML = info// + "<button onclick='ws.send(\"serverInfo\"+heslo)'>načíst znovu</button>";
             }
         };
     </script>
