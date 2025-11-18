@@ -28,7 +28,13 @@ public class SpravceTahu {
 
     private int nasobicTahu = 1;
     private int kolikatyTah = 1;
+    
+    private boolean zmenenSmer = false;
 
+    /**
+     * Třída pro správu tahů. Podporuje dynamicky měnit směr, přidávat dočasné tahy i násobit tahy.
+     * @param hraci
+     */
     public SpravceTahu(List<Hrac> hraci) {
         this.frontaTahu = new ArrayDeque<>();
         for (Hrac hrac : hraci) {
@@ -38,17 +44,22 @@ public class SpravceTahu {
    }
     
     /**
-     * Stejné jako dalsiHrac(), ale přeskočí všechny hráče, kteří nemají roli <code> role </code>. Přeskočení hráči se přidají na konec, stejně jako kdyby už hráli.
-     * @param role například Role.SERIF, role kterou má mít následující hráč.
-     * @return hráč který je na tahu po spuštění metody.
+     * Vrátí kolekci hráčů, kteří jsou zapojeni ve hře v pořadí, ve kterém se vykonávají jejich tahy.
+     * Ignoruje jednorázové tahy.
+     * Respektuje směr, tzn. hráči vždy budou hrát směrem od 0 do List.size().
+
+     * @return kolekce hráčů seřazená podle pořadí hraní.
      */
     public List<Hrac> getHrajiciHraci() {
         if (!poradiAktualni) {
             hrajiciHraciCache = new ArrayList<>();
             for (Tah t : frontaTahu) {
-                if (!t.docasneZruseny) {
+                if (!t.docasneZruseny && !t.jednorazovy) {
                     hrajiciHraciCache.add(t.hrac);
                 }
+            }
+            if(zmenenSmer){
+                hrajiciHraciCache = hrajiciHraciCache.reversed();
             }
             poradiAktualni = true;
         }
@@ -58,18 +69,32 @@ public class SpravceTahu {
      /**
      * Spustí tah dalšího hráče. Další hráč nebude upozorněn, pouze se nastaví
      * interně ve správci tahů.
+     * 
+     * Pokud už žádní hráči, co by mohli mít tah, nehrajou, zůstane zvolen stejný hráč, který byl doposud.
      *
-     * @return hráč, který je na tahu
+     * @return hráč, který je na tahu. 
      */
     public Hrac dalsiHrac() {
+        if(getHrajiciHraci().isEmpty()){
+            return naTahu;
+        }
         if (kolikatyTah >= nasobicTahu) {
-            Tah tah = frontaTahu.pollFirst();
+            Tah tah;
+            if(!zmenenSmer){
+                tah = frontaTahu.pollFirst();
+            }else{
+                tah = frontaTahu.pollLast();
+            }
             if (tah == null) {
                 throw new IllegalStateException("Ve frontě tahů není žádný hráč.");
             }
 
             if (!tah.jednorazovy) {
-                frontaTahu.addLast(tah);
+                if(zmenenSmer){
+                    frontaTahu.addFirst(tah);
+                }else{
+                    frontaTahu.addLast(tah);
+                }
             }
 
             if (!tah.docasneZruseny) {
@@ -81,7 +106,6 @@ public class SpravceTahu {
                 // přeskočí vyřazeného hráče
                 return dalsiHrac();
                 //TODO: udelat limit poctu hracu treba 30, aby nemohlo nastata preteceni zasobniku
-                //TODO: udeat, aby kdyz zadny hrac neexistuje nenastalo owerflůowError
             }
         }
 
@@ -110,7 +134,7 @@ public class SpravceTahu {
     }
 
     /**
-     * další hráč bude přeskočen. Stávající hráč hraje dál, neukončí to jeho tah.
+     * Další hráč bude přeskočen. Stávající hráč hraje dál, neukončí to jeho tah.
      * @return hráč, který byl přeskočen.
      */
     public Hrac eso(){
@@ -174,6 +198,17 @@ public class SpravceTahu {
     public void pridatHrace(Hrac koho) {
         frontaTahu.addLast(new Tah(koho, false));
         poradiAktualni = false;
+    }
+    
+    /**
+     * Změní směr hraní
+     */
+    public void zmenaSmeru(){
+        if(zmenenSmer){
+            zmenenSmer = false;
+        }else{
+            zmenenSmer = true;
+        }
     }
 }
 
