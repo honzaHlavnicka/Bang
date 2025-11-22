@@ -8,26 +8,65 @@ package cz.honza.bang.karty;
 
 import cz.honza.bang.Balicek;
 import cz.honza.bang.Hra;
+import cz.honza.bang.Hrac;
+import cz.honza.bang.karty.HratelnaKarta;
 
 /**
  *
  * @author honza
  */
-public class PrsiKarta extends Karta{
-
-    public PrsiKarta(Hra hra, Balicek<Karta> balicek) {
+public class PrsiKarta extends Karta implements HratelnaKarta{
+    PrsiBarva barva;
+    PrsiHodnota hodnota;
+    
+    public PrsiKarta(Hra hra, Balicek<Karta> balicek,PrsiBarva b,PrsiHodnota h) {
         super(hra, balicek);
+        barva = b;
+        hodnota = h;
+    }
+
+    public PrsiBarva getBarva() {
+        return barva;
+    }
+
+    public void setBarva(PrsiBarva barva) {
+        this.barva = barva;
+    }
+
+    public PrsiHodnota getHodnota() {
+        return hodnota;
+    }
+
+    public void setHodnota(PrsiHodnota hodnota) {
+        this.hodnota = hodnota;
     }
     
     
 
     @Override
     public String getObrazek() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return "marias/" + hodnota.toString().toLowerCase() + "_" + barva.getImagePrefix();
     }
 
     @Override
     public String getJmeno() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return getObrazek();
+    }
+
+    @Override         
+
+    public boolean odehrat(Hrac kym) {
+        if (hra.getOdhazovaciBalicek().jePrazdny()) {
+            return true;
+        }
+        Karta predchoziKarta = hra.getOdhazovaciBalicek().nahledni();
+        if (predchoziKarta instanceof PrsiKarta prsiKarta) {
+            if (prsiKarta.getBarva().equals(barva) || prsiKarta.getHodnota().equals(hodnota)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
 }

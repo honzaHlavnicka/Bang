@@ -13,10 +13,13 @@ package cz.honza.bang.pravidla;
 import cz.honza.bang.Balicek;
 import cz.honza.bang.Hra;
 import cz.honza.bang.Hrac;
-import cz.honza.bang.karty.Eso;
 import cz.honza.bang.karty.Karta;
-import cz.honza.bang.karty.UnoKarta;
-import cz.honza.bang.karty.unoZmenaBarvy;
+import cz.honza.bang.karty.PrsiBarva;
+import cz.honza.bang.karty.PrsiEso;
+import cz.honza.bang.karty.PrsiHodnota;
+import cz.honza.bang.karty.PrsiKarta;
+import cz.honza.bang.karty.PrsiSedmicka;
+
 
 public class PravidlaPrsi implements HerniPravidla{
     private final Hra hra;
@@ -56,23 +59,17 @@ public class PravidlaPrsi implements HerniPravidla{
     }
     
     @Override
-    public void pripravBalicek(Balicek<Karta> balicek){
-        throw new UnsupportedOperationException();
-        /*for (int i = 0; i < 10; i++) {
-            balicek.vratNahoru(new UnoKarta(i, "red", hra, balicek));
+    public void pripravBalicek(Balicek<Karta> balicek){     
+        for(PrsiBarva barva : PrsiBarva.values()){
+            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva));
+            balicek.vratNahoru(new PrsiEso(hra, balicek, barva, PrsiHodnota.ESO));
+            balicek.vratNahoru(new PrsiKarta(hra, balicek, barva, PrsiHodnota.OSMA));
+            balicek.vratNahoru(new PrsiKarta(hra, balicek, barva, PrsiHodnota.DEVITKA));
+            balicek.vratNahoru(new PrsiKarta(hra, balicek, barva, PrsiHodnota.DESITKA));
+            balicek.vratNahoru(new PrsiKarta(hra, balicek, barva, PrsiHodnota.KRAL));
+            balicek.vratNahoru(new PrsiKarta(hra, balicek, barva, PrsiHodnota.SPODEK));
         }
-        for (int i = 0; i < 10; i++) {
-            balicek.vratNahoru(new UnoKarta(i, "green", hra, balicek));
-        }
-        for (int i = 0; i < 10; i++) {
-            balicek.vratNahoru(new UnoKarta(i, "blue", hra, balicek));
-        }
-        for (int i = 0; i < 10; i++) {
-            balicek.vratNahoru(new UnoKarta(i, "yellow", hra, balicek));
-        }
-
-        
-        balicek.zamichej();*/
+        balicek.zamichej();
         
     }
 }

@@ -40,6 +40,11 @@ public class SpravceHernichPravidel {
                     "Volná hra",
                     "Hra, která neblokuje téměř nic a obsahuje někajé náhodné karty",
                     PravidlaVolna::new 
+            ),
+            new InfoOHre(3,
+                    "Prší",
+                    "Česká tradiční hra, ve které se snažíte zbavit všech karet, které můžete zahrát podle stejné barvy nebo hodnoty",
+                    PravidlaPrsi::new
             )
     );
 
