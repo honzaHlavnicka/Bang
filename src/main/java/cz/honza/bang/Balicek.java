@@ -89,6 +89,18 @@ public class Balicek<T> {
         }
         return nahled;
     }
+    
+    /**
+     * Vrátí, ale nesmaže horní kartu z balíčku.
+     * @return 
+     */
+    public T nahledni(){
+        if(jeOtoceny){
+            return karty.peekLast();
+        }else{
+            return karty.peek();
+        }
+    }
 
     // 
 
