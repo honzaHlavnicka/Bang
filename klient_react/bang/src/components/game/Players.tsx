@@ -52,6 +52,7 @@ export default function Players() {
                             postava={player.character} 
                             naTahu={gameState.turnPlayerId === player.id}
                             vylozeneKarty={player.inPlayCards}
+                            povoleneUI={gameState.allowedUIElements}
                         />
             }
            })}

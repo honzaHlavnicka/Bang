@@ -19,6 +19,8 @@ const gameStateDefault: GameStateType = {
     turnOrder: [],
     deckCount: 0,
     discardPile: [],
+
+    allowedUIElements: ["ZIVOTY","UKONCENI_TAHU","POSTAVA","ROLE","VYLOZENE_KARTY","ODHAZOVACI_BALICEK","DOBIRACI_BALICEK"],
 };
 
 export function GameProvider({ children }: { children: React.ReactNode }) {

@@ -25,13 +25,15 @@ import NameTag from "./NameTag";
             <div style={{ marginRight: "32px" }}>
                 <NameTag jmeno={jmeno || "nepojmenovaný hráč"} style={{backgroundColor:(gameState.playerId === gameState.turnPlayerId)?"yellow":"white"}} />
                 <div style={{display:"flex",justifyContent:"center"}}>
-                    <Card image={`/img/karty/role/${role}.png`} />
-                    <Card image={`/img/karty/postavy/${postava}.png`} />
-                    <Card image={`/img/velkeZivoty/${zdravy}zivoty.png`} />
+                    {gameState.allowedUIElements.includes("ROLE") ?    <Card image={`/img/karty/role/${role}.png`} />: null}
+                    {gameState.allowedUIElements.includes("POSTAVA") ? <Card image={`/img/karty/postavy/${postava}.png`} />: null}
+                    {gameState.allowedUIElements.includes("ZIVOTY") ? <Card image={`/img/velkeZivoty/${zdravy}zivoty.png`} />: null}
                 </div>
             </div>
             <div style={{flex: 1, display: "flex", justifyContent: "center",flexDirection:"column" }}>
-                <Cards isAnimated={false} isRotated={false} onClickCard={alert} cards={vylozeneKarty}/>
+                {gameState.allowedUIElements.includes("VYLOZENE_KARTY") ?
+                    <Cards isAnimated={false} isRotated={false} onClickCard={alert} cards={vylozeneKarty}/>
+                : null}
                 <Cards onClickCard={CardClick} cards={karty}/>
             </div>
         </div>

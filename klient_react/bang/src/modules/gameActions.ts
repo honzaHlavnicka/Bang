@@ -349,6 +349,16 @@ export function handleGameMessage(
 
             break;
         }
+        case "povoleneUI":{
+            try {
+                const json = JSON.parse(payload) as string[];
+                setGameState(prev=>({...prev, allowedUIElements: json}));
+            }catch (error) {
+                console.error("chyba při parsování", error, payload);
+                toast.error('Chybná odpověď serveru')
+            }
+            break;
+        }
         default: {
             console.log("=> klient nezná");
             break;

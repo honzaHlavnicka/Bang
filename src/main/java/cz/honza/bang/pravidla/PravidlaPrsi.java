@@ -19,6 +19,7 @@ import cz.honza.bang.karty.PrsiEso;
 import cz.honza.bang.karty.PrsiHodnota;
 import cz.honza.bang.karty.PrsiKarta;
 import cz.honza.bang.karty.PrsiSedmicka;
+import cz.honza.bang.karty.PrsiSvrsek;
 
 
 public class PravidlaPrsi implements HerniPravidla{
@@ -68,8 +69,18 @@ public class PravidlaPrsi implements HerniPravidla{
             balicek.vratNahoru(new PrsiKarta(hra, balicek, barva, PrsiHodnota.DESITKA));
             balicek.vratNahoru(new PrsiKarta(hra, balicek, barva, PrsiHodnota.KRAL));
             balicek.vratNahoru(new PrsiKarta(hra, balicek, barva, PrsiHodnota.SPODEK));
+            balicek.vratNahoru(new PrsiSvrsek(hra, balicek, barva, PrsiHodnota.SVRSEK));
         }
         balicek.zamichej();
-        
     }
+
+    @Override
+    public UIPrvek[] getViditelnePrvky() {
+        return new UIPrvek[] {
+            UIPrvek.ODHAZOVACI_BALICEK,
+            UIPrvek.DOBIRACI_BALICEK,
+        };
+    }
+    
+    
 }

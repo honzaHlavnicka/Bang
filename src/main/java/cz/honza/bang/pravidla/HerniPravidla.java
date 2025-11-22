@@ -52,14 +52,35 @@ public interface HerniPravidla {
      * @param balicek
      */
     public void pripravBalicek(Balicek<Karta> balicek);
-    
+    /**
+     * Naplní balíček postavami, které se mohou rozdávat.
+     * Mělo by je zamíchat, protože se rozdávají od vrchu.
+     * @param balicekPostav
+     */
     default public void pripravBalicekPostav(Stack<Postava> balicekPostav){
         balicekPostav.addAll(Arrays.asList(Postava.values()));
         Collections.shuffle(balicekPostav);
     };
-    
+    /**
+     * Volá se když hráč začíná svůj tah.
+     * @param komu
+     */
     default public void zacalTah(Hrac komu){};
+    /**
+     * Volá se když hráč končí svůj tah.
+     * @param komu
+     */
     default public void skoncilTah(Hrac komu){};
+    /**
+     * Může hráč spálit danou kartu?
+     * @param co
+     */
     default public boolean muzeSpalit(Karta co){return false;}
-   
+    /**
+     * Mělo by vrátit Array UIPrvky, které by měly být viditelné pro hráče.
+     * @return viditelné prvky
+     */
+    default public UIPrvek[] getViditelnePrvky()  {
+        return UIPrvek.values();
+    };
 }

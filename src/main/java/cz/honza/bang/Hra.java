@@ -11,11 +11,13 @@ import cz.honza.bang.pravidla.HerniPravidla;
 import cz.honza.bang.karty.Karta;
 import cz.honza.bang.net.KomunikatorHry;
 import cz.honza.bang.postavy.Postava;
+import cz.honza.bang.pravidla.UIPrvek;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import org.java_websocket.WebSocket;
+import org.json.JSONArray;
 
 
 /**
@@ -176,7 +178,6 @@ public class Hra {
         StringBuilder sb = new StringBuilder("hraci:[");
         boolean jePrvni = true;
         for (Hrac hrac1 : hraci) {
-
             if(!jePrvni){
                 sb.append(',');
             }
@@ -189,6 +190,13 @@ public class Hra {
         if(zahajena){
           conn.send("role:" + hrac.getRole().name());
         }
+        
+        JSONArray povoleneUIJSON = new JSONArray();
+        UIPrvek[] povoleneUI = herniPravidla.getViditelnePrvky();
+        for (int i = 0; i < povoleneUI.length; i++) {
+            povoleneUIJSON.put(i, povoleneUI[i].name());
+        }
+        conn.send("povoleneUI:" + povoleneUIJSON.toString());
     }
 
     /**

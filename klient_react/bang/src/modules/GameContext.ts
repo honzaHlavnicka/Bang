@@ -34,6 +34,7 @@ export type GameStateType = {
     deckCount: number;
     discardPile: Array<string>;
 
+    allowedUIElements: string[];
 
 };
 

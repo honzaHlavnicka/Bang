@@ -11,10 +11,15 @@ export default function CentralPanel() {
     const imagesForDeck = gameState.discardPile;
     return (
         <div style={{flex:1, minHeight:0, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", }}>
-            <button className={globalCSS.button}  onClick={()=>{endTurn();}} style={{marginRight:20}}>Ukončit tah</button>
-            <Deck images={imagesForDeck} />
-            
-            <Card image={"/img/karty/zezadu.png"} name="dobírací balíček" onClick={()=>drawCard()}/>
+            {gameState.allowedUIElements.includes("UKONCENI_TAHU") ? 
+                <button className={globalCSS.button}  onClick={()=>{endTurn();}} style={{marginRight:20}}>Ukončit tah</button>
+            : null}
+            {gameState.allowedUIElements.includes("ODHAZOVACI_BALICEK") ?
+                <Deck images={imagesForDeck} />
+            : null}
+            {gameState.allowedUIElements.includes("DOBIRACI_BALICEK") ?
+                <Card image={"/img/karty/zezadu.png"} name="dobírací balíček" onClick={()=>drawCard()}/>
+            : null}
             <ZoomToggleButton />
         </div>
     );

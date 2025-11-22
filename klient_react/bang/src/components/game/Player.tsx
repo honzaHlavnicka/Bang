@@ -5,7 +5,7 @@ import Cards from "../Cards";
 import {type CardType } from "../../modules/GameContext";
 
 
-export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,pocetZivotu = 0,vylozeneKarty=[],naTahu=false}:{jmeno:string,postava?:string,pocetKaret?:number,pocetZivotu?:number,vylozeneKarty?:Array<CardType>|null,naTahu?:boolean}) {
+export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,pocetZivotu = 0,vylozeneKarty=[],naTahu=false,povoleneUI}:{jmeno:string,postava?:string,pocetKaret?:number,pocetZivotu?:number,vylozeneKarty?:Array<CardType>|null,naTahu?:boolean,povoleneUI:string[]}) {
     vylozeneKarty = vylozeneKarty ? vylozeneKarty : [];
     const playerStyle: React.CSSProperties = {
         display: "flex",
@@ -18,8 +18,8 @@ export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,poce
                     <div>
                     <NameTag jmeno={jmeno}  style={{backgroundColor:(naTahu?"yellow":"white")}}/>
                     <div style={{display:"flex",flexDirection:"row"}}>
-                        <Card name={"postava:" + postava.toLowerCase()} image={`/img/karty/postavy/${postava}.png`} />
-                        <Card name={`${pocetZivotu} životů.`} image={`/img/velkeZivoty/${pocetZivotu}zivoty.png`} />
+                        {povoleneUI.includes("POSTAVA") ? <Card name={"postava:" + postava.toLowerCase()} image={`/img/karty/postavy/${postava}.png`} />: null}
+                        {povoleneUI.includes("ZIVOTY") ? <Card name={`${pocetZivotu} životů.`} image={`/img/velkeZivoty/${pocetZivotu}zivoty.png`} />:null}
                     </div>
                     </div>
                     
