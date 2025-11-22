@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- *
+ * Třída reprezentující jednoho hráče.
  * @author honza
  */
 public class Hrac {
@@ -393,10 +393,11 @@ public class Hrac {
      * Vrací List hráčů, jejichš vzdálenost je větší než <code>max</code>.
      * Mezi tyto hráče se nepočítá <code>this</code>.
      * @param max jaká maximální vzdálenost má být akceptovaná (včetně)
+     * @param iZpetne má se prohledávat vzdálenost i nazpět, nebo pouze po směru hry.
      * @return List hráčů, kteří spn
      * @see #fyzickaVzdalenostK(cz.honza.bang.Hrac) 
      */
-    public List<Hrac> vzdalenostPod(int max){
+    public List<Hrac> vzdalenostPod(int max, boolean iZpetne){
         List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
 
         int velikost = hraci.size();
@@ -409,14 +410,32 @@ public class Hrac {
         
         for (int i = 0; i < hraci.size(); i++) {
             int rozdil = Math.abs(i1 - i);
-            int zpetnaVzdalenost = velikost - rozdil;
-            int rozdilPodleMist = Math.min(rozdil, zpetnaVzdalenost);
+            int rozdilPodleMist;
+            if(iZpetne){
+                int zpetnaVzdalenost = velikost - rozdil;
+                rozdilPodleMist = Math.min(rozdil, zpetnaVzdalenost);
+            }else{
+                rozdilPodleMist = rozdil;
+            }
             if(rozdilPodleMist >= max && i != i1){
                 vysledniHraci.add(hraci.get(i));
             }
         }
         return vysledniHraci;
     }
+    
+    /**
+     * Vrací List hráčů, jejichš vzdálenost je větší než <code>max</code>. Mezi
+     * tyto hráče se nepočítá <code>this</code>.
+     *
+     * @param max jaká maximální vzdálenost má být akceptovaná (včetně)
+     * @return List hráčů, kteří spn
+     * @see #fyzickaVzdalenostK(cz.honza.bang.Hrac)
+     */
+    public List<Hrac> vzdalenostPod(int max){
+        return vzdalenostPod(max,true);
+    }
+
     
 
     /**
