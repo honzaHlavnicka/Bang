@@ -125,13 +125,3 @@ export default function FlippingCard({
     </div>
   );
 }
-
-// USAGE EXAMPLE:
-// <FlippingCard
-//   frontImage="/images/front.jpg"
-//   backImage="/images/back.jpg"
-//   width={360}
-//   duration={5}
-//   autoPlay={true}
-//   pauseOnHover={true}
-// />
