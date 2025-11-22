@@ -69,6 +69,9 @@ export default function LoginPage() {
             <DarkModeSwitch style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
 
             <main  >
+                <button className={globalCSS.button + " " + css.btnTopRight} onClick={() => {
+                        toast("+1", {icon:"❤️",duration: 300, position: 'top-center',style:{fontSize:"2.5em",backgroundColor:"lightblue",color:"black",borderRadius:"10px",padding:"10px",width:"fit-content",maxWidth:"80vw",margin:"0 auto",boxShadow:"0px 0px 10px grey",transform:"translateY(-50%)",marginTop:"50vh"}});
+                    }}>Testo</button>
                 <h1>Bang!</h1>
                 <p>
                     tadyto bude text, který bude něco říkat. Teď sice něco říká, 
@@ -107,7 +110,7 @@ export default function LoginPage() {
                     </button>
                 </div>
             
-            
+                        
                 <hr/>
                 <div className={css.box} >
                     <h2>Vytvořit novou hru</h2>
@@ -138,7 +141,7 @@ export default function LoginPage() {
                     </button>
                 </div>                
             </main >
-            <ContextMenu x={menu.x} y={menu.y} />
+            <ContextMenu x={menu.x} y={menu.y} options={[{text:"odhodit"},{text:"spalit"}]} />
         </div >
     );
 }

@@ -4,6 +4,7 @@ import type { GameStateType } from "./GameContext";
 import { handleGameMessage, setGameValue, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard, drawCard, returnToGame, endTurn } from "./gameActions";
 import toast from "react-hot-toast";
 import { useDialog } from "./DialogContext";
+import { notify } from "./notify";
 
 const gameStateDefault: GameStateType = {
     startedConection:false,
@@ -54,7 +55,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             toast.success("Připojeno k serveru");
             (window as unknown as { ws: WebSocket }).ws = socket; //TODO: odstranit testovací přiřazení
         };
-        socket.onmessage = (event) => { handleGameMessage(event, setGameState, stateRef,openDialog,socket); };
+        socket.onmessage = (event) => { handleGameMessage(event, setGameState, stateRef,openDialog,socket,notify); };
         socket.onclose = () => {
             console.log("WebSocket disconnected");
             setWs(null);

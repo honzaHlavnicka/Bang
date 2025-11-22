@@ -1,11 +1,5 @@
 export type ContextMenuOpotions = {text:string,callback?:()=>void,type?:"IMPORTANT"|"DANGER"|"DISABLED"|"NORMAL"|"HEADING"}[]
 export default function ContextMenu({x,y,options}:{x:number,y:number,options:ContextMenuOpotions}) {
-    options = [
-        {text:"odehrát",type:"DANGER"},
-        {text:"vyložit",type:"IMPORTANT"},
-        {text:"nadpis",type:"HEADING"},
-        {text:"spátlit"},
-    ]
     //todo: darkmode
     return (
         <div style={{borderRadius:10,backgroundColor:"whitesmoke",padding:4,display:"flex",flexDirection:"column",position:"fixed",top:y,left:x,zIndex:2000,minWidth:150}}>

@@ -24,7 +24,8 @@ export function handleGameMessage(
     setGameState: (updater: (prev: GameStateType) => GameStateType) => void,
     stateRef: RefObject<GameStateType>,
     openDialog: (dialog: DialogState) => void,
-    socket:WebSocket | null
+    socket:WebSocket | null,
+    notify: (text: string) => void
 ) {
     console.log("%c" + event.data, "color: green");
 
@@ -215,6 +216,7 @@ export function handleGameMessage(
         case "tvujTahZacal": {
             setGameState(prev => ({ ...prev, turnPlayerId: prev.playerId ?? null }));
             toast.success('Tvůj tah začal!')
+            notify('Tvůj tah začal!');
             break;
         }
         case "tahZacal": {
