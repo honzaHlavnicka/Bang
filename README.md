@@ -23,9 +23,9 @@ Zatím radši nijak, ale můžeme:
 
 
 # obsažené hry
-- **Bang!**: Hra Bangu. Nejdůležitější a nejsložitější.
+- **Bang!**: Hra Bangu. Nejdůležitější a nejsložitější - rozpracovaná.
 - **UNO**: Zjednodušená verze Una. Neobsahuje `+2`, `+4` a eso lze dát na každou kartu.
-- **prší**: Nedodělané.
+- **prší**: Prší se vším všudy (Esa se nepřebíjejí, na červenou sedmičku se lížou čtyři).
 - **volná hra**: Hra pro testování, která nám nenastavuje moc hranice
 
 # dokumentace
