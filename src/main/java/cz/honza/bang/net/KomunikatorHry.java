@@ -67,7 +67,7 @@ public class KomunikatorHry {
         }
         if(message.startsWith("konecTahu")){
             if(!hra.getHerniPravidla().hracChceUkoncitTah(hrac))
-                posiChybu(hrac,Chyba.NEMUZES_UKONCIT_TAH);
+                posliChybu(hrac,Chyba.NEMUZES_UKONCIT_TAH);
         }
         if(message.startsWith("linuti")){
             hrac.lizniKontrolovane();
@@ -81,7 +81,7 @@ public class KomunikatorHry {
             if(data.length == 1){
                 data = new String[]{data[0],Integer.toString(hrac.getId())};
             }else if(data.length == 0){
-                posiChybu(hrac, Chyba.CHYBA_PROTOKOLU);
+                posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
                 return;
             }
             hrac.vylozitKartu(data[0], data[1]);
@@ -174,7 +174,7 @@ public class KomunikatorHry {
      * @param komu komu se má chyba doručit.
      * @param chyba chyba, která se posílá.
      */
-    public void posiChybu(Hrac komu,Chyba chyba){
+    public void posliChybu(Hrac komu,Chyba chyba){
         WebSocket conn = websocketPodleHracu.get(komu);
         conn.send("error:{\"error\":\"" + chyba.getZprava() + "\",\"kod\":" + chyba.getKod() + ",\"skupina:\":" + chyba.getSkupina()+ "}");
         
