@@ -24,9 +24,11 @@ import cz.honza.bang.karty.PrsiSvrsek;
 
 public class PravidlaPrsi implements HerniPravidla{
     private final Hra hra;
+    private int pocetKaretNaLiznuti;
 
     public PravidlaPrsi(Hra hra) {
         this.hra = hra;
+        pocetKaretNaLiznuti = 0;
     }
     
 
@@ -51,8 +53,17 @@ public class PravidlaPrsi implements HerniPravidla{
 
     @Override
     public boolean hracChceLiznout(Hrac kdo) {
+        System.out.println("někdo chce lízat. pocetKaretNaLiznuti="+pocetKaretNaLiznuti);
         if(kdo.jeNaTahu()){
-            kdo.lizni();
+            if(pocetKaretNaLiznuti != 0){
+                for (int i = 0; i < pocetKaretNaLiznuti; i++) {
+                    kdo.lizni();
+                }
+                pocetKaretNaLiznuti = 0;
+            }else{
+                kdo.lizni();
+            }
+            kdo.konecTahu();
             return true;
         }else{
             return false;
@@ -62,7 +73,18 @@ public class PravidlaPrsi implements HerniPravidla{
     @Override
     public void pripravBalicek(Balicek<Karta> balicek){     
         for(PrsiBarva barva : PrsiBarva.values()){
-            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva));
+            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
+            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
+            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
+            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
+            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
+            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
+            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
+            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
+            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
+            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
+            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
+            
             balicek.vratNahoru(new PrsiEso(hra, balicek, barva, PrsiHodnota.ESO));
             balicek.vratNahoru(new PrsiKarta(hra, balicek, barva, PrsiHodnota.OSMA));
             balicek.vratNahoru(new PrsiKarta(hra, balicek, barva, PrsiHodnota.DEVITKA));
@@ -80,6 +102,31 @@ public class PravidlaPrsi implements HerniPravidla{
             UIPrvek.ODHAZOVACI_BALICEK,
             UIPrvek.DOBIRACI_BALICEK,
         };
+    }
+    
+    public void zahranaSedmicka(boolean cervena){
+        if(cervena){
+            pocetKaretNaLiznuti += 4;
+        }else{
+            pocetKaretNaLiznuti += 2;
+        }
+    }
+    
+    private enum StavSedmicky{
+        ZADNY, ZAHRANA
+    }
+
+    @Override
+    public boolean muzeZahrat(Karta co, Hrac kdo) {
+        
+        //Pokud se má lízat na sedmičku, tak se nemůže hrát nic jiného.
+        if(pocetKaretNaLiznuti <= 0){
+            return true;
+        }else if(co instanceof PrsiSedmicka){
+            return true;
+        }else{
+            return false;
+        }
     }
     
     

@@ -9,18 +9,23 @@ package cz.honza.bang.karty;
 import cz.honza.bang.Balicek;
 import cz.honza.bang.Hra;
 import cz.honza.bang.Hrac;
+import cz.honza.bang.pravidla.PravidlaPrsi;
 
 /**
  *
  * @author honza
  */
 public class PrsiSedmicka extends PrsiKarta implements HratelnaKarta{
+    public final PravidlaPrsi pravidla;
     
-    public PrsiSedmicka(Hra hra, Balicek<Karta> balicek,PrsiBarva barva,PrsiHodnota hodnota) {
+    
+    public PrsiSedmicka(Hra hra, Balicek<Karta> balicek,PrsiBarva barva,PrsiHodnota hodnota,PravidlaPrsi pravidla) {
         super(hra, balicek,barva,hodnota);
+        this.pravidla = pravidla;
     }
-    public PrsiSedmicka(Hra hra, Balicek<Karta> balicek, PrsiBarva barva) {
+    public PrsiSedmicka(Hra hra, Balicek<Karta> balicek, PrsiBarva barva,PravidlaPrsi pravidla) {
         super(hra, balicek, barva, PrsiHodnota.SEDMA);
+        this.pravidla = pravidla;
     }
 
     @Override
@@ -28,13 +33,7 @@ public class PrsiSedmicka extends PrsiKarta implements HratelnaKarta{
         if(!super.odehrat(kym)){
             return false    ;
         }
-        int pocetLiznutychKaret = 2;
-        if(barva == PrsiBarva.CERVENE){
-            pocetLiznutychKaret = 4;
-        }
-        for (int i = 0; i < pocetLiznutychKaret; i++) {
-            kym.vzdalenostPod(1, false).get(0).lizni();
-        }      
+        pravidla.zahranaSedmicka(barva == PrsiBarva.CERVENE);
         return true;
     }
     
