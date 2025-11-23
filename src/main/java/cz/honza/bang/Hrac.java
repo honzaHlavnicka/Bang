@@ -186,7 +186,7 @@ public class Hrac {
                 return;
             }
         }
-        hra.getKomunikator().posiChybu(this, Chyba.POSTAVA_NENI_NA_VYBER);
+        hra.getKomunikator().posliChybu(this, Chyba.POSTAVA_NENI_NA_VYBER);
     }
 
     /**
@@ -208,38 +208,43 @@ public class Hrac {
         try{
             idKarty = Integer.parseInt(id);
         }catch(NumberFormatException ex){
-            hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
+            hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);
             return;
         }
         if(!hra.getSpravceTahu().getNaTahu().equals(this)){
-            hra.getKomunikator().posiChybu(this, Chyba.NEJSI_NA_TAHU);
+            hra.getKomunikator().posliChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
         }
         for (Karta karta  : karty) {
             if(karta.getId() == idKarty){
                 if (karta instanceof HratelnaKarta hratelna) {
-                    if(hratelna.odehrat(this)){ //provede efekt karty, karta zkontroluje jestli je hratelna v tomto kontextu.
- 
-                        hra.getOdhazovaciBalicek().vratNahoru(karta);
-                        karty.remove(karta);
-                        
-                        hra.getKomunikator().posliVsem("odehrat:" + this.id + '|' + karta.toJSON());//FIX: změnit "|" na ","
-                        hra.getKomunikator().posliVsem("novyPocetKaret:" + this.id + "," + karty.size(), this);
-                        
-                        hra.getHerniPravidla().poOdehrani(this);
-                        return;
+                    if(hra.getHerniPravidla().muzeZahrat(karta, this)){
+                        if(hratelna.odehrat(this)){ //provede efekt karty, karta zkontroluje jestli je hratelna v tomto kontextu.
+
+                            hra.getOdhazovaciBalicek().vratNahoru(karta);
+                            karty.remove(karta);
+
+                            hra.getKomunikator().posliVsem("odehrat:" + this.id + '|' + karta.toJSON());//FIX: změnit "|" na ","
+                            hra.getKomunikator().posliVsem("novyPocetKaret:" + this.id + "," + karty.size(), this);
+
+                            hra.getHerniPravidla().poOdehrani(this);
+                            return;
+                        }else{
+                            hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_ZAHRAT);
+                            return;
+                        }
                     }else{
-                        hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEJDE_ZAHRAT);
+                        hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_ZAHRAT);
                         return;
                     }
                 } else {
-                    hra.getKomunikator().posiChybu(this, Chyba.KARTA_NENI_HRATELNA);
+                    hra.getKomunikator().posliChybu(this, Chyba.KARTA_NENI_HRATELNA);
                     return;
                 }
                 
             }
         }
-        hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
+        hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);
     }
     
     /**
@@ -252,11 +257,11 @@ public class Hrac {
         try{
             idKarty = Integer.parseInt(id);
         }catch(NumberFormatException ex){
-            hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
+            hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);
             return;
         }
         if (!hra.getSpravceTahu().getNaTahu().equals(this)) {
-            hra.getKomunikator().posiChybu(this, Chyba.NEJSI_NA_TAHU);
+            hra.getKomunikator().posliChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
         }
         for (Karta karta : karty) {
@@ -266,7 +271,7 @@ public class Hrac {
                     hra.getOdhazovaciBalicek().vratNahoru(karta);
                     //TODO: informovat hráče
                 }else{
-                    hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEJDE_SPALIT);
+                    hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_SPALIT);
                 }
                 return;
             }
@@ -281,12 +286,12 @@ public class Hrac {
 
                     hra.getKomunikator().posliVsem("spalenaVylozena:" + karta.getId() + "," + this.id);
                 } else {
-                    hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEJDE_SPALIT);
+                    hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_SPALIT);
                 }
                 return;
             }
         }
-        hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
+        hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);
     }
     
     public void vylozitKartu(String id, String idHrace){ //TODO: asi by mohlo brát objekty a prevodni metoda by mela byt jina
@@ -296,11 +301,11 @@ public class Hrac {
             idKarty = Integer.parseInt(id);
             idPredKoho = Integer.parseInt(idHrace);
         }catch(NumberFormatException ex){
-            hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
+            hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);
             return;
         }
         if (!hra.getSpravceTahu().getNaTahu().equals(this)) {
-            hra.getKomunikator().posiChybu(this, Chyba.NEJSI_NA_TAHU);
+            hra.getKomunikator().posliChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
         }
         for (Karta karta : karty) {
@@ -310,16 +315,16 @@ public class Hrac {
                      if(vylozena.vylozit(this, predKoho)){ //todo: efekt se prida tomuto hraci, ale vyklada se pred jineho???
                          predKoho.pridejEfekt(vylozena.getEfekt());
                      }else{
-                         hra.getKomunikator().posiChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);
+                         hra.getKomunikator().posliChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);
                      }
                 }else{
-                    hra.getKomunikator().posiChybu(this, Chyba.NENI_VYLOZITELNA);
+                    hra.getKomunikator().posliChybu(this, Chyba.NENI_VYLOZITELNA);
                     return;
                 }
                 return;
             }
         }
-        hra.getKomunikator().posiChybu(this, Chyba.KARTA_NEEXISTUJE);
+        hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);
     }
     
     /**
@@ -330,7 +335,7 @@ public class Hrac {
         if(karta == null){
             hra.prohodBalicky();
             karta = hra.getBalicek().lizni();
-            //TODO: co kdyz jsou oba balicky prazdyn
+            //TODO: co kdyz jsou oba balicky prazdny
         }
         karty.add(karta);
         System.out.println("lizani si");
@@ -340,16 +345,16 @@ public class Hrac {
     }
     
     /**
-     * Lízne si kartu, ale pouze pokud hráč má právo na to si lí
+     * Lízne si kartu, ale pouze pokud hráč má právo na to si líznout.
+     * Mělo by se volat pokud hráč zažádá o líznutí.
      */
     public void lizniKontrolovane(){
-        if(hra.getSpravceTahu().getNaTahu().equals(this)){
-            lizni();
-            //TODO: kontrola od pravidel hry.
-            konecTahu();
-            
-        }else{
-            hra.getKomunikator().posiChybu(this, Chyba.NEJSI_NA_TAHU);
+        if(!hra.getHerniPravidla().hracChceLiznout(this)){
+            if (hra.getSpravceTahu().getNaTahu().equals(this)) {
+                hra.getKomunikator().posliChybu(this, Chyba.NEJDE_SI_LIZNOUT);
+            }else{
+                hra.getKomunikator().posliChybu(this, Chyba.NEJSI_NA_TAHU);
+            }
         }
     }
     
