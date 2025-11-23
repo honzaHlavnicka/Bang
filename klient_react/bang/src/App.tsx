@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { useGame, type GameStateType } from './modules/GameContext';
+import { useGame } from './modules/GameContext';
 import WaitingRoom from "./pages/WaitingRoom";
 
 // Lazy importy těžkých stránek

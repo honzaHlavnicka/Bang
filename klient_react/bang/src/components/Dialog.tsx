@@ -11,7 +11,7 @@ import globalCSS from "../styles/global.module.css";
 
 
 export default function Dialog() {
-    const {closeDialog,dialog,openDialog} = useDialog();
+    const {closeDialog,dialog} = useDialog();
     const [seleckted,setSelected] = useState<Array<number>>([]);
     let maxSelected = 0;
     if(dialog == null){
@@ -103,8 +103,6 @@ export default function Dialog() {
                     <button className={globalCSS.button} onClick={()=>{
                         closeDialog();
                     }}>OK</button>
-                    <button onClick={()=>{openDialog({type:"SELECT_CARD", data:{cards:[{image:"/img/karty/bang.png",id:70},{image:"/img/karty/dostavnik.png",id:71},{image:"img/karty/uno/red4.png",id:1},{image:"img/karty/postavy/testovaci2.png",id:5},{image:"img/karty/uno/menic.png",id:6}],min:1,max:2},dialogHeader:"Vyber si jednu kartu co se ti zlíbí!",notCloasable:true});}} >Testovací dialog</button>
-
                 </div>
             );
         break;

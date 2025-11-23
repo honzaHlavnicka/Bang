@@ -26,7 +26,6 @@ export default function Card({
     isInLine = false,
     id,
     onClick,
-    size = "NORMAL"
 }: CardProps) {
     const nic = "";
     const { isZoomMode, zoomedCard, setZoomedCard } = useZoom();

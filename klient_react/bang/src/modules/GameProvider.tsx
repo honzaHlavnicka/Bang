@@ -43,9 +43,9 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
         //====================== nastavení režimu adresy serveru ===============================================
         //socketAdress can be: wss://<thisHost>/ws or ws://localhost:9999 or ws://<ServerPcIpAddress>:9999    //
-        //const socketAdress =  "wss://" + window.location.host + "/ws";                                        //
+        //const socketAdress =  "wss://" + window.location.host + "/ws";                                      //
         //const socketAdress =  "ws://" + window.location.host + "/ws";                                       //
-        const socketAdress = "ws://localhost:9999";                                                         //
+        const socketAdress = "ws://localhost:9999";                                                           //
         //const socketAdress = "ws://:9999";                                                                  //
         //const socketAdress = "ws://192.168.0.118:9999";                                                     //
         ////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -49,8 +49,8 @@ export function handleGameMessage(
             try {
                 const json = JSON.parse(payload) as { error: string };
                 toast.error(json.error);
-            } catch (err) {
-                toast.error("Chyba ze serveru: " + payload, + " chyba je: " + err);
+            } catch {
+                toast.error("Chyba ze serveru: " + payload);
             }
             break;
         }
@@ -338,7 +338,7 @@ export function handleGameMessage(
         case "vylozit":{
             const parts = payload.split(",",3);
             const predKoho = Number(parts[0]);
-            const kym = Number(parts[1]);      //todo: out of index error
+            //const kym = Number(parts[1]);      //todo: out of index error
             const co = JSON.parse(parts[2])
             const card:CardType = {id:co.id,image:co.obrazek}
             if(predKoho == stateRef.current.playerId){
@@ -357,6 +357,10 @@ export function handleGameMessage(
                 console.error("chyba při parsování", error, payload);
                 toast.error('Chybná odpověď serveru')
             }
+            break;
+        }
+        case "rychleOznameni":{
+            notify(payload);
             break;
         }
         default: {
