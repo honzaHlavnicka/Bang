@@ -10,6 +10,7 @@ import cz.honza.bang.Balicek;
 import cz.honza.bang.Hra;
 import cz.honza.bang.Hrac;
 import cz.honza.bang.karty.Eso;
+import cz.honza.bang.karty.HratelnaKarta;
 import cz.honza.bang.karty.Karta;
 import cz.honza.bang.karty.UnoKarta;
 import cz.honza.bang.karty.unoZmenaBarvy;
@@ -91,5 +92,27 @@ public class PravidlaUNO implements HerniPravidla{
             UIPrvek.ODHAZOVACI_BALICEK,
             UIPrvek.DOBIRACI_BALICEK,};
     }
+    
+    @Override
+    public void poSpusteniHry() {
+        Karta vrchni = hra.getBalicek().lizni();
+        hra.getOdhazovaciBalicek().vratNahoru(vrchni);
+        ((HratelnaKarta) vrchni).odehrat(hra.getSpravceTahu().getNaTahu());
+        hra.getSpravceTahu().dalsiHracSUpozornenim();
+        hra.getKomunikator().posliVsem("odehrat:-1|" + vrchni.toJSON());
+    }
+
+    @Override
+    public void pripravitHrace(Hrac hrac) {
+        hrac.lizni();
+        hrac.lizni();
+        hrac.lizni();
+        hrac.lizni();
+        hrac.lizni();
+        hrac.lizni();
+        hrac.lizni();
+        hrac.lizni();
+    }
+    
     
 }

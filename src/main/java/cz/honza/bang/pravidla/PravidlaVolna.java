@@ -78,6 +78,14 @@ public class PravidlaVolna implements HerniPravidla{
     public boolean muzeSpalit(Karta co) {
         return true;
     }
+
+    @Override
+    public void poSpusteniHry() {
+    }
+    
+    @Override
+    public void pripravitHrace(Hrac hrac) {
+    }
     
     
     

@@ -13,6 +13,7 @@ package cz.honza.bang.pravidla;
 import cz.honza.bang.Balicek;
 import cz.honza.bang.Hra;
 import cz.honza.bang.Hrac;
+import cz.honza.bang.karty.HratelnaKarta;
 import cz.honza.bang.karty.Karta;
 import cz.honza.bang.karty.PrsiBarva;
 import cz.honza.bang.karty.PrsiEso;
@@ -73,18 +74,7 @@ public class PravidlaPrsi implements HerniPravidla{
     @Override
     public void pripravBalicek(Balicek<Karta> balicek){     
         for(PrsiBarva barva : PrsiBarva.values()){
-            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
-            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
-            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
-            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
-            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
-            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
-            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
-            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
-            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
-            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
-            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));
-            
+            balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));            
             balicek.vratNahoru(new PrsiEso(hra, balicek, barva, PrsiHodnota.ESO));
             balicek.vratNahoru(new PrsiKarta(hra, balicek, barva, PrsiHodnota.OSMA));
             balicek.vratNahoru(new PrsiKarta(hra, balicek, barva, PrsiHodnota.DEVITKA));
@@ -111,6 +101,15 @@ public class PravidlaPrsi implements HerniPravidla{
             pocetKaretNaLiznuti += 2;
         }
     }
+
+    @Override
+    public void poSpusteniHry() {
+        Karta vrchni = hra.getBalicek().lizni();
+        hra.getOdhazovaciBalicek().vratNahoru(vrchni);
+        ((HratelnaKarta) vrchni).odehrat(hra.getSpravceTahu().getNaTahu());
+        hra.getSpravceTahu().dalsiHracSUpozornenim();
+        hra.getKomunikator().posliVsem("odehrat:-1|" + vrchni.toJSON());
+    }
     
     private enum StavSedmicky{
         ZADNY, ZAHRANA
@@ -127,6 +126,14 @@ public class PravidlaPrsi implements HerniPravidla{
         }else{
             return false;
         }
+    }
+    
+    @Override
+    public void pripravitHrace(Hrac hrac){
+        hrac.lizni();
+        hrac.lizni();
+        hrac.lizni();
+        hrac.lizni();
     }
     
     

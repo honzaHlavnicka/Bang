@@ -35,7 +35,7 @@ public class Hrac {
     private Hra hra;
     private final int id;
     private static int nextId = 0;
-    
+ 
 
     
     public Hrac(Hra hra){
@@ -51,23 +51,17 @@ public class Hrac {
      * @param role
      */
     public void pripravKeHre(Role role ) {
-        if(role != Role.SERIF){
-            this.maximumZivotu = postava.maximumZivotu;
-        }else{
-            this.maximumZivotu = postava.maximumZivotu + 1;
-        }
-        
+        hra.getHerniPravidla().pripravitHrace(this);
         hra.getKomunikator().posli(this, "role:"+role.name());
         
         this.role = role;
-        zivoty = maximumZivotu;
         
-        for (int i = 0; i < maximumZivotu; i++) {
+        /*for (int i = 0; i < maximumZivotu; i++) {
             Karta karta = hra.getBalicek().lizni();
             karty.add(karta);
             hra.getKomunikator().posli(this, karta.toJSONold());
             hra.getKomunikator().posliVsem("zmenaPoctuKaret:"+id+","+karty.size(),this);
-        }
+        }*/
                 
         pripravenyKeHre = true;
         
@@ -143,6 +137,10 @@ public class Hrac {
     public int getZivoty() {
         return zivoty;
     }
+    
+    public void setZivoty(int zivoty){
+        this.zivoty = zivoty;
+    }
 
     public int getMaximumZivotu() {
         return maximumZivotu;
@@ -175,6 +173,27 @@ public class Hrac {
     public boolean jeNaTahu(){
         return hra.getSpravceTahu().getNaTahu().equals(this);
     }
+    
+    public void setMaximumZivotu(int maximumZivotu) {
+        this.maximumZivotu = maximumZivotu;
+    }
+
+    public void setPostava(Postava postava) {
+        this.postava = postava;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public boolean isPripravenyKeHre() {
+        return pripravenyKeHre;
+    }
+
+    public Hra getHra() {
+        return hra;
+    }
+    
     /**
      * Nastaví hráčovu postavu, neinformuje o tom nikoho.
      * @param jmeno name() postavy.

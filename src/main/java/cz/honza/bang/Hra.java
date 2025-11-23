@@ -147,6 +147,7 @@ public class Hra {
             for (int i = 0; i < role.size(); i++) {
                 hraci.get(i).pripravKeHre(role.get(i));
             }   
+            herniPravidla.poSpusteniHry();
             
             komunikator.posliVsem("hraZacala");
             spravceTahu = new SpravceTahu(hraci);

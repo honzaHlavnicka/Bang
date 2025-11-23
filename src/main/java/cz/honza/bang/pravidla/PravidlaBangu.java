@@ -109,6 +109,22 @@ public class PravidlaBangu implements HerniPravidla{
         return true;
     }
     
-    
+    @Override
+    public void poSpusteniHry() {
+    }
+
+    @Override
+    public void pripravitHrace(Hrac hrac) {
+        if (hrac.getRole() != Role.SERIF) {
+            hrac.setMaximumZivotu(hrac.getPostava().maximumZivotu);
+        } else {
+            hrac.setMaximumZivotu(hrac.getPostava().maximumZivotu + 1);
+        }
+        hrac.setZivoty(hrac.getMaximumZivotu());
+        
+        for (int i = 0; i < hrac.getMaximumZivotu(); i++) {
+            hrac.lizni();
+        }
+    }
     
 }

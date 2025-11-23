@@ -17,6 +17,17 @@ import java.util.Stack;
  * @author jan.hlavnicka.s
  */
 public interface HerniPravidla {    
+    
+    /**
+     * Spustí se po spuštění hry.Může třeba vyložit kartu atd.
+     * @see #pripravitHrace(cz.honza.bang.Hrac)
+     */
+    public void poSpusteniHry();
+    
+    /**
+     * Připravý hráče ke hře, například mu rozdá karty.
+     */
+    public void pripravitHrace(Hrac hrac);
 
     /**
      * Volat poté, co hráč odehraje kartu.
