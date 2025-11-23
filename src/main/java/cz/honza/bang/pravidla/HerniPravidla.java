@@ -83,4 +83,15 @@ public interface HerniPravidla {
     default public UIPrvek[] getViditelnePrvky()  {
         return UIPrvek.values();
     };
+    
+    /**
+     * Volá se před zahráním karty, mělo by vrátit zda se karta může zahrát.
+     * Nemělo by nahrazovat logiku v kartě, ale může se hodit na nějaká všeobecná omezení.
+     * @param co 
+     * @param kdo
+     * @return může zahrát
+     */
+    default public boolean muzeZahrat(Karta co,Hrac kdo){
+        return true;
+    }
 }

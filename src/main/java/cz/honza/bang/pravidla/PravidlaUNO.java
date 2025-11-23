@@ -49,6 +49,7 @@ public class PravidlaUNO implements HerniPravidla{
     public boolean hracChceLiznout(Hrac kdo) {
         if(kdo.jeNaTahu()){
             kdo.lizni();
+            kdo.konecTahu();
             return true;
         }else{
             return false;
@@ -83,4 +84,12 @@ public class PravidlaUNO implements HerniPravidla{
         balicek.zamichej();
         
     }
+    
+    @Override
+    public UIPrvek[] getViditelnePrvky() {
+        return new UIPrvek[]{
+            UIPrvek.ODHAZOVACI_BALICEK,
+            UIPrvek.DOBIRACI_BALICEK,};
+    }
+    
 }
