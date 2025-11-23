@@ -18,6 +18,7 @@ public class PrsiSvrsek extends PrsiKarta{
     private PrsiBarva poslendniBarva;
     public PrsiSvrsek(Hra hra, Balicek<Karta> balicek, PrsiBarva b, PrsiHodnota h) {
         super(hra, balicek, b, h);
+        poslendniBarva = null;
     }
 
     @Override
@@ -47,12 +48,18 @@ public class PrsiSvrsek extends PrsiKarta{
                         poslendniBarva = PrsiBarva.ZALUDY;
                         break;
                 }
-                hra.getKomunikator().posliVsem("popup:Barva změněna na " + poslendniBarva, kym);
+                hra.getKomunikator().posliVsem("rychleOznameni:" + poslendniBarva, kym);
 
             });//toto nmůže blokovat thred!
             //TODO: udelat, aby neslo hrat, nez se slib splní
             return true;
         } 
+
+    @Override
+    public PrsiBarva getBarva() {
+        return poslendniBarva;
+    }
+    
     }
     
     
