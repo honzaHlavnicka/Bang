@@ -50,6 +50,7 @@ export const GameContext = createContext<{
     drawCard: () => void;
     playCard: (cardId:number) => void;
     returnToGame (): void;
+    fireCard: (cardId:number) => void;
 
 
 } | null>(null);

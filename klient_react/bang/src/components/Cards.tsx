@@ -1,5 +1,6 @@
 import type { CardType } from "../modules/GameContext";
-import Card, { type CardSizeType } from "./Card";
+import  { type CardSizeType } from "./Card";
+import DragableCard from "./game/DragableCard";
 
 
 export default function Cards({
@@ -22,13 +23,13 @@ export default function Cards({
             flexDirection:"row",
             alignItems: "center"}}>
             {cards.map(card => (
-            <Card
+            <DragableCard
                 {...(onClickCard ? { onClick: onClickCard } : {})}
                 image={"/img/karty/" + card.image + ".png"}
                 key={card.id}
                 id={card.id}
                 animationOnStart={isAnimated}
-                biggerOnHover
+                biggerOnHover={false}
                 isInLine
                 isRotated={isRotated}
                 size={size}

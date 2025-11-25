@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import type { CardType, GameStateType } from "./GameContext";
 import { type DialogState } from "./DialogContext";
 import type { RefObject } from "react";
+import type { DragEndEvent } from "@dnd-kit/core/dist";
 
 
 // Helper types for server payloads
@@ -185,34 +186,12 @@ export function handleGameMessage(
             updatePlayerProperty(setGameState, playerId, "cardsInHand", newCardCount);
             break;
         }
-        case "odehrat": {
-            const parts = payload.split("|");
-            const playerId = parts[0] ?? "";
-            try {
-                const json = JSON.parse(parts[1] ?? "0") as ServerCard;
-                const card = { image: json.obrazek, id: json.id };
-                console.log("zpracovávám odehrat", json, card);
-                console.log("pleyerId", playerId, "currentPlayerId", stateRef.current?.playerId, stateRef.current);
-
-                setGameState(prev => {
-                    const isCurrent = String(prev.playerId ?? "") === String(playerId);
-                    const nextDiscard = [...prev.discardPile, card.image];
-                    if (!isCurrent) {
-                        return { ...prev, discardPile: nextDiscard };
-                    }
-                    return {
-                        ...prev,
-                        handCards: (prev.handCards ?? []).filter((c) => c.id !== card.id),
-                        discardPile: nextDiscard
-                    };
-                });
-            } catch (error) {
-                console.error("chyba při parsování", error, payload);
-                toast.error('Chybná odpověď serveru')
-
-            }
-            break;
-        }
+        case "odehrat": 
+            zbaveniSeKarty("discard", payload,stateRef,setGameState);
+           break;
+        case "spalit":
+            zbaveniSeKarty("fire", payload,stateRef,setGameState);
+            break;        
         case "tvujTahZacal": {
             setGameState(prev => ({ ...prev, turnPlayerId: prev.playerId ?? null }));
             toast.success('Tvůj tah začal!')
@@ -472,4 +451,37 @@ export function endTurn(ws: WebSocket | null) {
     if (ws !== null) {
         ws.send("konecTahu");
     }
+}
+
+export function fireCard(ws: WebSocket | null, cardId: number) {
+    if (ws !== null) {
+        ws.send("spaleni:" + cardId);
+    }
+}
+
+function zbaveniSeKarty(jak:"fire"|"discard", payload: string,stateRef: RefObject<GameStateType>, setGameState: (updater: (prev: GameStateType) => GameStateType) => void) {
+        const parts = payload.split("|");
+        const playerId = parts[0] ?? "";
+        try {
+            const json = JSON.parse(parts[1] ?? "0") as ServerCard;
+            const card = { image: json.obrazek, id: json.id };
+            console.log("zpracovávám "+jak, json, card);
+            console.log("pleyerId", playerId, "currentPlayerId", stateRef.current?.playerId, stateRef.current);
+
+            setGameState(prev => {
+                const isCurrent = String(prev.playerId ?? "") === String(playerId);
+                const nextDiscard = [...prev.discardPile, card.image];
+                if (!isCurrent) {
+                    return { ...prev, discardPile: nextDiscard };
+                }
+                return {
+                    ...prev,
+                    handCards: (prev.handCards ?? []).filter((c) => c.id !== card.id),
+                    discardPile: nextDiscard
+                };
+            });
+        } catch (error) {
+            console.error("chyba při parsování", error, payload);
+            toast.error('Chybná odpověď serveru')
+        }
 }

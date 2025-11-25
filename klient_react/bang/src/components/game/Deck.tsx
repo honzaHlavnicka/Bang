@@ -1,8 +1,10 @@
+import { useDroppable } from "@dnd-kit/core/dist";
 import { useRef, useEffect, useCallback } from "react";
 
 export function Deck({ images }: { images: string[] }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const loadedImagesRef = useRef<HTMLImageElement[]>([]);
+    const { setNodeRef, isOver } = useDroppable({ id: "discardPile" });
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -78,13 +80,15 @@ export function Deck({ images }: { images: string[] }) {
 
     useEffect(() => {
         if (images.length === 0) return;
+        const raw = images[images.length - 1];
+        if (!raw || typeof raw !== "string") return;
+
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
         const dpr = window.devicePixelRatio || 1;
-        const raw = images[images.length - 1]; // poslední karta (může být jen slug)
         const src = raw.startsWith("/") || raw.startsWith("http") ? raw : `/img/karty/${raw}.png`;
         const img = new window.Image();
         img.src = src;
@@ -98,5 +102,15 @@ export function Deck({ images }: { images: string[] }) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    return <canvas ref={canvasRef} width={300} height={300} style={{ width: 300, height: 300 }} />;
+    return (
+        <canvas
+            ref={(node) => {
+                canvasRef.current = node;
+                setNodeRef(node); 
+            }}
+            width={300}
+            height={300}
+            style={{ width: 300, height: 300, outline: isOver ? "2px solid yellow" : undefined }}
+        />
+    );
 }

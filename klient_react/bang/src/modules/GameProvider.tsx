@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { GameContext } from "./GameContext";
 import type { GameStateType } from "./GameContext";
-import { handleGameMessage, setGameValue, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard, drawCard, returnToGame, endTurn } from "./gameActions";
+import { handleGameMessage, setGameValue, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard, drawCard, returnToGame, endTurn, fireCard } from "./gameActions";
 import toast from "react-hot-toast";
 import { useDialog } from "./DialogContext";
 import { notify } from "./notify";
@@ -80,6 +80,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             drawCard: () => drawCard(ws),
             playCard: (cardId) => playCard(ws, cardId),
             returnToGame: () => { returnToGame(ws) },
+            fireCard: (cardId) => fireCard(ws, cardId),
         }}>
             {children}
         </GameContext.Provider>

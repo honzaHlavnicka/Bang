@@ -135,6 +135,8 @@ export default function LoginPage() {
                     >
                         vytvořit hru
                     </button>
+                    <hr/>
+                    <a href="https://www.flaticon.com/free-animated-icons/fire" title="fire animated icons">Fire animated icons created by Freepik - Flaticon</a>
                 </div>                
             </main >
             {/*<ContextMenu x={menu.x} y={menu.y} options={[{text:"odhodit"},{text:"spalit"}]} />*/}

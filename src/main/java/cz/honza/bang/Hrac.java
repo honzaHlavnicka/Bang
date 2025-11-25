@@ -288,6 +288,9 @@ public class Hrac {
                 if (hra.getHerniPravidla().muzeSpalit(karta)){
                     karty.remove(karta);
                     hra.getOdhazovaciBalicek().vratNahoru(karta);
+                    hra.getKomunikator().posliVsem("novyPocetKaret:" + karty.size(),this);
+                    hra.getKomunikator().posliVsem("spalit:"+ this.id + "|" + karta.toJSON());
+
                     //TODO: informovat hráče
                 }else{
                     hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_SPALIT);

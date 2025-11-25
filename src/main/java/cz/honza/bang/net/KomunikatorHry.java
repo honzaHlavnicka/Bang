@@ -29,6 +29,7 @@ public class KomunikatorHry {
     private final long SMAZAT_NEAKTIVNI_HRU_MS = 300_000;
     private final Map<Integer, CompletableFuture<String>> cekajiciOdpovedi = new ConcurrentHashMap<>();
     private int podleniIdCekaciOdpovedi = 0;
+    private Hrac admin;
     
     public KomunikatorHry(SocketServer socket,int id) {
         this.socket = socket;
@@ -86,6 +87,9 @@ public class KomunikatorHry {
             }
             hrac.vylozitKartu(data[0], data[1]);
         }
+        if(message.startsWith("spaleni:")){
+            hrac.spalitKartu(message.replace("spaleni:", ""));
+        }
     }
     
     /**
@@ -97,6 +101,8 @@ public class KomunikatorHry {
             conn.send(co);
         }
     }
+    
+    
     
     /**
      * Pošle zprávu všem hráčům ve hře, kromě jednoho. Hodí se pro poslání podrobné informace jednomu hráči a méně podrobné informaci ostatním.
@@ -238,7 +244,6 @@ public class KomunikatorHry {
     }
 
     
-    //AKCE:
 
     public int getIdHry() {
         return idHry;
@@ -246,5 +251,15 @@ public class KomunikatorHry {
     public int pocetHracu(){
         return hraciPodlIdentifikatoru.size();
     }
+
+    public Hrac getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Hrac admin) {
+        this.admin = admin;
+    }
+    
+    
     
 }
