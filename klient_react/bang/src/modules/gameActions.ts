@@ -2,7 +2,6 @@ import toast from "react-hot-toast";
 import type { CardType, GameStateType } from "./GameContext";
 import { type DialogState } from "./DialogContext";
 import type { RefObject } from "react";
-import type { DragEndEvent } from "@dnd-kit/core/dist";
 
 
 // Helper types for server payloads

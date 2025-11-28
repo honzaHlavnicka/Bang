@@ -154,7 +154,7 @@ public class SocketServer extends WebSocketServer {
     }
    
     private int nahodneIdHry(){
-        int kod = random.nextInt(100000, 999999);
+        int kod = random.nextInt(999999 - 100000 + 1) + 100000;
         if(pouziteKody.indexOf(Integer.valueOf(kod)) != -1){
             return nahodneIdHry(); 
         }

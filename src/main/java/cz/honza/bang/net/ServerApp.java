@@ -17,7 +17,7 @@ import java.net.InetSocketAddress;
 import java.net.URL;
 
 public class ServerApp {
-
+/*
     public static void main(String[] args) throws Exception {
         // vytvoření serveru
         WebSocketServer server = new  SocketServer(new InetSocketAddress("0.0.0.0", 9999));// tvá implementace WebSocketServer
@@ -45,5 +45,11 @@ public class ServerApp {
         frame.setSize(300, 100);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+    }*/
+    
+    public static void main(String[] args) {
+        WebSocketServer server = new SocketServer(new InetSocketAddress("0.0.0.0", 60898));// tvá implementace WebSocketServer
+        server.setReuseAddr(true);
+        server.start();
     }
 }

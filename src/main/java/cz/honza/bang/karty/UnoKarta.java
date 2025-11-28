@@ -48,7 +48,8 @@ public class UnoKarta extends Karta implements HratelnaKarta{
             return true;
         }
         Karta predchoziKarta = hra.getOdhazovaciBalicek().nahledni(1).get(0);
-        if (predchoziKarta instanceof UnoKarta unoKarta) {
+        if (predchoziKarta instanceof UnoKarta) {
+            UnoKarta unoKarta = (UnoKarta) predchoziKarta;
             if(unoKarta.getBarva().equals(barva) || unoKarta.getHodnota() == hodnota ){
                 return true;
             }else{

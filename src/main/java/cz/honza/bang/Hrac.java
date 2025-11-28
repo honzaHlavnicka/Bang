@@ -236,7 +236,8 @@ public class Hrac {
         }
         for (Karta karta  : karty) {
             if(karta.getId() == idKarty){
-                if (karta instanceof HratelnaKarta hratelna) {
+                if (karta instanceof HratelnaKarta ) {
+                    HratelnaKarta hratelna = (HratelnaKarta) karta;
                     if(hra.getHerniPravidla().muzeZahrat(karta, this)){
                         if(hratelna.odehrat(this)){ //provede efekt karty, karta zkontroluje jestli je hratelna v tomto kontextu.
 
@@ -332,7 +333,8 @@ public class Hrac {
         }
         for (Karta karta : karty) {
             if (karta.getId() == idKarty) {
-                if(karta instanceof VylozitelnaKarta vylozena){
+                if(karta instanceof VylozitelnaKarta ){
+                    VylozitelnaKarta vylozena = (VylozitelnaKarta) karta;
                      Hrac predKoho = hra.getHrac(idPredKoho);
                      if(vylozena.vylozit(this, predKoho)){ //todo: efekt se prida tomuto hraci, ale vyklada se pred jineho???
                          predKoho.pridejEfekt(vylozena.getEfekt());

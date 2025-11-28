@@ -44,13 +44,24 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         //====================== nastavení režimu adresy serveru ===============================================
         //socketAdress can be: wss://<thisHost>/ws or ws://localhost:9999 or ws://<ServerPcIpAddress>:9999    //
         //const socketAdress =  "wss://" + window.location.host + "/ws";                                      //
-        //const socketAdress =  "ws://" + window.location.host + "/ws";                                       //
-        const socketAdress = "ws://localhost:9999";                                                           //
+        const socketAdress =  "wss://" + window.location.host + "/ws";                                       //
+        //const socketAdress = "ws://localhost:9999";                                                           //
         //const socketAdress = "ws://:9999";                                                                  //
-        //const socketAdress = "ws://192.168.0.118:9999";                                                     //
+        //const socketAdress = "ws://192.168.0.118:9999";    
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
-        
-        const socket = new WebSocket(socketAdress);
+        // allow overriding socket address via ?adress=xxxxx (e.g. ?adress=localhost:9999 or ?adress=ws://host:9999)
+        const params = new URLSearchParams(window.location.search);
+        const addrParam = params.get("adress");
+        let socketUrl = socketAdress;
+        if (addrParam && addrParam.trim().length > 0) {
+            socketUrl = addrParam.trim();
+            if (!/^wss?:\/\//i.test(socketUrl)) {
+            socketUrl = `ws://${socketUrl}`;
+            }
+            console.log("Using socket address from ?adress param: " + socketUrl);
+        }
+
+        const socket = new WebSocket(socketUrl);
         console.log("pokus o připojení k ws serveru na adrese " + socketAdress);
         socket.onopen = () => {
             setWs(socket);
