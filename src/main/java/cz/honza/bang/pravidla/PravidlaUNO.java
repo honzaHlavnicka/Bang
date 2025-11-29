@@ -95,11 +95,7 @@ public class PravidlaUNO implements HerniPravidla{
     
     @Override
     public void poSpusteniHry() {
-        Karta vrchni = hra.getBalicek().lizni();
-        hra.getOdhazovaciBalicek().vratNahoru(vrchni);
-        ((HratelnaKarta) vrchni).odehrat(hra.getSpravceTahu().getNaTahu());
-        hra.getSpravceTahu().dalsiHracSUpozornenim();
-        hra.getKomunikator().posliVsem("odehrat:-1|" + vrchni.toJSON());
+
     }
 
     @Override

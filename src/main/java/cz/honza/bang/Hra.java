@@ -38,6 +38,7 @@ public class Hra {
     private Balicek<Karta> odhazovaciBalicek = new Balicek();
     private SpravceTahu spravceTahu;
     private HerniPravidla herniPravidla;
+    private String obrazekZadniStrany;
     
 
     public Balicek<Karta> getOdhazovaciBalicek() {
@@ -47,9 +48,7 @@ public class Hra {
     public SpravceTahu getSpravceTahu() {
         return spravceTahu;
     }
-    
-   
-   
+      
     
     private Hra(KomunikatorHry komunikator){
         this.komunikator = komunikator;

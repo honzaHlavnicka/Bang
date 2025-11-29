@@ -105,4 +105,8 @@ public interface HerniPravidla {
     default public boolean muzeZahrat(Karta co,Hrac kdo){
         return true;
     }
+    
+    default public String getVychoziZadniObrazek(){
+        return "bang";
+    }
 }

@@ -17,6 +17,7 @@ import org.java_websocket.handshake.ClientHandshake;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -236,9 +237,6 @@ public class SocketServer extends WebSocketServer {
     public static void main(String[] args) {
         SocketServer server = new SocketServer(new InetSocketAddress("0.0.0.0", 8887));
         server.start();
-        
     }
-    
-    
 }
 

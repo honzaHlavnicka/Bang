@@ -75,4 +75,8 @@ public abstract class Karta {
     
     public abstract String getObrazek();
     public abstract String getJmeno();
+    
+    public String getZadniObrazek(){
+        return hra.getHerniPravidla().getVychoziZadniObrazek();
+    }
 }
