@@ -1,27 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { GameContext } from "./GameContext";
+import { GameContext, gameStateDefault } from "./GameContext";
 import type { GameStateType } from "./GameContext";
 import { handleGameMessage, setGameValue, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard, drawCard, returnToGame, endTurn, fireCard } from "./gameActions";
 import toast from "react-hot-toast";
 import { useDialog } from "./DialogContext";
 import { notify } from "./notify";
 
-const gameStateDefault: GameStateType = {
-    startedConection:false,
-    gameStarted: false,
-    inGame: false,
 
-    gameCode: "",
-    handCards:[],
-    inPlayCards:[{id:770,image:"nahodna"},{id:771,image:"nahodna"}],
-    players: [],
-    playerId: null,
-    turnOrder: [],
-    deckCount: 0,
-    discardPile: [],
-
-    allowedUIElements: ["ZIVOTY","UKONCENI_TAHU","POSTAVA","ROLE","VYLOZENE_KARTY","ODHAZOVACI_BALICEK","DOBIRACI_BALICEK"],
-};
 
 export function GameProvider({ children }: { children: React.ReactNode }) {
     const [gameState, setGameState] = useState<GameStateType>(gameStateDefault);
@@ -44,8 +29,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         //====================== nastavení režimu adresy serveru ===============================================
         //socketAdress can be: wss://<thisHost>/ws or ws://localhost:9999 or ws://<ServerPcIpAddress>:9999    //
         //const socketAdress =  "wss://" + window.location.host + "/ws";                                      //
-        const socketAdress =  "wss://" + window.location.host + "/ws";                                       //
-        //const socketAdress = "ws://localhost:9999";                                                           //
+        //const socketAdress =  "wss://" + window.location.host + "/ws";                                       //
+        const socketAdress = "ws://localhost:60898";                                                           //
         //const socketAdress = "ws://:9999";                                                                  //
         //const socketAdress = "ws://192.168.0.118:9999";    
         ////////////////////////////////////////////////////////////////////////////////////////////////////////

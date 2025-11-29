@@ -15,7 +15,9 @@ export default function CentralPanel() {
             {gameState.allowedUIElements.includes("UKONCENI_TAHU") ? 
                 <button className={globalCSS.button}  onClick={()=>{endTurn();}} style={{marginRight:20}}>Ukončit tah</button>
             : null}
+            {gameState.allowedUIElements.includes("OHEN") ?
             <Fire />
+            : null}
             {gameState.allowedUIElements.includes("ODHAZOVACI_BALICEK") ?
                 <Deck images={imagesForDeck} />
             : null}

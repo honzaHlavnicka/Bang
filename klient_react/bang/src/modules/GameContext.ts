@@ -37,6 +37,22 @@ export type GameStateType = {
     allowedUIElements: string[];
 
 };
+export const gameStateDefault: GameStateType = {
+    startedConection:false,
+    gameStarted: false,
+    inGame: false,
+
+    gameCode: "",
+    handCards:[],
+    inPlayCards:[{id:770,image:"nahodna"},{id:771,image:"nahodna"}],
+    players: [],
+    playerId: null,
+    turnOrder: [],
+    deckCount: 0,
+    discardPile: [],
+
+    allowedUIElements: ["ZIVOTY","UKONCENI_TAHU","POSTAVA","ROLE","VYLOZENE_KARTY","ODHAZOVACI_BALICEK","DOBIRACI_BALICEK"],
+};
 
 export const GameContext = createContext<{
     gameState: GameStateType;
@@ -54,6 +70,7 @@ export const GameContext = createContext<{
 
 
 } | null>(null);
+
 
 export const useGame = () => {
     const ctx = useContext(GameContext);

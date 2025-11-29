@@ -47,8 +47,14 @@ export function handleGameMessage(
         case "error": {
             console.error("Chyba ze serveru: " + payload);
             try {
-                const json = JSON.parse(payload) as { error: string };
+                const json = JSON.parse(payload) as { error: string, kod?: number };
                 toast.error(json.error);
+
+                if(json.kod === 5 || json.error.includes("Hra neexistuje")){
+                    //Hra neexistuje
+                    setGameState(prev => ({ ...prev, inGame: false, gameCode: null }) );
+                }
+
             } catch {
                 toast.error("Chyba ze serveru: " + payload);
             }

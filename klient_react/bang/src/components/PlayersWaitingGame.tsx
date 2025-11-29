@@ -12,7 +12,29 @@ export default function PlayersWaitingGame() {
                 </li>
             )}) }
             </ul>
-            {gameState.players!.length > 1 ? <button  style={{width:"100%",backgroundColor:"white",color:"black",cursor:"pointer",borderRadius:"50px",fontSize:"1.3em",border:0,outline:0}} onClick={() => {startGame();}}>Spustit hru</button> : null}
+            {gameState.players && gameState.players.length >= 2 ?
+            <button
+                style={{
+                    width: "100%",
+                    backgroundColor: "white",
+                    color: "black",
+                    cursor: "pointer",
+                    borderRadius: "50px",
+                    fontSize: "1.3em",
+                    border: 0
+                }}
+                onClick={() => startGame()}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        startGame();
+                    }
+                }}
+                tabIndex={0}
+                aria-label="Spustit hru"
+            >
+                Spustit hru
+            </button>: null}
         </div>
     );
 }

@@ -10,7 +10,8 @@ export default function BeforeGameWaiting() {
         <WaitingRoom> 
             <h1>čekání na další hráče</h1>
             Nasdílej jim kód: <a className={css.gameCode} href={"/?code=" + gameState.gameCode} target="_blank" > {gameState.gameCode} </a>
-            <CharacterPicker />
+            {gameState.allowedUIElements.includes("POSTAVA") ?
+            <CharacterPicker />: null}
             <PlayersWaitingGame/>
             </WaitingRoom>
     );
