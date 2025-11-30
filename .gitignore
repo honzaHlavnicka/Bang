@@ -206,3 +206,4 @@ README.html
 *.jpg
 *.png
 /nbproject/
+/server/nbproject/
