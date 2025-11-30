@@ -5,8 +5,11 @@ import cz.honza.bang.pravidla.PravidlaUNO;
 import cz.honza.bang.pravidla.HerniPravidla;
 import cz.honza.bang.pravidla.PravidlaBangu;
 import cz.honza.bang.pravidla.PravidlaVolna;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -14,6 +17,7 @@ import java.util.stream.Collectors;
  *
  * @author honza
  */
+/*
 public class SpravceHernichPravidel {
 
     private static final class InfoOHre {
@@ -89,6 +93,43 @@ public class SpravceHernichPravidel {
                 .orElseThrow(() -> new IllegalArgumentException("Neznáme ID hry: " + id))
                 .tvurce()
                 .apply(hra);
+    }
+
+    private static String escapeJSON(String text) {
+        return text.replace("\"", "\\\"");
+    }
+}
+*/
+
+
+public class SpravceHernichPravidel {
+
+    private static final List<HerniPlugin> pluginy = new ArrayList<>();
+
+    static {
+        try {
+            pluginy.addAll(NacitacPluginu.nactiPluginy(Paths.get("plugins")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getJSONVytvoritelneHry() {
+        AtomicInteger id = new AtomicInteger(); //int nefunguje a chatGPT doporučil toto
+
+        return pluginy.stream()
+                .map(p -> {
+                    int myId = id.getAndIncrement();
+                    return String.format(
+                            "{\"id\":%d,\"jmeno\":\"%s\",\"popis\":\"%s\"}",
+                            myId, escapeJSON(p.getJmeno()), escapeJSON(p.getPopis())
+                    );
+                })
+                .collect(Collectors.joining(", ", "[", "]"));
+    }
+
+    public static HerniPravidla vytvorHerniPravidla(int id, Hra hra) {
+        return pluginy.get(id).vytvor(hra);
     }
 
     private static String escapeJSON(String text) {
