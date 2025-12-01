@@ -18,41 +18,39 @@ import cz.honza.bang.karty.Pivo;
 import cz.honza.bang.karty.WellsFarkgo;
 import cz.honza.bang.karty.Dostavnik;
 import cz.honza.bang.karty.Bang;
+import cz.honza.bang.sdk.Balicek;
+import cz.honza.bang.sdk.Hra;
+import cz.honza.bang.sdk.Hrac;
+import cz.honza.bang.sdk.Karta;
 
 /**
  *
  * @author jan.hlavnicka.s
  */
 public class PravidlaVolna implements HerniPravidla{
-    private final HraImp hra;
+    private final Hra hra;
 
     public PravidlaVolna(HraImp hra) {
         this.hra = hra;
     }
     
     @Override
-    public void poOdehrani(HracImp kym) {
+    public void poOdehrani(Hrac kym) {
         return; 
     }
 
     @Override
-    public void dosliZivoty(HracImp komu) {
+    public void dosliZivoty(Hrac komu) {
         
     }
 
     @Override
-    public boolean hracChceUkoncitTah(HracImp kdo) {
-       
-        return true;
-    }
-
-    @Override
-    public boolean hracChceLiznout(HracImp kdo) {
+    public boolean hracChceLiznout(Hrac kdo) {
         return true; //Hráč si při bangu nesmí lízat kdy se mu zachce.
     }
 
     @Override
-    public void pripravBalicek(BalicekImp<Karta> balicek) {
+    public void pripravBalicek(Balicek<Karta> balicek) {
         for (int i = 0; i < 10; i++) {        
             balicek.vratNahoru(new Bang(hra, balicek));
             balicek.vratNahoru(new BangNaVsechny(hra, balicek));
@@ -65,12 +63,12 @@ public class PravidlaVolna implements HerniPravidla{
     }
 
     @Override
-    public void zacalTah(HracImp komu) {
+    public void zacalTah(Hrac komu) {
         
     }
 
     @Override
-    public void skoncilTah(HracImp komu) {
+    public void skoncilTah(Hrac komu) {
         //zatím nic
     }
 
@@ -84,7 +82,12 @@ public class PravidlaVolna implements HerniPravidla{
     }
     
     @Override
-    public void pripravitHrace(HracImp hrac) {
+    public void pripravitHrace(Hrac hrac) {
+    }
+
+    @Override
+    public boolean hracChceUkoncitTah(Hrac kdo) {
+        return true;
     }
     
     
