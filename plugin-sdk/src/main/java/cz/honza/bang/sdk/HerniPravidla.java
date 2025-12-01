@@ -2,9 +2,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package cz.honza.bang.sdk;
+package cz.honza.bang.pravidla;
 
-
+import cz.honza.bang.Balicek;
+import cz.honza.bang.Hrac;
+import cz.honza.bang.karty.Karta;
+import cz.honza.bang.postavy.Postava;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Stack;
 
 /**
@@ -64,6 +69,8 @@ public interface HerniPravidla {
      * @param balicekPostav
      */
     default public void pripravBalicekPostav(Stack<Postava> balicekPostav){
+        balicekPostav.addAll(Arrays.asList(Postava.values()));
+        Collections.shuffle(balicekPostav);
     };
     /**
      * Volá se když hráč začíná svůj tah.
