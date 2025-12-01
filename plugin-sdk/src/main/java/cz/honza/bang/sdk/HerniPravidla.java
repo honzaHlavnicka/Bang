@@ -71,8 +71,7 @@ public interface HerniPravidla {
      * @param balicekPostav
      */
     default public void pripravBalicekPostav(Stack<Postava> balicekPostav){
-        balicekPostav.addAll(Arrays.asList(Postava.values()));
-        Collections.shuffle(balicekPostav);
+
     };
     /**
      * Volá se když hráč začíná svůj tah.

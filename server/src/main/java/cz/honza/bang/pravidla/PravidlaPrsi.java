@@ -11,9 +11,9 @@ package cz.honza.bang.pravidla;
  * @author honza
  */
 import cz.honza.bang.sdk.HerniPravidla;
-import cz.honza.bang.Balicek;
-import cz.honza.bang.Hra;
-import cz.honza.bang.Hrac;
+import cz.honza.bang.BalicekImp;
+import cz.honza.bang.HraImp;
+import cz.honza.bang.HracImp;
 import cz.honza.bang.karty.HratelnaKarta;
 import cz.honza.bang.karty.Karta;
 import cz.honza.bang.karty.PrsiBarva;
@@ -25,17 +25,17 @@ import cz.honza.bang.karty.PrsiSvrsek;
 
 
 public class PravidlaPrsi implements HerniPravidla{
-    private final Hra hra;
+    private final HraImp hra;
     private int pocetKaretNaLiznuti;
 
-    public PravidlaPrsi(Hra hra) {
+    public PravidlaPrsi(HraImp hra) {
         this.hra = hra;
         pocetKaretNaLiznuti = 0;
     }
     
 
     @Override
-    public void poOdehrani(Hrac kym) {
+    public void poOdehrani(HracImp kym) {
         hra.getSpravceTahu().dalsiHracSUpozornenim();
         if(kym.getKarty().isEmpty()){
             hra.skoncil(kym);
@@ -44,17 +44,17 @@ public class PravidlaPrsi implements HerniPravidla{
     }
 
     @Override
-    public void dosliZivoty(Hrac komu) {
+    public void dosliZivoty(HracImp komu) {
         //Nezájem, nic jako životy prší nemá
     }
 
     @Override
-    public boolean hracChceUkoncitTah(Hrac kdo) {
+    public boolean hracChceUkoncitTah(HracImp kdo) {
         return false; //Hráč nemůže jen tak říct, že přeskakuje tah
     }
 
     @Override
-    public boolean hracChceLiznout(Hrac kdo) {
+    public boolean hracChceLiznout(HracImp kdo) {
         System.out.println("někdo chce lízat. pocetKaretNaLiznuti="+pocetKaretNaLiznuti);
         if(kdo.jeNaTahu()){
             if(pocetKaretNaLiznuti != 0){
@@ -73,7 +73,7 @@ public class PravidlaPrsi implements HerniPravidla{
     }
     
     @Override
-    public void pripravBalicek(Balicek<Karta> balicek){     
+    public void pripravBalicek(BalicekImp<Karta> balicek){     
         for(PrsiBarva barva : PrsiBarva.values()){
             balicek.vratNahoru(new PrsiSedmicka(hra, balicek, barva,this));            
             balicek.vratNahoru(new PrsiEso(hra, balicek, barva, PrsiHodnota.ESO));
@@ -117,7 +117,7 @@ public class PravidlaPrsi implements HerniPravidla{
     }
 
     @Override
-    public boolean muzeZahrat(Karta co, Hrac kdo) {
+    public boolean muzeZahrat(Karta co, HracImp kdo) {
         
         //Pokud se má lízat na sedmičku, tak se nemůže hrát nic jiného.
         if(pocetKaretNaLiznuti <= 0){
@@ -130,7 +130,7 @@ public class PravidlaPrsi implements HerniPravidla{
     }
     
     @Override
-    public void pripravitHrace(Hrac hrac){
+    public void pripravitHrace(HracImp hrac){
         hrac.lizni();
         hrac.lizni();
         hrac.lizni();

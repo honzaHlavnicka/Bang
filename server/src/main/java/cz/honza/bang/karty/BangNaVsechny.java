@@ -6,9 +6,9 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.karty;
 
-import cz.honza.bang.Balicek;
-import cz.honza.bang.Hra;
-import cz.honza.bang.Hrac;
+import cz.honza.bang.BalicekImp;
+import cz.honza.bang.HraImp;
+import cz.honza.bang.HracImp;
 
 /**
  *
@@ -16,12 +16,12 @@ import cz.honza.bang.Hrac;
  */
 public class BangNaVsechny extends Bang{
     
-    public BangNaVsechny(Hra hra, Balicek<Karta> balicek) {
+    public BangNaVsechny(HraImp hra, BalicekImp<Karta> balicek) {
         super(hra, balicek);
     }
     @Override
-    public boolean odehrat(Hrac kym){
-        for (Hrac hrac : hra.getHraci()) {
+    public boolean odehrat(HracImp kym){
+        for (HracImp hrac : hra.getHraci()) {
             if(!hrac.equals(kym)){
                 hrac.odeberZivot();
             }

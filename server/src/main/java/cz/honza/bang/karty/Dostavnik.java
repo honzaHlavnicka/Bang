@@ -6,9 +6,9 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.karty;
 
-import cz.honza.bang.Balicek;
-import cz.honza.bang.Hra;
-import cz.honza.bang.Hrac;
+import cz.honza.bang.BalicekImp;
+import cz.honza.bang.HraImp;
+import cz.honza.bang.HracImp;
 
 /**
  *
@@ -16,7 +16,7 @@ import cz.honza.bang.Hrac;
  */
 public class Dostavnik extends Karta implements HratelnaKarta{
 
-    public Dostavnik(Hra hra, Balicek<Karta> balicek) {
+    public Dostavnik(HraImp hra, BalicekImp<Karta> balicek) {
         super(hra, balicek);
     }
     @Override
@@ -29,7 +29,7 @@ public class Dostavnik extends Karta implements HratelnaKarta{
     }
 
     @Override
-    public boolean odehrat(Hrac kym) {
+    public boolean odehrat(HracImp kym) {
         kym.lizni();
         kym.lizni();
         return true;

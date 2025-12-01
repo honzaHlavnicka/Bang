@@ -4,10 +4,10 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.pravidla;
+package cz.honza.bang.sdk;
 
 import cz.honza.bang.sdk.HerniPravidla;
-import cz.honza.bang.Hra;
+import cz.honza.bang.HraImp;
 
 /**
  *
@@ -16,5 +16,5 @@ import cz.honza.bang.Hra;
 public interface HerniPlugin {
     public String getJmeno();
     public String getPopis();
-    public HerniPravidla vytvor(Hra hra);
+    public HerniPravidla vytvor(HraImp hra);
 }

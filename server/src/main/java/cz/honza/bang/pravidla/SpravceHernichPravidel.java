@@ -1,6 +1,7 @@
 package cz.honza.bang.pravidla;
 
-import cz.honza.bang.Hra;
+import cz.honza.bang.sdk.HerniPlugin;
+import cz.honza.bang.HraImp;
 import cz.honza.bang.pravidla.PravidlaUNO;
 import cz.honza.bang.sdk.HerniPravidla;
 import cz.honza.bang.pravidla.PravidlaBangu;
@@ -128,7 +129,7 @@ public class SpravceHernichPravidel {
                 .collect(Collectors.joining(", ", "[", "]"));
     }
 
-    public static HerniPravidla vytvorHerniPravidla(int id, Hra hra) {
+    public static HerniPravidla vytvorHerniPravidla(int id, HraImp hra) {
         return pluginy.get(id).vytvor(hra);
     }
 

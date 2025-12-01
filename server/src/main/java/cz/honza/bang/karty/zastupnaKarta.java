@@ -6,8 +6,8 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.karty;
 
-import cz.honza.bang.Balicek;
-import cz.honza.bang.Hra;
+import cz.honza.bang.BalicekImp;
+import cz.honza.bang.HraImp;
 import cz.honza.bang.sdk.Karta;
 
 /**

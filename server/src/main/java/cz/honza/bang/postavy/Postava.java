@@ -6,8 +6,8 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.postavy;
 
-import cz.honza.bang.Hra;
-import cz.honza.bang.Hrac;
+import cz.honza.bang.HraImp;
+import cz.honza.bang.HracImp;
 
 /**
  *
@@ -19,13 +19,13 @@ public enum Postava implements cz.honza.bang.sdk.Postava{
      },
      TESTOVACI2(3, "testovací postava dvě", "Přidá život, pokud hráč nemá karty") {
         @Override
-        public void kdyzNemaKarty(Hra hra, Hrac hrac) {
+        public void kdyzNemaKarty(HraImp hra, HracImp hrac) {
             hrac.pridejZivot();
         }
     },
     VULTURE_SAM(4,"Vulture Sam ","Kdykoli je nějaká postava zabita, vezměte si do ruky všechny karty, které má její hráč v ruce a ve hře."){
         @Override
-        public void poZabitiKohokoliv(Hrac ja,Hrac zabity){
+        public void poZabitiKohokoliv(HracImp ja,HracImp zabity){
             //TODO: přendat karty
         }
     };

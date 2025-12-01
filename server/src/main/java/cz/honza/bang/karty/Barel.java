@@ -8,9 +8,9 @@ package cz.honza.bang.karty;
 
 import cz.honza.bang.sdk.Efekt;
 import cz.honza.bang.sdk.VylozitelnaKarta;
-import cz.honza.bang.Balicek;
-import cz.honza.bang.Hra;
-import cz.honza.bang.Hrac;
+import cz.honza.bang.BalicekImp;
+import cz.honza.bang.HraImp;
+import cz.honza.bang.HracImp;
 import cz.honza.bang.sdk.Karta;
 
 /**
@@ -20,7 +20,7 @@ import cz.honza.bang.sdk.Karta;
 public class Barel extends Karta implements VylozitelnaKarta{
     private Efekt efekt;
 
-    public Barel(Hra hra, Balicek<Karta> balicek) {
+    public Barel(HraImp hra, BalicekImp<Karta> balicek) {
         super(hra, balicek);
         efekt = new BarelEfekt();
     }
@@ -34,7 +34,7 @@ public class Barel extends Karta implements VylozitelnaKarta{
     }
     
     @Override
-    public boolean vylozit(Hrac predKoho, Hrac kym) {
+    public boolean vylozit(HracImp predKoho, HracImp kym) {
         return predKoho.equals(kym);
     }
     

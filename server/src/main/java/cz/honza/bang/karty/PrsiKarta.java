@@ -6,9 +6,9 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.karty;
 
-import cz.honza.bang.Balicek;
-import cz.honza.bang.Hra;
-import cz.honza.bang.Hrac;
+import cz.honza.bang.BalicekImp;
+import cz.honza.bang.HraImp;
+import cz.honza.bang.HracImp;
 import cz.honza.bang.karty.HratelnaKarta;
 
 /**
@@ -19,7 +19,7 @@ public class PrsiKarta extends Karta implements HratelnaKarta{
     PrsiBarva barva;
     PrsiHodnota hodnota;
     
-    public PrsiKarta(Hra hra, Balicek<Karta> balicek,PrsiBarva b,PrsiHodnota h) {
+    public PrsiKarta(HraImp hra, BalicekImp<Karta> balicek,PrsiBarva b,PrsiHodnota h) {
         super(hra, balicek);
         barva = b;
         hodnota = h;
@@ -55,7 +55,7 @@ public class PrsiKarta extends Karta implements HratelnaKarta{
 
     @Override         
 
-    public boolean odehrat(Hrac kym) {
+    public boolean odehrat(HracImp kym) {
         if (hra.getOdhazovaciBalicek().jePrazdny()) {
             return true;
         }

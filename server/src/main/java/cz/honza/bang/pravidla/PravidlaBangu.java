@@ -5,9 +5,9 @@
 package cz.honza.bang.pravidla;
 
 import cz.honza.bang.sdk.HerniPravidla;
-import cz.honza.bang.Balicek;
-import cz.honza.bang.Hra;
-import cz.honza.bang.Hrac;
+import cz.honza.bang.BalicekImp;
+import cz.honza.bang.HraImp;
+import cz.honza.bang.HracImp;
 import cz.honza.bang.Role;
 import cz.honza.bang.karty.Bang;
 import cz.honza.bang.karty.BangNaVsechny;
@@ -23,19 +23,19 @@ import java.util.List;
  * @author jan.hlavnicka.s
  */
 public class PravidlaBangu implements HerniPravidla{
-    private final Hra hra;
+    private final HraImp hra;
 
-    public PravidlaBangu(Hra hra) {
+    public PravidlaBangu(HraImp hra) {
         this.hra = hra;
     }
     
     @Override
-    public void poOdehrani(Hrac kym) {
+    public void poOdehrani(HracImp kym) {
         return; 
     }
 
     @Override
-    public void dosliZivoty(Hrac komu) {
+    public void dosliZivoty(HracImp komu) {
         hra.getSpravceTahu().vyraditHrace(komu);
         
         if(komu.getRole() == Role.SERIF){
@@ -69,7 +69,7 @@ public class PravidlaBangu implements HerniPravidla{
     }
 
     @Override
-    public boolean hracChceUkoncitTah(Hrac kdo) {
+    public boolean hracChceUkoncitTah(HracImp kdo) {
         if(kdo.jeNaTahu()){
             kdo.konecTahu();
         }
@@ -77,12 +77,12 @@ public class PravidlaBangu implements HerniPravidla{
     }
 
     @Override
-    public boolean hracChceLiznout(Hrac kdo) {
+    public boolean hracChceLiznout(HracImp kdo) {
         return false; //Hráč si při bangu nesmí lízat kdy se mu zachce.
     }
 
     @Override
-    public void pripravBalicek(Balicek<Karta> balicek) {
+    public void pripravBalicek(BalicekImp<Karta> balicek) {
         for (int i = 0; i < 10; i++) {        
             balicek.vratNahoru(new Bang(hra, balicek));
             balicek.vratNahoru(new BangNaVsechny(hra, balicek));
@@ -95,13 +95,13 @@ public class PravidlaBangu implements HerniPravidla{
     }
 
     @Override
-    public void zacalTah(Hrac komu) {
+    public void zacalTah(HracImp komu) {
         komu.lizni();
         komu.lizni();
     }
 
     @Override
-    public void skoncilTah(Hrac komu) {
+    public void skoncilTah(HracImp komu) {
         //zatím nic
     }
 
@@ -115,7 +115,7 @@ public class PravidlaBangu implements HerniPravidla{
     }
 
     @Override
-    public void pripravitHrace(Hrac hrac) {
+    public void pripravitHrace(HracImp hrac) {
         if (hrac.getRole() != Role.SERIF) {
             hrac.setMaximumZivotu(hrac.getPostava().maximumZivotu);
         } else {

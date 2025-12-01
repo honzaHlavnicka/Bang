@@ -11,11 +11,11 @@ package cz.honza.bang;
  * @author honza
  */
 public class Tah {
-    public final Hrac hrac;
+    public final HracImp hrac;
     public final boolean jednorazovy;
     public boolean docasneZruseny;
 
-    public Tah(Hrac hrac, boolean jednorazovy) {
+    public Tah(HracImp hrac, boolean jednorazovy) {
         this.hrac = hrac;
         this.jednorazovy = jednorazovy;
         this.docasneZruseny = false;

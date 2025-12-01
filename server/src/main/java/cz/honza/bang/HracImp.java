@@ -20,7 +20,7 @@ import java.util.List;
  * Třída reprezentující jednoho hráče.
  * @author honza
  */
-public class Hrac implements cz.honza.bang.sdk.Hrac{
+public class HracImp implements cz.honza.bang.sdk.Hrac{
     private int zivoty;
     private int  maximumZivotu;
     private Postava postava = Postava.TESTOVACI;
@@ -32,13 +32,13 @@ public class Hrac implements cz.honza.bang.sdk.Hrac{
     private boolean pripravenyKeHre;
     private String jmeno;
     private Postava[] postavyNaVyber;
-    private Hra hra;
+    private HraImp hra;
     private final int id;
     private static int nextId = 0;
  
 
     
-    public Hrac(Hra hra){
+    public HracImp(HraImp hra){
         this.hra = hra;
         pripravenyKeHre = false;
         jmeno = "nepojmenovaný hráč";
@@ -190,7 +190,7 @@ public class Hrac implements cz.honza.bang.sdk.Hrac{
         return pripravenyKeHre;
     }
 
-    public Hra getHra() {
+    public HraImp getHra() {
         return hra;
     }
     
@@ -335,7 +335,7 @@ public class Hrac implements cz.honza.bang.sdk.Hrac{
             if (karta.getId() == idKarty) {
                 if(karta instanceof VylozitelnaKarta ){
                     VylozitelnaKarta vylozena = (VylozitelnaKarta) karta;
-                     Hrac predKoho = hra.getHrac(idPredKoho);
+                     HracImp predKoho = hra.getHrac(idPredKoho);
                      if(vylozena.vylozit(this, predKoho)){ //todo: efekt se prida tomuto hraci, ale vyklada se pred jineho???
                          predKoho.pridejEfekt(vylozena.getEfekt());
                      }else{
@@ -395,8 +395,8 @@ public class Hrac implements cz.honza.bang.sdk.Hrac{
      * @see #vzdalenostPod(int)
      * @see #vzdalenostKCista(cz.honza.bang.Hrac) 
      */
-    public int fyzickaVzdalenostK(Hrac komu)throws IllegalArgumentException{
-        List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
+    public int fyzickaVzdalenostK(HracImp komu)throws IllegalArgumentException{
+        List<HracImp> hraci = hra.getSpravceTahu().getHrajiciHraci();
         
         int velikost = hraci.size();
         int i1 = hraci.indexOf(this);
@@ -413,7 +413,7 @@ public class Hrac implements cz.honza.bang.sdk.Hrac{
         return rozdilPodleMist;
     }
     
-    public int vzdalenostKCista(Hrac komu){
+    public int vzdalenostKCista(HracImp komu){
         //TODO: neignorovat efekty
         return fyzickaVzdalenostK(komu);
     }
@@ -426,8 +426,8 @@ public class Hrac implements cz.honza.bang.sdk.Hrac{
      * @return List hráčů, kteří spn
      * @see #fyzickaVzdalenostK(cz.honza.bang.Hrac) 
      */
-    public List<Hrac> vzdalenostPod(int max, boolean iZpetne){
-        List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
+    public List<HracImp> vzdalenostPod(int max, boolean iZpetne){
+        List<HracImp> hraci = hra.getSpravceTahu().getHrajiciHraci();
 
         int velikost = hraci.size();
         int i1 = hraci.indexOf(this);
@@ -435,7 +435,7 @@ public class Hrac implements cz.honza.bang.sdk.Hrac{
             throw new IllegalArgumentException("Hráč nebyl nalezen v seznamu");
         }
         
-        List<Hrac> vysledniHraci = new ArrayList<>();
+        List<HracImp> vysledniHraci = new ArrayList<>();
         
         for (int i = 0; i < hraci.size(); i++) {
             int rozdil = Math.abs(i1 - i);
@@ -461,7 +461,7 @@ public class Hrac implements cz.honza.bang.sdk.Hrac{
      * @return List hráčů, kteří spn
      * @see #fyzickaVzdalenostK(cz.honza.bang.Hrac)
      */
-    public List<Hrac> vzdalenostPod(int max){
+    public List<HracImp> vzdalenostPod(int max){
         return vzdalenostPod(max,true);
     }
 

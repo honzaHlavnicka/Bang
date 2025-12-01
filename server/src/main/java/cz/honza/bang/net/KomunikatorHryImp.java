@@ -7,8 +7,8 @@ Toto je domácí verze souborů z programování.
 package cz.honza.bang.net;
 
 import cz.honza.bang.sdk.Chyba;
-import cz.honza.bang.Hra;
-import cz.honza.bang.Hrac;
+import cz.honza.bang.HraImp;
+import cz.honza.bang.HracImp;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -20,30 +20,30 @@ import org.java_websocket.WebSocket;
  *
  * @author honza
  */
-public class KomunikatorHry implements cz.honza.bang.sdk.KomunikatorHry{
-    private Hra hra;
+public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
+    private HraImp hra;
     private SocketServer socket;
-    private Map<Hrac, WebSocket> websocketPodleHracu = new ConcurrentHashMap<>();
-    private Map<WebSocket, Hrac> hraciPodleWebsocketu = new ConcurrentHashMap<>();
-    private Map<String, Hrac> hraciPodlIdentifikatoru = new ConcurrentHashMap<>();
+    private Map<HracImp, WebSocket> websocketPodleHracu = new ConcurrentHashMap<>();
+    private Map<WebSocket, HracImp> hraciPodleWebsocketu = new ConcurrentHashMap<>();
+    private Map<String, HracImp> hraciPodlIdentifikatoru = new ConcurrentHashMap<>();
     private int idHry;
     private final long SMAZAT_NEAKTIVNI_HRU_MS = 300_000;
     private final Map<Integer, CompletableFuture<String>> cekajiciOdpovedi = new ConcurrentHashMap<>();
     private int podleniIdCekaciOdpovedi = 0;
-    private Hrac admin;
+    private HracImp admin;
     
-    public KomunikatorHry(SocketServer socket,int id) {
+    public KomunikatorHryImp(SocketServer socket,int id) {
         this.socket = socket;
         idHry = id;
     }
-    public static KomunikatorHry vytvor(SocketServer socket,int id,int typHry){
-        KomunikatorHry komunikator = new KomunikatorHry(socket, id);
-        komunikator.hra = Hra.vytvor(komunikator,typHry);
+    public static KomunikatorHryImp vytvor(SocketServer socket,int id,int typHry){
+        KomunikatorHryImp komunikator = new KomunikatorHryImp(socket, id);
+        komunikator.hra = HraImp.vytvor(komunikator,typHry);
         return komunikator;
     }
     
     public void prislaZprava(WebSocket conn, String message) {
-        Hrac hrac = hraciPodleWebsocketu.get(conn);
+        HracImp hrac = hraciPodleWebsocketu.get(conn);
         
         if(message.startsWith("noveJmeno:")){
             hrac.setJmeno(message.replace("noveJmeno:", ""));
@@ -130,7 +130,7 @@ public class KomunikatorHry implements cz.honza.bang.sdk.KomunikatorHry{
         }
         
         websocket.send("pripojenKeHre");
-        Hrac hrac = hra.novyHrac();
+        HracImp hrac = hra.novyHrac();
         websocketPodleHracu.put(hrac, websocket);
         hraciPodleWebsocketu.put(websocket, hrac);
         String identifikator = GeneratorTokenu.NovytokenHrace();
@@ -147,7 +147,7 @@ public class KomunikatorHry implements cz.honza.bang.sdk.KomunikatorHry{
     }
     
     public void hracOdpojen(WebSocket conn){
-        Hrac hrac = hraciPodleWebsocketu.get(conn);
+        HracImp hrac = hraciPodleWebsocketu.get(conn);
         hraciPodleWebsocketu.remove(conn);
         websocketPodleHracu.remove(hrac);
         if(hraciPodleWebsocketu.isEmpty()){
@@ -180,7 +180,7 @@ public class KomunikatorHry implements cz.honza.bang.sdk.KomunikatorHry{
      * @return úspěch akce
      */
     public boolean vraciSeHrac(WebSocket conn, String token){
-        Hrac hrac = hraciPodlIdentifikatoru.get(token);
+        HracImp hrac = hraciPodlIdentifikatoru.get(token);
         if(hrac == null){
             conn.send("error:{\"error\":\"hráč v této hře nenalezen\"}");
             return false;
@@ -242,12 +242,12 @@ public class KomunikatorHry implements cz.honza.bang.sdk.KomunikatorHry{
     }
 
     @Override
-    public Hrac getAdmin() {
+    public HracImp getAdmin() {
         return admin;
     }
 
     public void setAdmin(cz.honza.bang.sdk.Hrac admin) {
-        this.admin = (Hrac) admin;
+        this.admin = (HracImp) admin;
     }
 
    

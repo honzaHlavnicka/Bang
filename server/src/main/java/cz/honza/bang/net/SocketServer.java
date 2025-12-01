@@ -24,8 +24,8 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SocketServer extends WebSocketServer {
-    private Map<WebSocket, KomunikatorHry> komunikatoryHracu = new  ConcurrentHashMap<>();
-    private Map<String, KomunikatorHry> hryPodleId = new ConcurrentHashMap<>();
+    private Map<WebSocket, KomunikatorHryImp> komunikatoryHracu = new  ConcurrentHashMap<>();
+    private Map<String, KomunikatorHryImp> hryPodleId = new ConcurrentHashMap<>();
     private List<Integer> pouziteKody = new ArrayList<>();
     private Random random = new Random();
 
@@ -44,7 +44,7 @@ public class SocketServer extends WebSocketServer {
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         System.out.println("Closed connection: " + reason);
        
-        KomunikatorHry komunikator = komunikatoryHracu.remove(conn);
+        KomunikatorHryImp komunikator = komunikatoryHracu.remove(conn);
         
         if(komunikator != null){           //Pokud byl uživatel připojen ke hře.
             komunikator.hracOdpojen(conn);
@@ -73,7 +73,7 @@ public class SocketServer extends WebSocketServer {
         }
 
         if (message.startsWith("novaHra") || message.startsWith("pripojeniKeHre:111")) {
-            KomunikatorHry komunikatorCoAsiNeexistuje = komunikatoryHracu.get(conn); //pro kontrolu, jestli už hrač hru nehraje
+            KomunikatorHryImp komunikatorCoAsiNeexistuje = komunikatoryHracu.get(conn); //pro kontrolu, jestli už hrač hru nehraje
             if (komunikatorCoAsiNeexistuje != null) {
                 conn.send("error:{\"error\":\"už jsi připojen ke hře\"}");
                 return;
@@ -86,7 +86,7 @@ public class SocketServer extends WebSocketServer {
             }
             
             int kodKry = nahodneIdHry();
-            KomunikatorHry komunikator = KomunikatorHry.vytvor(this, kodKry, typHry);
+            KomunikatorHryImp komunikator = KomunikatorHryImp.vytvor(this, kodKry, typHry);
             hryPodleId.put(Integer.toString(kodKry), komunikator);
             System.out.println("novaHra:" + kodKry);
             conn.send("novaHra:" + kodKry);
@@ -98,13 +98,13 @@ public class SocketServer extends WebSocketServer {
         
         if(message.startsWith("pripojeniKeHre:")){
             String idHry = message.replace("pripojeniKeHre:", "");
-            KomunikatorHry komunikatorCoAsiNeexistuje = komunikatoryHracu.get(conn); //pro kontrolu, jestli už hrač hru nehraje
+            KomunikatorHryImp komunikatorCoAsiNeexistuje = komunikatoryHracu.get(conn); //pro kontrolu, jestli už hrač hru nehraje
             if(komunikatorCoAsiNeexistuje != null){
                 conn.send("error:{\"error\":\"už jsi připojen ke hře\"}");
                 return;
             }
 
-            KomunikatorHry komunikatorHry = hryPodleId.get(idHry);
+            KomunikatorHryImp komunikatorHry = hryPodleId.get(idHry);
             if(komunikatorHry == null){
                 conn.send("error:{\"error\":\"Hra neexistuje\"}");
                 return;
@@ -118,7 +118,7 @@ public class SocketServer extends WebSocketServer {
         }
         
         if(message.startsWith("vraceniSe:")){
-            KomunikatorHry komunikator = hryPodleId.get(message.substring(10, 16));
+            KomunikatorHryImp komunikator = hryPodleId.get(message.substring(10, 16));
             if(komunikator == null){
                 conn.send("error:{\"error\":\"hra do které se snažíš připojit neexistuje\"}");
                 return;
@@ -131,7 +131,7 @@ public class SocketServer extends WebSocketServer {
         }
 
         
-        KomunikatorHry komunikator = komunikatoryHracu.get(conn);
+        KomunikatorHryImp komunikator = komunikatoryHracu.get(conn);
         if(komunikator == null){
             conn.send("error:{\"error\":\"Nejsi připojen ke hře\"}");
             return;
@@ -193,7 +193,7 @@ public class SocketServer extends WebSocketServer {
             sb.append("<td>");
             sb.append(connection.getRemoteSocketAddress());
             sb.append("</td><td>");
-            KomunikatorHry komunikator = komunikatoryHracu.get(connection);
+            KomunikatorHryImp komunikator = komunikatoryHracu.get(connection);
             if(komunikator == null){
                 sb.append("nepřipojen");
             }else{
@@ -215,7 +215,7 @@ public class SocketServer extends WebSocketServer {
             sb.append("<td>");
             sb.append(idHry);
             sb.append("</td><td>");
-            KomunikatorHry komunikator = hryPodleId.get(idHry);
+            KomunikatorHryImp komunikator = hryPodleId.get(idHry);
        
             sb.append(komunikator.pocetHracu());
             sb.append(" hráčů");

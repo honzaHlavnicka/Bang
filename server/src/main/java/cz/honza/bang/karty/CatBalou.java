@@ -6,9 +6,9 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.karty;
 
-import cz.honza.bang.Balicek;
-import cz.honza.bang.Hra;
-import cz.honza.bang.Hrac;
+import cz.honza.bang.BalicekImp;
+import cz.honza.bang.HraImp;
+import cz.honza.bang.HracImp;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -18,7 +18,7 @@ import org.json.JSONObject;
  */
 public class CatBalou extends Karta implements HratelnaKarta{
 
-    public CatBalou(Hra hra, Balicek<Karta> balicek) {
+    public CatBalou(HraImp hra, BalicekImp<Karta> balicek) {
         super(hra, balicek);
     }
 
@@ -33,12 +33,12 @@ public class CatBalou extends Karta implements HratelnaKarta{
     }
 
     @Override
-    public boolean odehrat(Hrac kym) {
+    public boolean odehrat(HracImp kym) {
         hra.getKomunikator().pozadejOdpoved( "vyberHrace:" + pripravJSONvyberuHrace(kym), kym)
             .thenAccept(odpoved -> {
                 
                 System.out.println("Hráč odpověděl: " + odpoved);
-                Hrac naKoho = hra.getHrac(Integer.parseInt(odpoved)); //TODO: možná nějaká exception kontrola, DRY:Bang
+                HracImp naKoho = hra.getHrac(Integer.parseInt(odpoved)); //TODO: možná nějaká exception kontrola, DRY:Bang
                 hra.getKomunikator().pozadejOdpoved("vyberKartu:" + pripravJSONvyberuKarty(naKoho), kym)
                     .thenAccept(idKarty -> {
                         if(zastupnaKarta.getNahodna().getId() == Integer.parseInt(idKarty)){
@@ -51,7 +51,7 @@ public class CatBalou extends Karta implements HratelnaKarta{
         return true;
     }
     
-    private String pripravJSONvyberuKarty(Hrac naKoho){
+    private String pripravJSONvyberuKarty(HracImp naKoho){
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
         json.put("nadpis", "Vyber jakou kartu!");
@@ -64,12 +64,12 @@ public class CatBalou extends Karta implements HratelnaKarta{
         return json.toString();
     }
     
-    private String pripravJSONvyberuHrace(Hrac hracCoOdehral) { //TODO: DRY: Bang
+    private String pripravJSONvyberuHrace(HracImp hracCoOdehral) { //TODO: DRY: Bang
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
         json.put("nadpis", "Vyber komu sebereš kartu!");
         JSONArray hraciNaVyber = new JSONArray();
-        for (Hrac hrac : hra.getHraci()) {
+        for (HracImp hrac : hra.getHraci()) {
             hraciNaVyber.put(hrac.getId());
         }
         json.put("hraci", hraciNaVyber);

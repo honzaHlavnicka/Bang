@@ -14,7 +14,7 @@ package cz.honza.bang;
 import java.util.*;
 
 
-public class Balicek<T> implements cz.honza.bang.sdk.Balicek<T>{
+public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
     private Deque<T> karty = new ArrayDeque<>();
     private boolean jeOtoceny = false;
 
@@ -22,14 +22,14 @@ public class Balicek<T> implements cz.honza.bang.sdk.Balicek<T>{
      * Vytvoří balíček a naplní ho kartami.
      * @param karty objekty, které se mají do balíčku nandat.
      */
-    public Balicek(Collection<T> karty) {
+    public BalicekImp(Collection<T> karty) {
         this.karty.addAll(karty);
     }
 
     /**
      * Vytvoří prázdný balíček.
      */
-    public Balicek() {
+    public BalicekImp() {
         
     }
 

@@ -6,9 +6,9 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.karty;
 
-import cz.honza.bang.Balicek;
-import cz.honza.bang.Hra;
-import cz.honza.bang.Hrac;
+import cz.honza.bang.BalicekImp;
+import cz.honza.bang.HraImp;
+import cz.honza.bang.HracImp;
 
 /**
  *
@@ -16,12 +16,12 @@ import cz.honza.bang.Hrac;
  */
 public class PrsiEso extends PrsiKarta{
     
-    public PrsiEso(Hra hra, Balicek<Karta> balicek, PrsiBarva b, PrsiHodnota h) {
+    public PrsiEso(HraImp hra, BalicekImp<Karta> balicek, PrsiBarva b, PrsiHodnota h) {
         super(hra, balicek, b, h);
     }
     
     @Override
-    public boolean odehrat(Hrac kym){
+    public boolean odehrat(HracImp kym){
         if(!super.odehrat(kym)){
             return false;
         }

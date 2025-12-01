@@ -18,12 +18,12 @@ import java.util.List;
  *
  * @author honza
  */
-public class SpravceTahu implements cz.honza.bang.sdk.SpravceTahu{
-    private Hrac naTahu;
+public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
+    private HracImp naTahu;
     private final Deque<Tah> frontaTahu;
 
     // Lazy cache pořadí hráčů
-    private List<Hrac> hrajiciHraciCache;
+    private List<HracImp> hrajiciHraciCache;
     private boolean poradiAktualni = false;
 
     private int nasobicTahu = 1;
@@ -35,9 +35,9 @@ public class SpravceTahu implements cz.honza.bang.sdk.SpravceTahu{
      * Třída pro správu tahů. Podporuje dynamicky měnit směr, přidávat dočasné tahy i násobit tahy.
      * @param hraci
      */
-    public SpravceTahu(List<Hrac> hraci) {
+    public SpravceTahuImp(List<HracImp> hraci) {
         this.frontaTahu = new ArrayDeque<>();
-        for (Hrac hrac : hraci) {
+        for (HracImp hrac : hraci) {
             frontaTahu.addLast(new Tah(hrac, false));
         }
         this.poradiAktualni = false;
@@ -50,7 +50,7 @@ public class SpravceTahu implements cz.honza.bang.sdk.SpravceTahu{
 
      * @return kolekce hráčů seřazená podle pořadí hraní.
      */
-    public List<Hrac> getHrajiciHraci() {
+    public List<HracImp> getHrajiciHraci() {
         if (!poradiAktualni) {
             hrajiciHraciCache = new ArrayList<>();
             for (Tah t : frontaTahu) {
@@ -74,7 +74,7 @@ public class SpravceTahu implements cz.honza.bang.sdk.SpravceTahu{
      *
      * @return hráč, který je na tahu. 
      */
-    public Hrac dalsiHrac() {
+    public HracImp dalsiHrac() {
         if(getHrajiciHraci().isEmpty()){
             return naTahu;
         }
@@ -116,8 +116,8 @@ public class SpravceTahu implements cz.honza.bang.sdk.SpravceTahu{
     /**
      * Najde dalšího hráče se zadanou rolí.
      */
-    public Hrac dalsiHracPodleRole(Role role) {
-       Hrac hrac;
+    public HracImp dalsiHracPodleRole(Role role) {
+       HracImp hrac;
         do {
             hrac = dalsiHrac();
         } while (hrac.getRole() != role);
@@ -137,7 +137,7 @@ public class SpravceTahu implements cz.honza.bang.sdk.SpravceTahu{
      * Další hráč bude přeskočen. Stávající hráč hraje dál, neukončí to jeho tah.
      * @return hráč, který byl přeskočen.
      */
-    public Hrac eso(){
+    public HracImp eso(){
         Tah tah = frontaTahu.pollFirst();
         if (tah != null) {
             frontaTahu.addLast(tah);
@@ -155,7 +155,7 @@ public class SpravceTahu implements cz.honza.bang.sdk.SpravceTahu{
         nasobicTahu = kolik;
     }
     
-    public Hrac getNaTahu(){
+    public HracImp getNaTahu(){
         return naTahu;
     }
     
@@ -164,7 +164,7 @@ public class SpravceTahu implements cz.honza.bang.sdk.SpravceTahu{
      * Jeho pořadí ve kterém byl se nezapomene, nic ze nezmění kromě toho, že se jeho tah bude pokaždé přeskakovat.
      * @param koho
      */
-    public void vyraditHrace(Hrac koho){
+    public void vyraditHrace(HracImp koho){
         for (Tah tah : frontaTahu) {
             if(tah.hrac.equals(koho)){
                 tah.docasneZruseny = true;
@@ -180,7 +180,7 @@ public class SpravceTahu implements cz.honza.bang.sdk.SpravceTahu{
      * @param koho
      * @see pridatHrace
      */
-    public void vratitHrace(Hrac koho){
+    public void vratitHrace(HracImp koho){
         for (Tah tah : frontaTahu) {
             if (tah.hrac.equals(koho)) {
                 tah.docasneZruseny = false;
@@ -195,7 +195,7 @@ public class SpravceTahu implements cz.honza.bang.sdk.SpravceTahu{
      * Hráč bude přidán na poslení místo, tzn před hráče co aktuálně hraje.
      * @param koho
      */
-    public void pridatHrace(Hrac koho) {
+    public void pridatHrace(HracImp koho) {
         frontaTahu.addLast(new Tah(koho, false));
         poradiAktualni = false;
     }

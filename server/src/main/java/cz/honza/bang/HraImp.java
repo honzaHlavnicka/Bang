@@ -9,7 +9,7 @@ package cz.honza.bang;
 import cz.honza.bang.pravidla.SpravceHernichPravidel;
 import cz.honza.bang.sdk.HerniPravidla;
 
-import cz.honza.bang.net.KomunikatorHry;
+import cz.honza.bang.net.KomunikatorHryImp;
 import cz.honza.bang.postavy.Postava;
 import cz.honza.bang.pravidla.UIPrvek;
 import cz.honza.bang.sdk.Karta;
@@ -26,32 +26,32 @@ import org.json.JSONArray;
  * @author honza
  * 
  */
-public class Hra implements cz.honza.bang.sdk.Hra{
+public class HraImp implements cz.honza.bang.sdk.Hra{
     /**
      * Hráči ve hře. Pořadí určuje pořadí hráčů. Nemělo by se měnit po zahájení hry respektive vytvoření správce tahu.
      */
-    private List<Hrac> hraci = new ArrayList<>();
+    private List<HracImp> hraci = new ArrayList<>();
     private boolean zahajena = false;
             //FIX: neco lepsiho nes seznam
     private final Stack<Postava>  balicekPostav;
-    private KomunikatorHry komunikator;
-    private Balicek<Karta> balicek = new Balicek<Karta>();
-    private Balicek<Karta> odhazovaciBalicek = new Balicek();
-    private SpravceTahu spravceTahu;
+    private KomunikatorHryImp komunikator;
+    private BalicekImp<Karta> balicek = new BalicekImp<Karta>();
+    private BalicekImp<Karta> odhazovaciBalicek = new BalicekImp();
+    private SpravceTahuImp spravceTahu;
     private HerniPravidla herniPravidla;
     private String obrazekZadniStrany;
     
 
-    public Balicek<Karta> getOdhazovaciBalicek() {
+    public BalicekImp<Karta> getOdhazovaciBalicek() {
         return odhazovaciBalicek;
     }
 
-    public SpravceTahu getSpravceTahu() {
+    public SpravceTahuImp getSpravceTahu() {
         return spravceTahu;
     }
       
     
-    private Hra(KomunikatorHry komunikator){
+    private HraImp(KomunikatorHryImp komunikator){
         this.komunikator = komunikator;
         balicekPostav = new Stack<>();
         
@@ -64,8 +64,8 @@ public class Hra implements cz.honza.bang.sdk.Hra{
      * @param id id hry.
      * @return new Hra();
      */
-    public static Hra vytvor(KomunikatorHry komunikator,int typHry){
-        Hra hra = new Hra(komunikator);
+    public static HraImp vytvor(KomunikatorHryImp komunikator,int typHry){
+        HraImp hra = new HraImp(komunikator);
         hra.herniPravidla = SpravceHernichPravidel.vytvorHerniPravidla(typHry, hra);
         hra.herniPravidla.pripravBalicek(hra.balicek);
         hra.herniPravidla.pripravBalicekPostav(hra.balicekPostav);
@@ -76,9 +76,9 @@ public class Hra implements cz.honza.bang.sdk.Hra{
      * Vytvoří hráče. Po zavolání této metody by se měla zavolat metoda hracVytvoren()
      * @return nový hráč
      */
-    public Hrac novyHrac(){
+    public HracImp novyHrac(){
         //v této metodě se nesmí volat nic, co by způsobovalo, že by se něco posílalo klientovi. Misto toho použij metodu hracVytvoren, která se spouští hned poté.
-        Hrac hrac = new Hrac(this);
+        HracImp hrac = new HracImp(this);
         hraci.add(hrac);
         return hrac;
     }
@@ -87,7 +87,7 @@ public class Hra implements cz.honza.bang.sdk.Hra{
      * Připravý hráče poté, co už je spojen se serverm. měla by se volat hned po novyHrac()
      * @param hrac hráč, který by se měl připravit
      */
-    public void hracVytvoren(Hrac hrac){
+    public void hracVytvoren(HracImp hrac){
         //metoda co se spouští po vytvoření hráče a zařazení ho do komunikátoru
 
         
@@ -114,17 +114,17 @@ public class Hra implements cz.honza.bang.sdk.Hra{
      * @return Hrac nebo null
      */
     @Override
-    public Hrac getHrac(int id){
+    public HracImp getHrac(int id){
         for (cz.honza.bang.sdk.Hrac hrac : hraci) {
             if(hrac.getId() == id){
-                return (Hrac) hrac;
+                return (HracImp) hrac;
             }
         }
         return null;
     }
     
     @Override
-    public KomunikatorHry getKomunikator() {
+    public KomunikatorHryImp getKomunikator() {
         return komunikator;
     }
 
@@ -158,14 +158,14 @@ public class Hra implements cz.honza.bang.sdk.Hra{
             herniPravidla.poSpusteniHry();
             
             komunikator.posliVsem("hraZacala");
-            spravceTahu = new SpravceTahu(hraci);
+            spravceTahu = new SpravceTahuImp(hraci);
             spravceTahu.dalsiHracPodleRole(Role.SERIF).zahajitTah();
             System.out.println("zahájen tah v setzahajena");
                         
             
         }
     }
-    public Balicek<Karta> getBalicek() {
+    public BalicekImp<Karta> getBalicek() {
         return balicek;
     }
     
@@ -174,7 +174,7 @@ public class Hra implements cz.honza.bang.sdk.Hra{
      * @param conn
      * @param hrac 
      */
-    public void nactiHru(WebSocket conn, Hrac hrac){
+    public void nactiHru(WebSocket conn, HracImp hrac){
         conn.send("noveIdHrace:" + hrac.getId());
 
         
@@ -185,7 +185,7 @@ public class Hra implements cz.honza.bang.sdk.Hra{
         
         StringBuilder sb = new StringBuilder("hraci:[");
         boolean jePrvni = true;
-        for (Hrac hrac1 : hraci) {
+        for (HracImp hrac1 : hraci) {
             if(!jePrvni){
                 sb.append(',');
             }
@@ -211,7 +211,7 @@ public class Hra implements cz.honza.bang.sdk.Hra{
      * Vyřadí hráče z herní smičky. Nezávisle na tom jestli vyhrál nebo prohrál, ale už nebude hrát.
      * @param kdo
      */
-    public void skoncil(Hrac kdo){
+    public void skoncil(HracImp kdo){
         spravceTahu.vyraditHrace(kdo);
         komunikator.posliVsem("hracSkoncil:" + kdo.getId());
     }
@@ -220,7 +220,7 @@ public class Hra implements cz.honza.bang.sdk.Hra{
      * Zařídí problematiku výhry, ale nevyřadí hráče z hrací smyčky. 
      * @param kdo
      */
-    public void vyhral(Hrac kdo){
+    public void vyhral(HracImp kdo){
         komunikator.posliVsem("vyhral:" + kdo.getId());
         //TODO: zapsat do tabulky výsledků, vytvořit tabulku výsledků
     }
@@ -230,12 +230,12 @@ public class Hra implements cz.honza.bang.sdk.Hra{
      */
     public void prohodBalicky(){
         odhazovaciBalicek.otoc();
-        Balicek novyOdhazovaciBalicek = balicek;
+        BalicekImp novyOdhazovaciBalicek = balicek;
         balicek = odhazovaciBalicek;
         odhazovaciBalicek = novyOdhazovaciBalicek;   
     }
     @Deprecated
-    public int vzdalenostHracu(Hrac zPohledu, Hrac komu) throws IllegalArgumentException {
+    public int vzdalenostHracu(HracImp zPohledu, HracImp komu) throws IllegalArgumentException {
         //TODO: pouze hrací hráči, neměl by to dělat správce tahu? asi ne. měl by to dělat hráč a ST by měl vracet pole hrajících hráčů v pořadí.
         int velikost = hraci.size();
         int i1 = hraci.indexOf(zPohledu);
