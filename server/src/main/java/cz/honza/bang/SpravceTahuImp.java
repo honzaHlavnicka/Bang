@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang;
 
+import cz.honza.bang.sdk.Hrac;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -50,12 +51,13 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
 
      * @return kolekce hráčů seřazená podle pořadí hraní.
      */
-    public List<HracImp> getHrajiciHraci() {
+    @Override
+    public List<Hrac> getHrajiciHraci() {
         if (!poradiAktualni) {
             hrajiciHraciCache = new ArrayList<>();
             for (Tah t : frontaTahu) {
                 if (!t.docasneZruseny && !t.jednorazovy) {
-                    hrajiciHraciCache.add(t.hrac);
+                    hrajiciHraciCache.add((HracImp) t.hrac);
                 }
             }
             if(zmenenSmer){
@@ -74,6 +76,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      *
      * @return hráč, který je na tahu. 
      */
+    @Override
     public HracImp dalsiHrac() {
         if(getHrajiciHraci().isEmpty()){
             return naTahu;
@@ -98,7 +101,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
             }
 
             if (!tah.docasneZruseny) {
-                naTahu = tah.hrac;
+                naTahu = (HracImp) tah.hrac;
                 kolikatyTah = 1;
                 System.out.println("Začíná tah: " + tah.hrac);
                 return naTahu;
@@ -115,8 +118,10 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
 
     /**
      * Najde dalšího hráče se zadanou rolí.
+     * @param role
      */
-    public HracImp dalsiHracPodleRole(Role role) {
+    @Override
+    public HracImp dalsiHracPodleRole(cz.honza.bang.sdk.Role role) {
        HracImp hrac;
         do {
             hrac = dalsiHrac();
@@ -127,6 +132,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
 
  
     
+    @Override
     public void dalsiHracSUpozornenim() {
         if (naTahu != null) {
             naTahu.konecTahu();
@@ -137,7 +143,8 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * Další hráč bude přeskočen. Stávající hráč hraje dál, neukončí to jeho tah.
      * @return hráč, který byl přeskočen.
      */
-    public HracImp eso(){
+    @Override
+    public Hrac eso(){
         Tah tah = frontaTahu.pollFirst();
         if (tah != null) {
             frontaTahu.addLast(tah);
@@ -151,10 +158,12 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * mění vlastnost násoení tahu. Hráč bude mít místo jednoho tahu k dispozici <code>kolik</code>.
      * @param kolik kolikrát za sebou bude hrát stejný hráč
      */
+    @Override
     public void setNasobicTahu(int kolik){
         nasobicTahu = kolik;
     }
     
+    @Override
     public HracImp getNaTahu(){
         return naTahu;
     }
@@ -164,7 +173,8 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * Jeho pořadí ve kterém byl se nezapomene, nic ze nezmění kromě toho, že se jeho tah bude pokaždé přeskakovat.
      * @param koho
      */
-    public void vyraditHrace(HracImp koho){
+    @Override
+    public void vyraditHrace(Hrac koho){
         for (Tah tah : frontaTahu) {
             if(tah.hrac.equals(koho)){
                 tah.docasneZruseny = true;
@@ -180,7 +190,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * @param koho
      * @see pridatHrace
      */
-    public void vratitHrace(HracImp koho){
+    public void vratitHrace(Hrac koho){
         for (Tah tah : frontaTahu) {
             if (tah.hrac.equals(koho)) {
                 tah.docasneZruseny = false;
@@ -195,7 +205,8 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * Hráč bude přidán na poslení místo, tzn před hráče co aktuálně hraje.
      * @param koho
      */
-    public void pridatHrace(HracImp koho) {
+    @Override
+    public void pridatHrace(Hrac koho) {
         frontaTahu.addLast(new Tah(koho, false));
         poradiAktualni = false;
     }
@@ -203,6 +214,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
     /**
      * Změní směr hraní
      */
+    @Override
     public void zmenaSmeru(){
         if(zmenenSmer){
             zmenenSmer = false;

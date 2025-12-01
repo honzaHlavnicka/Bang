@@ -6,16 +6,18 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang;
 
+import cz.honza.bang.sdk.Hrac;
+
 /**
  *
  * @author honza
  */
 public class Tah {
-    public final HracImp hrac;
+    public final Hrac hrac;
     public final boolean jednorazovy;
     public boolean docasneZruseny;
 
-    public Tah(HracImp hrac, boolean jednorazovy) {
+    public Tah(Hrac hrac, boolean jednorazovy) {
         this.hrac = hrac;
         this.jednorazovy = jednorazovy;
         this.docasneZruseny = false;

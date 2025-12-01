@@ -11,8 +11,10 @@ import cz.honza.bang.sdk.HerniPravidla;
 
 import cz.honza.bang.net.KomunikatorHryImp;
 import cz.honza.bang.postavy.Postava;
-import cz.honza.bang.pravidla.UIPrvek;
+import cz.honza.bang.sdk.UIPrvek;
+import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
+import cz.honza.bang.sdk.SpravceTahu;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,8 +47,9 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     public BalicekImp<Karta> getOdhazovaciBalicek() {
         return odhazovaciBalicek;
     }
-
-    public SpravceTahuImp getSpravceTahu() {
+    
+    @Override
+    public SpravceTahu getSpravceTahu() {
         return spravceTahu;
     }
       
@@ -76,6 +79,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      * Vytvoří hráče. Po zavolání této metody by se měla zavolat metoda hracVytvoren()
      * @return nový hráč
      */
+    @Override
     public HracImp novyHrac(){
         //v této metodě se nesmí volat nic, co by způsobovalo, že by se něco posílalo klientovi. Misto toho použij metodu hracVytvoren, která se spouští hned poté.
         HracImp hrac = new HracImp(this);
@@ -87,7 +91,8 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      * Připravý hráče poté, co už je spojen se serverm. měla by se volat hned po novyHrac()
      * @param hrac hráč, který by se měl připravit
      */
-    public void hracVytvoren(HracImp hrac){
+    @Override
+    public void hracVytvoren(Hrac hrac){
         //metoda co se spouští po vytvoření hráče a zařazení ho do komunikátoru
 
         
@@ -128,10 +133,12 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         return komunikator;
     }
 
+    @Override
     public boolean isZahajena() {
         return zahajena;
     }
 
+    @Override
     public HerniPravidla getHerniPravidla() {
         return herniPravidla;
     }
@@ -141,6 +148,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      * Spustí hru.
      * @param zahajena pokud true, tak zahájí hru.
      */
+    @Override
     public void setZahajena(boolean zahajena) {
         
         if(!this.zahajena && zahajena){
@@ -165,6 +173,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
             
         }
     }
+    @Override
     public BalicekImp<Karta> getBalicek() {
         return balicek;
     }
@@ -211,7 +220,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      * Vyřadí hráče z herní smičky. Nezávisle na tom jestli vyhrál nebo prohrál, ale už nebude hrát.
      * @param kdo
      */
-    public void skoncil(HracImp kdo){
+    public void skoncil(Hrac kdo){
         spravceTahu.vyraditHrace(kdo);
         komunikator.posliVsem("hracSkoncil:" + kdo.getId());
     }
@@ -220,7 +229,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      * Zařídí problematiku výhry, ale nevyřadí hráče z hrací smyčky. 
      * @param kdo
      */
-    public void vyhral(HracImp kdo){
+    public void vyhral(Hrac kdo){
         komunikator.posliVsem("vyhral:" + kdo.getId());
         //TODO: zapsat do tabulky výsledků, vytvořit tabulku výsledků
     }
@@ -228,47 +237,20 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     /**
      * Prohodí odhazovací a lízací balíčky. Novým lízacím balíčkem bude odhazovací balíček v opačném pořadí.
      */
+    @Override
     public void prohodBalicky(){
         odhazovaciBalicek.otoc();
         BalicekImp novyOdhazovaciBalicek = balicek;
         balicek = odhazovaciBalicek;
         odhazovaciBalicek = novyOdhazovaciBalicek;   
     }
-    @Deprecated
-    public int vzdalenostHracu(HracImp zPohledu, HracImp komu) throws IllegalArgumentException {
-        //TODO: pouze hrací hráči, neměl by to dělat správce tahu? asi ne. měl by to dělat hráč a ST by měl vracet pole hrajících hráčů v pořadí.
-        int velikost = hraci.size();
-        int i1 = hraci.indexOf(zPohledu);
-        int i2 = hraci.indexOf(komu);
 
-        if (i1 == -1 || i2 == -1) {
-            throw new IllegalArgumentException("Hráč nebyl nalezen v seznamu");
-        }
-
-        int rozdil = Math.abs(i1 - i2);
-        int zpetnaVzdalenost = velikost - rozdil;
-        
-        int rozdilPodleMist = Math.min(rozdil, zpetnaVzdalenost);
-        return rozdilPodleMist;
-    }
-    
-   /* public List<Hrac> hraciNaDosahZbrane(Hrac zPohledu){
-        List<Hrac> hraciNaDosah = new ArrayList<>();
-        int i1 = hraci.indexOf(zPohledu);
-
-        for (Hrac hrac : hraci) {
-            if(hrac){
-                
-            }
-        }
-    }*/
-    
-    public Karta sejmiKartu(){
-        Karta sejmuta = balicek.lizni();
-        odhazovaciBalicek.vratNahoru(sejmuta);
-        //TODO: informovat hráče.
-        return sejmuta;
+    @Override
+    public Karta sejmiKartu() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
- 
+
+
+   
 }

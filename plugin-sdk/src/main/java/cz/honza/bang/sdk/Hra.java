@@ -82,8 +82,9 @@ public interface Hra {
      */
     public void prohodBalicky();
 
-    @Deprecated
-    public int vzdalenostHracu(Hrac zPohledu, Hrac komu) throws IllegalArgumentException;
 
     public Karta sejmiKartu();
+    
+    public SpravceTahu getSpravceTahu();
+    public Balicek<Karta> getOdhazovaciBalicek();
 }

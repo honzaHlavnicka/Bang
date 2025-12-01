@@ -11,6 +11,12 @@ package cz.honza.bang.sdk;
  * @author honza
  */
 public interface Postava {
+    String jmeno();
+    String name();
+    String popis();
+    String maximumZivotu();
+            
+    
     default void naZacatekTahu(Hra hra, Hrac hrac) {}
     default void naKonecTahu(Hra hra, Hrac hrac) {}
     default void poZtrateZivota(Hra hra, Hrac hrac) {}

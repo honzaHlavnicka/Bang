@@ -11,5 +11,6 @@ package cz.honza.bang.sdk;
  * @author honza
  */
 public interface Role {
+    String name();
     
 }

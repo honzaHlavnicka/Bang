@@ -14,7 +14,6 @@ import cz.honza.bang.HraImp;
 import cz.honza.bang.HracImp;
 import cz.honza.bang.karty.BangNaVsechny;
 import cz.honza.bang.karty.Barel;
-import cz.honza.bang.karty.Karta;
 import cz.honza.bang.karty.Pivo;
 import cz.honza.bang.karty.WellsFarkgo;
 import cz.honza.bang.karty.Dostavnik;

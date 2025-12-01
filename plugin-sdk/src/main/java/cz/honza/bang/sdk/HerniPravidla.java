@@ -4,14 +4,7 @@
  */
 package cz.honza.bang.sdk;
 
-import cz.honza.bang.Balicek;
-import cz.honza.bang.Hrac;
-import cz.honza.bang.karty.Karta;
-import cz.honza.bang.postavy.Postava;
-import cz.honza.bang.pravidla.UIPrvek;
-import cz.honza.bang.sdk.Karta;
-import java.util.Arrays;
-import java.util.Collections;
+
 import java.util.Stack;
 
 /**

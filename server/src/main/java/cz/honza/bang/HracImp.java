@@ -10,6 +10,8 @@ import cz.honza.bang.sdk.Efekt;
 import cz.honza.bang.postavy.Postava;
 import cz.honza.bang.sdk.VylozitelnaKarta;
 import cz.honza.bang.sdk.Chyba;
+import cz.honza.bang.sdk.Hra;
+import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
 import java.util.ArrayList;
@@ -28,17 +30,17 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     private List<Karta> karty = new ArrayList<>();
     private List<Karta> vylozeneKarty = new ArrayList<>();
     private List<Efekt> efekty = new ArrayList<>();
-    private Role role;
+    private cz.honza.bang.sdk.Role role;
     private boolean pripravenyKeHre;
     private String jmeno;
-    private Postava[] postavyNaVyber;
-    private HraImp hra;
+    private cz.honza.bang.sdk.Postava[] postavyNaVyber;
+    private Hra hra;
     private final int id;
     private static int nextId = 0;
  
 
     
-    public HracImp(HraImp hra){
+    public HracImp(Hra hra){
         this.hra = hra;
         pripravenyKeHre = false;
         jmeno = "nepojmenovaný hráč";
@@ -50,7 +52,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * Připraví se ke hře, dobere si karty. Mělo by se spustit pře začátkem hry.
      * @param role
      */
-    public void pripravKeHre(Role role ) {
+    @Override
+    public void pripravKeHre(cz.honza.bang.sdk.Role role) {
         hra.getHerniPravidla().pripravitHrace(this);
         hra.getKomunikator().posli(this, "role:"+role.name());
         
@@ -74,26 +77,27 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @param p1 postava na výběr
      * @param p2 postava na výběr
      */
-    public void vyberZPostav(Postava p1, Postava p2){
-        postavyNaVyber = new Postava[]{p1,p2};
+    @Override
+    public void vyberZPostav(cz.honza.bang.sdk.Postava p1, cz.honza.bang.sdk.Postava p2){
+        postavyNaVyber = new cz.honza.bang.sdk.Postava[]{p1,p2};
         
         //vytvoří json ve formátu vyberPostavu[{"jmeno":"jmeno","popis":"popis"},..]
         StringBuilder sb = new StringBuilder("vyberPostavu:[{\"jmeno\":\"");
-        sb.append(p1.jmeno);
+        sb.append(p1.jmeno());
         sb.append("\",\"obrazek\":\"");
         sb.append(p1.name());
         sb.append("\",\"popis\":\"");
-        sb.append(p1.popis);
+        sb.append(p1.popis());
         sb.append("\",\"zivoty\":\"");
-        sb.append(p1.maximumZivotu);
+        sb.append(p1.maximumZivotu());
         sb.append("\"},{\"jmeno\":\"");
-        sb.append(p2.jmeno);
+        sb.append(p2.jmeno());
         sb.append("\",\"obrazek\":\"");
         sb.append(p2.name());
         sb.append("\",\"popis\":\"");
-        sb.append(p2.popis);
+        sb.append(p2.popis());
         sb.append("\",\"zivoty\":\"");
-        sb.append(p2.maximumZivotu);
+        sb.append(p2.maximumZivotu());
         sb.append("\"}]");
 
         hra.getKomunikator().posli(this,sb.toString());
@@ -105,6 +109,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      *
      * @return odebral se život úspěšně
      */
+    @Override
     public boolean odeberZivot() {
         if (zivoty < 0) {//TODO: kdyz ma moc zivotu, nez kolik muze mit
             hra.getHerniPravidla().dosliZivoty(this);
@@ -123,6 +128,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      *
      * @return přidal se život úspěšně.
      */
+    @Override
     public boolean pridejZivot() {//TODO: kdyz ma moc zivotu, nez kolik muze mit
         if (zivoty >= maximumZivotu) {
             return false; 
@@ -134,55 +140,67 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         
     }
     
+    @Override
     public int getZivoty() {
         return zivoty;
     }
     
+    @Override
     public void setZivoty(int zivoty){
         this.zivoty = zivoty;
     }
 
+    @Override
     public int getMaximumZivotu() {
         return maximumZivotu;
     }
 
-    public Role getRole() {
+    @Override
+    public cz.honza.bang.sdk.Role getRole() {
         return role;
     }
 
+    @Override
     public Postava getPostava() {
         return postava;
     }    
 
+    @Override
     public List<Karta> getKarty() {
         return karty;
     }
 
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public String getJmeno() {
         return jmeno;
     }
 
+    @Override
     public void setJmeno(String jmeno) {
         this.jmeno = jmeno;
     }
     
+    @Override
     public boolean jeNaTahu(){
         return hra.getSpravceTahu().getNaTahu().equals(this);
     }
     
+    @Override
     public void setMaximumZivotu(int maximumZivotu) {
         this.maximumZivotu = maximumZivotu;
     }
 
-    public void setPostava(Postava postava) {
-        this.postava = postava;
+    @Override
+    public void setPostava(cz.honza.bang.sdk.Postava postava) {
+        this.postava = (Postava) postava;
     }
 
-    public void setRole(Role role) {
+    public void setRole(cz.honza.bang.sdk.Role role) {
         this.role = role;
     }
 
@@ -190,7 +208,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         return pripravenyKeHre;
     }
 
-    public HraImp getHra() {
+    public Hra getHra() {
         return hra;
     }
     
@@ -199,9 +217,9 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @param jmeno name() postavy.
      */
     public void setPostava(String jmeno){
-        for (Postava postava : postavyNaVyber) {
+        for (cz.honza.bang.sdk.Postava postava : postavyNaVyber) {
             if(postava.name().equals(jmeno)){
-                this.postava = postava;
+                this.postava = (Postava) postava; //TODO: odstranit ořetypování, vyřešit znovu a lépe
                 return;
             }
         }
@@ -222,6 +240,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * Spustit, pokud hráč odehraje kartu. najde kartu, dá jí na odhazovací balíček a provede její efekt.
      * @param id id karty
      */
+    @Override
     public void odehranaKarta(String id) {
         int idKarty;
         try{
@@ -395,7 +414,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @see #vzdalenostPod(int)
      * @see #vzdalenostKCista(cz.honza.bang.Hrac) 
      */
-    public int fyzickaVzdalenostK(HracImp komu)throws IllegalArgumentException{
+    public int fyzickaVzdalenostK(Hrac komu)throws IllegalArgumentException{
         List<HracImp> hraci = hra.getSpravceTahu().getHrajiciHraci();
         
         int velikost = hraci.size();
@@ -413,7 +432,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         return rozdilPodleMist;
     }
     
-    public int vzdalenostKCista(HracImp komu){
+    @Override
+    public int vzdalenostKCista(Hrac komu){
         //TODO: neignorovat efekty
         return fyzickaVzdalenostK(komu);
     }
@@ -426,8 +446,9 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @return List hráčů, kteří spn
      * @see #fyzickaVzdalenostK(cz.honza.bang.Hrac) 
      */
-    public List<HracImp> vzdalenostPod(int max, boolean iZpetne){
-        List<HracImp> hraci = hra.getSpravceTahu().getHrajiciHraci();
+    @Override
+    public List<Hrac> vzdalenostPod(int max, boolean iZpetne){
+        List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
 
         int velikost = hraci.size();
         int i1 = hraci.indexOf(this);
@@ -435,7 +456,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
             throw new IllegalArgumentException("Hráč nebyl nalezen v seznamu");
         }
         
-        List<HracImp> vysledniHraci = new ArrayList<>();
+        List<Hrac> vysledniHraci = new ArrayList<>();
         
         for (int i = 0; i < hraci.size(); i++) {
             int rozdil = Math.abs(i1 - i);
@@ -505,4 +526,19 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         sb.append('}');
         return sb.toString();
     }
-}
+
+    @Override
+    public void pripravKeHre(cz.honza.bang.sdk.Role role) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+   
+
+    @Override
+    public void setRole(cz.honza.bang.sdk.Role role) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+
+
+ 
