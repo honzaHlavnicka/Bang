@@ -35,7 +35,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     private List<HracImp> hraci = new ArrayList<>();
     private boolean zahajena = false;
             //FIX: neco lepsiho nes seznam
-    private final Stack<Postava>  balicekPostav;
+    private final Stack<cz.honza.bang.sdk.Postava>  balicekPostav;
     private KomunikatorHryImp komunikator;
     private BalicekImp<Karta> balicek = new BalicekImp<Karta>();
     private BalicekImp<Karta> odhazovaciBalicek = new BalicekImp();
@@ -220,6 +220,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      * Vyřadí hráče z herní smičky. Nezávisle na tom jestli vyhrál nebo prohrál, ale už nebude hrát.
      * @param kdo
      */
+    @Override
     public void skoncil(Hrac kdo){
         spravceTahu.vyraditHrace(kdo);
         komunikator.posliVsem("hracSkoncil:" + kdo.getId());
@@ -229,6 +230,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      * Zařídí problematiku výhry, ale nevyřadí hráče z hrací smyčky. 
      * @param kdo
      */
+    @Override
     public void vyhral(Hrac kdo){
         komunikator.posliVsem("vyhral:" + kdo.getId());
         //TODO: zapsat do tabulky výsledků, vytvořit tabulku výsledků
@@ -250,7 +252,4 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-
-
-   
 }

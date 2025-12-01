@@ -50,6 +50,8 @@ public interface Hra {
     public boolean isZahajena();
 
     public HerniPravidla getHerniPravidla();
+    
+
 
     /**
      * Spustí hru.

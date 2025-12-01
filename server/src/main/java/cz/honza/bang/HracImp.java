@@ -15,7 +15,6 @@ import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -229,6 +228,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     /**
      *  Upozorní hráče na změnu zahájení tahu. Nemělo by se volat jinde, než ve společnosti správce tahů, jinak by mohli být klienti zmatení.
      */
+    @Override
     public void zahajitTah() {
         System.out.println("zahájen tah v tah");
         hra.getKomunikator().posli(this, "tvujTahZacal");
@@ -291,6 +291,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * Dává možnost kartě na spálení reagovat.
      * @param id karty
      */
+    @Override
     public void spalitKartu(String id){
         int idKarty;
         try{
@@ -336,6 +337,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);
     }
     
+    @Override
     public void vylozitKartu(String id, String idHrace){ //TODO: asi by mohlo brát objekty a prevodni metoda by mela byt jina
         int idKarty;
         int idPredKoho;
@@ -354,7 +356,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
             if (karta.getId() == idKarty) {
                 if(karta instanceof VylozitelnaKarta ){
                     VylozitelnaKarta vylozena = (VylozitelnaKarta) karta;
-                     HracImp predKoho = hra.getHrac(idPredKoho);
+                     HracImp predKoho = (HracImp) hra.getHrac(idPredKoho); //TODO: best castu by to šlo? (přidán při +sdk)
                      if(vylozena.vylozit(this, predKoho)){ //todo: efekt se prida tomuto hraci, ale vyklada se pred jineho???
                          predKoho.pridejEfekt(vylozena.getEfekt());
                      }else{
@@ -373,6 +375,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     /**
      * Přidá hráči karu z balíčku hry. Pošle o tom upozornění všem hráčům, nekontroluje zda hráč může lízat.
      */
+    @Override
     public void lizni(){
         Karta karta = hra.getBalicek().lizni();
         if(karta == null){
@@ -391,6 +394,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * Lízne si kartu, ale pouze pokud hráč má právo na to si líznout.
      * Mělo by se volat pokud hráč zažádá o líznutí.
      */
+    @Override
     public void lizniKontrolovane(){
         if(!hra.getHerniPravidla().hracChceLiznout(this)){
             if (hra.getSpravceTahu().getNaTahu().equals(this)) {
@@ -401,6 +405,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         }
     }
     
+    @Override
     public void pridejEfekt(Efekt efekt){
         efekty.add(efekt);
     }
@@ -414,8 +419,9 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @see #vzdalenostPod(int)
      * @see #vzdalenostKCista(cz.honza.bang.Hrac) 
      */
+    @Override
     public int fyzickaVzdalenostK(Hrac komu)throws IllegalArgumentException{
-        List<HracImp> hraci = hra.getSpravceTahu().getHrajiciHraci();
+        List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
         
         int velikost = hraci.size();
         int i1 = hraci.indexOf(this);
@@ -482,7 +488,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @return List hráčů, kteří spn
      * @see #fyzickaVzdalenostK(cz.honza.bang.Hrac)
      */
-    public List<HracImp> vzdalenostPod(int max){
+    @Override
+    public List<Hrac> vzdalenostPod(int max){
         return vzdalenostPod(max,true);
     }
 
@@ -492,15 +499,18 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * Provede akce před koncem tahu a ukončí tah. Upozorní na to všechny.
      * Měl by volat pouze správce tahu, nebo pokud se ví, že je tento hráč vážně na tahu.
      */
+    @Override
     public void konecTahu() {
         hra.getSpravceTahu().dalsiHrac().zahajitTah();
         hra.getHerniPravidla().skoncilTah(this);        
     }
 
+    @Override
     public List<Karta> getVylozeneKarty() {
         return vylozeneKarty;
     }
 
+    @Override
     public List<Efekt> getEfekty() {
         return efekty;
     }
@@ -510,6 +520,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * vrátí všechny veřejné informace o hráči ve formátu JSON
      * @return json ve formátu: {"jmeno":jmeno,"zivoty",pocetZivotu,"pocetKaret":pocetKaret,"postava":postava.name(),"maximumZivotu",maximumZivotu}
      */
+    @Override
     public String toJSON(){
         StringBuilder sb = new StringBuilder("{\"id\":");
         sb.append(id);
@@ -526,18 +537,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         sb.append('}');
         return sb.toString();
     }
-
-    @Override
-    public void pripravKeHre(cz.honza.bang.sdk.Role role) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-   
-
-    @Override
-    public void setRole(cz.honza.bang.sdk.Role role) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+}
 
 
 

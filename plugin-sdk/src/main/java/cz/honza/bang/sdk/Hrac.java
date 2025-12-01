@@ -161,4 +161,10 @@ public interface Hrac {
      * @return json ve formátu: {"jmeno":jmeno,"zivoty",pocetZivotu,"pocetKaret":pocetKaret,"postava":postava.name(),"maximumZivotu",maximumZivotu}
      */
     public String toJSON();
+
+    /**
+     * Upozorní hráče na změnu zahájení tahu. Nemělo by se volat jinde, než ve
+     * společnosti správce tahů, jinak by mohli být klienti zmatení.
+     */
+    public void zahajitTah();
 }

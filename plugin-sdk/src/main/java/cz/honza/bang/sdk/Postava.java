@@ -14,7 +14,7 @@ public interface Postava {
     String jmeno();
     String name();
     String popis();
-    String maximumZivotu();
+    int maximumZivotu();
             
     
     default void naZacatekTahu(Hra hra, Hrac hrac) {}
