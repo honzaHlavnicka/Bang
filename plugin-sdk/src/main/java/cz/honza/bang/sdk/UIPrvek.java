@@ -4,7 +4,7 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.sdk;
+package cz.honza.bang.pravidla;
 
 /**
  * Prvky UI, které by mohli u klienta existovat.
