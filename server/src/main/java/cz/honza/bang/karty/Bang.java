@@ -9,6 +9,8 @@ package cz.honza.bang.karty;
 import cz.honza.bang.Balicek;
 import cz.honza.bang.Hra;
 import cz.honza.bang.Hrac;
+import cz.honza.bang.sdk.HratelnaKarta;
+import cz.honza.bang.sdk.Karta;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -24,7 +26,7 @@ public class Bang extends Karta implements HratelnaKarta{
     }
     
     @Override
-    public boolean odehrat(Hrac kym){
+    public boolean odehrat(cz.honza.bang.sdk.Hrac kym){
         
         hra.getKomunikator().pozadejOdpoved( "vyberHrace:" + pripravJSONvyberuHrace(kym), kym)
             .thenAccept(odpoved -> {

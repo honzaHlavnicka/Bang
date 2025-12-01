@@ -2,7 +2,7 @@ package cz.honza.bang.pravidla;
 
 import cz.honza.bang.Hra;
 import cz.honza.bang.pravidla.PravidlaUNO;
-import cz.honza.bang.pravidla.HerniPravidla;
+import cz.honza.bang.sdk.HerniPravidla;
 import cz.honza.bang.pravidla.PravidlaBangu;
 import cz.honza.bang.pravidla.PravidlaVolna;
 import java.nio.file.Paths;

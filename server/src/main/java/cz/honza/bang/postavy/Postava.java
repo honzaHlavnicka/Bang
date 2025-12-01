@@ -13,7 +13,7 @@ import cz.honza.bang.Hrac;
  *
  * @author honza
  */
-public enum Postava implements SchopnostPostavy{
+public enum Postava implements cz.honza.bang.sdk.Postava{
      TESTOVACI(4,"testovací postava", "nedělá vůbec nic."){
          
      },

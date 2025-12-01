@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author honza
  */
-public enum Role {
+public enum Role implements cz.honza.bang.sdk.Role {
     SERIF,BANDITA,ODPADLIK,POMOCNIK;
     private static Role[] poradiZiskavaniRoli = new Role[]{Role.SERIF,Role.BANDITA,Role.ODPADLIK,Role.BANDITA,Role.POMOCNIK,Role.BANDITA,Role.POMOCNIK};
     

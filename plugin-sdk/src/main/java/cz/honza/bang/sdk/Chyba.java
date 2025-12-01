@@ -4,7 +4,7 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.net;
+package cz.honza.bang.sdk;
 
 /**
  *

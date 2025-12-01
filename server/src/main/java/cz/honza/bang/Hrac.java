@@ -6,12 +6,12 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang;
 
-import cz.honza.bang.karty.Efekt;
-import cz.honza.bang.karty.Karta;
+import cz.honza.bang.sdk.Efekt;
 import cz.honza.bang.postavy.Postava;
-import cz.honza.bang.karty.HratelnaKarta;
-import cz.honza.bang.karty.VylozitelnaKarta;
-import cz.honza.bang.net.Chyba;
+import cz.honza.bang.sdk.VylozitelnaKarta;
+import cz.honza.bang.sdk.Chyba;
+import cz.honza.bang.sdk.HratelnaKarta;
+import cz.honza.bang.sdk.Karta;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
  * Třída reprezentující jednoho hráče.
  * @author honza
  */
-public class Hrac {
+public class Hrac implements cz.honza.bang.sdk.Hrac{
     private int zivoty;
     private int  maximumZivotu;
     private Postava postava = Postava.TESTOVACI;

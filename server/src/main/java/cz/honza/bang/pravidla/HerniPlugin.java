@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.pravidla;
 
+import cz.honza.bang.sdk.HerniPravidla;
 import cz.honza.bang.Hra;
 
 /**

@@ -4,9 +4,8 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.karty;
+package cz.honza.bang.sdk;
 
-import cz.honza.bang.Hrac;
 
 /**
  *

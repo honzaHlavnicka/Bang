@@ -6,9 +6,12 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.karty;
 
+import cz.honza.bang.sdk.Efekt;
+import cz.honza.bang.sdk.VylozitelnaKarta;
 import cz.honza.bang.Balicek;
 import cz.honza.bang.Hra;
 import cz.honza.bang.Hrac;
+import cz.honza.bang.sdk.Karta;
 
 /**
  *

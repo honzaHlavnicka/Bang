@@ -1,7 +1,6 @@
-package cz.honza.bang.karty;
+package cz.honza.bang.sdk;
 
-import cz.honza.bang.Balicek;
-import cz.honza.bang.Hra;
+
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -14,7 +13,7 @@ Toto je domácí verze souborů z programování.
  *
  * @author honza
  */
-public abstract class Karta {
+public abstract class Karta{
     protected Hra hra;
     protected Balicek<Karta> balicek;
     static private int nextId = 0;

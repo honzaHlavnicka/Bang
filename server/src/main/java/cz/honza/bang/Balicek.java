@@ -11,11 +11,10 @@ package cz.honza.bang;
  * @author honza
  */
 
-import cz.honza.bang.karty.Karta;
 import java.util.*;
 
 
-public class Balicek<T> {
+public class Balicek<T> implements cz.honza.bang.sdk.Balicek<T>{
     private Deque<T> karty = new ArrayDeque<>();
     private boolean jeOtoceny = false;
 

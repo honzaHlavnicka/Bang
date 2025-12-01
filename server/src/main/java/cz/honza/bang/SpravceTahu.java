@@ -18,7 +18,7 @@ import java.util.List;
  *
  * @author honza
  */
-public class SpravceTahu {
+public class SpravceTahu implements cz.honza.bang.sdk.SpravceTahu{
     private Hrac naTahu;
     private final Deque<Tah> frontaTahu;
 

@@ -9,6 +9,7 @@ package cz.honza.bang.karty;
 import cz.honza.bang.Balicek;
 import cz.honza.bang.Hra;
 import cz.honza.bang.Hrac;
+import cz.honza.bang.sdk.Karta;
 
 /**
  *

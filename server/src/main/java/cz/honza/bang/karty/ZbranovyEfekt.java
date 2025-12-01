@@ -6,6 +6,8 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.karty;
 
+import cz.honza.bang.sdk.Efekt;
+
 /**
  *
  * @author honza

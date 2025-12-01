@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.net;
 
+import cz.honza.bang.sdk.Chyba;
 import cz.honza.bang.Hra;
 import cz.honza.bang.Hrac;
 import java.util.Map;
@@ -19,7 +20,7 @@ import org.java_websocket.WebSocket;
  *
  * @author honza
  */
-public class KomunikatorHry {
+public class KomunikatorHry implements cz.honza.bang.sdk.KomunikatorHry{
     private Hra hra;
     private SocketServer socket;
     private Map<Hrac, WebSocket> websocketPodleHracu = new ConcurrentHashMap<>();
@@ -109,16 +110,15 @@ public class KomunikatorHry {
      * @param co Zpráva, která se pošle všem hráčům, kromě jednoho
      * @param komuNe Hráč, který zprávu neobdrží
      */
-    public void posliVsem(String co,Hrac komuNe) {
+    public void posliVsem(String co,cz.honza.bang.sdk.Hrac komuNe) {
         for (WebSocket conn : hraciPodleWebsocketu.keySet()) {
             if(!hraciPodleWebsocketu.get(conn).equals(komuNe)){
                 conn.send(co);
             }
-            
         }
     }
     
-    public void posli(Hrac komu, String co){
+    public void posli(cz.honza.bang.sdk.Hrac komu, String co){
         websocketPodleHracu.get(komu).send(co);
         System.out.println("posilani zpravy: " + co + ", ::: "+websocketPodleHracu.get(komu));
     }
@@ -143,21 +143,7 @@ public class KomunikatorHry {
     
     public void nactiHru(WebSocket conn){
         conn.send("načítání hry. tohle bude nejakej json.");
-        
-//        StringBuilder sb = new StringBuilder("aktualizace{hraci:[");
-//        for (Hrac hrac : hra.getHraci()) {
-//            sb.append('\"');
-//            sb.append(hrac.getJmeno());
-//            sb.append('\"');
-//            sb.append(',');
-//        }
-//        sb.append("]}");
-//        conn.send(sb.toString());
-        
         hra.nactiHru(conn,hraciPodleWebsocketu.get(conn));
-        
-        
-  
     }
     
     public void hracOdpojen(WebSocket conn){
@@ -180,7 +166,7 @@ public class KomunikatorHry {
      * @param komu komu se má chyba doručit.
      * @param chyba chyba, která se posílá.
      */
-    public void posliChybu(Hrac komu,Chyba chyba){
+    public void posliChybu(cz.honza.bang.sdk.Hrac komu,Chyba chyba){
         WebSocket conn = websocketPodleHracu.get(komu);
         conn.send("error:{\"error\":\"" + chyba.getZprava() + "\",\"kod\":" + chyba.getKod() + ",\"skupina:\":" + chyba.getSkupina()+ "}");
         
@@ -219,7 +205,8 @@ public class KomunikatorHry {
         return true;
     }
     
-    public CompletableFuture<String> pozadejOdpoved(String otazka,Hrac komu) {
+    @Override
+    public CompletableFuture<String> pozadejOdpoved(String otazka,cz.honza.bang.sdk.Hrac komu) {
         //připravý si id:
         podleniIdCekaciOdpovedi++;
         Integer id = podleniIdCekaciOdpovedi;
@@ -245,21 +232,24 @@ public class KomunikatorHry {
 
     
 
+    @Override
     public int getIdHry() {
         return idHry;
     }
+    @Override
     public int pocetHracu(){
         return hraciPodlIdentifikatoru.size();
     }
 
+    @Override
     public Hrac getAdmin() {
         return admin;
     }
 
-    public void setAdmin(Hrac admin) {
-        this.admin = admin;
+    public void setAdmin(cz.honza.bang.sdk.Hrac admin) {
+        this.admin = (Hrac) admin;
     }
-    
-    
-    
+
+   
+
 }

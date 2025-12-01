@@ -4,6 +4,7 @@
  */
 package cz.honza.bang.pravidla;
 
+import cz.honza.bang.sdk.HerniPravidla;
 import cz.honza.bang.Balicek;
 import cz.honza.bang.Hra;
 import cz.honza.bang.Hrac;
@@ -12,9 +13,9 @@ import cz.honza.bang.karty.Bang;
 import cz.honza.bang.karty.BangNaVsechny;
 import cz.honza.bang.karty.Barel;
 import cz.honza.bang.karty.Dostavnik;
-import cz.honza.bang.karty.Karta;
 import cz.honza.bang.karty.Pivo;
 import cz.honza.bang.karty.WellsFarkgo;
+import cz.honza.bang.sdk.Karta;
 import java.util.List;
 
 /**

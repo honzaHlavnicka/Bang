@@ -7,11 +7,12 @@ Toto je domácí verze souborů z programování.
 package cz.honza.bang;
 
 import cz.honza.bang.pravidla.SpravceHernichPravidel;
-import cz.honza.bang.pravidla.HerniPravidla;
-import cz.honza.bang.karty.Karta;
+import cz.honza.bang.sdk.HerniPravidla;
+
 import cz.honza.bang.net.KomunikatorHry;
 import cz.honza.bang.postavy.Postava;
 import cz.honza.bang.pravidla.UIPrvek;
+import cz.honza.bang.sdk.Karta;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +26,7 @@ import org.json.JSONArray;
  * @author honza
  * 
  */
-public class Hra {
+public class Hra implements cz.honza.bang.sdk.Hra{
     /**
      * Hráči ve hře. Pořadí určuje pořadí hráčů. Nemělo by se měnit po zahájení hry respektive vytvoření správce tahu.
      */
@@ -97,8 +98,14 @@ public class Hra {
         hrac.vyberZPostav(balicekPostav.pop(),balicekPostav.pop());//nechá hráče vybrat ze dvou postav
     }
 
-    public List<Hrac> getHraci() {
-        return hraci;
+    /**
+     *
+     * @return Kopii seznamu všech hráčů
+     */
+    @Override
+    public List<cz.honza.bang.sdk.Hrac> getHraci() {
+        List<cz.honza.bang.sdk.Hrac> l = new ArrayList<>(hraci);
+        return l;
     }
     
     /**
@@ -106,15 +113,17 @@ public class Hra {
      * @param id id hráče
      * @return Hrac nebo null
      */
+    @Override
     public Hrac getHrac(int id){
-        for (Hrac hrac : hraci) {
+        for (cz.honza.bang.sdk.Hrac hrac : hraci) {
             if(hrac.getId() == id){
-                return hrac;
+                return (Hrac) hrac;
             }
         }
         return null;
     }
     
+    @Override
     public KomunikatorHry getKomunikator() {
         return komunikator;
     }
@@ -156,7 +165,6 @@ public class Hra {
             
         }
     }
-
     public Balicek<Karta> getBalicek() {
         return balicek;
     }
@@ -261,4 +269,6 @@ public class Hra {
         //TODO: informovat hráče.
         return sejmuta;
     }
+
+ 
 }

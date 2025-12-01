@@ -10,6 +10,7 @@ package cz.honza.bang.pravidla;
  *
  * @author honza
  */
+import cz.honza.bang.sdk.HerniPravidla;
 import cz.honza.bang.Balicek;
 import cz.honza.bang.Hra;
 import cz.honza.bang.Hrac;
