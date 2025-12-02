@@ -13,8 +13,8 @@ Engine je připravený tak, že by měl podporovat velké množství her. Pokud 
    karet můžeš mít kolik potřebuješ, jedna třída může reprezentovat i více karet, ale pokud mají kartu odlišnou logiku, tak se hodí je oddělit do více tříd.
 7) Vytvoř postavy a role (to zatím nejde, takže to neřeš)
 8) Dodělej pravidla hry, nezapomeň, aby do balíčku vkláídali karty a buildni projekt. Výsledný .jar soubor můžeš nahrát do složky pluginy, která se nachází tam, kde spouštíš server.
-   Pokud server ještě nemáš, tak si ho stáhni a spusť. Potom můžeš otevřít honza.svs.gyarab.cz?adress=ws://locahost:<port>, kde port je používaný port (server ti ho vypíše do konzole).
+   Pokud server ještě nemáš, tak si ho stáhni a spusť. Potom můžeš otevřít honza.svs.gyarab.cz?adress=ws://locahost:port, kde port je používaný port (server ti ho vypíše do konzole).
    Tady se podívej, jestli tvoje hra jde vytvořit. Otestuj ji a oprav co nefunguje.
-9) Máš hotovo! Jupí! Teď už ji můžeš hrát buď na lokální síti (ostatní se připojí na honza.svs.gyarab.cz?adress=ws://<tvoje lokální IP>:<port>), nebo přidej pull request na GitHub a já ji přidám do centrálního serveru, aby ji mohl hrát kdokoliv.
+9) Máš hotovo! Jupí! Teď už ji můžeš hrát buď na lokální síti (ostatní se připojí na honza.svs.gyarab.cz?adress=ws://tvoje lokální IP:port), nebo přidej pull request na GitHub a já ji přidám do centrálního serveru, aby ji mohl hrát kdokoliv.
     Při přidávání pull requestu nahraj celý kód, ne jenom .jar soubor, abych mohl ověřit, zda neobsahuje škodlivý obsah.
     Pokud nechceš hru zveřejňovat, ale chceš hrát po globální síti, tak si nastuduj tunelování.
