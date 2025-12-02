@@ -1,0 +1,66 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+
+Toto je domácí verze souborů z programování.
+ */
+package cz.honza.bang.pluginy.prsi;
+
+import cz.honza.bang.sdk.Balicek;
+import cz.honza.bang.sdk.Hra;
+import cz.honza.bang.sdk.Hrac;
+import cz.honza.bang.sdk.Karta;
+
+/**
+ *
+ * @author honza
+ */
+public class PrsiSvrsek extends PrsiKarta{
+    private PrsiBarva poslendniBarva;
+    public PrsiSvrsek(Hra hra, Balicek<Karta> balicek, PrsiBarva b, PrsiHodnota h) {
+        super(hra, balicek, b, h);
+        poslendniBarva = null;
+    }
+
+    @Override
+    public boolean odehrat(Hrac kym) {
+        poslendniBarva = null;
+            hra.getKomunikator().pozadejOdpoved(
+                    "vyberAkci:{\"id\":data-id,\"akce\":["
+                    + "{\"id\":0,\"nazev\":\"Kule\"},"
+                    + "{\"id\":1,\"nazev\":\"Zelené\"},"
+                    + "{\"id\":2,\"nazev\":\"Červené\"},"
+                    + "{\"id\":3,\"nazev\":\"Žaludy\"}"
+                    + "]}",
+                    kym
+            ).thenAccept(odpoved -> {
+                System.out.println("Hráč odpověděl: " + odpoved);
+                switch (odpoved) {
+                    case "0":
+                        poslendniBarva = PrsiBarva.KULE;
+                        break;
+                    case "1":
+                        poslendniBarva = PrsiBarva.ZELENE;
+                        break;
+                    case "2":
+                        poslendniBarva = PrsiBarva.CERVENE;
+                        break;
+                    case "3":
+                        poslendniBarva = PrsiBarva.ZALUDY;
+                        break;
+                }
+                hra.getKomunikator().posliVsem("rychleOznameni:" + poslendniBarva, kym);
+
+            });//toto nmůže blokovat thred!
+            //TODO: udelat, aby neslo hrat, nez se slib splní
+            return true;
+        } 
+
+    @Override
+    public PrsiBarva getBarva() {
+        return poslendniBarva;
+    }
+    
+    }
+    
+    

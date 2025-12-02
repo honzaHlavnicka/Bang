@@ -36,8 +36,11 @@ public class NacitacPluginu {
         
         //Nemůžeme prohledávat neexistující složku, naštěstí v ní nic být ani nemůže.
         if (!Files.exists(cestaKeSlozce)) {
+            System.out.println("NEnalezena složka pro pluginy " + cestaKeSlozce.toString());
             return pluginy;
         }
+        System.out.println("Nalezena složka pro pluginy " + cestaKeSlozce.toString());
+
         
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(cestaKeSlozce, "*.jar")) {
             for (Path cestaKJARu : stream) {

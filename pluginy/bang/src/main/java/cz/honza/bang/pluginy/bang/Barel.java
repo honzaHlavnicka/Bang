@@ -4,7 +4,7 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.karty;
+package cz.honza.bang.pluginy.bang;
 
 import cz.honza.bang.sdk.Efekt;
 import cz.honza.bang.sdk.VylozitelnaKarta;

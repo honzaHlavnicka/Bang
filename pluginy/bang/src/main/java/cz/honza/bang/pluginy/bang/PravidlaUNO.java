@@ -4,18 +4,18 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.pravidla;
+package cz.honza.bang.pluginy.bang;
 
 import cz.honza.bang.sdk.UIPrvek;
 import cz.honza.bang.sdk.HerniPravidla;
 import cz.honza.bang.BalicekImp;
 import cz.honza.bang.HraImp;
 import cz.honza.bang.HracImp;
-import cz.honza.bang.karty.Eso;
+import cz.honza.bang.pluginy.bang.Eso;
 import cz.honza.bang.karty.HratelnaKarta;
 import cz.honza.bang.karty.Karta;
-import cz.honza.bang.karty.UnoKarta;
-import cz.honza.bang.karty.unoZmenaBarvy;
+import cz.honza.bang.pluginy.bang.UnoKarta;
+import cz.honza.bang.pluginy.bang.unoZmenaBarvy;
 
 /**
  *

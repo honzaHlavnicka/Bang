@@ -4,34 +4,37 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.karty;
+package cz.honza.bang.pluginy.bang;
 
 import cz.honza.bang.BalicekImp;
 import cz.honza.bang.HraImp;
 import cz.honza.bang.HracImp;
+import cz.honza.bang.sdk.HratelnaKarta;
+import cz.honza.bang.sdk.Karta;
 
 /**
  *
  * @author honza
  */
-public class Dostavnik extends Karta implements HratelnaKarta{
+public class Eso extends Karta implements HratelnaKarta {
 
-    public Dostavnik(HraImp hra, BalicekImp<Karta> balicek) {
+    public Eso(HraImp hra, BalicekImp<Karta> balicek) {
         super(hra, balicek);
     }
+
     @Override
-    public String getJmeno(){
-        return "Dostavník";
+    public String getObrazek() {
+        return "uno/eso";
     }
+
     @Override
-    public String getObrazek(){
-        return "dostavnik";
+    public String getJmeno() {
+        return "eso";
     }
 
     @Override
     public boolean odehrat(HracImp kym) {
-        kym.lizni();
-        kym.lizni();
+        hra.getSpravceTahu().eso();
         return true;
     }
     

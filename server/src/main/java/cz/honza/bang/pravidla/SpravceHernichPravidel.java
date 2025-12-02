@@ -2,16 +2,11 @@ package cz.honza.bang.pravidla;
 
 import cz.honza.bang.sdk.HerniPlugin;
 import cz.honza.bang.HraImp;
-import cz.honza.bang.pravidla.PravidlaUNO;
 import cz.honza.bang.sdk.HerniPravidla;
-import cz.honza.bang.pravidla.PravidlaBangu;
-import cz.honza.bang.pravidla.PravidlaVolna;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -109,7 +104,7 @@ public class SpravceHernichPravidel {
 
     static {
         try {
-            pluginy.addAll(NacitacPluginu.nactiPluginy(Paths.get("plugins")));
+            pluginy.addAll(NacitacPluginu.nactiPluginy(Paths.get("pluginy")));
         } catch (Exception e) {
             e.printStackTrace();
         }

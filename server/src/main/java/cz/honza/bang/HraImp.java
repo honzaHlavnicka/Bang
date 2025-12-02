@@ -44,6 +44,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     private String obrazekZadniStrany;
     
 
+    @Override
     public BalicekImp<Karta> getOdhazovaciBalicek() {
         return odhazovaciBalicek;
     }

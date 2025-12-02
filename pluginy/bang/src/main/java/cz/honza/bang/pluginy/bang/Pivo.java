@@ -4,7 +4,7 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.karty;
+package cz.honza.bang.pluginy.bang;
 
 import cz.honza.bang.BalicekImp;
 import cz.honza.bang.HraImp;
@@ -16,26 +16,25 @@ import cz.honza.bang.sdk.Karta;
  *
  * @author honza
  */
-public class Eso extends Karta implements HratelnaKarta {
-
-    public Eso(HraImp hra, BalicekImp<Karta> balicek) {
+public class Pivo extends Karta implements HratelnaKarta{
+    
+    public Pivo(HraImp hra, BalicekImp<Karta> balicek) {
         super(hra, balicek);
     }
 
     @Override
-    public String getObrazek() {
-        return "uno/eso";
+    public String getJmeno() {
+        return "pivo";
     }
 
     @Override
-    public String getJmeno() {
-        return "eso";
+    public String getObrazek() {
+        return "pivo";
     }
 
     @Override
     public boolean odehrat(HracImp kym) {
-        hra.getSpravceTahu().eso();
+        kym.pridejZivot();
         return true;
     }
-    
 }
