@@ -3,6 +3,10 @@ Server engine pro podporu karetních her využívajících prvků Bangu nebo mé
 
 V současné době moje ročníková práce (IOČ)
 
+# vytvoř si svojí hru v enginu
+Máš nějaký nápad na karetní hru, co by jsi chtěl mít online? Můžeš ji naprogramovat poměrně jednoduše bez nutnosti řešit věci kolem, kromě pravidel a logiky hry.
+[Tady máš návod jak](https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md)
+
 # jak spustit  v dev režimu
 1) nejprve je potřeba otevřít a spustit java projekt v nějakém IDE (například Netbeans)
    - V netbens například použijeme `f6`.
