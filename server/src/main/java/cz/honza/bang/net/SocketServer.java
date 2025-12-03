@@ -31,6 +31,8 @@ public class SocketServer extends WebSocketServer {
 
     public SocketServer(InetSocketAddress address) {
         super(address);
+        System.out.println("Adresa serveru je: " + address.toString());
+        System.out.println("Port je: " + address.getPort());
     }
 
 
