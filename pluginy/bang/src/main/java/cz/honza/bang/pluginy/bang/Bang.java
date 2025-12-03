@@ -9,6 +9,9 @@ package cz.honza.bang.pluginy.bang;
 import cz.honza.bang.BalicekImp;
 import cz.honza.bang.HraImp;
 import cz.honza.bang.HracImp;
+import cz.honza.bang.sdk.Balicek;
+import cz.honza.bang.sdk.Hra;
+import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
 import org.json.JSONArray;
@@ -21,7 +24,7 @@ import org.json.JSONObject;
  */
 public class Bang extends Karta implements HratelnaKarta{
 
-    public Bang(HraImp hra, BalicekImp<Karta> balicek) {
+    public Bang(Hra hra, Balicek<Karta> balicek) {
         super(hra, balicek);
     }
     
@@ -32,7 +35,7 @@ public class Bang extends Karta implements HratelnaKarta{
             .thenAccept(odpoved -> {
 
                 System.out.println("Hráč odpověděl: " + odpoved);
-                HracImp naKoho = hra.getHrac(Integer.parseInt(odpoved));
+                Hrac naKoho = hra.getHrac(Integer.parseInt(odpoved));
                 
 
                 
@@ -53,12 +56,12 @@ public class Bang extends Karta implements HratelnaKarta{
      * @param hracCoOdehral
      * @return json pro klienta.
      */
-    private String pripravJSONvyberuHrace(HracImp hracCoOdehral){
+    private String pripravJSONvyberuHrace(Hrac hracCoOdehral){
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
         json.put("nadpis", "Vyber koho chceš zastřelit!");
         JSONArray hraciNaVyber = new JSONArray();
-        for (HracImp hrac : hracCoOdehral.vzdalenostPod(1)) {
+        for (Hrac hrac : hracCoOdehral.vzdalenostPod(1)) {
            hraciNaVyber.put(hrac.getId());
         }
         json.put("hraci", hraciNaVyber);

@@ -6,10 +6,9 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.pluginy.bang;
 
-import cz.honza.bang.BalicekImp;
-import cz.honza.bang.HraImp;
-import cz.honza.bang.HracImp;
-import cz.honza.bang.karty.UnoKarta;
+
+import cz.honza.bang.sdk.Balicek;
+import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Karta;
 
 /**
@@ -20,7 +19,7 @@ public class unoZmenaBarvy extends UnoKarta {
     private String podleniBarva = "neni";
     
     
-    public unoZmenaBarvy(HraImp hra, BalicekImp<Karta> balicek) {
+    public unoZmenaBarvy(Hra hra, Balicek<Karta> balicek) {
         super(-1, "", hra, balicek);
     }
     

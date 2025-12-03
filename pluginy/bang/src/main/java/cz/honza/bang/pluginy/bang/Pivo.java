@@ -9,6 +9,9 @@ package cz.honza.bang.pluginy.bang;
 import cz.honza.bang.BalicekImp;
 import cz.honza.bang.HraImp;
 import cz.honza.bang.HracImp;
+import cz.honza.bang.sdk.Balicek;
+import cz.honza.bang.sdk.Hra;
+import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
 
@@ -18,7 +21,7 @@ import cz.honza.bang.sdk.Karta;
  */
 public class Pivo extends Karta implements HratelnaKarta{
     
-    public Pivo(HraImp hra, BalicekImp<Karta> balicek) {
+    public Pivo(Hra hra, Balicek<Karta> balicek) {
         super(hra, balicek);
     }
 
@@ -33,7 +36,7 @@ public class Pivo extends Karta implements HratelnaKarta{
     }
 
     @Override
-    public boolean odehrat(HracImp kym) {
+    public boolean odehrat(Hrac kym) {
         kym.pridejZivot();
         return true;
     }

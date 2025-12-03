@@ -6,9 +6,13 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.pluginy.bang;
 
-import cz.honza.bang.BalicekImp;
-import cz.honza.bang.HraImp;
-import cz.honza.bang.HracImp;
+import cz.honza.bang.sdk.Balicek;
+import cz.honza.bang.sdk.Hra;
+import cz.honza.bang.sdk.Hrac;
+import cz.honza.bang.sdk.HratelnaKarta;
+import cz.honza.bang.sdk.Karta;
+
+
 
 /**
  *
@@ -18,7 +22,7 @@ public class UnoKarta extends Karta implements HratelnaKarta{
     private final int hodnota;
     private final String barva;
 
-    public UnoKarta(int hodnota, String barva, HraImp hra, BalicekImp<Karta> balicek) {
+    public UnoKarta(int hodnota, String barva, Hra hra, Balicek<Karta> balicek) {
         super(hra, balicek);
         this.hodnota = hodnota;
         this.barva = barva;
@@ -43,7 +47,7 @@ public class UnoKarta extends Karta implements HratelnaKarta{
     }
 
     @Override
-    public boolean odehrat(HracImp kym) {
+    public boolean odehrat(Hrac kym) {
         if(hra.getOdhazovaciBalicek().jePrazdny()){
             return true;
         }

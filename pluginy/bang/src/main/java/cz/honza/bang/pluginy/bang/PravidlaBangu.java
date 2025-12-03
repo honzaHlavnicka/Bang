@@ -15,6 +15,8 @@ import cz.honza.bang.pluginy.bang.Barel;
 import cz.honza.bang.pluginy.bang.Dostavnik;
 import cz.honza.bang.pluginy.bang.Pivo;
 import cz.honza.bang.pluginy.bang.WellsFarkgo;
+import cz.honza.bang.sdk.Balicek;
+import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
 import java.util.List;
 
@@ -23,21 +25,21 @@ import java.util.List;
  * @author jan.hlavnicka.s
  */
 public class PravidlaBangu implements HerniPravidla{
-    private final HraImp hra;
+    private final Hra hra;
 
-    public PravidlaBangu(HraImp hra) {
+    public PravidlaBangu(Hra hra) {
         this.hra = hra;
     }
     
     @Override
-    public void poOdehrani(HracImp kym) {
+    public void poOdehrani(Hrac kym) {
         return; 
     }
 
     @Override
-    public void dosliZivoty(HracImp komu) {
+    public void dosliZivoty(Hrac komu) {
         hra.getSpravceTahu().vyraditHrace(komu);
-        
+        /*
         if(komu.getRole() == Role.SERIF){
             //banditi nebo odpadlík vyhráli
         }
@@ -46,7 +48,7 @@ public class PravidlaBangu implements HerniPravidla{
         }
         if(komu.getRole() == Role.POMOCNIK){
             //mozna vyhral ospadlik
-        }
+        }*/
         
         //TODO: prohra
         
@@ -69,7 +71,7 @@ public class PravidlaBangu implements HerniPravidla{
     }
 
     @Override
-    public boolean hracChceUkoncitTah(HracImp kdo) {
+    public boolean hracChceUkoncitTah(Hrac kdo) {
         if(kdo.jeNaTahu()){
             kdo.konecTahu();
         }
@@ -77,12 +79,12 @@ public class PravidlaBangu implements HerniPravidla{
     }
 
     @Override
-    public boolean hracChceLiznout(HracImp kdo) {
+    public boolean hracChceLiznout(Hrac kdo) {
         return false; //Hráč si při bangu nesmí lízat kdy se mu zachce.
     }
 
     @Override
-    public void pripravBalicek(BalicekImp<Karta> balicek) {
+    public void pripravBalicek(Balicek<Karta> balicek) {
         for (int i = 0; i < 10; i++) {        
             balicek.vratNahoru(new Bang(hra, balicek));
             balicek.vratNahoru(new BangNaVsechny(hra, balicek));
@@ -95,13 +97,13 @@ public class PravidlaBangu implements HerniPravidla{
     }
 
     @Override
-    public void zacalTah(HracImp komu) {
+    public void zacalTah(Hrac komu) {
         komu.lizni();
         komu.lizni();
     }
 
     @Override
-    public void skoncilTah(HracImp komu) {
+    public void skoncilTah(Hrac komu) {
         //zatím nic
     }
 
@@ -115,12 +117,12 @@ public class PravidlaBangu implements HerniPravidla{
     }
 
     @Override
-    public void pripravitHrace(HracImp hrac) {
-        if (hrac.getRole() != Role.SERIF) {
+    public void pripravitHrace(Hrac hrac) {
+        /*if (hrac.getRole() != Role.SERIF) {
             hrac.setMaximumZivotu(hrac.getPostava().maximumZivotu);
         } else {
             hrac.setMaximumZivotu(hrac.getPostava().maximumZivotu + 1);
-        }
+        }*/
         hrac.setZivoty(hrac.getMaximumZivotu());
         
         for (int i = 0; i < hrac.getMaximumZivotu(); i++) {
