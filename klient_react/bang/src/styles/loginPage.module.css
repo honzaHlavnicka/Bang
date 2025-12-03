@@ -17,11 +17,14 @@
   --accent: #2563eb;
   --accent-foreground: #ffffff;
   --focus: #93c5fd;
+      --bgMuted: #ffffffa2;
+
 }
 
 
 :global(.darkMode)  .kontent {
     --bg: #2c2c2c;
+    --bgMuted: #220700a2;
     --fg: #f1f5f9;
     --muted: #9ca3af;
     --border: #334155;
@@ -34,14 +37,33 @@
 
 /* Vycentrované <main> s pevnou max. šířkou a responzivní šířkou na mobilech */
 .kontent main {
-  width: min(500px, 100%);   /* max 500 px, jinak 100 % šířky */
+  width: min(500px,100%);   /* max 500 px, jinak 100 % šířky */
   margin-inline: auto;       /* horizontální centrování */
-  background-color: var(--bg);
-  border-radius: 35px;
-  padding:40px
+  padding:40px;
+  
+
 }
 .box{
     /*zatim nic*/
+    background-color: var(--bgMuted);
+    padding: 25px;
+    border:10px solid var(--bg);
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width:500px;
+    margin-bottom: 20px;
+    
+   
+}
+
+.kontent main{
+
+
+}
+.sectionHero{
+  padding-top: 0;
+  margin-top:0;
+  
 }
 
 /* Volitelné: mezery uvnitř mainu, ať se obsah nadechne */

@@ -10,6 +10,7 @@ export default function LoginPage() {
     const [jmeno, setJmeno] = useState('');
     const [idTypuHry, setIdTypuHry] = useState<number>(0);
     const { connectToGame, createGame, gameState, returnToGame } = useGame();
+    const [openCard , setOpenCard] = useState<string>("pripojeni");
     //const [menu, setMenu] = useState({x:0,y:0,visible:false})
     
 
@@ -31,8 +32,9 @@ export default function LoginPage() {
                     setGameCode(params.code);
                 }
             }
+            setOpenCard("kod");
         }
-    }, );
+    }, [setOpenCard, gameCode]);
     
 
     const gameToken = localStorage.getItem("gameToken");
@@ -68,26 +70,47 @@ export default function LoginPage() {
             <DarkModeSwitch style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
 
             <main  >
+                    <div className={`${css.sectionCard} ${css.sectionHero} ${css.box}`} >
                 <h1>Bang!</h1>
                 <p>
                     tadyto bude text, který bude něco říkat. Teď sice něco říká, 
                     ale doopravdy o hře neřekne nic. jenom zabírá místo.
                 </p>
-                
-                <hr />
-                {gameToken && !gameState.inGame && !gameState.playerId && (
+                <div style={{display:"flex",flexDirection:"row",justifyContent:"center",gap:"10px",marginTop:"10px"}}>
+                    {gameToken &&
+                    <button 
+                        className={globalCSS.button + " " + (openCard == "pripojeni" ? globalCSS.buttonActive : "")}
+                        onClick={() => setOpenCard("pripojeni")}
+                    >
+                        Vrácení se
+                    </button>}
+                    <button 
+                        className={globalCSS.button + " " + (openCard == "kod" ? globalCSS.buttonActive : "")}
+                        onClick={() => setOpenCard("kod")}
+                    >
+                        Připojit se ke hře
+                    </button>
+                    <button 
+                        className={globalCSS.button + " " + (openCard == "vytvoreni" ? globalCSS.buttonActive : "")}
+                        onClick={() => setOpenCard("vytvoreni")}
+                    >
+                        Vytvořit novou hru
+                    </button>   
+                    </div>
+                </div>
+                {gameToken && !gameState.inGame && !gameState.playerId && openCard == "pripojeni" ?  (
                     
-                    <div className={css.box} >
+                    <div className={css.box + " " + css.sectionCard} >
                         <h2>Vrátit se k rozehrané hře</h2>
                         <button 
                             className={globalCSS.button + " " + css.btnRight} 
                             onClick={() => returnToGame()}
-                        >Připojit</button>
+                        >Vrátit se</button>
                     </div>
                     
-                )}
-                
-                <div className={css.box} >
+                ): null}
+                {openCard == "kod" ?
+                <div className={css.box + " " + css.sectionCard} >
                     <h2>Připojit se ke hře</h2>
                     <h4>Kód hry, kam se chceš přihlásit:</h4>
                     <input 
@@ -105,9 +128,10 @@ export default function LoginPage() {
                         Připojit se ke hře
                     </button>
                 </div>
-            
-                        
-                <hr/>
+                : null}
+
+
+                {openCard == "vytvoreni" ?                 
                 <div className={css.box} >
                     <h2>Vytvořit novou hru</h2>
                     <h4>Typ hry</h4>
@@ -118,6 +142,7 @@ export default function LoginPage() {
                         {gameState.gameTypesAvailable ? gameState.gameTypesAvailable.map((val)=>(
                             <option key={val.id} value={val.id} title={val.description}>{val.name}</option>
                         )) : <option disabled>Načítám...</option>}
+                        <option onClick={() =>location.href = "https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md"} value={-1} >Vytvoř si vlastní! [⇗]</option>
                     </select>
                     <p>
                         {gameState.gameTypesAvailable && idTypuHry !== -1
@@ -135,9 +160,9 @@ export default function LoginPage() {
                     >
                         vytvořit hru
                     </button>
-                    <hr/>
                     <a href="https://www.flaticon.com/free-animated-icons/fire" title="fire animated icons">Fire animated icons created by Freepik - Flaticon</a>
-                </div>                
+                </div>
+                : null}               
             </main >
             {/*<ContextMenu x={menu.x} y={menu.y} options={[{text:"odhodit"},{text:"spalit"}]} />*/}
         </div >

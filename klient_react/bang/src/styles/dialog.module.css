@@ -15,6 +15,7 @@
     background-color: #fff;
     color: black;
     padding: 1.5rem;
+    padding-top:4px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     max-width: 90%;
@@ -27,7 +28,9 @@
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    text-align: center;
+    text-align: left;
+    width:100%;
+    border-bottom: #2c2c2c 1px solid;
 }
 
 .dialogContent {
@@ -48,6 +51,8 @@
 }
 :global(.darkMode) .dialogHeader {
     color: #f0f0f0;
+    border-bottom: #f0f0f0 1px solid;
+
 }
 :global(.darkMode) .dialogContent {
     color: #d0d0d0;

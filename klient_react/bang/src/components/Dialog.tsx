@@ -82,7 +82,7 @@ export default function Dialog() {
             content = (
                 <div style={{display:"flex",flexDirection:"row",alignItems:"flex-start",flexWrap:"wrap",gap:10}} >
                     {dialog.data.actions.map((val:{id:number,name:string})=>(   
-                            <button className={globalCSS.button} key={val.id} onClick={()=>{
+                            <button className={globalCSS.button}  key={val.id} onClick={()=>{
                                 closeDialog();
                                 if(dialog.callback){
                                     dialog.callback(val.id);
@@ -96,7 +96,7 @@ export default function Dialog() {
             break;
         case "INFO":
             content = (
-                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10}} >
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:5}} >
                     {dialog.data.image ? <img src={dialog.data.image} alt={dialog.data.header} style={{width:"100%"}}/>: null}
                     {dialog.data.header ? <h2>{dialog.data.header}</h2> : null}
                     <p>{dialog.data.message}</p>
