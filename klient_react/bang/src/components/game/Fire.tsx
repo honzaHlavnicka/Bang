@@ -1,4 +1,4 @@
-import { useDroppable } from "@dnd-kit/core/dist";
+import { useDroppable } from "@dnd-kit/core";
 
 export default function Fire() {
     const { setNodeRef, isOver } = useDroppable({ id: "fire" });

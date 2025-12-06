@@ -1,4 +1,4 @@
-import { useDraggable } from "@dnd-kit/core/dist";
+import { useDraggable } from "@dnd-kit/core";
 import Card, { type CardSizeType } from "../Card";
 
 type CardProps = {

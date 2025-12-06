@@ -1,4 +1,4 @@
-import { useDroppable } from "@dnd-kit/core/dist";
+import { useDroppable } from "@dnd-kit/core";
 import { useRef, useEffect, useCallback } from "react";
 
 export function Deck({ images }: { images: string[] }) {
