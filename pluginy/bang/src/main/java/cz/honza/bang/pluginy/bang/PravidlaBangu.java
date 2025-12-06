@@ -5,10 +5,7 @@
 package cz.honza.bang.pluginy.bang;
 
 import cz.honza.bang.sdk.HerniPravidla;
-import cz.honza.bang.BalicekImp;
-import cz.honza.bang.HraImp;
-import cz.honza.bang.HracImp;
-import cz.honza.bang.Role;
+
 import cz.honza.bang.pluginy.bang.Bang;
 import cz.honza.bang.pluginy.bang.BangNaVsechny;
 import cz.honza.bang.pluginy.bang.Barel;
@@ -16,6 +13,7 @@ import cz.honza.bang.pluginy.bang.Dostavnik;
 import cz.honza.bang.pluginy.bang.Pivo;
 import cz.honza.bang.pluginy.bang.WellsFarkgo;
 import cz.honza.bang.sdk.Balicek;
+import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
 import java.util.List;

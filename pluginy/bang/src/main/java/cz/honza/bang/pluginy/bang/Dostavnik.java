@@ -8,6 +8,7 @@ package cz.honza.bang.pluginy.bang;
 
 import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Hra;
+import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
 
@@ -32,7 +33,7 @@ public class Dostavnik extends Karta implements HratelnaKarta{
     }
 
     @Override
-    public boolean odehrat(HracImp kym) {
+    public boolean odehrat(Hrac kym) {
         kym.lizni();
         kym.lizni();
         return true;

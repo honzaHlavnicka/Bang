@@ -6,9 +6,6 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.pluginy.bang;
 
-import cz.honza.bang.BalicekImp;
-import cz.honza.bang.HraImp;
-import cz.honza.bang.HracImp;
 import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
