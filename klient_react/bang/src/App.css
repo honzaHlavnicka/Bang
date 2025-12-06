@@ -1,4 +1,4 @@
-*{
+body, *{
     overflow: hidden !important;
     touch-action: none !important;
     overscroll-behavior: none !important;

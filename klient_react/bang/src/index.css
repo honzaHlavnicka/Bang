@@ -8,3 +8,9 @@ html,body{
 .testovani *{
     outline: 1px solid blue;
 }
+body,html{
+    overflow: hidden !important;
+    touch-action: none !important;
+    overscroll-behavior: none !important;
+    -webkit-overflow-scrolling: auto !important;
+}
