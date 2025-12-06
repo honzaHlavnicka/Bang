@@ -353,20 +353,23 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
             return;
         }
         for (Karta karta : karty) {
+            System.out.println("Procházím karty, jaka z nich se ma vylozit: "+idKarty+", "+karta.toJSON());
             if (karta.getId() == idKarty) {
                 if(karta instanceof VylozitelnaKarta ){
                     VylozitelnaKarta vylozena = (VylozitelnaKarta) karta;
-                     HracImp predKoho = (HracImp) hra.getHrac(idPredKoho); //TODO: best castu by to šlo? (přidán při +sdk)
+                     HracImp predKoho = (HracImp) hra.getHrac(idPredKoho); //TODO: bez castu by to šlo? (přidán při +sdk)
                      if(vylozena.vylozit(this, predKoho)){ //todo: efekt se prida tomuto hraci, ale vyklada se pred jineho???
                          predKoho.pridejEfekt(vylozena.getEfekt());
+                         hra.getKomunikator().posliVsem("vylozeni:"+ this.id +"," + idPredKoho+","+ karta.toJSON()); //vylozeni:<kym>,<predKoho>,<karta>
+                         return;
                      }else{
                          hra.getKomunikator().posliChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);
+                         return;
                      }
                 }else{
                     hra.getKomunikator().posliChybu(this, Chyba.NENI_VYLOZITELNA);
                     return;
                 }
-                return;
             }
         }
         hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);

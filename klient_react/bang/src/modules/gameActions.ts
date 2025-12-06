@@ -319,17 +319,52 @@ export function handleGameMessage(
             }
             break;
         }
-        case "vylozit":{
-            const parts = payload.split(",",3);
-            const predKoho = Number(parts[0]);
-            //const kym = Number(parts[1]);      //todo: out of index error
-            const co = JSON.parse(parts[2])
-            const card:CardType = {id:co.id,image:co.obrazek}
-            if(predKoho == stateRef.current.playerId){
-                setGameState((prev)=>({...prev, inPlayCards:[...prev.inPlayCards, card]}));
-            }else{
-                //todo: Doplnění karty ostatním.
+        case "vylozeni":{
+            //payload: "predKoho,kym,{json}"
+            // 1,1,{"jmeno":"barel","obrazek":"barel","id":38}
+            const firstComma = payload.indexOf(",");
+            const secondComma = payload.indexOf(",", firstComma + 1);
+
+            if (firstComma === -1 || secondComma === -1) {
+                console.error("vylozeni: neplatný formát payloadu", payload);
+                toast.error("Chybná odpověď serveru");
+                break;
             }
+
+            const predKoho = Number(payload.slice(0, firstComma));
+            const kym = Number(payload.slice(firstComma + 1, secondComma));
+            const jsonStr = payload.slice(secondComma + 1).trim();
+
+            let co: { id: number; obrazek: string };
+            try {
+                co = JSON.parse(jsonStr);
+            } catch (e) {
+                console.error("vylozeni: nelze parsovat JSON části", jsonStr, e);
+                toast.error("Chybná odpověď serveru");
+                break;
+            }
+
+            console.log("zpracovávám vylozeni", payload, { predKoho, kym, co });
+            const card: CardType = { id: co.id, image: co.obrazek };
+
+            setGameState((prev) => {
+                const statePlayerId = prev.playerId ?? null;
+                if (statePlayerId !== null && predKoho === statePlayerId) {
+                    return {
+                        ...prev,
+                        inPlayCards: [...prev.inPlayCards, card],
+                        handCards: (prev.handCards ?? []).filter((c) => c.id !== card.id),
+                    };
+                }
+
+                const updatedPlayers = (prev.players ?? []).map((p) =>
+                    p.id === predKoho
+                        ? { ...p, inPlayCards: [...(p.inPlayCards ?? []), card] }
+                        : p
+                );
+
+                return { ...prev, players: updatedPlayers };
+            });
 
             break;
         }
@@ -464,29 +499,65 @@ export function fireCard(ws: WebSocket | null, cardId: number) {
     }
 }
 
-function zbaveniSeKarty(jak:"fire"|"discard", payload: string,stateRef: RefObject<GameStateType>, setGameState: (updater: (prev: GameStateType) => GameStateType) => void) {
-        const parts = payload.split("|");
-        const playerId = parts[0] ?? "";
-        try {
-            const json = JSON.parse(parts[1] ?? "0") as ServerCard;
-            const card = { image: json.obrazek, id: json.id };
-            console.log("zpracovávám "+jak, json, card);
-            console.log("pleyerId", playerId, "currentPlayerId", stateRef.current?.playerId, stateRef.current);
+function zbaveniSeKarty(
+    jak:"fire"|"discard",
+    payload: string,
+    stateRef: RefObject<GameStateType>,
+    setGameState: (updater: (prev: GameStateType) => GameStateType) => void
+) {
+    const parts = payload.split("|");
+    const playerId = parts[0] ?? "";
+    try {
+        const json = JSON.parse(parts[1] ?? "0") as ServerCard;
+        const card = { image: json.obrazek, id: json.id };
+        console.log("zpracovávám "+jak, json, card);
+        console.log("playerId", playerId, "currentPlayerId", stateRef.current?.playerId, stateRef.current);
 
-            setGameState(prev => {
-                const isCurrent = String(prev.playerId ?? "") === String(playerId);
-                const nextDiscard = [...prev.discardPile, card.image];
-                if (!isCurrent) {
-                    return { ...prev, discardPile: nextDiscard };
-                }
+        setGameState(prev => {
+            const isCurrent = String(prev.playerId ?? "") === String(playerId);
+            const nextDiscard = [...prev.discardPile, card.image];
+
+            if (isCurrent) {
+                // Nejprve se pokusíme odstranit z ruky, pokud tam není, odstraníme z vyložených karet
+                const wasInHand = (prev.handCards ?? []).some(c => c.id === card.id);
+                const nextHand = wasInHand
+                    ? (prev.handCards ?? []).filter(c => c.id !== card.id)
+                    : (prev.handCards ?? []);
+
+                const nextInPlay = wasInHand
+                    ? prev.inPlayCards // karta byla v ruce, inPlayCards zůstává
+                    : (prev.inPlayCards ?? []).filter(c => c.id !== card.id); // karta byla ve hře
+
                 return {
                     ...prev,
-                    handCards: (prev.handCards ?? []).filter((c) => c.id !== card.id),
+                    handCards: nextHand,
+                    inPlayCards: nextInPlay,
                     discardPile: nextDiscard
                 };
-            });
-        } catch (error) {
-            console.error("chyba při parsování", error, payload);
-            toast.error('Chybná odpověď serveru')
-        }
+            } else {
+                // Jiný hráč: přidej do discardu a odeber z jeho vyložených karet v players
+                const updatedPlayers = (prev.players ?? []).map(p =>
+                    String(p.id) === String(playerId)
+                        ? { ...p, inPlayCards: (p.inPlayCards ?? []).filter(c => c.id !== card.id) }
+                        : p
+                );
+
+                return {
+                    ...prev,
+                    players: updatedPlayers,
+                    discardPile: nextDiscard
+                };
+            }
+        });
+    } catch (error) {
+        console.error("chyba při parsování", error, payload);
+        toast.error('Chybná odpověď serveru');
+    }
+}
+
+export function putCardInPlay(ws: WebSocket | null, cardId: number) {
+    if (ws !== null) {
+        console.log("putCardInPlay - vykládám kartu do hry:", cardId);
+        ws.send("vylozeni:" + cardId);
+    }
 }

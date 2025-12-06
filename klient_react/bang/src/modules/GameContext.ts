@@ -67,6 +67,7 @@ export const GameContext = createContext<{
     playCard: (cardId:number) => void;
     returnToGame (): void;
     fireCard: (cardId:number) => void;
+    putCardInPlay: (cardId:number) => void;
 
 
 } | null>(null);

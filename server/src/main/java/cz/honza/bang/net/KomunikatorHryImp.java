@@ -97,6 +97,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
      * Pošle zprávu všekm hráčům ve hře.
      * @param co Zpráva, která se pošle všem hráčům
      */
+    @Override
     public void posliVsem(String co){
         for (WebSocket conn : hraciPodleWebsocketu.keySet()) {
             conn.send(co);
@@ -110,6 +111,8 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
      * @param co Zpráva, která se pošle všem hráčům, kromě jednoho
      * @param komuNe Hráč, který zprávu neobdrží
      */
+    @Override
+
     public void posliVsem(String co,cz.honza.bang.sdk.Hrac komuNe) {
         for (WebSocket conn : hraciPodleWebsocketu.keySet()) {
             if(!hraciPodleWebsocketu.get(conn).equals(komuNe)){
@@ -118,6 +121,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         }
     }
     
+    @Override
     public void posli(cz.honza.bang.sdk.Hrac komu, String co){
         websocketPodleHracu.get(komu).send(co);
         System.out.println("posilani zpravy: " + co + ", ::: "+websocketPodleHracu.get(komu));
@@ -166,6 +170,8 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
      * @param komu komu se má chyba doručit.
      * @param chyba chyba, která se posílá.
      */
+    @Override
+
     public void posliChybu(cz.honza.bang.sdk.Hrac komu,Chyba chyba){
         WebSocket conn = websocketPodleHracu.get(komu);
         conn.send("error:{\"error\":\"" + chyba.getZprava() + "\",\"kod\":" + chyba.getKod() + ",\"skupina:\":" + chyba.getSkupina()+ "}");
@@ -246,6 +252,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         return admin;
     }
 
+    @Override
     public void setAdmin(cz.honza.bang.sdk.Hrac admin) {
         this.admin = (HracImp) admin;
     }

@@ -9,7 +9,9 @@ import { useGame } from "../modules/GameContext";
 
 
 export default function GamePage() {
-    const {playCard,fireCard} = useGame();
+    const {playCard,fireCard,putCardInPlay} = useGame();
+
+
     function onDragEnd(event:DragEndEvent) {
         if(event.over?.id === "discardPile"){
             const cardId = parseInt(event.active.id as string);
@@ -19,7 +21,8 @@ export default function GamePage() {
             fireCard(cardId);
         }else if(event.over?.id === "InPlayCards"){
             const cardId = parseInt(event.active.id as string);
-            alert("joooo"+cardId);
+            putCardInPlay(cardId);
+            //alert("joooo"+cardId);
         }
         
     }

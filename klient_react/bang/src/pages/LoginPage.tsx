@@ -67,34 +67,34 @@ export default function LoginPage() {
 
     return (
         <div className={css.kontent}>
-            <DarkModeSwitch style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
+            <DarkModeSwitch  style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
 
-            <main  >
+            <main  className={css.paddingBottom} >
                     <div className={`${css.sectionCard} ${css.sectionHero} ${css.box}`} >
                 <h1>Bang!</h1>
                 <p>
                     tadyto bude text, který bude něco říkat. Teď sice něco říká, 
                     ale doopravdy o hře neřekne nic. jenom zabírá místo.
                 </p>
-                <div style={{display:"flex",flexDirection:"row",justifyContent:"center",gap:"10px",marginTop:"10px"}}>
+                <div className={css.radioButtonsParent} >
                     {gameToken &&
                     <button 
-                        className={globalCSS.button + " " + (openCard == "pripojeni" ? globalCSS.buttonActive : "")}
+                        className={globalCSS.button + " " + (openCard == "pripojeni" ? globalCSS.buttonActive : "") + " " + css.radioButton}
                         onClick={() => setOpenCard("pripojeni")}
                     >
-                        Připojit se zpět
+                        <span>Připojit se zpět</span><span>zpět</span>
                     </button>}
                     <button 
-                        className={globalCSS.button + " " + (openCard == "kod" ? globalCSS.buttonActive : "")}
+                        className={globalCSS.button + " " + (openCard == "kod" ? globalCSS.buttonActive : "")+ " " + css.radioButton}
                         onClick={() => setOpenCard("kod")}
                     >
-                        Připojit se ke hře
+                        <span>Připojit se ke hře</span><span>připojit</span>
                     </button>
                     <button 
-                        className={globalCSS.button + " " + (openCard == "vytvoreni" ? globalCSS.buttonActive : "")}
+                        className={globalCSS.button + " " + (openCard == "vytvoreni" ? globalCSS.buttonActive : "")+ " " + css.radioButton}
                         onClick={() => setOpenCard("vytvoreni")}
                     >
-                        Vytvořit novou hru
+                        <span>Vytvořit novou hru</span><span>vytvořit</span>
                     </button>   
                     </div>
                 </div>
