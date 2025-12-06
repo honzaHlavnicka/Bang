@@ -1,6 +1,7 @@
 import { useGame } from "../../modules/GameContext";
 import Card from "../Card";
 import Cards from "../Cards";
+import InPlayCards from "./InPlayCards";
 import NameTag from "./NameTag";
 
  export default function MyThings() {
@@ -31,8 +32,8 @@ import NameTag from "./NameTag";
                 </div>
             </div>
             <div style={{flex: 1, display: "flex", justifyContent: "center",flexDirection:"column" }}>
-                {gameState.allowedUIElements.includes("VYLOZENE_KARTY") ?
-                    <Cards isAnimated={false} isRotated={false} onClickCard={alert} cards={vylozeneKarty}/>
+                {(gameState.allowedUIElements.includes("VYLOZENE_KARTY")) ?
+                    <InPlayCards vylozeneKarty={vylozeneKarty} />
                 : null}
                 <Cards onClickCard={CardClick} cards={karty}/>
             </div>

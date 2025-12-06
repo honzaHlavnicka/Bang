@@ -4,7 +4,7 @@ import Players from "../components/game/Players";
 import CentralPanel from "../components/game/CentralPanel";
 import GlobalNotifications from "../components/GlobalNotifications";
 import { notify } from "../modules/notify";
-import { DndContext, type DragEndEvent } from "@dnd-kit/core/dist";
+import { DndContext, type DragEndEvent } from "@dnd-kit/core";
 import { useGame } from "../modules/GameContext";
 
 
@@ -17,6 +17,9 @@ export default function GamePage() {
         }else if(event.over?.id === "fire"){
             const cardId = parseInt(event.active.id as string);
             fireCard(cardId);
+        }else if(event.over?.id === "InPlayCards"){
+            const cardId = parseInt(event.active.id as string);
+            alert("joooo"+cardId);
         }
         
     }
