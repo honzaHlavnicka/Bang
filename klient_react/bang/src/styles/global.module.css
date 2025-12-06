@@ -14,3 +14,9 @@
 :global(.darkMode) .button{
     background-color: #037da5; 
 }
+.buttonActive{
+    background-color: #5a2e00; 
+}
+:global(.darkMode) .buttonActive{
+    background-color: #025f78; 
+}

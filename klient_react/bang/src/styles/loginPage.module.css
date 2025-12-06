@@ -24,7 +24,7 @@
 
 :global(.darkMode)  .kontent {
     --bg: #2c2c2c;
-    --bgMuted: #220700a2;
+    --bgMuted: #241c1aa2;
     --fg: #f1f5f9;
     --muted: #9ca3af;
     --border: #334155;
@@ -171,4 +171,14 @@
 .btnRight {
     align-self: flex-end;
     margin-right: 10px;
+}
+
+.kontent footer{
+    margin-top:20px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+    width:100%;
+    position: relative;
+    
 }

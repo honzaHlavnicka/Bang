@@ -82,7 +82,7 @@ export default function LoginPage() {
                         className={globalCSS.button + " " + (openCard == "pripojeni" ? globalCSS.buttonActive : "")}
                         onClick={() => setOpenCard("pripojeni")}
                     >
-                        Vrácení se
+                        Připojit se zpět
                     </button>}
                     <button 
                         className={globalCSS.button + " " + (openCard == "kod" ? globalCSS.buttonActive : "")}
