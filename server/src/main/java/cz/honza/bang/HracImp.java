@@ -24,7 +24,7 @@ import java.util.List;
 public class HracImp implements cz.honza.bang.sdk.Hrac{
     private int zivoty;
     private int  maximumZivotu;
-    private Postava postava = Postava.TESTOVACI;
+    private cz.honza.bang.sdk.Postava postava = Postava.TESTOVACI;
     //private KartyVRuce karty;
     private List<Karta> karty = new ArrayList<>();
     private List<Karta> vylozeneKarty = new ArrayList<>();
@@ -160,7 +160,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     }
 
     @Override
-    public Postava getPostava() {
+    public cz.honza.bang.sdk.Postava getPostava() {
         return postava;
     }    
 
@@ -218,7 +218,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     public void setPostava(String jmeno){
         for (cz.honza.bang.sdk.Postava postava : postavyNaVyber) {
             if(postava.name().equals(jmeno)){
-                this.postava = (Postava) postava; //TODO: odstranit ořetypování, vyřešit znovu a lépe
+                this.postava =  postava; //TODO: odstranit ořetypování, vyřešit znovu a lépe
                 return;
             }
         }
@@ -312,7 +312,6 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
                     hra.getKomunikator().posliVsem("novyPocetKaret:" + karty.size(),this);
                     hra.getKomunikator().posliVsem("spalit:"+ this.id + "|" + karta.toJSON());
 
-                    //TODO: informovat hráče
                 }else{
                     hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_SPALIT);
                 }
@@ -353,12 +352,12 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
             return;
         }
         for (Karta karta : karty) {
-            System.out.println("Procházím karty, jaka z nich se ma vylozit: "+idKarty+", "+karta.toJSON());
             if (karta.getId() == idKarty) {
                 if(karta instanceof VylozitelnaKarta ){
                     VylozitelnaKarta vylozena = (VylozitelnaKarta) karta;
-                     HracImp predKoho = (HracImp) hra.getHrac(idPredKoho); //TODO: bez castu by to šlo? (přidán při +sdk)
+                     Hrac predKoho = (HracImp) hra.getHrac(idPredKoho); 
                      if(vylozena.vylozit(this, predKoho)){ //todo: efekt se prida tomuto hraci, ale vyklada se pred jineho???
+                         karty.remove(karta);
                          predKoho.pridejEfekt(vylozena.getEfekt());
                          hra.getKomunikator().posliVsem("vylozeni:"+ this.id +"," + idPredKoho+","+ karta.toJSON()); //vylozeni:<kym>,<predKoho>,<karta>
                          return;
@@ -382,9 +381,13 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     public void lizni(){
         Karta karta = hra.getBalicek().lizni();
         if(karta == null){
+            if(hra.getBalicek().jePrazdny() && hra.getOdhazovaciBalicek().jePrazdny()){
+                hra.getKomunikator().posliChybu(this, Chyba.DOSLI_KARTY_V_BALICKU); 
+                //TODO: možnost pravidel reagovat
+                return;
+            }
             hra.prohodBalicky();
             karta = hra.getBalicek().lizni();
-            //TODO: co kdyz jsou oba balicky prazdny
         }
         karty.add(karta);
         System.out.println("lizani si");
