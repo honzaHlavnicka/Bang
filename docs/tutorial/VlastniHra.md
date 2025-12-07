@@ -1,20 +1,61 @@
-# Jak si vyrobit vlastní hru?
-Engine je připravený tak, že by měl podporovat velké množství her. Pokud si do něj chceš nějakou naprogramovat, tak použij přesně tento návod. Pokud by něco nefungovalo, nebo by něco engine nepodporoval, tak přidej issue na [github](https://github.com/honzaHlavnicka/Bang/issues). Pokud chceš svojí hru umístit na veřejný server, tak vytvoř pull request. Očekává se alespoň nějaká znalost jazyka Java.
+# Návod: Jak vytvořit vlastní hru pro engine
 
-1) **Vytvoř si maven projekt**, na to budeš potřebovat nějaké IDE, třeba Netbeans.
-2) **Přidej `plugin-sdk`** jako závislost.
-   plugin-sdk si stáhni buďto celé z tohoto repozitáře, a nebo jednodušeji pouze už připravený .jar z repozitáře (bude možné později)
-   poté sdk nahraj jako knihovnu, nebo na něj odkaž v pom.xml
-3) **Implementuj rozhraní `HerniPlugin`**, je jedno jak si tvojí třídu pojmenuješ, server si jí později najde sám. 
-   tento soubor by neměl dělat nic převratného, stačí aby vracel jméno tvojí hry, její popis a uměl vytvářet
-   nevytvářej třídě nějaký speciální konstruktor.
-4) **Do `HerniPlugin` přidej `HerniPravidla`**, to je soubor, ve kterém si můžeš upravit logiku hry, omezit co hráči mohou dělat, co se jim zobrazuje a podobně.
-5) **Vytvoř si karty.** Udělej si kolik tříd chceš, které budou dědit z `Karta`. Karta může být `HratelnaKarta`, `VylozitelnaKarta` a `SpalitelnaKarta`. Nezapomeň, že pokud nebudeš tyto rozhraní implementovat, tak karta nebude umět to co má. (a nestačí pouze implementovat, karta musí vždy i dědit)
-   karet můžeš mít kolik potřebuješ, jedna třída může reprezentovat i více karet, ale pokud mají kartu odlišnou logiku, tak se hodí je oddělit do více tříd.
-7) **Vytvoř postavy a role** (to zatím nejde, takže to neřeš)
-8) **Dodělej pravidla hry**, nezapomeň, aby do balíčku vkláídali karty a buildni projekt. Výsledný .jar soubor můžeš nahrát do složky pluginy, která se nachází tam, kde spouštíš server.
-   Pokud server ještě nemáš, tak si ho stáhni a spusť. Potom můžeš otevřít honza.svs.gyarab.cz?adress=ws://locahost:port, kde port je používaný port (server ti ho vypíše do konzole).
-   Tady se podívej, jestli tvoje hra jde vytvořit. Otestuj ji a oprav co nefunguje.
-9) **Máš hotovo!** Teď už ji můžeš hrát buď na lokální síti (ostatní se připojí na honza.svs.gyarab.cz?adress=ws://tvoje lokální IP:port), nebo přidej pull request na GitHub a já ji přidám do centrálního serveru, aby ji mohl hrát kdokoliv.
-    Při přidávání pull requestu nahraj celý kód, ne jenom .jar soubor, abych mohl ověřit, zda neobsahuje škodlivý obsah.
-    Pokud nechceš hru zveřejňovat, ale chceš hrát po globální síti, tak si nastuduj tunelování.
+Vytvořte si vlastní hru pro tento engine s využitím programovacího jazyka Java.
+
+Pokud by se vyskytly problémy nebo engine něco nepodporoval, prosím, **vytvořte issue** na [GitHubu](https://github.com/honzaHlavnicka/Bang/issues). Chcete-li svou hru umístit na veřejný server, vytvořte **pull request**.
+
+---
+
+## I. Příprava projektu
+
+1.  **Vytvořte si Maven projekt.**
+    * Budete k tomu potřebovat vhodné IDE (např. Netbeans).
+
+2.  **Přidejte `plugin-sdk` jako závislost.**
+    * Stáhněte si `plugin-sdk` buď celé z repozitáře, nebo použijte připravený **.jar** soubor.
+    * Poté SDK nahrajte jako knihovnu, nebo na něj odkažte v souboru `pom.xml`.
+
+---
+
+## II. Implementace základních tříd
+
+3.  **Implementujte rozhraní `HerniPlugin`.**
+    * Pojmenování třídy je libovolné, server si ji najde automaticky.
+    * Tato třída musí vracet **jméno** a **popis** vaší hry a umět vytvářet instance hry.
+    * **Důležité:** Třída nesmí mít žádný speciální konstruktor.
+
+4.  **Do `HerniPlugin` přidejte `HerniPravidla`.**
+    * Tento soubor definuje **logiku hry**, omezuje akce hráčů a určuje, co se jim zobrazuje.
+
+5.  **Vytvořte si karty.**
+    * Vytvořte třídy, které budou dědit z abstraktní třídy **`Karta`**.
+    * Karty mohou implementovat rozhraní: `HratelnaKarta`, `VylozitelnaKarta`, a/nebo `SpalitelnaKarta`.
+    * **Poznámka:** Pokud tato rozhraní neimplementujete, karta nebude mít příslušnou funkčnost. (Karta musí dědit z `Karta` a implementovat potřebná rozhraní).
+    * Jedna třída může reprezentovat více karet, ale pro karty s odlišnou logikou je vhodné vytvořit samostatné třídy.
+
+7.  **Vytvořte postavy a role.**
+    * **Tento krok zatím není podporován.** Prozatím ho ignorujte.
+
+---
+
+## III. Dokončení a testování
+
+8.  **Dodělejte pravidla hry a sestavte projekt.**
+    * **Zajistěte**, aby vaše pravidla vkládala vytvořené karty do balíčku.
+    * Sestavte projekt. Výsledný **.jar** soubor nahrajte do složky **`pluginy`** u spuštěného serveru.
+
+9.  **Spusťte a otestujte hru.**
+    * Stáhněte a spusťte server.
+    * Otevřete prohlížeč na adrese: `honza.svs.gyarab.cz?adress=ws://localhost:port`, kde **`port`** je port vypsaný serverem do konzole.
+    * Ověřte, že **vaše hra jde vytvořit**. Otestujte funkčnost a opravte chyby.
+
+---
+
+## IV. Zveřejnění (Volitelné)
+
+10. **Máte hotovo!** Nyní můžete hru hrát.
+    * **Lokální síť:** Ostatní se připojí na `honza.svs.gyarab.cz?adress=ws://tvoje lokální IP:port`.
+    * **Centrální server (Globální síť):**
+        * Vytvořte **Pull Request** na GitHubu.
+        * Nahrajte **celý kód**, nikoli pouze `.jar` soubor, pro ověření absence škodlivého obsahu.
+    * **Globální síť bez zveřejnění:** Nastudujte si tunelování.
