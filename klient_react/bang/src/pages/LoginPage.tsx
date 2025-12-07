@@ -15,26 +15,22 @@ export default function LoginPage() {
     
 
     useEffect(() => {
-        
-
         const params = location.search
-        .substring(1)
-        .split("&")
-        .map(param => param.split("="))
-        .reduce((values, [key, value]) => {
-            values[key] = decodeURIComponent(value);
-            return values;
-        }, {} as Record<string, string>);
+            .substring(1)
+            .split("&")
+            .map(param => param.split("="))
+            .reduce((values, [key, value]) => {
+                values[key] = decodeURIComponent(value);
+                return values;
+            }, {} as Record<string, string>);
         if (params.code) {
             // pokud je v URL kód hry, předvyplní ho do formuláře
             if (params.code.match(/^[0-9]{6}$/)) {
-                if (gameCode !== params.code) {
-                    setGameCode(params.code);
-                }
+                setGameCode(params.code);
             }
             setOpenCard("kod");
         }
-    }, [setOpenCard, gameCode]);
+    }, []);
     
 
     const gameToken = localStorage.getItem("gameToken");
