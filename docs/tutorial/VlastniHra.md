@@ -12,7 +12,7 @@ Pokud by se vyskytly problémy nebo engine něco nepodporoval, prosím, **vytvo�
     * Budete k tomu potřebovat vhodné IDE (např. Netbeans).
 
 2.  **Přidejte `plugin-sdk` jako závislost.**
-    * Stáhněte si `plugin-sdk` buď celé z repozitáře, nebo použijte připravený **.jar** soubor.
+    * Stáhněte si `plugin-sdk` buď celé z repozitáře, nebo použijte [připravený **.jar** soubor](https://drive.google.com/file/d/1xlVbSsp5uR2bhM12YXO040Bhx6av3zIl/).
     * Poté SDK nahrajte jako knihovnu, nebo na něj odkažte v souboru `pom.xml`.
 
 ---
