@@ -135,6 +135,9 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         
         websocket.send("pripojenKeHre");
         HracImp hrac = hra.novyHrac();
+        if(websocketPodleHracu.isEmpty()){
+            admin = hrac;
+        }
         websocketPodleHracu.put(hrac, websocket);
         hraciPodleWebsocketu.put(websocket, hrac);
         String identifikator = GeneratorTokenu.NovytokenHrace();
@@ -174,7 +177,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
 
     public void posliChybu(cz.honza.bang.sdk.Hrac komu,Chyba chyba){
         WebSocket conn = websocketPodleHracu.get(komu);
-        conn.send("error:{\"error\":\"" + chyba.getZprava() + "\",\"kod\":" + chyba.getKod() + ",\"skupina:\":" + chyba.getSkupina()+ "}");
+        conn.send("error:{\"error\":\"" + chyba.getZprava() + "\",\"kod\":" + chyba.getKod() + ",\"skupina\":" + chyba.getSkupina()+ "}");
         
     }
     

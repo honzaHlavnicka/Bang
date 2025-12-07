@@ -11,6 +11,7 @@ package cz.honza.bang.net;
  * @author honza
  */
 import cz.honza.bang.pravidla.SpravceHernichPravidel;
+import cz.honza.bang.sdk.Chyba;
 import org.java_websocket.server.WebSocketServer;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -61,7 +62,7 @@ public class SocketServer extends WebSocketServer {
             if(message.replace("serverInfo:", "").equals("heslo123")){ //TODO: později přidat heslo do env.
                 conn.send("serverDataHTML:"+serverDataHTML());
             }
-            conn.send("error:{\"error\":\"špatné heslo\"}");
+            posliChybu(conn, Chyba.SPATNE_HESLO);
             return;
         }
            
@@ -77,7 +78,7 @@ public class SocketServer extends WebSocketServer {
         if (message.startsWith("novaHra") || message.startsWith("pripojeniKeHre:111")) {
             KomunikatorHryImp komunikatorCoAsiNeexistuje = komunikatoryHracu.get(conn); //pro kontrolu, jestli už hrač hru nehraje
             if (komunikatorCoAsiNeexistuje != null) {
-                conn.send("error:{\"error\":\"už jsi připojen ke hře\"}");
+                posliChybu(conn, Chyba.UZ_PRIPOJEN);
                 return;
             }
             int typHry;
@@ -102,13 +103,13 @@ public class SocketServer extends WebSocketServer {
             String idHry = message.replace("pripojeniKeHre:", "");
             KomunikatorHryImp komunikatorCoAsiNeexistuje = komunikatoryHracu.get(conn); //pro kontrolu, jestli už hrač hru nehraje
             if(komunikatorCoAsiNeexistuje != null){
-                conn.send("error:{\"error\":\"už jsi připojen ke hře\"}");
+                posliChybu(conn, Chyba.UZ_PRIPOJEN);
                 return;
             }
 
             KomunikatorHryImp komunikatorHry = hryPodleId.get(idHry);
             if(komunikatorHry == null){
-                conn.send("error:{\"error\":\"Hra neexistuje\"}");
+                posliChybu(conn, Chyba.HRA_NEEXISTUJE);
                 return;
             }
             if(komunikatorHry.novyHrac(conn)){ //přidá nového hráče, pokud se to nepovede, tak ho to nebude ukládat k dané hře, aby se ještě mohl připojit.
@@ -234,6 +235,9 @@ public class SocketServer extends WebSocketServer {
 
         sb.append("</div>");
         return sb.toString();
+    }
+    public void posliChybu(WebSocket conn, Chyba chyba) {
+        conn.send("error:{\"error\":\"" + chyba.getZprava() + "\",\"kod\":" + chyba.getKod() + ",\"skupina\":" + chyba.getSkupina() + "}");
     }
 
     public static void main(String[] args) {

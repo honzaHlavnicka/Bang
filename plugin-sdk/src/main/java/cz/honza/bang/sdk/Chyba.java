@@ -23,7 +23,11 @@ public enum Chyba {
     NENI_VYLOZITELNA("Tahle karta není vyložitelná.",10,1),
     KARTU_NEJDE_VYLOZIT("Tuhle kartu teď nemůžeš vyložit.",11,3),
     CHYBA_PROTOKOLU("Nastala chyba při komunikaci.\nZkontrolujte, zda používáte správnou verzi.",12,1),
-    NEJDE_SI_LIZNOUT("Podle pravidel si teď liznout nemuzes.",13,3)
+    NEJDE_SI_LIZNOUT("Podle pravidel si teď liznout nemuzes.",13,3),
+    SPATNE_HESLO("Špatné heslo.",14,1),
+    UZ_PRIPOJEN("Už jsi připojen ke hře.",15,2),
+    DOSLI_KARTY_V_BALICKU("Došli karty v balíčcích, už nejde lízat.",16,3)
+    
     ;
     private final String zprava;
     private final int kod;
