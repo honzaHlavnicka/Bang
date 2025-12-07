@@ -26,7 +26,7 @@ export default function Cards({
             <DragableCard
                 {...(onClickCard ? { onClick: onClickCard } : {})}
                 image={"/img/karty/" + card.image + ".png"}
-                style={{maxWidth: 100/cards.length-10+"vw"}}
+                style={{maxWidth: 100/(cards.length-10)+"vw"}}
                 key={card.id}
                 id={card.id}
                 animationOnStart={isAnimated}

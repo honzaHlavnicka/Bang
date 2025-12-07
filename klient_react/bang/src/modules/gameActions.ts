@@ -407,6 +407,7 @@ export function updatePlayerProperty(
     }));
 }
 
+//@deprecated
 export function setGameValue(ws: WebSocket | null, data: unknown, type: string) {
     if (ws !== null) {
         if (type === "DRAW_CARD") {

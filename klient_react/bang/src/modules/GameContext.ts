@@ -44,7 +44,7 @@ export const gameStateDefault: GameStateType = {
 
     gameCode: "",
     handCards:[],
-    inPlayCards:[{id:770,image:"nahodna"},{id:771,image:"nahodna"}],
+    inPlayCards:[],
     players: [],
     playerId: null,
     turnOrder: [],
