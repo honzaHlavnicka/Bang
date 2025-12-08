@@ -103,18 +103,15 @@ public class SpravceHernichPravidel {
     private static final List<HerniPlugin> pluginy = new ArrayList<>();
 
     static {
-        try {
-            pluginy.addAll(NacitacPluginu.nactiPluginy(Paths.get("pluginy")));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        pregeneruj();
     }
 
     public static String getJSONVytvoritelneHry() {
         AtomicInteger id = new AtomicInteger(); //int nefunguje a chatGPT doporučil toto
-
+        
         return pluginy.stream()
                 .map(p -> {
+                    
                     int myId = id.getAndIncrement();
                     return String.format(
                             "{\"id\":%d,\"jmeno\":\"%s\",\"popis\":\"%s\"}",
@@ -130,5 +127,14 @@ public class SpravceHernichPravidel {
 
     private static String escapeJSON(String text) {
         return text.replace("\"", "\\\"");
+    }
+    
+    public static void pregeneruj(){
+        try {
+            pluginy.clear();
+            pluginy.addAll(NacitacPluginu.nactiPluginy(Paths.get("pluginy")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -65,7 +65,15 @@ public class SocketServer extends WebSocketServer {
             posliChybu(conn, Chyba.SPATNE_HESLO);
             return;
         }
-           
+        if(message.startsWith("restartovatPluginy:")){
+            if (message.replace("restartovatPluginy:", "").equals("heslo123")) { //TODO: později přidat heslo do env.
+                SpravceHernichPravidel.pregeneruj();
+                conn.send("ok");
+                return;
+            }
+            posliChybu(conn, Chyba.SPATNE_HESLO);
+            return;
+        }
         if(message.startsWith("infoHer")){
             StringBuilder sb = new StringBuilder("infoHer:{\"verze\":\"0.0.7\",\"hry\":");
             sb.append(SpravceHernichPravidel.getJSONVytvoritelneHry());

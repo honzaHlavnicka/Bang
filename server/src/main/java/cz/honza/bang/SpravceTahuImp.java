@@ -9,6 +9,7 @@ package cz.honza.bang;
 import cz.honza.bang.sdk.Hrac;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 
@@ -60,8 +61,8 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
                     hrajiciHraciCache.add((HracImp) t.hrac);
                 }
             }
-            if(zmenenSmer){
-                hrajiciHraciCache = hrajiciHraciCache.reversed();
+            if (zmenenSmer) {
+                Collections.reverse(hrajiciHraciCache); // otočí list in-place
             }
             poradiAktualni = true;
         }
