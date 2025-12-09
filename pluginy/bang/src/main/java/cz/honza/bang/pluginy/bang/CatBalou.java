@@ -13,6 +13,7 @@ import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
+import java.util.Random;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -45,10 +46,18 @@ public class CatBalou extends Karta implements HratelnaKarta{
                 Hrac naKoho = hra.getHrac(Integer.parseInt(odpoved)); //TODO: možná nějaká exception kontrola, DRY:Bang
                 hra.getKomunikator().pozadejOdpoved("vyberKartu:" + pripravJSONvyberuKarty(naKoho), kym)
                     .thenAccept(idKarty -> {
-                        if(zastupnaKarta.getNahodna().getId() == Integer.parseInt(idKarty)){
-                            //sebrat náhodou kartu
+                        int idKartyCislo = Integer.parseInt(idKarty);
+                        if(zastupnaKarta.getNahodna().getId() == idKartyCislo){
+                            Random rand = new Random();
+                            Karta nahodnaKarta = naKoho.getKarty().remove(rand.nextInt(naKoho.getKarty().size()));     
+                            hra.getKomunikator().posliVsem("spalit:"+kym.getId()+"|"+nahodnaKarta.toJSON());
                         }else{
-                            //najít kartu a spálit jí
+                            for (Karta karta : naKoho.getVylozeneKarty()) {
+                                if(karta.getId() == idKartyCislo){
+                                    naKoho.getVylozeneKarty().remove(karta); //todo: kdyz mezitim karta se spali jinak, tak bude vizualne 2x
+                                    hra.getKomunikator().posliVsem("spalit:" + naKoho.getId() + "|" + karta.toJSON());
+                                }
+                            }
                         }
                 });
         });
@@ -60,9 +69,11 @@ public class CatBalou extends Karta implements HratelnaKarta{
         json.put("id", "data-id");
         json.put("nadpis", "Vyber jakou kartu!");
         JSONArray kartyNaVyber = new JSONArray();
-        kartyNaVyber.put(zastupnaKarta.getNahodna());
+        kartyNaVyber.put(new JSONObject(zastupnaKarta.getNahodna().toJSON()));
+        System.out.println("Připravuju karty na výběr: "+naKoho.getVylozeneKarty().size());
         for (Karta karta : naKoho.getVylozeneKarty()) {
-            kartyNaVyber.put(karta.toJSON());
+            System.out.println(karta.getJmeno());
+            kartyNaVyber.put(new JSONObject(karta.toJSON()));
         }
         json.put("karty", kartyNaVyber);
         return json.toString();
