@@ -25,6 +25,7 @@ export default function CentralPanel() {
                 <Card image={"/img/karty/zezadu.png"} name="dobírací balíček" onClick={()=>drawCard()} id={-2}/>
             : null}
             <ZoomToggleButton />
+            
         </div>
     );
 }

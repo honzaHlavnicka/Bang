@@ -108,21 +108,28 @@ export default function LoginPage() {
                 {openCard == "kod" ?
                 <div className={css.box + " " + css.sectionCard} >
                     <h2>Připojit se ke hře</h2>
-                    <h4>Kód hry, kam se chceš přihlásit:</h4>
-                    <input 
-                        type="text" 
-                        inputMode="numeric" 
-                        pattern="[0-9]*"
-                        value={(()=>{return gameCode})()}
-                        onChange={e =>  {
-                            setGameCode(e.target.value.replace(/[^0-9]/g, ''));
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            if (zkontroluj(true)) connectToGame(gameCode, jmeno);
                         }}
-                    />
-                    <h4>Tvoje jméno:</h4>
-                    <input value={jmeno} onChange={e => setJmeno(e.target.value)}/><br />
-                    <button className={globalCSS.button} onClick={() => { if(zkontroluj(true)) connectToGame(gameCode,jmeno); }} >
-                        Připojit se ke hře
-                    </button>
+                    >
+                        <h4>Kód hry, kam se chceš přihlásit:</h4>
+                        <input 
+                            type="text" 
+                            inputMode="numeric" 
+                            pattern="[0-9]*"
+                            value={(()=>{return gameCode})()}
+                            onChange={e =>  {
+                                setGameCode(e.target.value.replace(/[^0-9]/g, ''));
+                            }}
+                        />
+                        <h4>Tvoje jméno:</h4>
+                        <input value={jmeno} onChange={e => setJmeno(e.target.value)}/><br />
+                        <button type="submit" className={globalCSS.button}>
+                            Připojit se ke hře
+                        </button>
+                    </form>
                 </div>
                 : null}
 
@@ -130,32 +137,36 @@ export default function LoginPage() {
                 {openCard == "vytvoreni" ?                 
                 <div className={css.box} >
                     <h2>Vytvořit novou hru</h2>
-                    <h4>Typ hry</h4>
-                    <select 
-                        value={idTypuHry === -1 ? "" : String(idTypuHry)}
-                        onChange={(e)=>{ setIdTypuHry(parseInt((e.target as HTMLSelectElement).value)); }}
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            if (zkontroluj(false)) createGame(idTypuHry, jmeno);
+                        }}
                     >
-                        {gameState.gameTypesAvailable ? gameState.gameTypesAvailable.map((val)=>(
-                            <option key={val.id} value={val.id} title={val.description}>{val.name}</option>
-                        )) : <option disabled>Načítám...</option>}
-                        <option onClick={() =>location.href = "https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md"} value={-1} >Vytvoř si vlastní! [⇗]</option>
-                    </select>
-                    <p>
-                        {gameState.gameTypesAvailable && idTypuHry !== -1
-                            ? gameState.gameTypesAvailable.find(gt => gt.id === idTypuHry)?.description ?? ""
-                            : ""}
-                    </p>
-                    <h4>Tvoje jméno:</h4>
-                    <input
-                        value={jmeno}
-                        onChange={e => setJmeno(e.target.value)}
-                    /><br />
-                    <button 
-                        onClick={() => { if(zkontroluj(false)) createGame(idTypuHry,jmeno); }} 
-                        className={globalCSS.button}
-                    >
-                        vytvořit hru
-                    </button>
+                        <h4>Typ hry</h4>
+                        <select 
+                            value={idTypuHry === -1 ? "" : String(idTypuHry)}
+                            onChange={(e)=>{ setIdTypuHry(parseInt((e.target as HTMLSelectElement).value)); }}
+                        >
+                            {gameState.gameTypesAvailable ? gameState.gameTypesAvailable.map((val)=>(
+                                <option key={val.id} value={val.id} title={val.description}>{val.name}</option>
+                            )) : <option disabled>Načítám...</option>}
+                            <option onClick={() =>location.href = "https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md"} value={-1} >Vytvoř si vlastní! [⇗]</option>
+                        </select>
+                        <p>
+                            {gameState.gameTypesAvailable && idTypuHry !== -1
+                                ? gameState.gameTypesAvailable.find(gt => gt.id === idTypuHry)?.description ?? ""
+                                : ""}
+                        </p>
+                        <h4>Tvoje jméno:</h4>
+                        <input
+                            value={jmeno}
+                            onChange={e => setJmeno(e.target.value)}
+                        /><br />
+                        <button type="submit" className={globalCSS.button}>
+                            vytvořit hru
+                        </button>
+                    </form>
                     <a href="https://www.flaticon.com/free-animated-icons/fire" title="fire animated icons">Fire animated icons created by Freepik - Flaticon</a>
                 </div>
                 : null}               

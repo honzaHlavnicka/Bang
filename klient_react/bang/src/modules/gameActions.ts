@@ -78,6 +78,7 @@ export function handleGameMessage(
             }
             break;
         }
+
         case "hraci": {
             try {
                 const json = JSON.parse(payload) as ServerPlayer[];
@@ -266,6 +267,29 @@ export function handleGameMessage(
                     }
                     socket.send(`dialog:${json.id},${selectedAction}`);
                     
+                }});
+            }catch (error) {
+                console.error("chyba při parsování", error, payload);
+                toast.error('Chybná odpověď serveru')
+            }
+            break;
+        }
+        case "vyberKartu": {
+            try {
+                const json = JSON.parse(payload) as {id:(string | number),karty:{obrazek:string,id:number,jmeno:string}[], nadpis?:string}; 
+                const heading = json.nadpis ?? "Vyber kartu";
+                const cards = json.karty.map(k=>({image:k.obrazek,id:k.id}));
+                openDialog({type:"SELECT_CARD", data:{cards,min:1,max:1},dialogHeader:heading,notCloasable:false,callback:(selectedCard:number[])=>{ 
+                    console.log("vybraná karta:",selectedCard);
+                    if(stateRef.current?.playerId == null){
+                        toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
+                        return;
+                    }
+                    if(socket == null){
+                        toast.error("Nelze provést akci, protože není navázáno spojení se serverem");
+                        return;
+                    }
+                    socket.send(`dialog:${json.id},${selectedCard[0]}`);
                 }});
             }catch (error) {
                 console.error("chyba při parsování", error, payload);

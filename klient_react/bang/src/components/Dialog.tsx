@@ -43,11 +43,20 @@ export default function Dialog() {
                     <div style={{display:"flex",flexDirection:"row",flexWrap:"wrap"}} >
                         {dialog.data.cards.map((val:CardType)=>(
                             <div key={val.id} style={{background:(seleckted.includes(val.id) ? "brown" : "transparent"),borderRadius:10,margin:5,padding:2}} onClick={()=>select(val.id)} >
-                                <Card key={val.id} id={val.id}  image={val.image}/>
+                                <Card key={val.id} id={val.id}  image={"/img/karty/" + val.image + ".png"}/>
                             </div>
                         ))}
                     </div>
-                    <div>Vybráno {seleckted.length} z {dialog.data.max}. (minimálně je potřeba {dialog.data.min}.)</div>
+                    <div>Vybráno {seleckted.length} z {dialog.data.max}.</div>
+                    {(seleckted.length >= dialog.data.min) ? 
+                        <button className={globalCSS.button} onClick={()=>{
+                            closeDialog();
+                            if(dialog.callback){
+                                dialog.callback(seleckted);
+                            }
+                            setSelected([]);
+                        }}>Potvrdit výběr</button> 
+                    : <div>Vyber ještě {dialog.data.min - seleckted.length} karty.</div>}
                     <ZoomToggleButton/>
                 </div>
             );

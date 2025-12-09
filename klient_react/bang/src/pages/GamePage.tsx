@@ -33,7 +33,6 @@ export default function GamePage() {
                     <Players />
                     <CentralPanel />
                     <MyThings />
-                    <button style={{position:"fixed",bottom:10,right:10,zIndex:1000}} onClick={()=>{notify("Pozor!");}}>Test notifikace</button>
                 </div>
             </DndContext>
     );
