@@ -359,6 +359,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
                      if(vylozena.vylozit(this, predKoho)){ //todo: efekt se prida tomuto hraci, ale vyklada se pred jineho???
                          karty.remove(karta);
                          predKoho.pridejEfekt(vylozena.getEfekt());
+                         predKoho.getVylozeneKarty().add(karta);
                          hra.getKomunikator().posliVsem("vylozeni:"+ this.id +"," + idPredKoho+","+ karta.toJSON()); //vylozeni:<kym>,<predKoho>,<karta>
                          return;
                      }else{
