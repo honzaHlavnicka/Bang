@@ -4,7 +4,7 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.pluginy.bang;
+package cz.honza.bang.pluginy.uno;
 
 import cz.honza.bang.sdk.HerniPlugin;
 import cz.honza.bang.sdk.HerniPravidla;
