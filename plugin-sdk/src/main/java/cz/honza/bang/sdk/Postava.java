@@ -15,12 +15,6 @@ public interface Postava {
     String name();
     String popis();
     int maximumZivotu();
-            
-    
-    default void naZacatekTahu(Hra hra, Hrac hrac) {}
-    default void naKonecTahu(Hra hra, Hrac hrac) {}
-    default void poZtrateZivota(Hra hra, Hrac hrac) {}
-    default void poOdehraniKarty(Hra hra, Hrac hrac) {}
-    default void kdyzNemaKarty(Hra hra, Hrac hrac) {}
-    default void poZabitiKohokoliv(Hrac ja,Hrac zabity){}
+    void inicializace();
+
 }

@@ -13,9 +13,12 @@ import cz.honza.bang.sdk.Hrac;
 /**
  *
  * @author honza
- */
+ *//*
 public enum Postava implements cz.honza.bang.sdk.Postava{
      TESTOVACI(4,"testovací postava", "nedělá vůbec nic."){
+         @Override
+         public void inicializace() {
+         }
          
      },
      TESTOVACI2(3, "testovací postava dvě", "Přidá život, pokud hráč nemá karty") {
@@ -60,3 +63,4 @@ public enum Postava implements cz.honza.bang.sdk.Postava{
              
      
 }
+*/
