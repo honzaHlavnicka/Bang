@@ -7,6 +7,7 @@ Toto je domácí verze souborů z programování.
 package cz.honza.bang.karty;
 
 import cz.honza.bang.sdk.Efekt;
+import cz.honza.bang.sdk.Hrac;
 
 /**
  *
@@ -21,6 +22,16 @@ public class ZbranovyEfekt implements Efekt{
     
     public int getVdalenost(){
         return vzdalenost;
+    }
+
+    @Override
+    public void odebrani(Hrac odKoho) {
+        return;
+    }
+
+    @Override
+    public void prirazeni(Hrac komu) {
+        return;
     }
     
 }

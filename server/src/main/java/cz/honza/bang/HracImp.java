@@ -7,7 +7,6 @@ Toto je domácí verze souborů z programování.
 package cz.honza.bang;
 
 import cz.honza.bang.sdk.Efekt;
-import cz.honza.bang.postavy.Postava;
 import cz.honza.bang.sdk.VylozitelnaKarta;
 import cz.honza.bang.sdk.Chyba;
 import cz.honza.bang.sdk.Hra;
@@ -24,7 +23,7 @@ import java.util.List;
 public class HracImp implements cz.honza.bang.sdk.Hrac{
     private int zivoty;
     private int  maximumZivotu;
-    private cz.honza.bang.sdk.Postava postava = Postava.TESTOVACI;
+    private cz.honza.bang.sdk.Postava postava = null;
     //private KartyVRuce karty;
     private List<Karta> karty = new ArrayList<>();
     private List<Karta> vylozeneKarty = new ArrayList<>();
@@ -196,7 +195,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
 
     @Override
     public void setPostava(cz.honza.bang.sdk.Postava postava) {
-        this.postava = (Postava) postava;
+        //this.postava = (Postava) postava;
     }
 
     public void setRole(cz.honza.bang.sdk.Role role) {
