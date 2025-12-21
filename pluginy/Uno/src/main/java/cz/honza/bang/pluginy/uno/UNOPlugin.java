@@ -31,4 +31,9 @@ public class UNOPlugin implements HerniPlugin {
         return new PravidlaUNO(hra);
     }
 
+    @Override
+    public String getURLPravidel() {
+        return "";
+    }
+
 }

@@ -6,7 +6,6 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.pluginy.uno;
 
-import cz.honza.bang.pluginy.bang.Eso;
 import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.HerniPravidla;
 import cz.honza.bang.sdk.Hra;
