@@ -30,5 +30,10 @@ public class BanggPlugin implements HerniPlugin{
     public HerniPravidla vytvor(Hra hra) {
         return new PravidlaBangu(hra);
     }
+
+    @Override
+    public String getURLPravidel() {
+        return "https://albi.cz/data/files/products/24327/1603711687-bang-pravidla-zakladni-hry.pdf";
+    };
     
 }

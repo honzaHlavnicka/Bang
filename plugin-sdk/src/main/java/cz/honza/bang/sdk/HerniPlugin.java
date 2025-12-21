@@ -13,5 +13,6 @@ package cz.honza.bang.sdk;
 public interface HerniPlugin {
     public String getJmeno();
     public String getPopis();
+    public String getURLPravidel();
     public HerniPravidla vytvor(Hra hra);
 }

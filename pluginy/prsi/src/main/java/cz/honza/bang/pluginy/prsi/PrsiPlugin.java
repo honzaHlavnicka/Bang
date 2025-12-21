@@ -31,5 +31,10 @@ public class PrsiPlugin implements HerniPlugin{
     public HerniPravidla vytvor(Hra hra) {
         return new PravidlaPrsi(hra);
     }
+
+    @Override
+    public String getURLPravidel() {
+        return "";
+    }
     
 }
