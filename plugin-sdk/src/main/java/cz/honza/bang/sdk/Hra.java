@@ -89,4 +89,12 @@ public interface Hra {
     
     public SpravceTahu getSpravceTahu();
     public Balicek<Karta> getOdhazovaciBalicek();
+
+    /**
+     * Vezme vrchní kartu z dobíracího balíčku a dá ji do odhazovacího. Informuje o tom hráče.
+     * Může se hodit například při zahájení prší nebo una.
+     * @return karta, která byla otočena.
+     */
+    public Karta otocVrchniKartu();
+
 }

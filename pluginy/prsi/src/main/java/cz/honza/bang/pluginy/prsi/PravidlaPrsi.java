@@ -80,6 +80,7 @@ public class PravidlaPrsi implements HerniPravidla{
             balicek.vratNahoru(new PrsiSvrsek(hra, balicek, barva, PrsiHodnota.SVRSEK));
         }
         balicek.zamichej();
+        hra.otocVrchniKartu();
     }
 
     @Override

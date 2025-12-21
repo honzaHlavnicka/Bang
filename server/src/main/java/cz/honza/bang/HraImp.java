@@ -10,7 +10,6 @@ import cz.honza.bang.pravidla.SpravceHernichPravidel;
 import cz.honza.bang.sdk.HerniPravidla;
 
 import cz.honza.bang.net.KomunikatorHryImp;
-import cz.honza.bang.postavy.Postava;
 import cz.honza.bang.sdk.UIPrvek;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
@@ -98,8 +97,8 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
 
         
         if(balicekPostav.size() < 2){//pokud už nezbide postava, tak to tam nejakou soupne. nemelo by se to stat kvuli maximalnimu poctu hracu, ten ale nemusí bít dodren.
-            balicekPostav.add(Postava.TESTOVACI);
-            balicekPostav.add(Postava.TESTOVACI);
+            //balicekPostav.add(Postava.TESTOVACI);
+            //balicekPostav.add(Postava.TESTOVACI);
         }
         hrac.vyberZPostav(balicekPostav.pop(),balicekPostav.pop());//nechá hráče vybrat ze dvou postav
     }
@@ -251,6 +250,14 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     @Override
     public Karta sejmiKartu() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+    
+    @Override
+    public Karta otocVrchniKartu(){
+        Karta karta = balicek.lizni();
+        odhazovaciBalicek.vratNahoru(karta);
+        komunikator.posliVsem("odehrat:-1" + '|' + karta.toJSON());
+        return karta;
     }
 
 }
