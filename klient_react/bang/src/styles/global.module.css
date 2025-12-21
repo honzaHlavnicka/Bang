@@ -20,3 +20,10 @@
 :global(.darkMode) .buttonActive{
     background-color: #025f78; 
 }
+
+.darkmodeReverseColor{
+    color:black;
+}
+:global(.darkMode) .darkmodeReverseColor{
+    color:white;
+}

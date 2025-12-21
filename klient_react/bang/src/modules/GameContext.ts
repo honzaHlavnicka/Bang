@@ -36,6 +36,9 @@ export type GameStateType = {
 
     allowedUIElements: string[];
 
+    gameStateMessege?:string;
+    gameStateMessegeFull?:string;
+
 };
 export const gameStateDefault: GameStateType = {
     startedConection:false,

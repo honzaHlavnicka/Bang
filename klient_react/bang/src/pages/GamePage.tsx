@@ -3,7 +3,6 @@ import MyThings from "../components/game/MyThings";
 import Players from "../components/game/Players";
 import CentralPanel from "../components/game/CentralPanel";
 import GlobalNotifications from "../components/GlobalNotifications";
-import { notify } from "../modules/notify";
 import { DndContext, type DragEndEvent } from "@dnd-kit/core";
 import { useGame } from "../modules/GameContext";
 
