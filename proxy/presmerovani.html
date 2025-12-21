@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bang - přesměrování</title>
+    <meta http-equiv="refresh" content="3; URL='https://bang.honzaa.cz/'" />
+    <style>
+        html {
+            background: url("https://bang.honzaa.cz/img/pozadi2.jpg") center fixed;
+            background-size: cover;
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+        main {
+            background-color: rgba(244, 244, 244, 0.95);
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 92%;
+            max-width: 640px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+
+        }
+        .card {
+            width: 150px;
+            margin-bottom: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: toceniKarty 5s linear    infinite;
+        }
+        @keyframes toceniKarty {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }  
+            
+        }
+        h1 {
+            color: #333;
+        }
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+    <main>
+        <img class="card" src="https://bang.honzaa.cz/img/karty/bang.png" alt="Bang logo" />
+        <h1>Přesměrovávám...</h1>
+        <p>Pokud nejste přesměrováni automaticky, otevřte <a href="https://bang.honzaa.cz/">bang.honzaa.cz</a>.</p>
+    </main>
+</body>
+</html>

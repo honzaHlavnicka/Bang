@@ -249,7 +249,7 @@ public class SocketServer extends WebSocketServer {
     }
 
     public static void main(String[] args) {
-        SocketServer server = new SocketServer(new InetSocketAddress("0.0.0.0", 8887));
+        SocketServer server = new SocketServer(new InetSocketAddress("0.0.0.0", 22207));
         server.start();
     }
 }

@@ -48,7 +48,7 @@ public class ServerApp {
     }*/
     
     public static void main(String[] args) {
-        WebSocketServer server = new SocketServer(new InetSocketAddress("0.0.0.0", 60898));// tvá implementace WebSocketServer
+        WebSocketServer server = new SocketServer(new InetSocketAddress("0.0.0.0", 22207));// tvá implementace WebSocketServer
         server.setReuseAddr(true);
         server.start();
     }
