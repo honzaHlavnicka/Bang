@@ -114,8 +114,8 @@ public class SpravceHernichPravidel {
                     
                     int myId = id.getAndIncrement();
                     return String.format(
-                            "{\"id\":%d,\"jmeno\":\"%s\",\"popis\":\"%s\"}",
-                            myId, escapeJSON(p.getJmeno()), escapeJSON(p.getPopis())
+                            "{\"id\":%d,\"jmeno\":\"%s\",\"popis\":\"%s\",\"url\":\"%s\"}",
+                            myId, escapeJSON(p.getJmeno()), escapeJSON(p.getPopis()), escapeJSON(p.getURLPravidel())
                     );
                 })
                 .collect(Collectors.joining(", ", "[", "]"));

@@ -9,6 +9,7 @@ package cz.honza.bang.net;
 import cz.honza.bang.sdk.Chyba;
 import cz.honza.bang.HraImp;
 import cz.honza.bang.HracImp;
+import cz.honza.bang.sdk.Hrac;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -90,6 +91,14 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         }
         if(message.startsWith("spaleni:")){
             hrac.spalitKartu(message.replace("spaleni:", ""));
+        }
+        if(message.startsWith("novaHraSHracema:")){
+            if(!hrac.equals(admin)){
+                posliChybu(hrac, Chyba.NEJSI_ADMIN_HRY);
+                return;
+            }
+            int id = Integer.parseInt(message.replace("novaHraSHracema:", ""));
+            smazatHruAVyrobytNovou(id);
         }
     }
     
@@ -197,7 +206,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         
         WebSocket puvodniHrac = websocketPodleHracu.get(hrac);    
         if(puvodniHrac != null){
-         //hráč už je připojen. je potřeba ho odpojit a nahradit novym pripojenim
+         //hráč už je připojen. je potřeba ho odpojit a nahradit novým pripojenim
          puvodniHrac.close();
         }
         
@@ -258,6 +267,49 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     @Override
     public void setAdmin(cz.honza.bang.sdk.Hrac admin) {
         this.admin = (HracImp) admin;
+    }
+
+    
+    private void smazatHruAVyrobytNovou(int id){
+        hra = HraImp.vytvor(this,id);
+        Map<WebSocket, HracImp> novyHraciPodleWebsocketu = new ConcurrentHashMap<>();
+        Map<HracImp,WebSocket> novyWebsocketPodleHracu = new ConcurrentHashMap<>();
+        Map<String, HracImp> novyHraciPodlIdentifikatoru = new ConcurrentHashMap<>();
+        for (Map.Entry<WebSocket, HracImp> entry : hraciPodleWebsocketu.entrySet()) {
+            WebSocket conn = entry.getKey();
+            Hrac staryHrac = entry.getValue();
+            HracImp novyHrac = hra.novyHrac();
+            
+            novyHraciPodleWebsocketu.put(conn, novyHrac);
+            novyWebsocketPodleHracu.put(novyHrac,conn);
+            
+            
+            String identifikator = GeneratorTokenu.NovytokenHrace();
+            conn.send("token:" + idHry + identifikator);
+            hraciPodlIdentifikatoru.put(identifikator, novyHrac);
+            
+            
+            if(admin.equals(staryHrac)){
+                setAdmin(novyHrac);
+            }
+        }
+        
+        hraciPodleWebsocketu = novyHraciPodleWebsocketu;
+        websocketPodleHracu = novyWebsocketPodleHracu;
+        
+        cekajiciOdpovedi.clear();
+        
+                
+        
+        // zavolat hráč vytvořen na hru   
+        for (Map.Entry<String, HracImp> entry : hraciPodlIdentifikatoru.entrySet()) {
+            Hrac hrac = entry.getValue();
+            hra.hracVytvoren(hrac);
+        }
+            
+       //poslat informace o změně hráčům
+       
+        //<s>zahájit hru</s>, nebo přesunout všechny do čekací místnosti.        
     }
 
    

@@ -30,10 +30,10 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         //socketAdress can be: wss://<thisHost>/ws or ws://localhost:9999 or ws://<ServerPcIpAddress>:9999    //
         //const socketAdress =  "wss://" + window.location.host + "/ws";                                      //
         //const socketAdress =  "wss://" + window.location.host + "/ws";                                       //
-        //const socketAdress = "ws://localhost:60898";   //22207                                                        //
+        const socketAdress = "ws://localhost:22207";   //22207     #60898                                                   //
         //const socketAdress = "ws://:9999";                                                                  //
         //const socketAdress = "ws://192.168.0.118:60898";  //22207                                            //  
-        const socketAdress = "ws://10.42.0.1:22207"; 
+        //const socketAdress = "ws://10.42.0.1:22207"; 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
         // allow overriding socket address via ?adress=xxxxx (e.g. ?adress=localhost:9999 or ?adress=ws://host:9999)
         const params = new URLSearchParams(window.location.search);
