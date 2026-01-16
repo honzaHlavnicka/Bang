@@ -12,7 +12,7 @@ export type GameStateType = {
     startedConection:boolean;
     inGame:boolean;
     gameStarted:boolean;
-    gameTypesAvailable?:Array<{id:number,name:string,description:string}>
+    gameTypesAvailable?:Array<{id:number,name:string,description:string,url:string}>
 
     gameCode: string | null;
 

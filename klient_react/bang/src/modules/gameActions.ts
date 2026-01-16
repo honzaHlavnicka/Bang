@@ -323,8 +323,8 @@ export function handleGameMessage(
         }
         case "infoHer": {
             try {
-                const json = JSON.parse(payload) as {verze:string,hry:{jmeno:string,id:number,popis:string}[]};
-                setGameState(prev=>({...prev, gameTypesAvailable: json.hry.map(h=>({id:h.id,name:h.jmeno,description:h.popis}))}));
+                const json = JSON.parse(payload) as {verze:string,hry:{jmeno:string,id:number,popis:string,url:string}[]};
+                setGameState(prev=>({...prev, gameTypesAvailable: json.hry.map(h=>({id:h.id,name:h.jmeno,description:h.popis,url:h.url}))}));
             }catch (error) {
                 console.error("chyba při parsování", error, payload);
                 toast.error('Chybná odpověď serveru')
