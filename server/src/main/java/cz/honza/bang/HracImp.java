@@ -355,16 +355,22 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
                 if(karta instanceof VylozitelnaKarta ){
                     VylozitelnaKarta vylozena = (VylozitelnaKarta) karta;
                      Hrac predKoho = (HracImp) hra.getHrac(idPredKoho); 
-                     if(vylozena.vylozit(this, predKoho)){ //todo: efekt se prida tomuto hraci, ale vyklada se pred jineho???
-                         karty.remove(karta);
-                         predKoho.pridejEfekt(vylozena.getEfekt());
-                         predKoho.getVylozeneKarty().add(karta);
-                         hra.getKomunikator().posliVsem("vylozeni:"+ this.id +"," + idPredKoho+","+ karta.toJSON()); //vylozeni:<kym>,<predKoho>,<karta>
-                         return;
+                     if(hra.getHerniPravidla().muzeVylozit(this,vylozena)){
+                         if(vylozena.vylozit(this, predKoho)){ //todo: efekt se prida tomuto hraci, ale vyklada se pred jineho???
+                            karty.remove(karta);
+                            predKoho.pridejEfekt(vylozena.getEfekt());
+                            predKoho.getVylozeneKarty().add(karta);
+                            hra.getKomunikator().posliVsem("vylozeni:"+ this.id +"," + idPredKoho+","+ karta.toJSON()); //vylozeni:<kym>,<predKoho>,<karta>
+                            return;
+                        }else{
+                            hra.getKomunikator().posliChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);
+                            return;
+                        }
                      }else{
-                         hra.getKomunikator().posliChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);
-                         return;
+                            hra.getKomunikator().posliChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);
+                            return;
                      }
+                    
                 }else{
                     hra.getKomunikator().posliChybu(this, Chyba.NENI_VYLOZITELNA);
                     return;
