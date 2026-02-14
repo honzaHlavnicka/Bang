@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import type { CardType, GameStateType } from "./GameContext";
 import { type DialogState } from "./DialogContext";
 import type { RefObject } from "react";
+import { replace } from "react-router-dom";
 
 
 // Helper types for server payloads
@@ -198,6 +199,40 @@ export function handleGameMessage(
         case "spalit":
             zbaveniSeKarty("fire", payload,stateRef,setGameState);
             break;        
+        case "spalenaVylozena":
+            //payload: cardId,playerId
+            setGameState(prev=>{
+                const parts = payload.split(",");
+                const cardId = parseInt(parts[0] ?? "");
+                const playerId = parts[1] ?? "";
+                const isMe = String(prev.playerId ?? "") === playerId;
+                const nextDiscard = [...prev.discardPile, prev.inPlayCards?.find(c=>c.id === cardId)?.image ?? ""];
+
+                if(isMe){
+                    return {
+                        ...prev,
+                        inPlayCards: prev.inPlayCards?.filter(c=>c.id !== cardId) ?? [],
+                        discardPile: nextDiscard
+                    }
+                }else{
+                    const updatedPlayers = prev.players
+                        ? prev.players.map(p => {
+                            if (String(p.id) === playerId) {
+                                return { ...p, inPlayCards: (p.inPlayCards ?? []).filter(c => c.id !== cardId) };
+                            }
+                            return p;
+                        })
+                        : prev.players;
+
+                    return {
+                        ...prev,
+                        players: updatedPlayers,
+                        discardPile: nextDiscard
+                    }
+                }
+            });
+
+             break;
         case "tvujTahZacal": {
             setGameState(prev => ({ ...prev, turnPlayerId: prev.playerId ?? null }));
             toast.success('Tvůj tah začal!')
@@ -525,7 +560,7 @@ export function fireCard(ws: WebSocket | null, cardId: number) {
 }
 
 function zbaveniSeKarty(
-    jak:"fire"|"discard",
+    how:"fire"|"discard",
     payload: string,
     stateRef: RefObject<GameStateType>,
     setGameState: (updater: (prev: GameStateType) => GameStateType) => void
@@ -535,7 +570,7 @@ function zbaveniSeKarty(
     try {
         const json = JSON.parse(parts[1] ?? "0") as ServerCard;
         const card = { image: json.obrazek, id: json.id };
-        console.log("zpracovávám "+jak, json, card);
+        console.log("zpracovávám "+how, json, card);
         console.log("playerId", playerId, "currentPlayerId", stateRef.current?.playerId, stateRef.current);
 
         setGameState(prev => {
