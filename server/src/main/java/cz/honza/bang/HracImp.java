@@ -109,8 +109,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      */
     @Override
     public boolean odeberZivot() {
-        if (zivoty < 0) {//TODO: kdyz ma moc zivotu, nez kolik muze mit
-            // Událost zabití kohokoliv - upozorni efekty všech hráčů
+        if (zivoty <= 0) { // kontrola
+            // Hráč už nemá žádné životy, označ jako mrtvého
             for (Hrac hr : hra.getHraci()) {
                 for (Efekt e : hr.getEfekty()) {
                     e.poZabitiKohokoliv(hr, this);
@@ -145,7 +145,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @return přidal se život úspěšně.
      */
     @Override
-    public boolean pridejZivot() {//TODO: kdyz ma moc zivotu, nez kolik muze mit
+    public boolean pridejZivot() { // kontrola
         if (zivoty >= maximumZivotu) {
             return false; 
         } else {
