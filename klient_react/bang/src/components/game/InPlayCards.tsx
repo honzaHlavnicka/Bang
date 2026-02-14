@@ -5,7 +5,6 @@ import type { CardType } from "../../modules/GameContext";
 export default function InPlayCards({vylozeneKarty}: {vylozeneKarty: CardType[]}) {
     const { setNodeRef, isOver } = useDroppable({ id: "InPlayCards" });
 
-    console.log("InPlayCards render ", isOver);
     return (
         <div style={{ position: "relative", border: isOver ? "1px solid yellow" : "none", minHeight: "100px", minWidth: "100px" }} >
             <Cards isAnimated={false} isRotated={false} onClickCard={alert} cards={vylozeneKarty}/>
