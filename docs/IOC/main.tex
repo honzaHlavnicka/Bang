@@ -18,16 +18,16 @@
 \usepackage{luavlna}
 \singlechars{cz}{A,i,V,v,S,s,Z,z,K,k,O,o,U,u,se,ke,ve,ze,pro,bez,nad,pod}
 
-\usepackage[document]{ragged2e} % Moderní zarovnání vlevo
-\hyphenpenalty=10000           % Maximální penalizace za rozdělení slova
-\exhyphenpenalty=10000         % Maximální penalizace za zlom u spojovníku
+%\usepackage[document]{ragged2e} % Moderní zarovnání vlevo
+\hyphenpenalty=500           % střední penalizace za rozdělení slova
+\exhyphenpenalty=500         % střední penalizace za zlom u spojovníku
 
 
 \setlength{\parskip}{\baselineskip}
 
 \setlength{\parindent}{1.5em} % Nastaví velikost odsazení (cca 3-5 písmen)
 
-\setlength{\RaggedRightParindent}{\parindent}
+%\setlength{\RaggedRightParindent}{\parindent}
 
 \usepackage{tocloft} % Balíček pro úpravu obsahu
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}%  Tečky i pro sekce (standardně tam nejsou)
@@ -63,153 +63,7 @@ Tady bude úvod
   \setlength{\parskip}{0pt} % Vypne mezeru mezi odstavci v obsahu
   \tableofcontents
 }
-\section{O hře Bang!}
-Dle wikipedie:
-Bang! je populární karetní hra na motivy Divokého západu. Hru v roce 2004 vytvořil ital Emiliano Sciarra, vydalo ji nakladatelství DV Giochi. Pro Českou repuliku \emph{Bang!} vydává Albi. V České republice se stal velice oblíbená.
-\subsection{Pravidla hry}
-Hra implementuje upravenou verzi pravidel. Ta bude v této kapitole popsána. Celé originální pravidla jde najít (odkaz).
 
-\subsubsection{Příprava hry}
-Na začádku hry si každý hráč vybere jednu ze dvou vylosovaných postav. Tato postava mu zůstane po celou dobu hry. Postava má svůj efekt a počet životů. Hráč také dostane roli, kterou (pokud není šerif) ostatní nevidí. Každému hráči bude podle postavy přidán počet karet.
-\subsubsection{Cíl hry}
-Cíl hry má každý napsaný na své postavě -- šerif s pomocníky musí zabít bandity, banditi šerifa a odpadlík všechny hráče. Hráč umírá tím, že mu dojdou životy a nemá žádné \emph{pivo}.
-
-\subsubsection{Průběh kola}
-Začíná šerif a hráči se střídají v pořadí ve kterém se připojili. Kolo začíná dostáním dvou karet. V průběhu kola může hráč spálit, zahrát a vyložit libovolný počet karet. Jediná. Vyjímkou je karta \emph{bang}, jejíž zahráním tah končí. Tah může také končit zmáčknutím \textbf{ukončit tah}.
-
-
-
-
-\section{Vyzkoušení hry}
-Kompletní hra včetně klienta, serveru a všech pluginů zmíněných v této práci je dostupná na webu \href{https://bang.honzaa.cz}{bang.honzaa.cz}. Zdrojové soubory jsou umístěním v GitHub repozitáři \href{https://github.com/honzahlavnicka/bang}{HonzaHlavnicka/Bang}, kde také jdou přidávat \emph{Issues} pro nalezené problémy.
-\section{Technologie}
-Na serveru používá Engine Javu 11, která byla vybraná, aby mohl server běžet i na školním serveru, ktrý novější nepodporoval. Java byla zvolena z důvodu, že je na Gymnázziu Arabská vyučována a protože z programovacích jazyků, které autor zná byla pro projekt nejideálnější. Knihovny na serveru se používá převážně \emph{Java websocket}, která řeší serverovou logiku pro připojení k websocketu a vytvoření websocketového serveru. Dále se používa \emph{org.json} pro složitější práci s JSON objekty.
-
-Na straně klienta se používá \emph{React} s \emph{Vite} a \emph{TypeScriptem}. Nejdříve se používal \emph{vanilla JavaScript}, který byl ovšem nevhodný kvůli těžší rozšiřitelnosti, modularitě s chybějící typové kontrole. Z frameworků byl zvolen právě \emph{React}, protože ho autor používal v té době na jiný projekt a s jiným neuměl pracovat. Navíc byl \emph{React} pro tento typ projektu vhodný a poskytoval dostatečné funkce i moduly. Z modulů byl použit ---------
-\section{Cíle práce}
-Cíle práce byli definovány hned na začádku projektu. Byli zvolený tak, aby obsahovali původní hlavní cí -- vyrobit online \emph{Bang!} -- ale aby se zaměřil primárně na možnost vytvoření celého herního enginu, ne pouze jednoduché hry. Cíle byli formulovány takto:
-
-
-\noindent \textbf{Cíle a specifikace práce}
-\begin{itemize}
-    \item Vytvořit síťovou karetní hru s architekturou klient-server, kde server bude zajišťovat logiku hry a klient bude sloužit k interakci hráče.
-    \item Naprogramovat server v jazyce Java, který bude mimo jiné:
-    \begin{itemize}
-        \item spravovat herní logiku,
-        \item kontrolovat platnost akcí hráčů,
-        \item zajišťovat průběh hry a aplikaci pravidel,
-        \item komunikovat s klienty pomocí websocketového protokolu.
-    \end{itemize}
-    \item Implementovat webového klienta, který poběží v prohlížeči a umožní hráčům:
-    \begin{itemize}
-        \item zobrazit mimo jiné karty v ruce a na stole,
-        \item sledovat stav a informace o ostatních hráčích,
-        \item provádět akce a ovládat hru prostřednictvím uživatelského rozhraní,
-        \item a další potřebné informace pro průběh hry.
-    \end{itemize}
-    \item Podporovat variaci karetní hry Bang! s možností rozšíření o další hry.
-    \item Otestovat aplikaci s reálnými hráči a vyhodnotit její funkčnost i uživatelskou přívětivost.
-    \item Vypracovat dokumentaci a návod k použití, včetně popisu architektury a zdrojového kódu.
-\end{itemize}
-
-
-\section{Předem stanovená struktura práce}
-Již na začátku školního roku 2025--26 bylo potřeba stanovit si osnovu a průběhu práce. Byli zvoleny takto:
-
-
-\textbf{Průběh zpracování práce}
-\begin{enumerate}
-    \item vytvoření jednoduchého serveru
-    \item vytvoření jednoduchého klienta
-    \item přidání logiky a ovládacích prvků
-    \item testování hry s dalšími lidmi
-    \item opravení nedostatků na základě získaných podmětů
-    \item sepsání dokumentace a průběhu práce
-    \item přidání dodatečných méně potřebných funkcí
-    \item publikace práce
-\end{enumerate}
-
-\vspace{1em}
-
-\noindent \textbf{Osnova práce}
-\begin{itemize}
-    \item o hře Bang! (popřípadě jiných implementovaných hrách)
-    \item návod k programu
-    \item průběh tvorby
-    \item dokumentace
-    \item závěr
-\end{itemize}
-
-\section{Práce se zdroji}
-Ve stejné době bylo třeba deklarovat jaké zdroje budou pro projekt použity. Deklarace zněla takto:
-\begin{quote}
-    
-
-K práci budu používat oficiální pravidla hry, dokumentaci Javy (docs.oracle.com), dokumentaci Reactu (react.dev) a stránky w3schools.com. Dále pro řešení problémů využiji internetových webových stránek jako jsou například stackoverflow, nástrojů umělé inteligence (chatGPT, copilot) a rad od lidí, kteří mají s problémem zkušenost včetně vedoucího práce pana Ing. Daniela Kahouna.
-\end{quote}
-\section{}
-\section{Implementace serveru}
-Server se dělí do několika balíčků a projektů. Hlavní balíček je \texttt{bang}, který propojuje \texttt{sdk} se \texttt{server}em. Sdk je klíčová součást celého projektu, protože umožňuje pluginům nebýt závislých na konkrétní implementaci serveru a pracovat jen s interfaci. Balíček \texttt{server} je poté konkrétní implementací servových tříd. 
-
-\subsection{\texttt{KomunikatorHry} a \texttt{SocketServer}}
-Pro komunikaci s klienty se používá websocket. Pro jeho správu v javě se používá knihovna Java websocket. Díky této knihovny stačí dědit třídu WebsocketServer a Implementovat metody jejích akcí. To dělá právě třída \texttt{SocketServer}. Třída obsluhuje zachycení výjimek, vytvoření her, načítání pluginů a komunikaci s hráči na mimoherní úrovni. Tou je myšleno stahování informací o instalovaných pluginech, získávání informací o serveru a podobně.
-
-Nejduležitější metodou je \texttt{onMessage}, která zpracovává příslušné zprávy. Dokumentace celého protokolu a všech zpráv je dostupná v dokumentech na \href{http://github.com/honzaHlavnicka/Bang/tree/master/docs/protocol}{GitHubu}. Tato metoda umí vytvářet hry a spojovat zprávy s příslušními komunikátoryHer, které si drží v mapě \texttt{komunikatoryHracu}.
-
-\texttt{KomunikatorHry} je třída, která spojuje \texttt{SocketServer} a samotnou hru. Drží si seznami hráčů, tokeny hráčů pro připojení, mapy hráčů se sockety a podobně. Je používaná k tomu, aby mohli servové nebo pluginové metody kominikovat s klientem. Nemusí k tomu znát přímo \texttt{Websocket} objekt, protže ten si spojí v metodě \texttt{posli()} sám komunikátor. Komunikátor také zpracovává události posílané klientem přes \texttt{SocketServer}. Tyto události rovnou předává do metod hráče, kterého se týkají.
-
-\section{interface pro balíčky \texttt{HerniPlugin} a \texttt{HerniPravidla}}
-Engine je navrhnutý tak, že v základu neobsahuje žádnou hru, ale pouze obecné ulity a funkce. Z toho důvodu je potřeba, aby hra načítala jednotlivé pluginy. To zajišťují třídy \hyperlink{NacitacPluginu a SpravceHernichPravidel}{\texttt{NacitacPliuginu} a \texttt{SpravceHernichPravidel}}. Aby tyto třídy fungovaly, tak musí každý plugin implementovat \texttt{HerniPlugin}. Ten vrací název hry, popis hry, odkaz na pravidla a hlavně metoda, která vytvoří \texttt{HerniPravidla}. \texttt{HerniPravidla} jsou hlavní třída pluginu, jejíchž metody hra volá, aby se chovala jak autor pluginu očekává. Mezi některé její metody, které může autor používat jsou:
-\subsubsection{\texttt{void pripravBalicek(Balicek<Karta> balicek)}}
-Tato metoda se volá při přípravě hry a měla by naplnit dobírací balíček \texttt{Karta}mi. 
-\subsubsection{\texttt{public UIPrvek[] getViditelnePrvky()}}
-\texttt{GetviditelneMetody} je metoda, která vrací seznam prvků, které hráči mohou v klientovy vidět. Přestože by měl být server oddělený od logiky klienta, tak je tato metoda potřebná, aby například ve hře, která nepoužívá princip životů nezabíraly na obrazovce místo ukazatele životů.
-\subsubsection{\texttt{boolean hracChceUkoncitTah(Hrac kdo)}}
-Metoda, která se volá poté, co hráč klikne na tlačítko ukončit tah. Vrací boolean, který určuje, zda hráč tah ukončit může nebo ne. Spousta her hráči neumožní ukončovat tah když chce, protože hráč musí například odhodit kartu, proto by tyto hry měli v metodě \texttt{return false}. Jiné hry, ale nechají hráče udělat kolik akcí chce a proto by jen například kontrolovaly jestli nemá hráč v ruce kartu, kterou před koncem tahu musí odhodit. 
-
-\subsection{\texttt{zacalTah()}}
-\texttt{zacalTah()} je metoda, ve které si může plugin připravit vše, co se odehrává na začátku každého tahu.
-
-Kromě těchto metod třída další, které jsou ale pricipiálně podobné a nemá cenu je zde vysvětlovat. Kompletní seznam možností jde najít v javadoc dokumentaci.
-
-\subsection{Karta}
-Karta je abstraktní třída, jejíchž objekt reprezentuje jednu kontrétní kartu ve hře. Každá karta musí mít jméno a identifikátor obrázku (v sočastnosti cesta k obrázku bez přípony souboru). Každému objektu karty je automaticky přiřazeno unikátní id, které umožňuje její identifikaci v rámci serveru.
-
-Karta sama o sobě nejde zahrát ani vyložit. K tomu poslouží interfaci \texttt{HratelnaKarta} a \texttt{VylozitelnaKarta}. 
-
-\subsubsection{\texttt{HratelnaKarta}}
-
-\section{\texttt{NacitacPluginu} a \texttt{SpravceHernichPravidel}}
-\section{Implementace pluginů}
-K enginu bylo vyrobeno několik pluginů -- Bang, prší a UNO. Pluginy jsou v repozitáři ve složce \texttt{/pluginy/}.
-\subsection{Bang!}
-Tento plugin je pro projekt klíčový, jelikož je engine přízpůsobený hlavně jemu. V původní fázi byl dokonce do enginu hardcodován. Teď už je většina jeho prvků přesunuta do jeho herních pravidel.
-
-V Bangu bylo potřeba zařídit, aby měl správně nakonfigurované pravidla. Dále bylo potřeba Implementovat všechny karty, efekty a postavy.
-
-\subsection{Prší}
-Prší je hra, ktera byla kompletně přidána jako první a používala se v pro testování. Karty byli stažený z webu ()doplnit zdroj. 
-
-Implementace karet byla jednoduchá. Existuje základní karta \texttt{PrsiKarta}, která má svoji barvu () a hodnotu (). Karta je Implementace interface \texttt{HratelnaKarta}. Metoda volání při odebrání neprovádí žádný speciální efekt, pouze kontroluje předchozí kartu v odhalování balíčku, zda se shoduje hodnotou, barvou, či zda vůbec není instancí Prší karty (To by nastat nemělo, ale kdyby nějaký balíček kombinovat karty, tak se hodí mít definované chování.
-
-Tuto základní kartu implementuje PrsiSedmicka. Ta se liší v tom, že následující hráč si musí lízat, či sedmičku přebít. Naprogramovat tuto kartu samostatně nejde, protože mění stav hry. Z toho důvodu bylo třeba do herních pravidel přidat oro sedmičku metodu. (doplnit)
-
-Dalším dítětem Prší karty je \texttt{PrsiSvrsek}. Ten se liší tomu, že jde vložit nad libovolnou kartu, tudíž jeho metoda \texttt{odehrat()} vrátíte vždy true. Než to ale udělá, tak u hráče co ji zahrál vyvolá dialog na výběr barvy. Do té doby, než vybere barvu, tak jeho getter pro ostatní karty vrací \texttt{null}. Poté co hráč vybere barvu, tak se svršek změní tu svoji "falešnou" barvu na barvu, kterou hráč vybral.  Také se ostatním pošle upozornění, jaká barva byla vybraná. 
-
-Poslední speciální kartou je \texttt{PrsiEso}. Jelikož autor hry naprogramoval prší podle pravid3l, které používá on, tak se eso nepřebíjí. Z toho důvodu karta po zkontrolování podmínek zahrání pouze zavolá \texttt{hra.getSpravceTahu().eso()}, jelikož eso je funkce v enginu zabudovaná. 
-\subsection{Uno}
-Poslední implementovaná hra je únor, které je pouze starší verzí prší, bez další složité naprogramováné mechaniky. Nejrozlišnější karta je změna směru, ale její funkčnost je zabudovaná ve správci tahu.
-\section{Implementace klienta}
-\subsection{Struktura}
-\subsection{O aplikaci}
-Jak již bylo zmíněno, tak klient je napsán pro framework \emph{React} pro web. Obsahuje hlavní soubor \texttt{main.tsx}, který obsahuje různé providery a celoaplikacové komponenty. (zde bude odkaz na moduly) Hlavní komponenotou celé aplikace je \texttt{App}, která přepíná mezi stránky a řeší lazyloading. Jednotlivé stránky se nacházejí v \texttt{/src/pages/}. 
-
-Hlavní kontext, který obsahuje jak funkce pro celou aplikaci a všechny data je \texttt{GameKontext}. Ten obsahuje jednotlivé funkce pro posílání dat na sever, úpravu dat, akce hráče a podobně. Jeho provider se jmenuje \texttt{GameProvider}. V něm nejsou implementovány tyto funkce, ty jsou spolu s logikou příchozích zpráv přemístěny do \texttt{gameActions}. Provider ovšem obsahuje efekt, pomocí kterého se připojí k websocket serveru.
-
-\subsection{Připojovací stránkka \texttt{LoginPage}}
-Tato stránka by pro uživatele měla být první stránkou, kterou uvidí. Obsahuje nějaké základní informace o hře a formuláře pro připojení se. Tyto formuláře existují tři -- první z nich slouží pro připojování se ke hře a zobrazí se jen pokud má hráč v \texttt{localStorage} uložený token hry, který mu je přidělen v průběhu připojování se. Druhý slouží k připojení se pomocí kódu hry a jména a třetí slouží k vytvořenní hry. U vytvoření hry je vybírací nabídka dostupných pluginů, která se musí nejdříve dostat od serveru, aby se mohli zobrazovat názvy her, popisy a pravidla.
-
-\subsection{Hlavní objekt \texttt{gamestate}}
-GameState je objekt držený v \texttt{GameKontext}u, který obsahuje všechny informace o probíhající hře. Objekt též obsahuje informaci zda je hráč připojen ke hře (\texttt{inGame}), zda je hra spuštěna (\texttt{gameStarted}) a seznam pluginů, které jsou na serveru nainstalované, včetně jejich metadat (\texttt{gameTypesAvailable}).
+\input{dokumentace}
 
 \end{document}
