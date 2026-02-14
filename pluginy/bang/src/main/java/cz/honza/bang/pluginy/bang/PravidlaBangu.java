@@ -123,5 +123,11 @@ public class PravidlaBangu implements HerniPravidla{
             hrac.lizni();
         }
     }
+
+    @Override
+    public  boolean muzeVylozit(Hrac kdo, VylozitelnaKarta co){
+        return !kdo.getVylozeneKarty().contains(co);
+    }
+
     
 }

@@ -103,4 +103,8 @@ public interface HerniPravidla {
     default public String getVychoziZadniObrazek(){
         return "bang";
     }
+
+    default public  boolean muzeVylozit(Hrac kdo, VylozitelnaKarta co){
+        return true;
+    }
 }
