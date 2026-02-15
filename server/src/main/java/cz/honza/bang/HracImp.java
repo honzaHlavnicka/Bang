@@ -602,9 +602,13 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         sb.append(zivoty);
         sb.append(",\"pocetKaret\":");
         sb.append(karty.size());
-        sb.append(",\"postava\":\"");
-        sb.append(postava.name());
-        sb.append("\",\"maximumZivotu\":");
+
+        if(postava != null){
+            sb.append(",\"postava\":\"");
+            sb.append(postava.name());
+            sb.append("\"");
+        }
+        sb.append(",\"maximumZivotu\":");
         sb.append(maximumZivotu);
         sb.append('}');
         return sb.toString();

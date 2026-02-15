@@ -96,11 +96,13 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         //metoda co se spouští po vytvoření hráče a zařazení ho do komunikátoru
 
         
-        if(balicekPostav.size() < 2){//pokud už nezbide postava, tak to tam nejakou soupne. nemelo by se to stat kvuli maximalnimu poctu hracu, ten ale nemusí bít dodren.
-            //balicekPostav.add(Postava.TESTOVACI);
-            //balicekPostav.add(Postava.TESTOVACI);
+        if(balicekPostav.size() < 2){//pokud už nezbyde postava, tak to tam nejakou soupne. nemelo by se to stat kvuli maximalnimu poctu hracu, ten ale nemusí být dodren.
+            balicekPostav.add(PostavaImp.TESTOVACI);
+            balicekPostav.add(PostavaImp.TESTOVACI);
         }
         hrac.vyberZPostav(balicekPostav.pop(),balicekPostav.pop());//nechá hráče vybrat ze dvou postav
+        
+        //TODO: vývěr z postav pokud hra potřebuje.
     }
 
     /**
