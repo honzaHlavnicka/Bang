@@ -1,7 +1,7 @@
 
 \section{O hře Bang!}
 Dle wikipedie:
-Bang! je populární karetní hra na motivy Divokého západu. Hru v roce 2004 vytvořil ital Emiliano Sciarra, vydalo ji nakladatelství DV Giochi. Pro Českou repuliku \emph{Bang!} vydává Albi. V České republice se stal velice oblíbená.
+Bang! je populární karetní hra na motivy Divokého západu. Hru v roce 2004 vytvořil ital Emiliano Sciarra, vydalo ji nakladatelství DV Giochi. Pro Českou repuliku \emph{Bang!} vydává Albi. V České republice se stal velice oblíbená \cite{wikipedia_bang}.
 \subsection{Pravidla hry}
 Hra implementuje upravenou verzi pravidel. Ta bude v této kapitole popsána. Celé originální pravidla jde najít (odkaz).
 
@@ -17,11 +17,11 @@ Začíná šerif a hráči se střídají v pořadí ve kterém se připojili. K
 
 
 \section{Vyzkoušení hry}
-Kompletní hra včetně klienta, serveru a všech pluginů zmíněných v této práci je dostupná na webu \href{https://bang.honzaa.cz}{bang.honzaa.cz}. Zdrojové soubory jsou umístěním v GitHub repozitáři \href{https://github.com/honzahlavnicka/bang}{HonzaHlavnicka/Bang}, kde také jdou přidávat \emph{Issues} pro nalezené problémy.
+Kompletní hra včetně klienta, serveru a všech pluginů zmíněných v této práci je dostupná na webu \href{https://bang.honzaa.cz}{\url{bang.honzaa.cz}}. Zdrojové soubory jsou umístěním v GitHub repozitáři \href{https://github.com/honzahlavnicka/bang}{HonzaHlavnicka/Bang}, kde také jdou přidávat \emph{Issues} pro nalezené problémy.
 \section{Technologie}
-Na serveru používá Engine Javu 11, která byla vybraná, aby mohl server běžet i na školním serveru, ktrý novější nepodporoval. Java byla zvolena z důvodu, že je na Gymnáziju Arabská vyučována a protože z programovacích jazyků, které autor zná byla pro projekt nejideálnější. Knihovny na serveru se používá převážně \emph{Java websocket}, která řeší serverovou logiku pro připojení k websocketu a vytvoření websocketového serveru. Dále se používa \emph{org.json} pro složitější práci s JSON objekty.
+Na serveru používá Engine Javu 11, která byla vybraná, aby mohl server běžet i na školním serveru, ktrý novější nepodporoval. Java byla zvolena z důvodu, že je na Gymnáziu Arabská vyučována a protože z programovacích jazyků, které autor zná byla pro projekt nejideálnější. Knihovny na serveru se používá převážně \emph{Java websocket}, která řeší serverovou logiku pro připojení k websocketu a vytvoření websocketového serveru. Dále se používa \emph{org.json} pro složitější práci s JSON objekty.
 
-Na straně klienta se používá \emph{React} s \emph{Vite} a \emph{TypeScriptem}. Nejdříve se používal \emph{vanilla JavaScript}, který byl ovšem nevhodný kvůli těžší rozšiřitelnosti, modularitě s chybějící typové kontrole. Tato původní verze se v repozitáři stále nachází, jelikož v základu funguje. Z frameworků byl zvolen právě \emph{React}, protože ho autor používal v té době na jiný projekt a s jiným neuměl pracovat. Navíc byl \emph{React} pro tento typ projektu vhodný a poskytoval dostatečné funkce i moduly. Z modulů byl použit ---------
+Na straně klienta se používá \emph{React} s \emph{Vite} a \emph{TypeScriptem}. Nejdříve se používal \emph{vanilla JavaScript}, který byl ovšem nevhodný kvůli těžší rozšiřitelnosti, modularitě s chybějící typové kontrole. Tato původní verze se v repozitáři stále nachází, jelikož v základu funguje. Z frameworků byl zvolen právě \emph{React}, protože ho autor používal v té době na jiný projekt a s jiným neuměl pracovat. Navíc byl \emph{React} pro tento typ projektu vhodný a poskytoval dostatečné funkce i moduly. Z modulů byl použit \emph{react-router-dom} pro přepínání mezi stránkami a \emph{react-dom}. Z externích knihoven se používvá \emph{react-dnd} pro implementaci drag \& drop logiky a \emph{react-hot-toast} pro zobrazení upozornění.
 \section{Cíle práce}
 Cíle práce byli definovány hned na začádku projektu. Byli zvolený tak, aby obsahovali původní hlavní cí -- vyrobit online \emph{Bang!} -- ale aby se zaměřil primárně na možnost vytvoření celého herního enginu, ne pouze jednoduché hry. Cíle byli formulovány takto:
 
@@ -83,19 +83,27 @@ Ve stejné době bylo třeba deklarovat jaké zdroje budou pro projekt použity.
 
 K práci budu používat oficiální pravidla hry, dokumentaci Javy (docs.oracle.com), dokumentaci Reactu (react.dev) a stránky w3schools.com. Dále pro řešení problémů využiji internetových webových stránek jako jsou například stackoverflow, nástrojů umělé inteligence (chatGPT, copilot) a rad od lidí, kteří mají s problémem zkušenost včetně vedoucího práce pana Ing. Daniela Kahouna.
 \end{quote}
-\section{}
+\section{Návod k použití}
+Chcete-li si zahrát hru, navštivte webovou stránku \href{https://bang.honzaa.cz}{\url{bang.honzaa.cz}}. Vyberte kartu \textbf{Vytvořit hru}, vyberte jakou hru chcete hrát, zadejte své jméno a klikněte na tlačítko \textbf{Vytvořit}. Poté se připojte k vytvořené hře a zobrazí se vám kód hry. Teto kód pošlete svým přátelům, aby se mohli připojit. Tis se připojí zadáním kódu v kartě \textbf{Připojit se ke hře}. Jakmile se připojí všichni hráči, klikněte na tlačítko \textbf{Spustit hru} a můžete začít hrát.
+
+Na hracím poli vidíte dole své karty, nad kterými mohou být vyložené karty. Vlevo dole uvidíte svoji postavu roli, své jméno a podobně. Vlevo nahoře uvidíte informace o ostatních hráčích, například jejich jména, postavy, role a podobně. Uprostřed uvidíte karty na stole a další herní prvky. Jmenovka hráče, která je zrovna žlutá signalizuje, že je tento hráč na tahu. 
+
+Pokud jste na tahu, tak můžete podle pravidel hry co hrajete hrát. Chcete-li si líznout kartu, klikněte na balíček karet. Chcete-li zahrát kartu, tak jí pomocí myši nebo prstu přetáhněte na odhazovací balíček. Pokud chcete kartu spálit (tzn. odhodit bez efektu), tak ji přetáhněte na oheň vedle odhazovacího balíčku. Chcete-li kartu vyložit, tak ji přetáhněte na plochu nad svými kartami. Pokud chcete kartu vyložit před jiného hráče, tak ji stačí přetáhnout na něj. Pokud chcete ukončit tah, klikněte na tlačítko \textbf{Ukončit tah}.
+
+Pokusíte-li se udělat něco, co nemůžete, například zahrát kartu mimo svůj tah, tak se vám vpravo nahoře ukáže upozornění, které vám řekne, co se stalo.
+
 \section{Implementace serveru}
-Server se dělí do několika balíčků a projektů. Hlavní balíček je \texttt{bang}, který propojuje \texttt{sdk} se \texttt{server}em. Sdk je klíčová součást celého projektu, protože umožňuje pluginům nebýt závislých na konkrétní implementaci serveru a pracovat jen s interfaci. Balíček \texttt{server} je poté konkrétní implementací servových tříd. 
+Server se dělí do několika balíčků a projektů. Hlavní balíček je \texttt{bang}, který propojuje \texttt{sdk} se \texttt{server}em. Sdk je klíčová součást celého projektu, protože umožňuje pluginům nebýt závislých na konkrétní implementaci serveru a pracovat jen s interfaci. Balíček \texttt{server} je poté konkrétní implementací servových tříd.
 
 \subsection{\texttt{KomunikatorHry} a \texttt{SocketServer}}
-Pro komunikaci s klienty se používá websocket. Pro jeho správu v javě se používá knihovna Java websocket. Díky této knihovny stačí dědit třídu WebsocketServer a Implementovat metody jejích akcí. To dělá právě třída \texttt{SocketServer}. Třída obsluhuje zachycení výjimek, vytvoření her, načítání pluginů a komunikaci s hráči na mimoherní úrovni. Tou je myšleno stahování informací o instalovaných pluginech, získávání informací o serveru a podobně.
+Pro komunikaci s klienty se používá websocket. Pro jeho správu v javě se používá knihovna \emph{Java websocket}. Díky této knihovny stačí dědit třídu WebsocketServer a Implementovat metody jejích akcí. To dělá právě třída \texttt{SocketServer}. Třída obsluhuje zachycení výjimek, vytvoření her, načítání pluginů a komunikaci s hráči na mimoherní úrovni. Tou je myšleno stahování informací o instalovaných pluginech, získávání informací o serveru a podobně.
 
 Nejduležitější metodou je \texttt{onMessage}, která zpracovává příslušné zprávy. Dokumentace celého protokolu a všech zpráv je dostupná v dokumentech na \href{http://github.com/honzaHlavnicka/Bang/tree/master/docs/protocol}{GitHubu}. Tato metoda umí vytvářet hry a spojovat zprávy s příslušními komunikátoryHer, které si drží v mapě \texttt{komunikatoryHracu}.
 
-\texttt{KomunikatorHry} je třída, která spojuje \texttt{SocketServer} a samotnou hru. Drží si seznami hráčů, tokeny hráčů pro připojení, mapy hráčů se sockety a podobně. Je používaná k tomu, aby mohli servové nebo pluginové metody kominikovat s klientem. Nemusí k tomu znát přímo \texttt{Websocket} objekt, protže ten si spojí v metodě \texttt{posli()} sám komunikátor. Komunikátor také zpracovává události posílané klientem přes \texttt{SocketServer}. Tyto události rovnou předává do metod hráče, kterého se týkají.
+\texttt{KomunikatorHry} je třída, která spojuje \texttt{SocketServer} a samotnou hru. Drží si seznamy hráčů, tokeny hráčů pro připojení, mapy hráčů se sockety a podobně. Je používaná k tomu, aby mohli servové nebo pluginové metody kominikovat s klientem. Nemusí k tomu znát přímo \texttt{Websocket} objekt, protože ten si spojí v metodě \texttt{posli()} sám komunikátor. Komunikátor také zpracovává události posílané klientem přes \texttt{SocketServer}. Tyto události rovnou předává do metod hráče, kterého se týkají.
 
-\section{interface pro balíčky \texttt{HerniPlugin} a \texttt{HerniPravidla}}
-Engine je navrhnutý tak, že v základu neobsahuje žádnou hru, ale pouze obecné ulity a funkce. Z toho důvodu je potřeba, aby hra načítala jednotlivé pluginy. To zajišťují třídy \hyperlink{NacitacPluginu a SpravceHernichPravidel}{\texttt{NacitacPliuginu} a \texttt{SpravceHernichPravidel}}. Aby tyto třídy fungovaly, tak musí každý plugin implementovat \texttt{HerniPlugin}. Ten vrací název hry, popis hry, odkaz na pravidla a hlavně metoda, která vytvoří \texttt{HerniPravidla}. \texttt{HerniPravidla} jsou hlavní třída pluginu, jejíchž metody hra volá, aby se chovala jak autor pluginu očekává. Mezi některé její metody, které může autor používat jsou:
+\hypertarget{HerniPlugin}{}\subsection{interface pro balíčky \texttt{HerniPlugin} a \texttt{HerniPravidla}}
+Engine je navrhnutý tak, že v základu neobsahuje žádnou hru, ale pouze obecné ulity a funkce. Z toho důvodu je potřeba, aby hra načítala jednotlivé pluginy. To zajišťují třídy \hyperlink{nacitac-spravce}{\texttt{NacitacPliuginu} a \texttt{SpravceHernichPravidel}}. Aby tyto třídy fungovaly, tak musí každý plugin implementovat \texttt{HerniPlugin}. Ten vrací název hry, popis hry, odkaz na pravidla a hlavně metoda, která vytvoří \texttt{HerniPravidla}. \texttt{HerniPravidla} jsou hlavní třída pluginu, jejíchž metody hra volá, aby se chovala jak autor pluginu očekává. Mezi některé její metody, které může autor používat jsou:
 \subsubsection{\texttt{void pripravBalicek(Balicek<Karta> balicek)}}
 Tato metoda se volá při přípravě hry a měla by naplnit dobírací balíček \texttt{Karta}mi. 
 \subsubsection{\texttt{public UIPrvek[] getViditelnePrvky()}}
@@ -119,7 +127,13 @@ Karta sama o sobě nejde zahrát ani vyložit. K tomu poslouží interfaci \text
 \subsubsection{\texttt{VylozitelnaKarta}}
 \texttt{VylozitelnaKarta} je interface, který musí implementovat všechny karty, které může hráč vyložit. Obsahuje metodu \texttt{boolean vylozit(Hrac kdo,Hrac kym)}, která se volá, když se hráč pokusí kartu vyložit. Vrací boolean zda se karta může vyložit (a rovnou se k tomu připravý všechny náležitosti), nebo se v současném kontextu vyložit nemůže. Pokud vrátí true, tak je na VylozitelnouKartu zavolána ještě její metoda \texttt{getEfekt()}, která vrací objekt implementující interface \texttt{Efekt}. Ve většině případů se jedná o objekt karty, ale autor pluginu se může rozhodnout, že logiku karty a efektu bude sržet odděleně, například pokud stejné efekty používá i nějaká postava.
 
-\section{\texttt{NacitacPluginu} a \texttt{SpravceHernichPravidel}}
+\subsection{}
+\hypertarget{nacitac-spravce}{}\subsection{\texttt{NacitacPluginu} a \texttt{SpravceHernichPravidel}}
+\texttt{SpravceHernichPravidel} je třída, která si udržuje seznam všech objektů \texttt{HerniPlugin}, které jsou na serveru dostupné. Obsahuje metody \texttt{getJSONvytvoritelneHry()}, která vrací JSON objekt obsahující informace o všech dostupných pluginech, které se vyvolají z \hyperlink{HerniPlugin}{Herních pluginů} a jejich metod. Dále obsahuje metodu \texttt{vytvorHerniPravidla(int id, Hra hra)}, která podle id z JSONu zavolá vytvoření pravidel na hře. Tato metoda se využívá vždy když uživatel vytvoří novou hru, aby do hry napojil správný plugin a jeho pravidla. Třída dále obsahuje metodu \texttt{pregenerj()}, která načte pluginy ze složky \path{/pluginy/} a uloží je do seznamu. Metaoda pregeneruj se používá také v \emph{static} bloku, aby se pluginy načetly při startu serveru. 
+
+Opravdové načítání pluginů provádí třída \texttt{NacitacPluginu}. Ta v metodě \texttt{nactiPluginy(Path cestaKeSlozce)} otevře požadovanou složku a pomocí \texttt{DirectoryStream} najde všechny soubory s příponou \texttt{.jar}. Pro každý takový soubor zavolá metodu \texttt{nactiPluginyZJARu(Path cestaKJARu)}, která pomocí \texttt{URLClassLoader} načte třídy z JARu a pomocí \texttt{Enumeration} hledá všechny třídy (soubory s koncovkou \texttt{.class}). Tyto třídy si načte \texttt{ClassLoader}em a ověří, zda jsou přiřaditelné k \texttt{HerniPlugin}, nejsou abstraktní a nejsou rozhraní. Pokud třída splňuje tyto podmínky, tak se vytvoří její instance a přidá do seznamu pluginů. Pokusy o načítání tříd jsou obalené v try bloku, jelikož je v nich mnoho potenciálních chyb, které je potřeba zachytit, aby se načítání pluginů nezastavilo kvůli jednomu špatnému pluginu, například když jeho konstruktor má nějaký parametr, či když nedpovídá stejné versi \emph{Javy} jako server.
+
+
 \section{Implementace pluginů}
 K enginu bylo vyrobeno několik pluginů -- Bang, prší a UNO. Pluginy jsou v repozitáři ve složce \texttt{/pluginy/}.
 \subsection{Bang!}
@@ -128,7 +142,7 @@ Tento plugin je pro projekt klíčový, jelikož je engine přízpůsobený hlav
 V Bangu bylo potřeba zařídit, aby měl správně nakonfigurované pravidla. Dále bylo potřeba Implementovat všechny karty, efekty a postavy.
 
 \subsection{Prší}
-Prší je hra, ktera byla kompletně přidána jako první a používala se v pro testování. Karty byli stažený z webu ()doplnit zdroj. 
+Prší je hra, ktera byla kompletně přidána jako první a používala se v pro testování. 
 
 Implementace karet byla jednoduchá. Existuje základní karta \texttt{PrsiKarta}, která má svoji barvu () a hodnotu (). Karta je Implementace interface \texttt{HratelnaKarta}. Metoda volání při odebrání neprovádí žádný speciální efekt, pouze kontroluje předchozí kartu v odhalování balíčku, zda se shoduje hodnotou, barvou, či zda vůbec není instancí Prší karty (To by nastat nemělo, ale kdyby nějaký balíček kombinovat karty, tak se hodí mít definované chování.
 
@@ -168,7 +182,7 @@ Pro toasty se používá knihovna \emph{react-hot-toast}, která poskytuje jedno
 Pro notifikace uprostřed se používá vlastní komponenta \texttt{CentralNotification}, která zobrazuje zprávu jednoduchý text, který se uprostřed obrazovky začnezvětšovat a zprůhledňovat. Komponenta využívá portál, kterým do \texttt{<body>} stránky vkládá absolutně pozicovaný element, do kterého vykresluje samotnou notifikaci. Po importu komponenty jde notifikace vyvolat metodou \texttt{notify()}.
 
 Pokud je třeba hráče informovat tak, že musí přečtení potvrdit, tak se použije \hyperlink{dialog}{dialog}.
-\subsection{Dialog}
+\hypertarget{dialog}{}\subsection{Dialog}
 Dialog je komponeta se svím kontextem, která poskytuje api pro informování hráče a získávání vstupu od něj. Skádá se z \texttt{DialogProvider}u, který vyrábí kontext a poskytuje metody \texttt{openDialog} a \texttt{closeDialog}. \texttt{DialogProvider} vrací kontext \texttt{DialogContext}, který exportuje tyto metody a potřebné typy. 
 
 
@@ -177,7 +191,7 @@ Samotná komponenta \texttt{Dialog} používá kontext dialogu a v případě ot
 Dialog má různé možnosti, například zda se může zavřít bez akce, kolik položek může maximáálně i minimálně vybrat a podobně.
 
 \subsection{Tmavý režim}
-Celý web je vyroben spodporou tmavého režimu. Pro tmavý režim se nepoužívá \texttt{prefers-color-scheme},aby uživatelé mohli používat přepínač v aplikaci. Stav tmavého režimu ovládá přidáváním třídy \texttt{darkMode} na \texttt{<body>} element. Nepoužívá se kontext, aby se nemusel překreslovat framework a všechny komponenty, ale pouze css interně v prohlížeči. V \texttt{.module.css} souborech se pak používá \texttt{:global(.darkMode)} pro funkčnost i po kompilaci, která by jinak změnila názvy tříd.
+Celý web je vyroben spodporou tmavého režimu. Pro tmavý režim se nepoužívá \texttt{prefers-color-scheme}, aby uživatelé mohli používat přepínač v aplikaci. Stav tmavého režimu ovládá přidáváním třídy \texttt{darkMode} na \texttt{<body>} element. Nepoužívá se kontext, aby se nemusel překreslovat framework a všechny komponenty, ale pouze css interně v prohlížeči. V \texttt{.module.css} souborech se pak používá \texttt{:global(.darkMode)} pro funkčnost i po kompilaci, která by jinak změnila názvy tříd.
 
 Přepínač je komponenta \texttt{DarkModeSwitch}, která se vykresluje jako měsíček či sluníčko v pravém horním rohu. Tento přepínač se neukazuje na normální hrací stránce, kde by byl zablokovaný, ale režim jde přepínat například při otevřeném dialogu.
 
@@ -191,6 +205,8 @@ V zaříjové fázi projektu se místo současného klienta v \emph{React}u pou�
 \section{Utility pro vývoj}
 Kromě hlavních částí projektu bylo během vývoje vyrobeno několik užitečných python programů, které pomáhaly s různými úkoly. Například pro generování obrázků karet byl pomocí umělé inteligence vtvořen python skript, který pomocí knihovny \emph{PIL} generoval obrázky karet na základě zadaných parametrů. Tento skript umožnil rychle vytvořit velké množství karet pro různé pluginy bez nutnosti ručního designování každé karty. Další užitečný script stahoval karty z prší do konkrétní složky, což urychlilo proces získávání potřebných obrázků pro tento plugin.
 
+\section{Hosting a nasazení}
+Jak již bylo zmíněno, tak je hra hostovaná na studentském serveru Gymnázia Arabská avava. Tento server poskytuje \emph{Caddy} server, který se při požadavku chová nejprve jako statický server pro soubory, ale jakmile nějaký soubor neexistuje, tak předá požadavek na backendový server tím, že zavolá na konkrétní port. Na tomto portu běží server projektu s websocketem. Aby se nevypnul při odhlášení se z SSH, tak se používá nástroj \emph{tmux}, který umožňuje spouštět procesy na pozadí a připojovat se k nim později. Na statické části serveru je uložen i předem postavený klient, který se načítá hráčům, když navštíví webovou stránku. Pro připojení k websocketu se používá \path{/ws} endpoint.
 
 \section{Testování}
 Během vývoje byla hra nesčetněkrát testována jejím autorem. Kromě toho se mnohokrát testovala i s jeho kamarády a rodinou, kteří hru zkoušeli a upozorňovali na nedostatky. Hra se testovala jak na lokálním serveru, tak i na veřejném serveru, aby se otestovalo chování v různých sítích a s různými počty hráčů.
@@ -203,3 +219,9 @@ Pro testování existuje i několik nástrojů, například pro zobrazení boxů
 Projekt je navržený tak, aby se dal snadno rozšiřovat. Díky pluginům je možné přidat další hry, které budou fungovat na stejném enginu. V plánu je přidat některá rozšíření pro \emph{Bang!}, které již jsou předpřipravené. Dále by bylo možné přidat i další funkce pro klienta, například možnost přizpůsobení vzhledu, přidání zvuků a podobně.
 
 \section{Závěr}
+\section{Přílohy}
+\section{Zdroje}
+\bibliographystyle{plain}
+\nocite{*}
+
+\bibliography{zdroje}

@@ -1,4 +1,4 @@
-
+% !TEX recipe = latexmk (lualatex)
 \documentclass{article}
 
 % Language setting
@@ -12,6 +12,7 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{bookmark} 
 
 \usepackage{titling}
 
@@ -37,6 +38,7 @@
 \title{Simulátor stolní karetní hry pro~více hráčů na~síti}
 \author{Jan Hlavnička, 2.F}
 
+
 \begin{document}
 
 \input{titulniStrana}
@@ -53,16 +55,17 @@ Chtěl bych poděkovat především mému vedoucímu práce ing. Danieli Kahouno
 \newpage
 \input{prohlaseni}
 \newpage
-\section{Úvod}
 
-Tady bude úvod
 
-\section*{Obsah}
 {
   \hypersetup{hidelinks}
   \setlength{\parskip}{0pt} % Vypne mezeru mezi odstavci v obsahu
   \tableofcontents
 }
+
+\section{Úvod}
+
+Tady bude úvod
 
 \input{dokumentace}
 
