@@ -11,6 +11,7 @@ import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
+import cz.honza.bang.sdk.VylozitelnaKarta;
 import java.util.List;
 
 /**

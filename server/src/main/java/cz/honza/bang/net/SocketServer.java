@@ -12,6 +12,7 @@ package cz.honza.bang.net;
  */
 import cz.honza.bang.pravidla.SpravceHernichPravidel;
 import cz.honza.bang.sdk.Chyba;
+import cz.honza.bang.sdk.Hrac;
 import org.java_websocket.server.WebSocketServer;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -239,6 +240,8 @@ public class SocketServer extends WebSocketServer {
 
         sb.append("<h2>Celkový počet her:</h2>");
         sb.append(hryPodleId.size());
+        
+
 
 
         sb.append("</div>");
