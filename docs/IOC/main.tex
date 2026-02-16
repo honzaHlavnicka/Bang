@@ -33,7 +33,78 @@
 \usepackage{tocloft} % Balíček pro úpravu obsahu
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}%  Tečky i pro sekce (standardně tam nejsou)
 
-\usepackage{indentfirst}
+\usepackage{indentfirst}  % Odsadí první odstavec každé sekce
+
+
+% Zvíraznění syntaxe:
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{commentgray}{rgb}{0.5, 0.5, 0.5}
+\definecolor{directioncolor}{rgb}{0, 0.4, 0.9} % Modrá pro šipky
+\definecolor{jsonkey}{rgb}{0.1, 0.5, 0.1}     % Zelená pro klíče v JSONu
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+
+\renewcommand{\lstlistingname}{Úryvek} % Změní popisek u jednotlivých kódů
+\renewcommand{\lstlistlistingname}{Seznam úryvků} % Změní nadpis v seznamu všech kódů
+
+% Definice vlastního stylu pro protokoly/zprávy
+% Definice jazyka "protokol" (přejmenováno z MojeZpravy)
+\lstdefinelanguage{protokol}{
+    % Obarví celý řádek jako komentář, pokud začíná [
+    morecomment=[f][\color{commentgray}]{[},
+    % Pokud chceš raději barvit jen text v závorkách [včetně závorek], použij:
+    % morecomment=[s][\color{commentgray}]{[}{]},
+    % JSON řetězce v uvozovkách
+    morestring=[b]",
+    % Obsah ve špičatých závorkách
+    morecomment=[s][\color{codepurple}]{<}{>},
+    % Speciální znaky a šipky
+    literate=
+     {->}{{\textcolor{directioncolor}{->}}}2
+     {<-}{{\textcolor{directioncolor}{<-}}}2
+     {:}{{\textcolor{magenta}{:}}}1
+     {,}{{\textcolor{magenta}{,}}}1
+     {|}{{\textcolor{magenta}{|}}}1
+     {\{}{{\textcolor{magenta}{\{}}}1
+     {\}}{{\textcolor{magenta}{\}}}}1
+     {[}{{\textcolor{magenta}{[}}}1
+     {]}{{\textcolor{magenta}{]}}}1,
+    sensitive=false,
+    inputencoding=utf8,
+    extendedchars=true,
+}
+
+% metadata
+\hypersetup{
+    pdftitle={Simulátor stolní karetní hry pro více hráčů na síti},
+    pdfauthor={Jan Hlavnička, 2.F},
+    pdfkeywords={karetní hra, síťová hra, Java, websocket, multiplayer, Java, Typescript, React, JavaScript}
+}
 
 \title{Simulátor stolní karetní hry pro~více hráčů na~síti}
 \author{Jan Hlavnička, 2.F}

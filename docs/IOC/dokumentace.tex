@@ -133,6 +133,47 @@ Karta sama o sobě nejde zahrát ani vyložit. K tomu poslouží interfaci \text
 
 Opravdové načítání pluginů provádí třída \texttt{NacitacPluginu}. Ta v metodě \texttt{nactiPluginy(Path cestaKeSlozce)} otevře požadovanou složku a pomocí \texttt{DirectoryStream} najde všechny soubory s příponou \texttt{.jar}. Pro každý takový soubor zavolá metodu \texttt{nactiPluginyZJARu(Path cestaKJARu)}, která pomocí \texttt{URLClassLoader} načte třídy z JARu a pomocí \texttt{Enumeration} hledá všechny třídy (soubory s koncovkou \texttt{.class}). Tyto třídy si načte \texttt{ClassLoader}em a ověří, zda jsou přiřaditelné k \texttt{HerniPlugin}, nejsou abstraktní a nejsou rozhraní. Pokud třída splňuje tyto podmínky, tak se vytvoří její instance a přidá do seznamu pluginů. Pokusy o načítání tříd jsou obalené v try bloku, jelikož je v nich mnoho potenciálních chyb, které je potřeba zachytit, aby se načítání pluginů nezastavilo kvůli jednomu špatnému pluginu, například když jeho konstruktor má nějaký parametr, či když nedpovídá stejné versi \emph{Javy} jako server.
 
+\begin{lstlisting}[
+    language=java, 
+    caption={Ukázka načítání pluginů z JARu (zjednodušeno)}, 
+    label={lst:nacitani_pluginu} % Odkaz pro \ref{}
+]
+public static List<HerniPlugin> nactiPluginyZJARu(Path cesta) throws Exception{
+    List<HerniPlugin> pluginy = new ArrayList<>();
+    
+    URLClassLoader classLoader = new URLClassLoader(
+            new URL[]{cesta.toUri().toURL()},
+            NacitacPluginu.class.getClassLoader()
+    );
+    
+    try (JarFile jar = new JarFile(cesta.toFile())) {
+        Enumeration<JarEntry> entries = jar.entries();
+
+        while (entries.hasMoreElements()) {
+            JarEntry polozkaJARu = entries.nextElement();
+
+            if (polozkaJARu.isDirectory()) {continue;}
+            if (!polozkaJARu.getName().endsWith(".class")) {continue;}
+
+            String nazevTridy = polozkaJARu.getName()
+                    .replace("/", ".")
+                    .replace(".class", "");
+
+            Class<?> c = classLoader.loadClass(nazevTridy);
+
+            if (HerniPlugin.class.isAssignableFrom(c)
+                    && !c.isInterface()
+                    && !Modifier.isAbstract(c.getModifiers())) {
+
+                HerniPlugin plugin = (HerniPlugin) c.getDeclaredConstructor().newInstance();
+                pluginy.add(plugin);
+            }
+        }
+    }
+    return pluginy;
+}
+\end{lstlisting}
+
 
 \section{Implementace pluginů}
 K enginu bylo vyrobeno několik pluginů -- Bang, prší a UNO. Pluginy jsou v repozitáři ve složce \texttt{/pluginy/}.
@@ -153,6 +194,91 @@ Dalším dítětem Prší karty je \texttt{PrsiSvrsek}. Ten se liší tomu, že 
 Poslední speciální kartou je \texttt{PrsiEso}. Jelikož autor hry naprogramoval prší podle pravid3l, které používá on, tak se eso nepřebíjí. Z toho důvodu karta po zkontrolování podmínek zahrání pouze zavolá \texttt{hra.getSpravceTahu().eso()}, jelikož eso je funkce v enginu zabudovaná. 
 \subsection{Uno}
 Poslední implementovaná hra je únor, které je pouze starší verzí prší, bez další složité naprogramováné mechaniky. Nejrozlišnější karta je změna směru, ale její funkčnost je zabudovaná ve správci tahu.
+
+\section{Protokol}
+Pro komunikaci mezi klientem a serverem se používá websocketový protokol. Již od začátku se posílají stringy ve formátech:
+
+\begin{lstlisting}[
+    language=protokol, 
+    caption={Formáty komunikačních zpráv systému}, 
+    label={lst:formaly_zprav} % Odkaz pro \ref{}
+]
+<typZpravy>:<data>
+<typZpravy>
+<typZpravy>:<údaj1>,<údaj2>,...,<údajn>
+<typZpravy>:<json>
+\end{lstlisting}
+
+Tento formát sice nepatří mezi nejefektivnější a řešením jednotlivých bitů by šel velmi zkrátit, ale pro množství poslaných zpráv a jejich velikost by to bylo neznatelné. Takhle je formát jednoduchý a přehledný, takže i při testování jde psát zprávy ručně a není potřeba žádný nástroj pro serializaci a deserializaci.
+
+Hlavní problém protokolu je, že nepojmenovává jednotlivé typy zpráv vždy stejným způsobem, což může být matoucí. Tento problém vznikl tím, že se protokol vyvíjel postupně a nebyl od začátku přesně definovaný. 
+
+
+
+Průběh komunikace začíná první fází tak, že server uvítá klienta, potom klient zažádá o seznam dostupných her, server mu ho dodá. Pak si hráč vybre nějakou akci připojení (vrácení se, vytvoření hry, připojení se ke hře) a řekne své jméno.
+\begin{lstlisting}[
+    language=protokol, 
+    caption={Příklad průběhu 1.fáze komunikace}, 
+    label={lst:prubeh_komunikace1} % Odkaz pro \ref{}
+]
+-> welcome
+<- infoHer
+-> infoHer:{"verze":"0.0.7","hry":[{"id":0,"jmeno":"UNO!","popis":"Slavná základní karetní hra.","url":""}, {"id":1,"jmeno":"Prší","popis":"Česká tradiční hra, ve které se snažíte zbavit všech karet, které můžete zahrát podle stejné barvy nebo hodnoty.","url":""}, {"id":2,"jmeno":"Bang!","popis":"Populární hra s cílem zabít ostatní hráče.","url":"https://albi.cz/data/files/products/24327/1603711687-bang-pravidla-zakladni-hry.pdf"}]}
+<- pripojeniKeHre:123456
+<- noveJmeno:Honza
+-> pripojenKeHre
+\end{lstlisting}
+
+V další, druhé, fázi už je hráč připojen ke hře, která ale není zahájena. V této fázi se načítají různé informace o hře a hráčích, kteří se mohou i postupně připojovat. Klientovy bude přiřazen znovupřipojovací token, který mu umožní se znovu připojit ke hře, pokud se odpojí a jeho id hráče, aby věděl jaké informace se týkají přímo jeho.
+\begin{lstlisting}[
+    language=protokol, 
+    caption={Příklad průběhu 2.fáze komunikace}, 
+    label={lst:prubeh_komunikace2} % Odkaz pro \ref{}
+]
+-> token:123456_08gs7oLEqthBeaGkelKVAnl-f_CN5YoctfE7rd0nek
+-> vyberPostavu:[{"jmeno":"TESTOVACÍ","obrazek":"TESTOVACI","popis":"pouze pro test","zivoty":"4"},{"jmeno":"TESTOVACÍ","obrazek":"TESTOVACI","popis":"pouze pro test","zivoty":"4"}]
+-> novyHrac:{"id":4, "jmeno":"nepojmenovaný hráč","zivoty":0,"pocetKaret":0,"maximumZivotu":0}
+-> noveIdHrace:4
+-> povoleneUI:["ODHAZOVACI_BALICEK","DOBIRACI_BALICEK"]
+-> noveJmeno:4,honza
+-> novyHrac:{"id":5, "jmeno":"nepojmenovaný hráč","zivoty":0,"pocetKaret":0,"maximumZivotu":0}
+-> noveJmeno:5,Adam
+<- setPostava:1
+\end{lstlisting}
+
+Třetí fáze už je samotná hra. Klient posílá akce hráče, zatímco server mu vrací svoje vypočítané reakce, aktualizace stavu hry a akce jiných hráčů. 
+
+\begin{lstlisting}[
+    language=protokol, 
+    caption={Příklad průběhu 3.fáze komunikace}, 
+    label={lst:prubeh_komunikace3} % Odkaz pro \ref{}
+]
+<- zahajeniHry
+-> novaKarta:{"jmeno":"red9","obrazek":"uno/red9","id":109}
+-> novaKarta:{"jmeno":"yellow6","obrazek":"uno/yellow6","id":136}
+-> role:BANDITA
+-> novyPocetKaret:5,8
+-> hraZacala
+-> zahZacal:5
+[druhý hrác odehraje]
+-> odehrat:5|{"jmeno":"yellow9","obrazek":"uno/yellow9","id":139}
+-> novyPocetKaret:5,7
+-> tvujTahZacal
+[tento hrác si lízne]
+<- linuti
+-> novaKarta:{"jmeno":"eso","obrazek":"uno/eso","id":148}
+-> tahZacal:5
+\end{lstlisting}
+
+
+
+
+
+
+
+
+
+
 \section{Implementace klienta}
 \subsection{Struktura}
 \subsection{O aplikaci}
