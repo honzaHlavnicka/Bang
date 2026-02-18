@@ -174,6 +174,65 @@ public static List<HerniPlugin> nactiPluginyZJARu(Path cesta) throws Exception{
 }
 \end{lstlisting}
 
+\subsection{\texttt{Hra} a \texttt{HraImp}}
+\texttt{HraImp} je třída implementující interface \texttt{Hra}, která obsahuje všechnu obecnou logiku hry, stav hry a přístup k nim pro pluginy. Hru vytváří pomocí tovární metody \texttt{vytvor} komunikátor hry, který ji id pluginu a sebe, aby mohla komunikovat s klientem. Hra si drží seznam hráčů, dobírací a odhazovací balíček, instanci herních pravidel, správce tahu a podobně.
+
+Hra neřeší ani logiku konkrétní hry, karet, balíčku a akcí hráčů, které řeší Herní pravidla nebo specifické třídy. Hra zařizuje zapnutí hry (\texttt{setZahajena(true)}), výhru a konec hry (\texttt{skoncil Hrac kdo}, \texttt{vyhral(Hrac kdo)}), přidávání hráčů a gettery pro ostatní obslužné  třídy.
+
+//todo: dopsat
+
+\subsection{Správce tahu}
+\texttt{SpravceTahu} je třída, která se stará o správu tahů ve hře. Přestože se to zdá jako jednoduchý úkol o posouvání ukazatele, tak je třída poměrně složitá protože musí podporovat změnu směru, vynechání tahu, dočasné či trvalé přidání hráče, násobič tahu a podobně.
+
+Pro svoji vnitřní logiku používá třídu \texttt{Tah}, která reprezentuje jeden tah ve hře. Tah se znovu používá, to znamená, že jeden objekt nereprezentuje konkrétní tah, ale všechny tahy jednoho hráče. Tah pouze obsahuje veřejné promněné, které ukládají hráče, kterého je to tah, zda je tah jednorázový (tzn. po jeho odehrání se vyřadí z fronty, na rozdíl od normálního tahu, který se opakuje každé kolo) a zda je tah dočasně zrušený (Mohlo by se pozžívat napříkjlad když má hráč za trest ddvě kola nehrát, ale není žádoucí, aby se vyřadil z pořadí.)
+
+Třída \texttt{SpravceTahuImp} obsahuje frontu (\texttt{ArrayDeque}) s objekty tahu. 
+
+Pro změnu směru se používá metoda \texttt{zmenaSmeru()}, která neotáčí celou frontu, ale pouze změní příznak směru, podle kterého se pak rozhoduje, zda se z fronty bere zespoda, nebo zezhora.
+
+Protože je pro některé funkce žádoucí mít k dispozici seznam všech hráčů, kteří nejsou vyřazeni ve správném pořadí, tak existuje metoda \texttt{getHrajiciHraci()}. Původně měla fungovat tak, že by správce tahu držel jak frontu tahů, tak informace o hráčích, to by ale bylo velmi náchylné k chybám, protože by bylo potřeba synchronizovat hned dvě struktury bez chyby. Proto byla zvolena varianta generování seznamu z fronty tahů. Jelikož je tato metoda poměrně náročná, tak se její výsledek ukládá do proměnné sloužící jako cache a aktualizuje se pouze při změně fronty tahů, tudíž jejím zneaktuálněním. Díky tomu pluginy mohou metodu volat klidně vícekrát za sebou bez většího výkonostního problému.
+
+\begin{lstlisting}[
+    language=java, 
+    caption={Ukázka získání hrajících hráčů ve správci tahu}, 
+    label={lst:get_hrajici_hraci}, % Odkaz pro \ref{}
+    firstnumber=52
+]
+    @Override
+    public List<Hrac> getHrajiciHraci() {
+        if (!poradiAktualni) {
+            hrajiciHraciCache = new ArrayList<>();
+            for (Tah t : frontaTahu) {
+                if (!t.docasneZruseny && !t.jednorazovy) {
+                    hrajiciHraciCache.add((HracImp) t.hrac);
+                }
+            }
+            if (zmenenSmer) {
+                Collections.reverse(hrajiciHraciCache);
+            }
+            poradiAktualni = true;
+        }
+        return List.copyOf(hrajiciHraciCache);
+    }
+\end{lstlisting}
+
+Dalším častým problémem je vyřazení hráče a jeho následné vrácení. To zajišťují metody \texttt{vyraditHrace(Hrac koho)} a \texttt{vratitHrace(Hrac koho}, které v řadě tahů najdo ten správný a přenastaví mu příznak dočasně zrušený. Je třeba rozlišovat vrácení hráče a jeho přidání, jelikož přidání hráče musí vyrobyt nový \texttt{Tah} a vybrat mu nové místo ve frontě. Přidání hráče zajišťuje metoda pridatHrace(Hrac koho)
+\begin{lstlisting}[language=java,caption={Ukázka vracení hráče a přidání hráče ve správci tahu}, label={lst:vraceni_hrace},firstnumber=194]
+    public void vratitHrace(Hrac koho){
+        for (Tah tah : frontaTahu) {
+            if (tah.hrac.equals(koho)) {
+                tah.docasneZruseny = false;
+            }
+        }
+        poradiAktualni = false;
+    }
+    public void pridatHrace(Hrac koho) {
+        frontaTahu.addLast(new Tah(koho, false));
+        poradiAktualni = false;
+    }
+\end{lstlisting}
+
+Samotná metoda \texttt{dalsiHrac()} musí zkontrolovat všechny příznaky a podle nich rozhodnout, který hráč je na tahu. Metoda taky řeší všechny problémové stavy, jako když nemá kdo hrát.
 
 \section{Implementace pluginů}
 K enginu bylo vyrobeno několik pluginů -- Bang, prší a UNO. Pluginy jsou v repozitáři ve složce \texttt{/pluginy/}.
@@ -250,7 +309,7 @@ Třetí fáze už je samotná hra. Klient posílá akce hráče, zatímco server
 
 \begin{lstlisting}[
     language=protokol, 
-    caption={Příklad průběhu 3.fáze komunikace}, 
+    caption={Příklad průběhu 3. fáze komunikace}, 
     label={lst:prubeh_komunikace3} % Odkaz pro \ref{}
 ]
 <- zahajeniHry

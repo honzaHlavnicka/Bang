@@ -254,7 +254,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
-    @Override
+    @Override //TODO: proč není v hráčovi
     public Karta otocVrchniKartu(){
         Karta karta = balicek.lizni();
         odhazovaciBalicek.vratNahoru(karta);
