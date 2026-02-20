@@ -292,7 +292,8 @@ V další, druhé, fázi už je hráč připojen ke hře, která ale není zahá
 \begin{lstlisting}[
     language=protokol, 
     caption={Příklad průběhu 2.fáze komunikace}, 
-    label={lst:prubeh_komunikace2} % Odkaz pro \ref{}
+    label={lst:prubeh_komunikace2}, % Odkaz pro \ref{},
+    firstnumber=7
 ]
 -> token:123456_08gs7oLEqthBeaGkelKVAnl-f_CN5YoctfE7rd0nek
 -> vyberPostavu:[{"jmeno":"TESTOVACÍ","obrazek":"TESTOVACI","popis":"pouze pro test","zivoty":"4"},{"jmeno":"TESTOVACÍ","obrazek":"TESTOVACI","popis":"pouze pro test","zivoty":"4"}]
@@ -310,7 +311,8 @@ Třetí fáze už je samotná hra. Klient posílá akce hráče, zatímco server
 \begin{lstlisting}[
     language=protokol, 
     caption={Příklad průběhu 3. fáze komunikace}, 
-    label={lst:prubeh_komunikace3} % Odkaz pro \ref{}
+    label={lst:prubeh_komunikace3}, % Odkaz pro \ref{}
+    firstnumber=16
 ]
 <- zahajeniHry
 -> novaKarta:{"jmeno":"red9","obrazek":"uno/red9","id":109}
