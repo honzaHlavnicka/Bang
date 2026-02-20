@@ -234,6 +234,20 @@ Dalším častým problémem je vyřazení hráče a jeho následné vrácení. 
 
 Samotná metoda \texttt{dalsiHrac()} musí zkontrolovat všechny příznaky a podle nich rozhodnout, který hráč je na tahu. Metoda taky řeší všechny problémové stavy, jako když nemá kdo hrát.
 
+\subsection{\texttt{Hrac} a \texttt{HracImp}}
+\texttt{HracImp} je třída implementující interface \texttt{Hrac}, která reprezentuje jednoho hráče ve hře. Obsahuje informace o hráči, jako je jeho jméno, role, postava, počet životů, karty v ruce, karty na stole a podobně. Dále obsahuje metody pro manipulaci s těmito daty. 
+
+\subsubsection{\texttt{boolean odeberZivot()} a \texttt{boolean pridejZivot()}}
+Odeber život je motoda, kterou by měl plugin volat, když hráč přijde o život. Metoda zkontroluje, zda ještě před odebráním života nemá zavolat nějaký efekt a potom zkontroluje, jestli se hráč nezabije. Pokud se zabije, tak se nepůjde do mínusu v počtu životů, ale vrátí se false a zavolá se \texttt{HerniPravidla.dosliZivoty(Hrac kdo)}, aby plugin mohl zareagovat a například zařídit smrt hráče. Pokud hráč ještě nezemřel, tak se odebere život, zavolají efekty a metoda vrátí true.
+
+Přidej život je podobná metoda s opačným účinkem. Míso smrti kontroluje, zda se nepřesáhne daný maximum životů, ktré hráč může mít.
+
+\subsubsection{\texttt{odehranaKarta(String id)}, \texttt{vyloitKartu(String id)} a \texttt{spalitKartu(String id, String idHrace)}}
+Tuto metodu volá komunikátor hry, když se hráč rozhodne zahrát kartu. Není určená pro plugin, protože obsahuje všechny kontroly pro vstup od uživatele, navíjako parametr bere \emph{String} id karty a ne samotný objekt, což je v rámci serveru neefektivní.
+
+Metoda si převede id do \emph{int}u, ověří, že je hráč na tahu a pokusí se kartu najít mezi kartami v ruce porovnáváním id. Poté zkontroluje, zda je karta hratelná (instance \texttt{HratelnaKarta}), přetypuje ji, zeptá se pravidel jestli ji může zahrát a pokud ano, tak zavolá její metodu \texttt{odehrat(Hrac kdo)}. Pokud se karta zahrála, tak ji přesune na odhazovací balíček, provede efekty a upozorní komunikátor hry, který informuje klienty o změně stavu hry. V tomto procesu nastalo spoustu chybových stavů, které vždy předají konkrétní chybu komunikátoru, který ji zobrazí klientovi. 
+
+Podobným způsobem funguje také spálení a vyložení karty, které zajišťují metody \texttt{vyloitKartu(String id)} a \texttt{spalitKartu(String id, String idHrace)}.
 \section{Implementace pluginů}
 K enginu bylo vyrobeno několik pluginů -- Bang, prší a UNO. Pluginy jsou v repozitáři ve složce \texttt{/pluginy/}.
 \subsection{Bang!}
@@ -252,7 +266,9 @@ Dalším dítětem Prší karty je \texttt{PrsiSvrsek}. Ten se liší tomu, že 
 
 Poslední speciální kartou je \texttt{PrsiEso}. Jelikož autor hry naprogramoval prší podle pravid3l, které používá on, tak se eso nepřebíjí. Z toho důvodu karta po zkontrolování podmínek zahrání pouze zavolá \texttt{hra.getSpravceTahu().eso()}, jelikož eso je funkce v enginu zabudovaná. 
 \subsection{Uno}
-Poslední implementovaná hra je únor, které je pouze starší verzí prší, bez další složité naprogramováné mechaniky. Nejrozlišnější karta je změna směru, ale její funkčnost je zabudovaná ve správci tahu.
+Poslední implementovaná hra je UNO, které je pouze starší verzí prší, bez další složité naprogramováné mechaniky. Nejrozlišnější karta je změna směru, ale její funkčnost je zabudovaná ve správci tahu.
+
+Na tomto pluginu je nejzajímavvější, generování obrázků jeho karet pomocí pythonu.
 
 \section{Protokol}
 Pro komunikaci mezi klientem a serverem se používá websocketový protokol. Již od začátku se posílají stringy ve formátech:
