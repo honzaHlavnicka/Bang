@@ -261,7 +261,6 @@ export function handleGameMessage(
             break;
         }
         case "vyberAkci": {
-            //TODO: neni dodelane a otestovane
             try {
                 const json = JSON.parse(payload) as {id:number,akce:{ id: number; nazev: string }[]}; 
                 const actions = json.akce.map(a=>({id:a.id,name:a.nazev}));
