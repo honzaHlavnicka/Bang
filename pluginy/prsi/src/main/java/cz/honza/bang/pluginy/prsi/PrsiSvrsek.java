@@ -25,6 +25,9 @@ public class PrsiSvrsek extends PrsiKarta{
     @Override
     public boolean odehrat(Hrac kym) {
         poslendniBarva = null;
+            // Zobrazit stavovou zprávu že hráč vybírá barvu
+            hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá barvu...");
+            
             hra.getKomunikator().pozadejOdpoved(
                     "vyberAkci:{\"id\":data-id,\"akce\":["
                     + "{\"id\":0,\"nazev\":\"Kule\"},"
@@ -49,6 +52,8 @@ public class PrsiSvrsek extends PrsiKarta{
                         poslendniBarva = PrsiBarva.ZALUDY;
                         break;
                 }
+                // Zobrazit informaci o vybrané barvě
+                hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " si vybral barvu: " + poslendniBarva);
                 hra.getKomunikator().posliVsem("rychleOznameni:" + poslendniBarva, kym);
 
             });//toto nmůže blokovat thred!

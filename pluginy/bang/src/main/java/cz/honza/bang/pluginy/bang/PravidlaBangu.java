@@ -129,6 +129,32 @@ public class PravidlaBangu implements HerniPravidla{
     public  boolean muzeVylozit(Hrac kdo, VylozitelnaKarta co){
         return !kdo.getVylozeneKarty().contains(co);
     }
+    
+    @Override
+    public void pripravBalicekPostav(java.util.Stack<cz.honza.bang.sdk.Postava> balicekPostav){
+
+    }
+    
+    @Override
+    public cz.honza.bang.sdk.UIPrvek[] getViditelnePrvky() {
+        return cz.honza.bang.sdk.UIPrvek.values();
+    }
+    
+    @Override
+    public boolean muzeZahrat(Karta co, Hrac kdo) {
+        return true; // V bangu lze hrát jakoukoli kartu, pokud jsou splněny specifické podmínky v samotné kartě
+    }
+    
+    @Override
+    public String getVychoziZadniObrazek() {
+        return "bang";
+    }
+    
+    
+    
+    public int vzdalenost(Hrac od, Hrac k){
+        return 0;
+    }
 
     
 }

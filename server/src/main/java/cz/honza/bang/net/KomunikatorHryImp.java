@@ -183,11 +183,19 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
      * @param chyba chyba, která se posílá.
      */
     @Override
-
     public void posliChybu(cz.honza.bang.sdk.Hrac komu,Chyba chyba){
         WebSocket conn = websocketPodleHracu.get(komu);
         conn.send("error:{\"error\":\"" + chyba.getZprava() + "\",\"kod\":" + chyba.getKod() + ",\"skupina\":" + chyba.getSkupina()+ "}");
         
+    }
+    
+    /**
+     * Pošle stavovou zprávu všem hráčům. Zpráva se zobrazí v centru obrazovky.
+     * @param zprava Text zprávy, která se bude zobrazovat (např. "Hráč vybírá barvu...")
+     */
+    @Override
+    public void posliStavovuZpravu(String zprava) {
+        posliVsem("stavHry:" + zprava);
     }
     
     /**

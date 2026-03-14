@@ -232,6 +232,11 @@ export function handleGameMessage(
             });
 
              break;
+        case "stavHry": {
+            // Payload obsahuje text, který se má zobrazit v centru obrazovky
+            setGameState(prev => ({ ...prev, gameStateMessege: payload }));
+            break;
+        }
         case "tvujTahZacal": {
             setGameState(prev => ({ ...prev, turnPlayerId: prev.playerId ?? null }));
             toast.success('Tvůj tah začal!')
