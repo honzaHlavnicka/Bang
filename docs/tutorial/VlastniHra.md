@@ -46,7 +46,7 @@ Pokud by se vyskytly problémy nebo engine něco nepodporoval, prosím, **vytvo�
 
 9.  **Spusťte a otestujte hru.**
     * Stáhněte a spusťte server.
-    * Otevřete prohlížeč na adrese: `honza.svs.gyarab.cz?adress=ws://localhost:port`, kde **`port`** je port vypsaný serverem do konzole.
+    * Otevřete prohlížeč na adrese: `bang.honzaa.cz?adress=ws://localhost:port`, kde **`port`** je port vypsaný serverem do konzole.
     * Ověřte, že **vaše hra jde vytvořit**. Otestujte funkčnost a opravte chyby.
 
 ---
@@ -54,7 +54,7 @@ Pokud by se vyskytly problémy nebo engine něco nepodporoval, prosím, **vytvo�
 ## IV. Zveřejnění (Volitelné)
 
 10. **Máte hotovo!** Nyní můžete hru hrát.
-    * **Lokální síť:** Ostatní se připojí na `honza.svs.gyarab.cz?adress=ws://tvoje lokální IP:port`.
+    * **Lokální síť:** Ostatní se připojí na `bang.honzaa.cz?adress=ws://tvoje lokální IP:port`.
     * **Centrální server (Globální síť):**
         * Vytvořte **Pull Request** na GitHubu.
         * Nahrajte **celý kód**, nikoli pouze `.jar` soubor, pro ověření absence škodlivého obsahu.
