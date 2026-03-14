@@ -170,7 +170,49 @@ Požadavek na detailní informace o serveru (pouze pro administrátory).
 serverInfo:heslo123
 ```
 
-**Odpověď serveru:** `serverDataHTML:<html>` nebo `error:<json>`
+**Odpověď serveru:** `serverDataHTML:<html>` nebo `error:<json>` (kod: 14)
+
+---
+
+##### `getIdHry`
+Dotaz na ID aktuální hry.
+
+**Payload:** žádný
+
+**Příklad:**
+```
+getIdHry
+```
+
+**Odpověď serveru:** `setIdHry:<id>`
+
+---
+
+##### `novaHraSHracema:<typHry>`
+Restart hry se stejnými hráči (pouze pro administrátora hry).
+
+**Payload:** číslo - ID typu hry
+
+**Příklad:**
+```
+novaHraSHracema:0
+```
+
+**Odpověď serveru:** `error:<json>` (kod: 17) pokud nemáte práva administrátora
+
+---
+
+##### `restartovatPluginy:<heslo>`
+Znovunačtení herních pluginů (pouze pro administrátory serveru).
+
+**Payload:** heslo serveru (String)
+
+**Příklad:**
+```
+restartovatPluginy:heslo123
+```
+
+**Odpověď serveru:** `ok` nebo `error:<json>` (kod: 14)
 
 ---
 
@@ -187,9 +229,10 @@ Informace o serveru a dostupných hrách.
   "verze": "0.0.7",
   "hry": [
     {
-      "nazev": "název hry",
-      "popis": "popis hry",
-      "id": 0
+      "id": 0,
+      "jmeno": "Bang!",
+      "popis": "Populární hra s cílem zabít ostatní hráče.",
+      "url": "https://albi.cz/bang-pravidla.pdf"
     }
   ]
 }
@@ -197,7 +240,7 @@ Informace o serveru a dostupných hrách.
 
 **Příklad:**
 ```
-infoHer:{"verze":"0.0.7","hry":[{"nazev":"Bang!","popis":"Hlavní hra Bang","id":0},{"nazev":"UNO","popis":"Zjednodušené UNO","id":1}]}
+infoHer:{"verze":"0.0.7","hry":[{"id":0,"jmeno":"Bang!","popis":"Populární hra s cílem zabít ostatní hráče.","url":"https://albi.cz/bang-pravidla.pdf"}]}
 ```
 
 ---
@@ -292,11 +335,23 @@ setPostava:0,BART_CASSIDY
 ##### `vyberPostavu:<json>`
 Nabídka postav pro výběr.
 
-**Payload:** JSON objekt s dostupnými postavami
+**Payload:** JSON pole objektů s informacemi o postavách
+
+**Struktura JSON:**
+```json
+[
+  {
+    "jmeno": "BART_CASSIDY",
+    "obrazek": "BART_CASSIDY",
+    "popis": "Popis postavy",
+    "zivoty": "4"
+  }
+]
+```
 
 **Příklad:**
 ```
-vyberPostavu:{"postavy":["BART_CASSIDY","PAUL_REGRET"]}
+vyberPostavu:[{"jmeno":"BART_CASSIDY","obrazek":"BART_CASSIDY","popis":"Kdykoliv je zasažen, lízne si kartu.","zivoty":"4"}]
 ```
 
 ---
@@ -336,6 +391,18 @@ HTML stránka s detailními informacemi o serveru (pouze pro administrátory).
 **Příklad:**
 ```
 serverDataHTML:<div><h1>Server data</h1>...</div>
+```
+
+---
+
+##### `setIdHry:<id>`
+Odpověď na dotaz `getIdHry` - ID aktuální hry.
+
+**Payload:** číslo - ID hry
+
+**Příklad:**
+```
+setIdHry:123456
 ```
 
 ---
@@ -383,6 +450,18 @@ vylozeni:15,2
 
 ---
 
+##### `spaleni:<idKarty>`
+Spálení karty z ruky (zahození na odkladací balíček).
+
+**Payload:** ID karty
+
+**Příklad:**
+```
+spaleni:42
+```
+
+---
+
 ##### `konecTahu`
 Ukončení tahu hráče.
 
@@ -423,7 +502,7 @@ chat:Ahoj všichni!
 
 #### Server → Klient
 
-##### `hraZacala` / `hraSpustena`
+##### `hraZacala`
 Hra byla zahájena.
 
 **Payload:** žádný
@@ -534,24 +613,107 @@ Karta byla odehrána.
 
 **Struktura:**
 ```
-<idHrace>|{"obrazek":"bang.png","id":42}
+<idHrace>|{"jmeno":"bang","obrazek":"bang.png","id":42}
 ```
 
 **Příklad:**
 ```
-odehrat:0|{"obrazek":"bang.png","id":42}
+odehrat:0|{"jmeno":"bang","obrazek":"bang.png","id":42}
 ```
 
 ---
 
-##### `vylozit:<idHracePredKoho>,<idHraceKym>,<json>`
+##### `vylozeni:<idHraceKym>,<idHracePredKoho>,<json>`
 Karta byla vyložena.
 
-**Payload:** ID hráče před koho, ID hráče kým, JSON s kartou (odděleno čárkami)
+**Payload:** ID hráče který kartu vyložil, ID hráče před koho, JSON s kartou (odděleno čárkami)
 
 **Příklad:**
 ```
-vylozit:0,0,{"obrazek":"barel.png","id":15}
+vylozeni:0,0,{"jmeno":"barel","obrazek":"barel.png","id":15}
+```
+
+---
+
+##### `spalit:<idHrace>|<json>`
+Karta byla spálena (zahozena na odkladací balíček).
+
+**Payload:** ID hráče a JSON s informacemi o kartě oddělené znakem `|`
+
+**Příklad:**
+```
+spalit:0|{"jmeno":"bang","obrazek":"bang.png","id":42}
+```
+
+---
+
+##### `spalenaVylozena:<idKarty>,<idHrace>`
+Vyložená (trvalá) karta byla spálena.
+
+**Payload:** ID karty a ID hráče oddělené čárkou
+
+**Příklad:**
+```
+spalenaVylozena:15,0
+```
+
+---
+
+##### `hracSkoncil:<idHrace>`
+Hráč byl vyřazen ze hry.
+
+**Payload:** ID hráče
+
+**Příklad:**
+```
+hracSkoncil:2
+```
+
+---
+
+##### `povoleneUI:<json>`
+Informace o povolených prvcích uživatelského rozhraní.
+
+**Payload:** JSON pole názvů povolených UI prvků
+
+**Příklad:**
+```
+povoleneUI:["ODHAZOVACI_BALICEK","DOBIRACI_BALICEK"]
+```
+
+---
+
+##### `rychleOznameni:<text>`
+Rychlé textové oznámení hráči.
+
+**Payload:** text oznámení
+
+**Příklad:**
+```
+rychleOznameni:Barva změněna na červenou
+```
+
+---
+
+##### `vyberKartu:<json>`
+Dialog pro výběr karty.
+
+**Payload:** JSON objekt s ID dialogu, seznamem karet a volitelným nadpisem
+
+**Struktura JSON:**
+```json
+{
+  "id": 3,
+  "karty": [
+    {"jmeno": "bang", "obrazek": "bang.png", "id": 42}
+  ],
+  "nadpis": "Vyber kartu"
+}
+```
+
+**Příklad:**
+```
+vyberKartu:{"id":3,"karty":[{"jmeno":"bang","obrazek":"bang.png","id":42}],"nadpis":"Vyber kartu k odebrání"}
 ```
 
 ---
@@ -639,14 +801,14 @@ Chybová zpráva.
 ```json
 {
   "error": "popis chyby",
-  "kod": 100,
-  "skupina": "PROTOKOL"
+  "kod": 1,
+  "skupina": 2
 }
 ```
 
 **Příklady chyb:**
-- `{"error":"už jsi připojen ke hře"}` - hráč se pokusil připojit k další hře
-- `{"error":"Hra neexistuje"}` - neplatný kód hry
+- `{"error":"Už jsi připojen ke hře.","kod":15,"skupina":2}` - hráč se pokusil připojit k další hře
+- `{"error":"Hra, ke které se snažíš připojit neexistuje.","kod":5,"skupina":1}` - neplatný kód hry
 - `{"error":"tato hra už byla zahájena. Bohužel se už nejde připojit."}` - hra již začala
 - `{"error":"Nejsi připojen ke hře"}` - pokus o herní akci bez připojení ke hře
 - `{"error":"hráč v této hře nenalezen"}` - neplatný token při vracení se do hry
