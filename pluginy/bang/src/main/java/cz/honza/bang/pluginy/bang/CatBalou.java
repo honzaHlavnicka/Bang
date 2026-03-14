@@ -57,12 +57,12 @@ public class CatBalou extends Karta implements HratelnaKarta{
                         if(zastupnaKarta.getNahodna().getId() == idKartyCislo){
                             Random rand = new Random();
                             Karta nahodnaKarta = naKoho.getKarty().remove(rand.nextInt(naKoho.getKarty().size()));     
-                            hra.getKomunikator().posliVsem("spalit:"+kym.getId()+"|"+nahodnaKarta.toJSON());
+                            hra.getKomunikator().posliSpaleniKarty(naKoho, nahodnaKarta);
                         }else{
                             for (Karta karta : naKoho.getVylozeneKarty()) {
                                 if(karta.getId() == idKartyCislo){
                                     naKoho.getVylozeneKarty().remove(karta); //todo: kdyz mezitim karta se spali jinak, tak bude vizualne 2x
-                                    hra.getKomunikator().posliVsem("spalit:" + naKoho.getId() + "|" + karta.toJSON());
+                                    hra.getKomunikator().posliSpaleniVylozenéKarty(karta, naKoho);
                                 }
                             }
                         }

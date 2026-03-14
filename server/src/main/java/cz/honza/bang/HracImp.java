@@ -120,7 +120,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
             return false;
         } else {
             zivoty--;
-            hra.getKomunikator().posliVsem("pocetZivotu:" + id + "," + zivoty);
+            hra.getKomunikator().posliZmenuPoctuZivotu(this);
             // Událost po ztrátě života pro efekty tohoto hráče
             for (Efekt e : efekty) {
                 e.poZtrateZivota(hra, this);
@@ -150,7 +150,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
             return false; 
         } else {
             zivoty++;
-            hra.getKomunikator().posliVsem("pocetZivotu:" + id + "," + zivoty);
+            hra.getKomunikator().posliZmenuPoctuZivotu(this);
             return true;
         }
         
@@ -249,7 +249,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     public void zahajitTah() {
         System.out.println("zahájen tah v tah");
         hra.getKomunikator().posli(this, "tvujTahZacal");
-        hra.getKomunikator().posliVsem("tahZacal:"+id,this);
+        hra.getKomunikator().posliZahajeniTahu(this);
         // Spuštění efektů na začátku tahu
         for (Efekt e : efekty) {
             e.naZacatekTahu(hra, this);
@@ -284,8 +284,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
                             hra.getOdhazovaciBalicek().vratNahoru(karta);
                             karty.remove(karta);
 
-                            hra.getKomunikator().posliVsem("odehrat:" + this.id + '|' + karta.toJSON());//FIX: změnit "|" na ","
-                            hra.getKomunikator().posliVsem("novyPocetKaret:" + this.id + "," + karty.size(), this);
+                            hra.getKomunikator().posliOdebraniKarty(this, karta);
+                            hra.getKomunikator().posliZmenuPoctuKaret(this);
 
                             // Událost po odehrání karty pro všechny efekty hráče
                             for (Efekt e : efekty) {
@@ -347,8 +347,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
                             e.kdyzNemaKarty(hra, this);
                         }
                     }
-                    hra.getKomunikator().posliVsem("novyPocetKaret:" + karty.size(),this);
-                    hra.getKomunikator().posliVsem("spalit:"+ this.id + "|" + karta.toJSON());
+                    hra.getKomunikator().posliZmenuPoctuKaret(this);
+                    hra.getKomunikator().posliSpaleniKarty(this, karta);
 
                 }else{
                     hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_SPALIT);
@@ -370,7 +370,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
                     vylozeneKarty.remove(karta);
                     hra.getOdhazovaciBalicek().vratNahoru(karta);
 
-                    hra.getKomunikator().posliVsem("spalenaVylozena:" + karta.getId() + "," + this.id);
+                    hra.getKomunikator().posliSpaleniVylozenéKarty(karta, this);
                 } else {
                     hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_SPALIT);
                 }
@@ -412,7 +412,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
                                     e.kdyzNemaKarty(hra, this);
                                 }
                             }
-                            hra.getKomunikator().posliVsem("vylozeni:"+ this.id +"," + idPredKoho+","+ karta.toJSON()); //vylozeni:<kym>,<predKoho>,<karta>
+                            hra.getKomunikator().posliVylozeniKarty(this, (HracImp)predKoho, karta);
                             return;
                         }else{
                             hra.getKomunikator().posliChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);

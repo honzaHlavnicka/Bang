@@ -48,7 +48,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         
         if(message.startsWith("noveJmeno:")){
             hrac.setJmeno(message.replace("noveJmeno:", ""));
-            posliVsem("noveJmeno:" + hrac.getId() + "," + hrac.getJmeno());
+            posliZmenuJmena(hrac);
         }
         if(message.startsWith("nactiHru")){
             nactiHru(conn);
@@ -153,7 +153,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         websocket.send("token:" + idHry + identifikator);
         hraciPodlIdentifikatoru.put(identifikator, hrac);
         hra.hracVytvoren(hrac);
-        posliVsem("novyHrac:"+hrac.toJSON()); 
+        posliNovehoHrace(hrac);
         return true;
     }
     
@@ -196,6 +196,74 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     @Override
     public void posliStavovuZpravu(String zprava) {
         posliVsem("stavHry:" + zprava);
+    }
+    
+    // ===== IMPLEMENTACE METOD AKCÍ =====
+    
+    @Override
+    public void posliZmenuPoctuKaret(Hrac hrac) {
+        posliVsem("zmenaPoctuKaret:" + hrac.getId() + "," + hrac.getKarty().size(), hrac);
+    }
+    
+    @Override
+    public void posliZmenuPoctuZivotu(Hrac hrac) {
+        posliVsem("pocetZivotu:" + hrac.getId() + "," + hrac.getZivoty());
+    }
+    
+    @Override
+    public void posliZahajeniTahu(Hrac hrac) {
+        posliVsem("tahZacal:" + hrac.getId(), hrac);
+    }
+    
+    @Override
+    public void posliZmenuJmena(Hrac hrac) {
+        posliVsem("noveJmeno:" + hrac.getId() + "," + hrac.getJmeno());
+    }
+    
+    @Override
+    public void posliNovehoHrace(Hrac hrac) {
+        posliVsem("novyHrac:" + hrac.toJSON());
+    }
+    
+    @Override
+    public void posliZahajeniHry() {
+        posliVsem("hraZacala");
+    }
+    
+    @Override
+    public void posliSkonceniHrace(Hrac hrac) {
+        posliVsem("hracSkoncil:" + hrac.getId());
+    }
+    
+    @Override
+    public void posliVitezstvi(Hrac hrac) {
+        posliVsem("vyhral:" + hrac.getId());
+    }
+    
+    @Override
+    public void posliOdebraniKarty(Hrac hrac, cz.honza.bang.sdk.Karta karta) {
+        posliVsem("odehrat:" + hrac.getId() + "|" + karta.toJSON());
+    }
+    
+    @Override
+    public void posliSpaleniKarty(Hrac hrac, cz.honza.bang.sdk.Karta karta) {
+        posliVsem("spalit:" + hrac.getId() + "|" + karta.toJSON());
+    }
+    
+    @Override
+    public void posliSpaleniVylozenéKarty(cz.honza.bang.sdk.Karta karta, Hrac odkud) {
+        posliVsem("spalenaVylozena:" + karta.getId() + "," + odkud.getId());
+    }
+    
+    @Override
+    public void posliVylozeniKarty(Hrac hrac, Hrac predKoho, cz.honza.bang.sdk.Karta karta) {
+        String predKohoId = (predKoho != null) ? String.valueOf(predKoho.getId()) : String.valueOf(hrac.getId());
+        posliVsem("vylozeni:" + hrac.getId() + "," + predKohoId + "," + karta.toJSON());
+    }
+    
+    @Override
+    public void posliRychleOznameni(String oznameni, Hrac vyjimka) {
+        posliVsem("rychleOznameni:" + oznameni, vyjimka);
     }
     
     /**

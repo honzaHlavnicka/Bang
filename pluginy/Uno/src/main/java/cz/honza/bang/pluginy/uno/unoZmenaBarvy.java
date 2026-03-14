@@ -52,7 +52,7 @@ public class unoZmenaBarvy extends UnoKarta {
                     System.out.println("zlutá");
                     break;
             }
-            hra.getKomunikator().posliVsem("rychleOznameni:" + podleniBarva, kym);
+            hra.getKomunikator().posliRychleOznameni(podleniBarva, kym);
             
         });//toto nmůže blokovat thred!
         //TODO: udelat, aby neslo hrat, nez se slib splní

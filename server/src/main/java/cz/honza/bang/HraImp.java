@@ -167,7 +167,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
             }   
             herniPravidla.poSpusteniHry();
             
-            komunikator.posliVsem("hraZacala");
+            komunikator.posliZahajeniHry();
             spravceTahu = new SpravceTahuImp(hraci);
             spravceTahu.dalsiHracPodleRole(Role.SERIF).zahajitTah();
             System.out.println("zahájen tah v setzahajena");
@@ -225,7 +225,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     @Override
     public void skoncil(Hrac kdo){
         spravceTahu.vyraditHrace(kdo);
-        komunikator.posliVsem("hracSkoncil:" + kdo.getId());
+        komunikator.posliSkonceniHrace(kdo);
     }
     
     /**
@@ -234,7 +234,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      */
     @Override
     public void vyhral(Hrac kdo){
-        komunikator.posliVsem("vyhral:" + kdo.getId());
+        komunikator.posliVitezstvi(kdo);
         //TODO: zapsat do tabulky výsledků, vytvořit tabulku výsledků
     }
     
@@ -258,6 +258,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     public Karta otocVrchniKartu(){
         Karta karta = balicek.lizni();
         odhazovaciBalicek.vratNahoru(karta);
+        // Toto je speciální případ - otočení vrchní karty (není odehrání hráčem)
         komunikator.posliVsem("odehrat:-1" + '|' + karta.toJSON());
         return karta;
     }
