@@ -127,10 +127,14 @@ Některé zprávy jsou automaticky rozesílány všem hráčům ve hře:
 - `noveJmeno` - změna jména
 - `setPostava` - změna postavy
 - `odehrat` - odehrání karty
-- `vylozit` - vyložení karty
+- `vylozeni` - vyložení karty
+- `spalit` - spálení karty
+- `spalenaVylozena` - spálení vyložené karty
+- `hracSkoncil` - hráč byl vyřazen
 - `tahZacal` - začátek tahu
 - `pocetZivotu` - změna životů
 - `chat` - chat zprávy
+- `rychleOznameni` - rychlé oznámení
 
 ### Token systém
 
@@ -145,8 +149,8 @@ Všechny chyby mají formát:
 ```json
 {
   "error": "popis chyby",
-  "kod": 100,
-  "skupina": "PROTOKOL"
+  "kod": 1,
+  "skupina": 2
 }
 ```
 

@@ -215,7 +215,57 @@ serverInfo:heslo123
 ```
 
 **Možné chyby:**
-- `{"error":"špatné heslo"}` - nesprávné heslo
+- `{"error":"Špatné heslo.","kod":14,"skupina":1}` - nesprávné heslo
+
+---
+
+#### `getIdHry`
+**Účel:** Dotaz na ID aktuální hry
+
+**Payload:** žádný
+
+**Kdy poslat:** Kdykoliv po připojení ke hře
+
+**Příklad:**
+```
+getIdHry
+```
+
+---
+
+#### `novaHraSHracema:<typHry>`
+**Účel:** Restartování hry se stejnými hráči (pouze pro administrátora hry)
+
+**Payload:** číslo - ID typu hry
+
+**Kdy poslat:** Po skončení hry, pokud chcete hrát znovu se stejnými hráči
+
+**Omezení:** Pouze administrátor hry
+
+**Příklad:**
+```
+novaHraSHracema:0
+```
+
+**Možné chyby:**
+- `{"error":"Nejsi administrátor hry.","kod":17,"skupina":1}` - nemáte práva administrátora
+
+---
+
+#### `restartovatPluginy:<heslo>`
+**Účel:** Znovunačtení herních pluginů (pouze pro administrátory serveru)
+
+**Payload:** heslo serveru (String)
+
+**Kdy poslat:** Pouze pro správu serveru
+
+**Příklad:**
+```
+restartovatPluginy:heslo123
+```
+
+**Možné chyby:**
+- `{"error":"Špatné heslo.","kod":14,"skupina":1}` - nesprávné heslo
 
 ---
 
@@ -248,14 +298,16 @@ welcome
   "verze": "0.0.7",
   "hry": [
     {
-      "nazev": "Bang!",
-      "popis": "Hlavní hra Bang",
-      "id": 0
+      "id": 0,
+      "jmeno": "Bang!",
+      "popis": "Populární hra s cílem zabít ostatní hráče.",
+      "url": "https://albi.cz/bang-pravidla.pdf"
     },
     {
-      "nazev": "UNO",
-      "popis": "Zjednodušené UNO",
-      "id": 1
+      "id": 1,
+      "jmeno": "UNO",
+      "popis": "Slavná základní karetní hra.",
+      "url": ""
     }
   ]
 }
@@ -267,7 +319,7 @@ welcome
 
 **Příklad:**
 ```
-infoHer:{"verze":"0.0.7","hry":[{"nazev":"Bang!","popis":"Hlavní hra Bang","id":0}]}
+infoHer:{"verze":"0.0.7","hry":[{"id":0,"jmeno":"Bang!","popis":"Populární hra s cílem zabít ostatní hráče.","url":"https://albi.cz/bang-pravidla.pdf"}]}
 ```
 
 ---
@@ -389,13 +441,18 @@ setPostava:0,BART_CASSIDY
 #### `vyberPostavu:<json>`
 **Účel:** Nabídka postav pro výběr
 
-**Payload:** JSON objekt s dostupnými postavami
+**Payload:** JSON pole objektů s informacemi o postavách
 
 **Struktura:**
 ```json
-{
-  "postavy": ["BART_CASSIDY", "PAUL_REGRET"]
-}
+[
+  {
+    "jmeno": "BART_CASSIDY",
+    "obrazek": "BART_CASSIDY",
+    "popis": "Popis postavy",
+    "zivoty": "4"
+  }
+]
 ```
 
 **Kdy čekat:** Po připojení k hře nebo po vytvoření nové hry
@@ -404,7 +461,7 @@ setPostava:0,BART_CASSIDY
 
 **Příklad:**
 ```
-vyberPostavu:{"postavy":["BART_CASSIDY","PAUL_REGRET"]}
+vyberPostavu:[{"jmeno":"BART_CASSIDY","obrazek":"BART_CASSIDY","popis":"Kdykoliv je zasažen, lízne si kartu.","zivoty":"4"}]
 ```
 
 ---
@@ -456,6 +513,52 @@ serverDataHTML:<div><h1>Server data</h1><p>Počet her: 5</p></div>
 
 ---
 
+#### `noveIdHrace:<id>`
+**Účel:** Přidělení ID hráče po připojení ke hře
+
+**Payload:** číslo
+
+**Kdy čekat:** Po úspěšném připojení ke hře (po `pripojenKeHre`)
+
+**Co dělat:** Uložit ID hráče pro pozdější identifikaci
+
+**Příklad:**
+```
+noveIdHrace:4
+```
+
+---
+
+#### `povoleneUI:<json>`
+**Účel:** Informace o povolených prvcích uživatelského rozhraní
+
+**Payload:** JSON pole názvů povolených UI prvků
+
+**Kdy čekat:** Po připojení ke hře nebo po změně stavu hry
+
+**Co dělat:** Zobrazit/skrýt příslušné herní prvky
+
+**Příklad:**
+```
+povoleneUI:["ODHAZOVACI_BALICEK","DOBIRACI_BALICEK"]
+```
+
+---
+
+#### `setIdHry:<id>`
+**Účel:** Odpověď na dotaz `getIdHry` - ID aktuální hry
+
+**Payload:** číslo - ID hry
+
+**Kdy čekat:** Po odeslání `getIdHry`
+
+**Příklad:**
+```
+setIdHry:123456
+```
+
+---
+
 #### `error:<json>`
 **Účel:** Chybová zpráva
 
@@ -476,9 +579,9 @@ serverDataHTML:<div><h1>Server data</h1><p>Počet her: 5</p></div>
 
 **Příklady:**
 ```
-error:{"error":"už jsi připojen ke hře"}
-error:{"error":"Hra neexistuje"}
-error:{"error":"Nejsi připojen ke hře"}
+error:{"error":"Už jsi připojen ke hře.","kod":15,"skupina":2}
+error:{"error":"Hra, ke které se snažíš připojit neexistuje.","kod":5,"skupina":1}
+error:{"error":"Nejsi připojen ke hře.","kod":1,"skupina":2}
 ```
 
 ---

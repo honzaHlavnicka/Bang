@@ -94,8 +94,31 @@ vylozeni:15,2
 ```
 
 **Odpověď serveru:**
-- `vylozit:<idHracePredKoho>,<idHraceKym>,<json>` - rozesláno všem
+- `vylozeni:<idHraceKym>,<idHracePredKoho>,<json>` - rozesláno všem
 - `error:<json>` - pokud kartu nelze vyložit
+
+---
+
+#### `spaleni:<idKarty>`
+**Účel:** Spálení karty z ruky
+
+**Payload:** ID karty (číslo)
+
+**Kdy poslat:** Během svého tahu, když chcete spálit kartu (vyhodit ji na odkladací balíček)
+
+**Omezení:**
+- Musíte mít kartu v ruce
+- Musíte být na tahu
+- Karta musí být spalitelná
+
+**Příklad:**
+```
+spaleni:42
+```
+
+**Odpověď serveru:**
+- `spalit:<idHrace>|<json>` - rozesláno všem, informace o spálené kartě
+- `error:<json>` - pokud kartu nelze spálit
 
 ---
 
@@ -162,7 +185,7 @@ chat:Dobře zahráno!
 
 ### Zprávy od serveru ke klientovi
 
-#### `hraZacala` / `hraSpustena`
+#### `hraZacala`
 **Účel:** Oznámení, že hra byla zahájena
 
 **Payload:** žádný
@@ -225,6 +248,7 @@ noveIdHrace:0
 **Struktura:**
 ```json
 {
+  "jmeno": "bang",
   "obrazek": "cesta/k/obrazku.png",
   "id": 42
 }
@@ -239,8 +263,8 @@ noveIdHrace:0
 
 **Příklad:**
 ```
-novaKarta:{"obrazek":"bang.png","id":42}
-novaKarta:{"obrazek":"pivo.png","id":15}
+novaKarta:{"jmeno":"bang","obrazek":"bang.png","id":42}
+novaKarta:{"jmeno":"pivo","obrazek":"pivo.png","id":15}
 ```
 
 ---
@@ -331,7 +355,7 @@ tahZacal:2
 
 **Struktura:**
 ```
-<idHrace>|{"obrazek":"bang.png","id":42}
+<idHrace>|{"jmeno":"bang","obrazek":"bang.png","id":42}
 ```
 
 **Kdy čekat:** Po odeslání `odehrani:<idKarty>` nebo když jiný hráč odehraje kartu
@@ -343,36 +367,36 @@ tahZacal:2
 
 **Příklad:**
 ```
-odehrat:0|{"obrazek":"bang.png","id":42}
-odehrat:1|{"obrazek":"pivo.png","id":15}
+odehrat:0|{"jmeno":"bang","obrazek":"bang.png","id":42}
+odehrat:1|{"jmeno":"pivo","obrazek":"pivo.png","id":15}
 ```
 
 ---
 
-#### `vylozit:<idHracePredKoho>,<idHraceKym>,<json>`
+#### `vylozeni:<idHraceKym>,<idHracePredKoho>,<json>`
 **Účel:** Informace o vyložené kartě
 
 **Payload:** 
-- ID hráče před koho byla karta vyložena
-- ID hráče kým byla karta vyložena
+- ID hráče který kartu vyložil (kym)
+- ID hráče před koho byla karta vyložena (predKoho)
 - JSON s informacemi o kartě
 (vše odděleno čárkami)
 
 **Struktura:**
 ```
-<idHracePredKoho>,<idHraceKym>,{"obrazek":"barel.png","id":15}
+<idHraceKym>,<idHracePredKoho>,{"jmeno":"barel","obrazek":"barel.png","id":15}
 ```
 
 **Kdy čekat:** Po odeslání `vylozeni:<idKarty>` nebo když jiný hráč vyloží kartu
 
 **Co dělat:**
-- Přidat kartu do vyložených karet hráče
+- Přidat kartu do vyložených karet hráče (`idHracePredKoho`)
 - Zobrazit kartu před hráčem
 
 **Příklad:**
 ```
-vylozit:0,0,{"obrazek":"barel.png","id":15}
-vylozit:1,0,{"obrazek":"remington.png","id":20}
+vylozeni:0,0,{"jmeno":"barel","obrazek":"barel.png","id":15}
+vylozeni:0,1,{"jmeno":"remington","obrazek":"remington.png","id":20}
 ```
 
 **Poznámka:** První dva parametry jsou obvykle stejné (hráč vyloží kartu před sebe), ale mohou být různé u speciálních karet.
@@ -434,6 +458,127 @@ vyberAkci:{"id":2,"akce":[{"id":0,"nazev":"Ano"},{"id":1,"nazev":"Ne"}]}
 ```
 vyberHrace:{"id":2,"hraci":[1,2,3],"nadpis":"Vyber hráče na kterého chceš střílet"}
 vyberHrace:{"id":3,"hraci":[0,2],"nadpis":"Vyber hráče"}
+```
+
+---
+
+#### `spalit:<idHrace>|<json>`
+**Účel:** Informace o spálené kartě (zahozené na odkladací balíček)
+
+**Payload:** ID hráče a JSON s informacemi o kartě oddělené znakem `|`
+
+**Struktura:**
+```
+<idHrace>|{"jmeno":"bang","obrazek":"bang.png","id":42}
+```
+
+**Kdy čekat:** Po odeslání `spaleni:<idKarty>` nebo když jiný hráč spálí kartu
+
+**Co dělat:**
+- Přesunout kartu z ruky hráče na odkladací balíček
+- Zobrazit animaci spálení karty
+
+**Příklad:**
+```
+spalit:0|{"jmeno":"bang","obrazek":"bang.png","id":42}
+```
+
+---
+
+#### `spalenaVylozena:<idKarty>,<idHrace>`
+**Účel:** Informace o spálení vyložené (trvalé) karty z pole hráče
+
+**Payload:** ID karty a ID hráče oddělené čárkou
+
+**Kdy čekat:** Když je spálena trvalá karta z pole před hráčem
+
+**Co dělat:**
+- Odebrat kartu z vyložených karet daného hráče
+- Přidat ji na odkladací balíček
+
+**Příklad:**
+```
+spalenaVylozena:15,0
+```
+
+---
+
+#### `hracSkoncil:<idHrace>`
+**Účel:** Oznámení, že hráč byl vyřazen ze hry
+
+**Payload:** ID vyřazeného hráče
+
+**Kdy čekat:** Když počet životů hráče klesne na 0
+
+**Co dělat:**
+- Označit hráče jako vyřazeného
+- Zobrazit notifikaci o vyřazení
+
+**Příklad:**
+```
+hracSkoncil:2
+```
+
+---
+
+#### `povoleneUI:<json>`
+**Účel:** Informace o povolených prvcích uživatelského rozhraní
+
+**Payload:** JSON pole názvů povolených UI prvků
+
+**Kdy čekat:** Na začátku hry a po každé změně stavu hry, která ovlivňuje dostupné akce
+
+**Co dělat:** Zobrazit/skrýt příslušné herní prvky (dobírací balíček, odhadovací balíček atd.)
+
+**Příklad:**
+```
+povoleneUI:["ODHAZOVACI_BALICEK","DOBIRACI_BALICEK"]
+```
+
+---
+
+#### `rychleOznameni:<text>`
+**Účel:** Rychlé textové oznámení hráči
+
+**Payload:** text oznámení
+
+**Kdy čekat:** Kdykoliv během hry pro informativní zprávy (např. změna barvy ve hře UNO)
+
+**Co dělat:** Zobrazit krátké oznámení (toast nebo notifikaci)
+
+**Příklad:**
+```
+rychleOznameni:Barva změněna na červenou
+```
+
+---
+
+#### `vyberKartu:<json>`
+**Účel:** Dialog pro výběr karty
+
+**Payload:** JSON objekt s ID dialogu, seznamem karet a volitelným nadpisem
+
+**Struktura:**
+```json
+{
+  "id": 3,
+  "karty": [
+    {"jmeno": "bang", "obrazek": "bang.png", "id": 42},
+    {"jmeno": "pivo", "obrazek": "pivo.png", "id": 43}
+  ],
+  "nadpis": "Vyber kartu"
+}
+```
+
+**Kdy čekat:** Když je potřeba, aby hráč vybral kartu (např. při efektu karty Cat Balou)
+
+**Co dělat:**
+- Zobrazit dialog s kartami
+- Po výběru poslat `dialog:<id>,<idKarty>`
+
+**Příklad:**
+```
+vyberKartu:{"id":3,"karty":[{"jmeno":"bang","obrazek":"bang.png","id":42}],"nadpis":"Vyber kartu k odebrání"}
 ```
 
 ---
