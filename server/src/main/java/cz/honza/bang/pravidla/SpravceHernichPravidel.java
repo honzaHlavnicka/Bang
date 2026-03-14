@@ -4,6 +4,7 @@ import cz.honza.bang.sdk.HerniPlugin;
 import cz.honza.bang.HraImp;
 import cz.honza.bang.sdk.HerniPravidla;
 import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -132,7 +133,30 @@ public class SpravceHernichPravidel {
     public static void pregeneruj(){
         try {
             pluginy.clear();
-            pluginy.addAll(NacitacPluginu.nactiPluginy(Paths.get("pluginy")));
+            
+            // Zkus hledat pluginy v různých cestách
+            Path[] cesty = {
+                Paths.get("pluginy"),           // Relativní vůči pracovnímu adresáři
+                Paths.get("./pluginy"),         // Explicitní aktuální složka
+                Paths.get("../pluginy"),        // Nadřazená složka (pro build/)
+            };
+            
+            for (Path cesta : cesty) {
+                if (java.nio.file.Files.exists(cesta)) {
+                    pluginy.addAll(NacitacPluginu.nactiPluginy(cesta));
+                    System.out.println("Pluginy načteny z: " + cesta.toAbsolutePath());
+                    System.out.println("   Počet pluginů: " + pluginy.size());
+                    break;
+                }
+            }
+            
+            if (pluginy.isEmpty()) {
+                System.out.println("VAROVÁNÍ: Žádné pluginy nenalezeny!");
+                System.out.println("Hledal jsem v:");
+                for (Path cesta : cesty) {
+                    System.out.println("  - " + cesta.toAbsolutePath());
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

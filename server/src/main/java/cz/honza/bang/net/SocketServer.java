@@ -35,6 +35,10 @@ public class SocketServer extends WebSocketServer {
         super(address);
         System.out.println("Adresa serveru je: " + address.toString());
         System.out.println("Port je: " + address.getPort());
+        
+        // Načti pluginy už při startu
+        System.out.println("Načítám pluginy...");
+        SpravceHernichPravidel.pregeneruj();
     }
 
 

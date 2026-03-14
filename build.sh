@@ -50,15 +50,22 @@ if [ -f "pluginy/prsi/target/prsi-1.0-SNAPSHOT.jar" ]; then
     cp pluginy/prsi/target/prsi-1.0-SNAPSHOT.jar "$PLUGINS_DIR/prsi.jar"
 fi
 
-# Kontrola zda existují VychoziHry plugin
 if [ -f "pluginy/VychoziHry/target/VychoziHry-1.0-SNAPSHOT.jar" ]; then
     cp pluginy/VychoziHry/target/VychoziHry-1.0-SNAPSHOT.jar "$PLUGINS_DIR/VychoziHry.jar"
 fi
 
-# Kontrola zda existují Uno plugin
 if [ -f "pluginy/Uno/target/Uno-1.0-SNAPSHOT.jar" ]; then
     cp pluginy/Uno/target/Uno-1.0-SNAPSHOT.jar "$PLUGINS_DIR/Uno.jar"
 fi
+
+# Vytvoření startovacího scriptu
+echo "📋 Vytvářím startovací script..."
+cat > "$BUILD_DIR/start.sh" << 'EOF'
+#!/bin/bash
+cd "$(dirname "$0")"
+java -jar server.jar
+EOF
+chmod +x "$BUILD_DIR/start.sh"
 
 echo ""
 echo "✨ Build dokončen!"
@@ -68,5 +75,7 @@ echo "   Server: $BUILD_DIR/server.jar"
 echo "   Pluginy: $PLUGINS_DIR/"
 echo ""
 echo "🚀 Spuštění serveru:"
-echo "   java -jar $BUILD_DIR/server.jar"
+echo "   cd $BUILD_DIR && bash start.sh"
+echo "   nebo"
+echo "   cd $BUILD_DIR && java -jar server.jar"
 echo ""

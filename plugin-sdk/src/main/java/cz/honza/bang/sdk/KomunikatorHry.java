@@ -39,6 +39,11 @@ public interface KomunikatorHry {
      */
     public void posliChybu(Hrac komu,Chyba chyba);
     
+    /**
+     * Pošle stavovou zprávu všem hráčům. Zpráva se zobrazí v centru obrazovky.
+     * @param zprava Text zprávy, která se bude zobrazovat (např. "Hráč vybírá barvu...")
+     */
+    public void posliStavovuZpravu(String zprava);
    
     public CompletableFuture<String> pozadejOdpoved(String otazka,Hrac komu);
        

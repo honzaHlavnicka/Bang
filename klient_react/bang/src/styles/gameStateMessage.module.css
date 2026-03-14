@@ -1,0 +1,184 @@
+
+/* Kontejner pro stavovou zprávu */
+.gameStateMessageContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 50px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Dark mode */
+:global(.darkMode) .gameStateMessageContainer {
+    background: linear-gradient(135deg, #333 0%, #222 100%);
+    color: #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Text zprávy */
+.gameStateMessageText {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Animace vstupní zprávy */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.gameStateMessageContainer {
+    animation: slideIn 0.3s ease-in-out;
+}
+
+/* Animace pulzování pro aktivní akci */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.gameStateMessageActive {
+    animation: pulse 1.5s infinite;
+}
+
+/* Infomační tlačítko */
+.infoButton {
+    background: linear-gradient(135deg, #764300 0%, #5a2e00 100%);
+    border: 1px solid #4a2000;
+    color: white;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+:global(.darkMode) .infoButton {
+    background: linear-gradient(135deg, #037da5 0%, #025f78 100%);
+    border: 1px solid #014c60;
+}
+
+.infoButton:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.infoButton:active {
+    transform: scale(0.98);
+}
+
+/* Ikona (volitelné) */
+.infoIcon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+}
+
+:global(.darkMode) .infoIcon {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Indikátor zatěžování */
+.loadingDot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+    margin-left: 4px;
+    animation: blink 1.4s infinite;
+}
+
+@keyframes blink {
+    0%, 60%, 100% {
+        opacity: 0.5;
+    }
+    30% {
+        opacity: 1;
+    }
+}
+
+/* Typ zprávy - čekání na vstup */
+.messageTypeWaiting {
+    color: #ff9800;
+}
+
+:global(.darkMode) .messageTypeWaiting {
+    color: #ffb74d;
+}
+
+/* Typ zprávy - informace */
+.messageTypeInfo {
+    color: #2196f3;
+}
+
+:global(.darkMode) .messageTypeInfo {
+    color: #64b5f6;
+}
+
+/* Typ zprávy - potvrzení */
+.messageTypeSuccess {
+    color: #4caf50;
+}
+
+:global(.darkMode) .messageTypeSuccess {
+    color: #81c784;
+}
+
+/* Typ zprávy - chyba/varování */
+.messageTypeError {
+    color: #f44336;
+}
+
+:global(.darkMode) .messageTypeError {
+    color: #ef5350;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .gameStateMessageContainer {
+        font-size: 14px;
+        padding: 10px 12px;
+        min-height: 44px;
+        gap: 8px;
+    }
+
+    .infoButton {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+}
+
+/* Transitions pro přepínání zpráv */
+.messageTransition {
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+}

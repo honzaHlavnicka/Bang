@@ -39,11 +39,18 @@ public class CatBalou extends Karta implements HratelnaKarta{
 
     @Override
     public boolean odehrat(Hrac kym) {
+        // Zobrazit stavovou zprávu že hráč vybírá cíl
+        hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá cíl útoku...");
+        
         hra.getKomunikator().pozadejOdpoved( "vyberHrace:" + pripravJSONvyberuHrace(kym), kym)
             .thenAccept(odpoved -> {
                 
                 System.out.println("Hráč odpověděl: " + odpoved);
                 Hrac naKoho = hra.getHrac(Integer.parseInt(odpoved)); //TODO: možná nějaká exception kontrola, DRY:Bang
+                
+                // Zobrazit stavovou zprávu že hráč vybírá kartu
+                hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá kartu od " + naKoho.getJmeno() + "...");
+                
                 hra.getKomunikator().pozadejOdpoved("vyberKartu:" + pripravJSONvyberuKarty(naKoho), kym)
                     .thenAccept(idKarty -> {
                         int idKartyCislo = Integer.parseInt(idKarty);
