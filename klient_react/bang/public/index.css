@@ -13,13 +13,72 @@
 }
 
 
-html{
-    background-image:url("img/pozadi2.jpg");
-    background-size: cover;
+/* Mobilní zařízení (< 480px) - nejmenší pozadí */
+@media (max-width: 479px) {
+    html {
+        background-image: url("img/pozadi2-mobile.webp");
+        background-size: cover;
+        background-attachment: fixed;
+    }
+    html.darkMode {
+        background-image: url("img/pozadi-tmave-mobile.webp");
+        background-size: cover;
+        background-attachment: fixed;
+    }
 }
-html.darkMode{
-    background-image:url("img/pozadi-tmave.jpg");
+
+/* Tablety a malé zařízení (480px - 768px) */
+@media (min-width: 480px) and (max-width: 768px) {
+    html {
+        background-image: url("img/pozadi2-tablet.webp");
+        background-size: cover;
+        background-attachment: fixed;
+    }
+    html.darkMode {
+        background-image: url("img/pozadi-tmave-tablet.webp");
+        background-size: cover;
+        background-attachment: fixed;
+    }
+}
+
+/* Tablety a střední zařízení (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    html {
+        background-image: url("img/pozadi2-desktop.webp");
+        background-size: cover;
+        background-attachment: fixed;
+    }
+    html.darkMode {
+        background-image: url("img/pozadi-tmave-desktop.webp");
+        background-size: cover;
+        background-attachment: fixed;
+    }
+}
+
+/* Desktopy a velké zařízení (> 1024px) */
+@media (min-width: 1025px) {
+    html {
+        background-image: url("img/pozadi2-large.webp");
+        background-size: cover;
+        background-attachment: fixed;
+    }
+    html.darkMode {
+        background-image: url("img/pozadi-tmave-large.webp");
+        background-size: cover;
+        background-attachment: fixed;
+    }
+}
+
+/* Fallback pro všechna zařízení */
+html {
+    background-image: url("img/pozadi2.jpg");
     background-size: cover;
+    background-attachment: fixed;
+}
+html.darkMode {
+    background-image: url("img/pozadi-tmave.jpg");
+    background-size: cover;
+    background-attachment: fixed;
 }
 .darkMode .toastsForCSS{
     background-color: #2c2c2c;

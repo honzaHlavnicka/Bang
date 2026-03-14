@@ -446,6 +446,11 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
             }
             hra.prohodBalicky();
             karta = hra.getBalicek().lizni();
+            // Kontrola po prohozu - pokud stále není karta, oba balíčky jsou prázdné
+            if(karta == null){
+                hra.getKomunikator().posliChybu(this, Chyba.DOSLI_KARTY_V_BALICKU); 
+                return;
+            }
         }
         karty.add(karta);
         System.out.println("lizani si");
