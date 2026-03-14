@@ -13,6 +13,7 @@ type ServerPlayer = {
     id: number;
     pocetKaret?: number;
     postava?: string;
+    isAdmin?: boolean;
 };
 
 type ServerCard = { obrazek: string; id: number };
@@ -91,6 +92,7 @@ export function handleGameMessage(
                     character: player.postava ?? "",
                     isCurrentTurn: false,
                     inPlayCards: [],
+                    isAdmin: player.isAdmin ?? false,
                 }));
                 setGameState(prev => ({ ...prev, players: mappedPlayers }));
                 console.log(json);
@@ -111,6 +113,7 @@ export function handleGameMessage(
                     character: json.postava ?? "",
                     isCurrentTurn: false,
                     inPlayCards: [],
+                    isAdmin: json.isAdmin ?? false,
                 };
                 setGameState(prev => ({
                     ...prev,
@@ -153,7 +156,17 @@ export function handleGameMessage(
             break;
         }
         case "noveIdHrace": {
-            setGameState(prev => ({ ...prev, playerId: parseInt(payload) }));
+            const myId = parseInt(payload);
+            setGameState(prev => {
+                // Najdi si svoje info v seznamu hráčů a zjisti isAdmin
+                const myInfo = prev.players?.find(p => p.id === myId);
+                
+                return { 
+                    ...prev, 
+                    playerId: myId,
+                    isAdmin: myInfo?.isAdmin ?? false
+                };
+            });
             break;
         }
         case "novaKarta": {

@@ -109,33 +109,33 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      */
     @Override
     public boolean odeberZivot() {
-        if (zivoty < 0) {//TODO: kdyz ma moc zivotu, nez kolik muze mit
-            // Událost zabití kohokoliv - upozorni efekty všech hráčů
+        // Nejdřív kontrolujeme, jestli hráč už je mrtvý
+        if (zivoty <= 0) {
+            // Hráč je už mrtvý, nic se nedělá
+            hra.getHerniPravidla().dosliZivoty(this);
+            return false;
+        }
+        
+        // Odečteme jeden život
+        zivoty--;
+        hra.getKomunikator().posliZmenuPoctuZivotu(this);
+        
+        // Událost po ztrátě života pro efekty tohoto hráče
+        for (Efekt e : efekty) {
+            e.poZtrateZivota(hra, this);
+        }
+        
+        // Pokud hráč právě zemřel (zivoty <= 0), upozorni efekty všech hráčů
+        if (zivoty <= 0) {
             for (Hrac hr : hra.getHraci()) {
                 for (Efekt e : hr.getEfekty()) {
                     e.poZabitiKohokoliv(hr, this);
                 }
             }
             hra.getHerniPravidla().dosliZivoty(this);
-            return false;
-        } else {
-            zivoty--;
-            hra.getKomunikator().posliZmenuPoctuZivotu(this);
-            // Událost po ztrátě života pro efekty tohoto hráče
-            for (Efekt e : efekty) {
-                e.poZtrateZivota(hra, this);
-            }
-            // Pokud hráč zemřel, upozorni efekty všech hráčů
-            if (zivoty <= 0) {
-                for (Hrac hr : hra.getHraci()) {
-                    for (Efekt e : hr.getEfekty()) {
-                        e.poZabitiKohokoliv(hr, this);
-                    }
-                }
-            }
-            return true;
         }
-
+        
+        return zivoty > 0; // vrátí true pokud je hráč ještě naživu
     }
 
     /**
@@ -610,6 +610,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         }
         sb.append(",\"maximumZivotu\":");
         sb.append(maximumZivotu);
+        sb.append(",\"isAdmin\":");
+        sb.append(this.equals(hra.getKomunikator().getAdmin()));
         sb.append('}');
         return sb.toString();
     }

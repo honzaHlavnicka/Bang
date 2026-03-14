@@ -24,12 +24,13 @@ export type GameStateType = {
     handCards: Array<CardType>;
     inPlayCards: Array<CardType>;
     playerId: number| null;
+    isAdmin?: boolean;
 
 
 
     turnPlayerId?: number | null;
     characters?: Array<{jmeno:string,obrazek:string,popis:string}> | null;
-    players: Array<{ id: number; name: string; role: string; health: number;cardsInHand:number; character: string; isCurrentTurn: boolean; inPlayCards: Array<CardType> | null;}> | null;
+    players: Array<{ id: number; name: string; role: string; health: number;cardsInHand:number; character: string; isCurrentTurn: boolean; inPlayCards: Array<CardType> | null; isAdmin?: boolean;}> | null;
     turnOrder: string[];
     deckCount: number;
     discardPile: Array<string>;

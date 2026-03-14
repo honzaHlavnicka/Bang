@@ -2,6 +2,8 @@ import { useGame } from "../modules/GameContext";
 
 export default function PlayersWaitingGame() {
     const {gameState ,startGame} = useGame();
+    const isAdmin = gameState.isAdmin ?? false;
+    
     return (
         <div >
             <h3 style={{marginBottom:"0px"}}>Připojení hráči:</h3>
@@ -12,7 +14,7 @@ export default function PlayersWaitingGame() {
                 </li>
             )}) }
             </ul>
-            {gameState.players && gameState.players.length >= 2 ?
+            {gameState.players && gameState.players.length >= 2 && isAdmin ?
             <button
                 style={{
                     width: "100%",

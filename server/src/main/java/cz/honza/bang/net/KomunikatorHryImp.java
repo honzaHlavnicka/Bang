@@ -57,6 +57,11 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
             posliVsem(message + " [od: "+hrac.getJmeno()+"]");
         }
         if(message.startsWith("zahajeniHry")){
+            // Kontrola, jestli je hráč admin (ten, který vytvořil hru)
+            if (!hrac.equals(getAdmin())) {
+                posliChybu(hrac, Chyba.NEJSI_ADMIN_HRY);
+                return;
+            }
             hra.setZahajena(true);
         }
         if(message.startsWith("getIdHry")){
