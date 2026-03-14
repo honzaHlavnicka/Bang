@@ -185,7 +185,7 @@ chat:Dobře zahráno!
 
 ### Zprávy od serveru ke klientovi
 
-#### `hraZacala` / `hraSpustena`
+#### `hraZacala`
 **Účel:** Oznámení, že hra byla zahájena
 
 **Payload:** žádný
