@@ -207,3 +207,5 @@ README.html
 *.png
 /nbproject/
 /server/nbproject/
+*/build/*
+*.webp

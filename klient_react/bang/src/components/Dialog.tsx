@@ -115,6 +115,28 @@ export default function Dialog() {
                 </div>
             );
         break;
+        case "CONFIRM":
+            content = (
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10}} >
+                    <h2>{dialog.data.title || "Potvrzení"}</h2>
+                    <p>{dialog.data.message}</p>
+                    <div style={{display:"flex",flexDirection:"row",gap:10}}>
+                        <button className={globalCSS.button} onClick={()=>{
+                            closeDialog();
+                            if(dialog.callback){
+                                dialog.callback(true);
+                            }
+                        }}>Ano</button>
+                        <button className={globalCSS.button} onClick={()=>{
+                            closeDialog();
+                            if(dialog.callback){
+                                dialog.callback(false);
+                            }
+                        }}>Ne</button>
+                    </div>
+                </div>
+            );
+        break;
         default:
             break;
     }

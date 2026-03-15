@@ -39,7 +39,16 @@ type infoDialog = {
     }
 }
 
-export type DialogState = (dialogBase & selectCardDialog) | (dialogBase & selectPlayerDialog) | (dialogBase & confirmActionDialog) | (dialogBase & infoDialog) | null;
+type confirmDialog = {
+    type:"CONFIRM",
+    data:{
+        message?:string,
+        title?:string,
+    },
+    callback?:(confirmed:boolean)=>void;
+}
+
+export type DialogState = (dialogBase & selectCardDialog) | (dialogBase & selectPlayerDialog) | (dialogBase & confirmActionDialog) | (dialogBase & infoDialog) | (dialogBase & confirmDialog) | null;
 
 export type DialogContextType = {
     dialog: DialogState;
