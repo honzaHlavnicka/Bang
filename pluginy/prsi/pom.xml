@@ -20,4 +20,9 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
+    <parent>
+        <groupId>cz.honza</groupId>
+        <artifactId>bang</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 </project>

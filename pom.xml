@@ -15,7 +15,11 @@
         <module>plugin-sdk</module>
         <module>server</module>
         <module>pluginy/VychoziHry</module>
+        <module>pluginy/bang</module>
+        <module>pluginy/Uno</module>
+        <module>pluginy/prsi</module>
     </modules>
+    
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
