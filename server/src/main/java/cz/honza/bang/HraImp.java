@@ -156,21 +156,19 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         if(!this.zahajena && zahajena){
             this.zahajena = zahajena;
             //zahájení hry:
-            
-            List<Role> role =  new ArrayList<>(Role.poleRoliBangu(hraci.size()));
-            Collections.shuffle(role);
-            
-            //todo: přesunout do pravidel
-            
-            for (int i = 0; i < role.size(); i++) {
-                hraci.get(i).pripravKeHre(role.get(i));
-            }   
+
             herniPravidla.poSpusteniHry();
             
             komunikator.posliZahajeniHry();
             spravceTahu = new SpravceTahuImp(hraci);
-            spravceTahu.dalsiHracPodleRole(Role.SERIF).zahajitTah();
+            
+            for (Hrac hrac : hraci) {
+                herniPravidla.pripravitHrace(hrac);
+            }
+            
             System.out.println("zahájen tah v setzahajena");
+            
+            herniPravidla.spustitPrvniTah(spravceTahu);
                         
             
         }
@@ -249,10 +247,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         odhazovaciBalicek = novyOdhazovaciBalicek;   
     }
 
-    @Override
-    public Karta sejmiKartu() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+
     
     @Override 
     public Karta otocVrchniKartu(){

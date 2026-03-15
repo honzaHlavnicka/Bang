@@ -4,7 +4,7 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang;
+package cz.honza.bang.pluginy.bang;
 
 import java.util.ArrayList;
 import java.util.List;

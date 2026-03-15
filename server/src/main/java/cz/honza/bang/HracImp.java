@@ -29,7 +29,6 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     private List<Karta> vylozeneKarty = new ArrayList<>();
     private List<Efekt> efekty = new ArrayList<>();
     private cz.honza.bang.sdk.Role role;
-    private boolean pripravenyKeHre;
     private String jmeno;
     private cz.honza.bang.sdk.Postava[] postavyNaVyber;
     private Hra hra;
@@ -40,34 +39,19 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     
     public HracImp(Hra hra){
         this.hra = hra;
-        pripravenyKeHre = false;
         jmeno = "nepojmenovaný hráč";
         id = nextId;
         nextId++;
     }
     
     /**
-     * Připraví se ke hře, dobere si karty. Mělo by se spustit pře začátkem hry.
+     * Přiřadí roli na začátku hry.
      * @param role
      */
     @Override
-    public void pripravKeHre(cz.honza.bang.sdk.Role role) {
-        hra.getHerniPravidla().pripravitHrace(this);
+    public void priraditRoliNaZacatkuHry(cz.honza.bang.sdk.Role role) {
         hra.getKomunikator().posli(this, "role:"+role.name());
-        
         this.role = role;
-        
-        /*for (int i = 0; i < maximumZivotu; i++) {
-            Karta karta = hra.getBalicek().lizni();
-            karty.add(karta);
-            hra.getKomunikator().posli(this, karta.toJSONold());
-            hra.getKomunikator().posliVsem("zmenaPoctuKaret:"+id+","+karty.size(),this);
-        }*/
-                
-        pripravenyKeHre = true;
-        
-        
-        
     }
     
     /**
@@ -220,9 +204,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         this.role = role;
     }
 
-    public boolean isPripravenyKeHre() {
-        return pripravenyKeHre;
-    }
+  
 
     public Hra getHra() {
         return hra;

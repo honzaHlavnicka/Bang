@@ -17,10 +17,10 @@ import java.util.List;
 public interface Hrac {
      
     /**
-     * Připraví se ke hře, dobere si karty. Mělo by se spustit pře začátkem hry.
+     * Mělo by se spustit pře začátkem hry. Přiřadí hráči roli a připravý ho ke hře.
      * @param role
      */
-    public void pripravKeHre(Role role);
+    public void priraditRoliNaZacatkuHry(Role role);
     
     /**
      * Nechá hráče vybrat z postav.
@@ -70,8 +70,6 @@ public interface Hrac {
     public void setPostava(Postava postava);
 
     public void setRole(Role role);
-
-    public boolean isPripravenyKeHre();
 
     public Hra getHra();
     

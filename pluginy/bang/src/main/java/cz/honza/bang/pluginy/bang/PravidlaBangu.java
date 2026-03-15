@@ -12,6 +12,8 @@ import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
 import cz.honza.bang.sdk.VylozitelnaKarta;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -109,6 +111,14 @@ public class PravidlaBangu implements HerniPravidla{
     
     @Override
     public void poSpusteniHry() {
+        List<Role> role = new ArrayList<>(Role.poleRoliBangu(hra.getHraci().size()));
+        Collections.shuffle(role);
+        
+        for (int i = 0; i < role.size(); i++) {
+            hra.getHraci().get(i).priraditRoliNaZacatkuHry(role.get(i));
+        }
+
+        //todo: přesunout do pravidel
     }
 
     @Override

@@ -85,7 +85,6 @@ public interface Hra {
     public void prohodBalicky();
 
 
-    public Karta sejmiKartu();
     
     public SpravceTahu getSpravceTahu();
     public Balicek<Karta> getOdhazovaciBalicek();

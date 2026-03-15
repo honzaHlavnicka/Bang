@@ -51,7 +51,8 @@ public class Vezeni extends Karta implements VylozitelnaKarta, Efekt{
 
     @Override
     public void naZacatekTahu(Hra hra, Hrac hrac) {
-        Efekt.super.naZacatekTahu(hra, hrac); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+        // vylosovat. (
+        // Předat.
     }
 
     @Override

@@ -14,7 +14,8 @@ import java.util.Stack;
 public interface HerniPravidla {    
     
     /**
-     * Spustí se po spuštění hry.Může třeba vyložit kartu atd.
+     * Spustí se po spuštění hry. Může například vyložit kartu..
+     * Musí zavolat privení ke hře na každého hráče.
      * @see #pripravitHrace(cz.honza.bang.Hrac)
      */
     public void poSpusteniHry();
@@ -106,5 +107,9 @@ public interface HerniPravidla {
 
     default public  boolean muzeVylozit(Hrac kdo, VylozitelnaKarta co){
         return true;
+    }
+    
+    default public  void spustitPrvniTah(SpravceTahu spravceTahu){
+        spravceTahu.dalsiHrac();
     }
 }

@@ -24,7 +24,7 @@ import java.util.List;
 public class PravidlaPrsi implements HerniPravidla{
     private final Hra hra;
     private int pocetKaretNaLiznuti;
-    private List<Hrac> porizeniKonciHracu = new ArrayList<>();  // Pořadí končících hráčů
+    private List<Hrac> poradiVyher = new ArrayList<>();  // Pořadí končících hráčů
 
     public PravidlaPrsi(Hra hra) {
         this.hra = hra;
@@ -37,9 +37,9 @@ public class PravidlaPrsi implements HerniPravidla{
         hra.getSpravceTahu().dalsiHracSUpozornenim();
         if(kym.getKarty().isEmpty()){
             // Hráč skončil - přidej ho do pořadí
-            porizeniKonciHracu.add(kym);
+            poradiVyher.add(kym);
             
-            int pocetZbyvajicichHracu = hra.getHraci().size() - porizeniKonciHracu.size();
+            int pocetZbyvajicichHracu = hra.getHraci().size() - poradiVyher.size();
             
             // Pokud zbyl jen jeden hráč, tak hra skončila
             if(pocetZbyvajicichHracu <= 1){
@@ -156,24 +156,24 @@ public class PravidlaPrsi implements HerniPravidla{
         // Zbývá jeden hráč - poslední (vítěz)
         List<Hrac> zbyvajici = new ArrayList<>();
         for(Hrac hrac : hra.getHraci()){
-            if(!porizeniKonciHracu.contains(hrac)){
+            if(!poradiVyher.contains(hrac)){
                 zbyvajici.add(hrac);
             }
         }
         
         // Vytvoř 2D pole výsledků: každé místo je jedno vnitřní pole
-        Hrac[][] vysledky = new Hrac[porizeniKonciHracu.size() + zbyvajici.size()][];
+        Hrac[][] vysledky = new Hrac[poradiVyher.size() + zbyvajici.size()][];
         
         // První místa jsou v pořadí kdy skončili (0 index = 1. místo, atd.)
-        for(int i = 0; i < porizeniKonciHracu.size(); i++){
-            vysledky[i] = new Hrac[]{porizeniKonciHracu.get(i)};
+        for(int i = 0; i < poradiVyher.size(); i++){
+            vysledky[i] = new Hrac[]{poradiVyher.get(i)};
         }
         
         // Poslední místo(a) jsou zbývající hráči (1. vítěz)
         if(zbyvajici.size() > 0){
-            vysledky[porizeniKonciHracu.size()] = new Hrac[zbyvajici.size()];
+            vysledky[poradiVyher.size()] = new Hrac[zbyvajici.size()];
             for(int i = 0; i < zbyvajici.size(); i++){
-                vysledky[porizeniKonciHracu.size()][i] = zbyvajici.get(i);
+                vysledky[poradiVyher.size()][i] = zbyvajici.get(i);
             }
         }
         
