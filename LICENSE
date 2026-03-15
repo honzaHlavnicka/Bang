@@ -1,0 +1,36 @@
+LICENČNÍ UJEDNÁNÍ A PODMÍNKY UŽITÍ (EULA)
+
+Autor a držitel autorských práv: Jan Hlavnička (dále jen „Autor“)
+Projekt: Bang (včetně serverové části, klientské části, pluginů a Plugin-SDK)
+Doména projektu: bang.honzaa.cz
+Oficiální repozitář: github.com/HonzaHlavnika/Bang
+
+Verze licence: 2.1 (2026)
+
+
+SOFTWARE JE POSKYTOVÁN "TAK JAK JE", BEZ JAKÉKOLI ZÁRUKY, VÝSLOVNÉ NEBO IMPLIKOVANÉ. AUTOR NENESE ODPOVĚDNOST ZA ŽÁDNÉ ŠKODY, ZTRÁTY DAT NEBO JINÉ PROBLÉMY VZNIKLÉ POUŽÍVÁNÍM TOHOTO SOFTWARU. 
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+I. VLASTNICTVÍ A ROZSAH OCHRANY
+    Tento software a veškerý související zdrojový kód jsou duševním vlastnictvím Autora a jsou chráněny autorským zákonem.
+    Absolutní výhrada: Veškeré grafické prvky, obrázky, ilustrace a texty tvořící součást projektu „IOČ“ (ročníková práce) jsou z této licence výslovně vyjmuty. Na tato aktiva se nevztahuje žádné z níže uvedených svolení k užití; jejich kopírování, šíření či jakákoliv modifikace jsou bez předchozího písemného souhlasu Autora přísně zakázány.
+II. UDĚLENÍ LICENCE A POVOLENÉ UŽITÍ
+    Autor uděluje uživateli bezplatnou, nevýhradní licenci ke stažení, instalaci a spuštění binárních souborů i zdrojového kódu softwaru pro nekomerční, soukromé nebo studijní účely.
+    Za studijní a vzdělávací účely se považuje i využití softwaru v rámci placených kurzů, školních tříd či seminářů, a to za účelem výuky programování pluginů, tvorby botů či analýzy kódu studenty a pedagogy.
+    Uživatel je oprávněn kombinovat lokální komponenty (vlastní klient/server) s cloudovými komponentami Autora provozovanými na doméně bang.honzaa.cz.
+III. ÚPRAVY A PŘISPÍVÁNÍ (CONTRIBUTIONS)
+    Jakákoliv modifikace původního zdrojového kódu Autora je povolena pouze pod podmínkou, že tyto úpravy budou formou „Pull Requestu“ odeslány do oficiálního repozitáře Autora. Jakékoliv jiné veřejné šíření modifikovaných verzí základního softwaru je zakázáno.
+    Autorovi se doporučuje nahlásit existenci nových pluginů či vylepšení formou „Issue“ v oficiálním repozitáři pro jejich případné začlenění do oficiální distribuce.
+IV. VÝVOJ DOPLŇKŮ A VEŘEJNÝ PROVOZ (PLUGINS)
+    Uživatel je oprávněn vytvářet vlastní pluginy s využitím přiloženého Plugin-SDK.
+    Veřejný provoz: Uživatel, který vytvoří vlastní autorský plugin, má právo provozovat veřejně dostupný server s tímto softwarem, pokud jsou na něm aktivní jím vytvořené pluginy.
+    Omezení veřejného provozu:
+        Je zakázáno veřejně provozovat server využívající výhradně oficiální pluginy z repozitáře Autora (bez vlastního autorského přínosu).
+        Veřejný provoz serveru je povolen výhradně bez klientské části. Uživatel nesmí veřejně distribuovat nebo hostovat soubory klienta (grafiku, rozhraní); hráči musí využít oficiální klient nebo legálně staženou vlastní kopii.
+    Boti: Automatizované systémy nesmí nadměrně zatěžovat infrastrukturu Autora a jejich User-Agent musí obsahovat označení bota a kontakt na jeho tvůrce.
+V. AKADEMICKÁ VÝJIMKA (HODNOCENÍ PROJEKTU)
+    Pro účely hodnocení projektu oponentem, vedoucím práce či jiným školou pověřeným hodnotitelem se udělují veškerá práva k nakládání s dílem nezbytná pro proces evaluace. Tato výjimka se nevztahuje na právo dílo dále veřejně šířit.
+VI. VYLOUČENÍ ZÁRUKY A ODPOVĚDNOSTI
+    Software je poskytován „tak jak je“ (as is). Autor neposkytuje žádné záruky ohledně funkčnosti, bezpečnosti či vhodnosti pro konkrétní účel.
+    Autor nenese odpovědnost za jakékoli škody, ztrátu dat či omezení dostupnosti služeb vzniklé v důsledku používání tohoto softwaru.
