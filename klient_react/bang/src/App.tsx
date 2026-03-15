@@ -1,6 +1,7 @@
 import React, { Suspense, useEffect } from "react";
 import { useGame } from './modules/GameContext';
 import WaitingRoom from "./pages/WaitingRoom";
+import AfterGamePage from "./pages/AfterGamePage";
 
 // Lazy importy těžkých stránek
 const GamePage = React.lazy(() => import('./pages/GamePage'));
@@ -25,7 +26,11 @@ function App() {
     <Suspense fallback={<WaitingRoom>Náčítání...</WaitingRoom>}>
       {gameState.inGame ? (
         gameState.gameStarted ? (
-          <GamePage />
+          gameState.gameEnded ? (
+            <AfterGamePage />
+          ) : (
+            <GamePage />
+          )
         ) : (
           <BeforeGameWaiting />
         )

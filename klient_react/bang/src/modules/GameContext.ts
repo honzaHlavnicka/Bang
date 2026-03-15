@@ -12,6 +12,7 @@ export type GameStateType = {
     startedConection:boolean;
     inGame:boolean;
     gameStarted:boolean;
+    gameEnded:boolean;
     gameTypesAvailable?:Array<{id:number,name:string,description:string,url:string}>
 
     gameCode: string | null;
@@ -40,11 +41,14 @@ export type GameStateType = {
     gameStateMessege?:string;
     gameStateMessegeFull?:string;
 
+    winningPlaces?:number[][]; // [[<id 1. místa>], [<id 2. místa>,<2. id 2. místa>], ...]]
+
 };
 export const gameStateDefault: GameStateType = {
     startedConection:false,
     gameStarted: false,
     inGame: false,
+    gameEnded: false,
 
     gameCode: "",
     handCards:[],

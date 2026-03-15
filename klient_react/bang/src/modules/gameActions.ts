@@ -348,7 +348,7 @@ export function handleGameMessage(
             }
             break;
         }
-        case "vyhral":{
+        case "vyhral":{  // Jeden ze 2 způsobů jak to oznámit
             const winnerId = payload;
             const state = stateRef.current;
             if(state == null){
@@ -357,11 +357,10 @@ export function handleGameMessage(
             }
             const winner = state.players?.find((p)=>String(p.id) === String(winnerId));
             if(winner == null){
-                toast.error("Někdo vyhrál, nevím kdo.");
+                toast.error("Někdo vyhrál, nevím kho.");
                 return;
             }
             openDialog({type:"INFO", data:{header:"Konec hry",message:`Hru vyhrál hráč ${winner.name}. Gratuluji!`},dialogHeader:"Konec hry",notCloasable:false});
-            //TODO: vylepšit dialog
             break;
         }
         case "welcome": {
@@ -455,6 +454,20 @@ export function handleGameMessage(
         }
         case "rychleOznameni":{
             notify(payload);
+            break;
+        }
+        case "vysledkyHry":{
+            try{
+                const json = JSON.parse(payload) as number[][];
+                setGameState(prev=>({...prev, winningPlaces: json}));
+            }catch(error){
+                console.error("chyba při parsování vysledkyHry", error, payload);
+                toast.error('Chybná odpověď serveru')
+            }
+            break;
+        }
+        case "konecHry":{
+            setGameState(prev=>({...prev, gameEnded:true}));
             break;
         }
         default: {

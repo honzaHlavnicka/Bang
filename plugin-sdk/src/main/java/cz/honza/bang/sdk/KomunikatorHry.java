@@ -134,7 +134,18 @@ public interface KomunikatorHry {
      * @param vyjimka Hráč, který zprávu neobdrží (obvykle ten, co ji vyvolal)
      */
     public void posliRychleOznameni(String oznameni, Hrac vyjimka);
-   
+
+    /**
+     * Všem hráčům pošle zprávu, že hra skončila.
+     */
+    public void posliKonecHry();
+
+    /**
+     * Pošle všem hráčům výsledkovou tabulku. Není to konec hry.
+     * @param vysledky pole, jehož každá položka je jedno umístění (index 0 = místo 1...) a v jednom umístění se může naházet více hráčů spolu.
+     */
+    public void posliVysledky(Hrac[][] vysledky);
+
     public CompletableFuture<String> pozadejOdpoved(String otazka,Hrac komu);
        
 

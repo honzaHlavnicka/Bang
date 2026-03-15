@@ -16,6 +16,7 @@ import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import org.java_websocket.WebSocket;
+import org.json.JSONArray;
 
 /**
  *
@@ -270,6 +271,29 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     public void posliRychleOznameni(String oznameni, Hrac vyjimka) {
         posliVsem("rychleOznameni:" + oznameni, vyjimka);
     }
+
+    @Override
+    public void posliKonecHry() {
+        posliVsem("konecHry");
+    }
+
+
+    @Override
+    public void posliVysledky(Hrac[][] vysledky) {
+        int radky = vysledky.length;
+        int sloupce = vysledky[0].length;
+        int[][] idPole = new int[radky][sloupce];
+
+        for (int i = 0; i < radky; i++) {
+            for (int j = 0; j < sloupce; j++) {
+                idPole[i][j] = vysledky[i][j].getId();
+            }
+        }
+
+        String json = new JSONArray(idPole).toString();
+        posliVsem("vysledkyHry:" + json);
+    }
+
     
     /**
      *

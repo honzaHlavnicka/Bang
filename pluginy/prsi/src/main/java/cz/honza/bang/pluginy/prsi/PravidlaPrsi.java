@@ -16,12 +16,15 @@ import cz.honza.bang.sdk.HerniPravidla;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
 public class PravidlaPrsi implements HerniPravidla{
     private final Hra hra;
     private int pocetKaretNaLiznuti;
+    private List<Hrac> porizeniKonciHracu = new ArrayList<>();  // Pořadí končících hráčů
 
     public PravidlaPrsi(Hra hra) {
         this.hra = hra;
@@ -33,8 +36,15 @@ public class PravidlaPrsi implements HerniPravidla{
     public void poOdehrani(Hrac kym) {
         hra.getSpravceTahu().dalsiHracSUpozornenim();
         if(kym.getKarty().isEmpty()){
-            hra.skoncil(kym);
-            hra.vyhral(kym);
+            // Hráč skončil - přidej ho do pořadí
+            porizeniKonciHracu.add(kym);
+            
+            int pocetZbyvajicichHracu = hra.getHraci().size() - porizeniKonciHracu.size();
+            
+            // Pokud zbyl jen jeden hráč, tak hra skončila
+            if(pocetZbyvajicichHracu <= 1){
+                ukoncitHru();
+            }
         }
     }
 
@@ -80,7 +90,7 @@ public class PravidlaPrsi implements HerniPravidla{
             balicek.vratNahoru(new PrsiSvrsek(hra, balicek, barva, PrsiHodnota.SVRSEK));
         }
         balicek.zamichej();
-        hra.otocVrchniKartu();
+        
     }
 
     @Override
@@ -106,8 +116,13 @@ public class PravidlaPrsi implements HerniPravidla{
         ((HratelnaKarta) vrchni).odehrat(hra.getSpravceTahu().getNaTahu());
         hra.getSpravceTahu().dalsiHracSUpozornenim();
         hra.getKomunikator().posliVsem("odehrat:-1|" + vrchni.toJSON());*/
+
+        PrsiKarta karta = (PrsiKarta) hra.otocVrchniKartu();
+        while (karta.getHodnota() == PrsiHodnota.SVRSEK || karta == null) {
+            karta = (PrsiKarta) hra.otocVrchniKartu();
+        }
     }
-    
+
     private enum StavSedmicky{
         ZADNY, ZAHRANA
     }
@@ -133,5 +148,41 @@ public class PravidlaPrsi implements HerniPravidla{
         hrac.lizni();
     }
     
+    /**
+     * Ukončí hru a pošle výsledky hráčům.
+     * Vytvoří 2D pole kde každá řada je jedno umístění a obsahuje hráče na tom místě.
+     */
+    private void ukoncitHru(){
+        // Zbývá jeden hráč - poslední (vítěz)
+        List<Hrac> zbyvajici = new ArrayList<>();
+        for(Hrac hrac : hra.getHraci()){
+            if(!porizeniKonciHracu.contains(hrac)){
+                zbyvajici.add(hrac);
+            }
+        }
+        
+        // Vytvoř 2D pole výsledků: každé místo je jedno vnitřní pole
+        Hrac[][] vysledky = new Hrac[porizeniKonciHracu.size() + zbyvajici.size()][];
+        
+        // První místa jsou v pořadí kdy skončili (0 index = 1. místo, atd.)
+        for(int i = 0; i < porizeniKonciHracu.size(); i++){
+            vysledky[i] = new Hrac[]{porizeniKonciHracu.get(i)};
+        }
+        
+        // Poslední místo(a) jsou zbývající hráči (1. vítěz)
+        if(zbyvajici.size() > 0){
+            vysledky[porizeniKonciHracu.size()] = new Hrac[zbyvajici.size()];
+            for(int i = 0; i < zbyvajici.size(); i++){
+                vysledky[porizeniKonciHracu.size()][i] = zbyvajici.get(i);
+            }
+        }
+        
+        // Pošli výsledky
+        hra.getKomunikator().posliVysledky(vysledky);
+        
+        // Oznám konec hry
+        hra.getKomunikator().posliKonecHry();
+    }
     
 }
+

@@ -229,13 +229,13 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     }
     
     /**
-     * Zařídí problematiku výhry, ale nevyřadí hráče z hrací smyčky. 
+     * Nechá hráčům ukázat, že hráč vyhrál, ale nevyřadí hráče z hrací smyčky. 
+     * Pokud chce plugin řešit svoje pořadí a pokročilý konec, měl by si držžet tabulku sám a použít Komunikator.posliPoradi() a Komunikator.posliKonec().
      * @param kdo
      */
     @Override
     public void vyhral(Hrac kdo){
         komunikator.posliVitezstvi(kdo);
-        //TODO: zapsat do tabulky výsledků, vytvořit tabulku výsledků
     }
     
     /**
@@ -254,7 +254,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
-    @Override //TODO: proč není v hráčovi
+    @Override 
     public Karta otocVrchniKartu(){
         Karta karta = balicek.lizni();
         odhazovaciBalicek.vratNahoru(karta);
