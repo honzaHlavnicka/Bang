@@ -11,8 +11,10 @@ import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
+import cz.honza.bang.sdk.SpravceTahu;
 import cz.honza.bang.sdk.VylozitelnaKarta;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,30 +37,59 @@ public class PravidlaBangu implements HerniPravidla{
     @Override
     public void dosliZivoty(Hrac komu) {
         hra.getSpravceTahu().vyraditHrace(komu);
-        /*
-        if(komu.getRole() == Role.SERIF){
-            //banditi nebo odpadlík vyhráli
+
+        long pocetZivychBanditu = hra.getHraci().stream().filter(h -> h.getRole() == Role.BANDITA && h.jeZivy()).count();
+        long pocetZivychOdpadliku = hra.getHraci().stream().filter(h -> h.getRole() == Role.ODPADLIK && h.jeZivy()).count();
+        long celkemZivych = hra.getHraci().stream().filter(Hrac::jeZivy).count();
+        boolean zivySerif = hra.getHraci().stream().anyMatch(h -> h.getRole() == Role.SERIF && h.jeZivy());
+
+        Hrac[][] poradi = null;
+
+        if (!zivySerif) {
+            // Šerif zemřel
+            if (celkemZivych == 1 && pocetZivychOdpadliku == 1) {
+                poradi = new Hrac[2][];
+                poradi[0] = hra.getHraci().stream().filter(h -> h.getRole() == Role.ODPADLIK).toArray(Hrac[]::new);
+                poradi[1] = hra.getHraci().stream().filter(h -> h.getRole() != Role.ODPADLIK).toArray(Hrac[]::new);
+            } else {
+                poradi = new Hrac[3][];
+                poradi[0] = hra.getHraci().stream().filter(h -> h.getRole() == Role.BANDITA).toArray(Hrac[]::new);
+                poradi[1] = hra.getHraci().stream().filter(h -> h.getRole() == Role.ODPADLIK).toArray(Hrac[]::new);
+                poradi[2] = hra.getHraci().stream().filter(h -> h.getRole() == Role.POMOCNIK || h.getRole() == Role.SERIF).toArray(Hrac[]::new);
+            }
+        } else if (pocetZivychBanditu == 0 && pocetZivychOdpadliku == 0) {
+            // Šerif a pomocníci vyhráli
+            poradi = new Hrac[3][];
+            poradi[0] = hra.getHraci().stream().filter(h -> h.getRole() == Role.SERIF || h.getRole() == Role.POMOCNIK).toArray(Hrac[]::new);
+            poradi[1] = hra.getHraci().stream().filter(h -> h.getRole() == Role.ODPADLIK).toArray(Hrac[]::new);
+            poradi[2] = hra.getHraci().stream().filter(h -> h.getRole() == Role.BANDITA).toArray(Hrac[]::new);
         }
-        if(komu.getRole() == Role.BANDITA){
-            //TODO: spočítat bandity: možná šerif vyhrál
+
+        if (poradi != null) {
+            // OPRAVA: Vyčistíme pole od prázdných rolí (např. když chybí odpadlík nebo pomocník)
+            Hrac[][] vycistenePoradi = Arrays.stream(poradi)
+                    .filter(skupina -> skupina.length > 0)
+                    .toArray(Hrac[][]::new);
+
+            // Pošleme komunikátoru jen ty skupiny hráčů, které opravdu existují
+            hra.getKomunikator().posliVysledky(vycistenePoradi);
+            hra.getKomunikator().posliKonecHry();
         }
-        if(komu.getRole() == Role.POMOCNIK){
-            //mozna vyhral ospadlik
-        }*/
-        
-        //TODO: prohra
-        
+
+
+
+            
         List<Karta> karty = komu.getKarty();
         for (Karta karta : karty) {
             hra.getOdhazovaciBalicek().vratNahoru(karta);
             hra.getKomunikator().posli(komu, "odehrat:" + komu.getId() + "," + karta.toJSON());
         }
         karty.clear();
-        //TODO:DRY
+
         karty = komu.getVylozeneKarty();
         for (Karta karta : karty) {
             hra.getOdhazovaciBalicek().vratNahoru(karta);
-            hra.getKomunikator().posli(komu,"odehrat:"+komu.getId()+ "," + karta.toJSON()); //TODO: to asi nebude odehrat, bude to spalit, ale ještě namám protokol.
+            hra.getKomunikator().posli(komu,"spalit:"+komu.getId()+ "," + karta.toJSON()); 
        }
        karty.clear();     
         
@@ -117,27 +148,27 @@ public class PravidlaBangu implements HerniPravidla{
         for (int i = 0; i < role.size(); i++) {
             hra.getHraci().get(i).priraditRoliNaZacatkuHry(role.get(i));
         }
-
-        //todo: přesunout do pravidel
+        
     }
 
     @Override
     public void pripravitHrace(Hrac hrac) {
-        /*if (hrac.getRole() != Role.SERIF) {
-            hrac.setMaximumZivotu(hrac.getPostava().maximumZivotu);
+        if (hrac.getRole() != Role.SERIF) {
+            hrac.setMaximumZivotu(hrac.getPostava().maximumZivotu());
         } else {
-            hrac.setMaximumZivotu(hrac.getPostava().maximumZivotu + 1);
-        }*/
-        hrac.setZivoty(hrac.getMaximumZivotu());
+            hrac.setMaximumZivotu(hrac.getPostava().maximumZivotu() + 1);
+        }
         
         for (int i = 0; i < hrac.getMaximumZivotu(); i++) {
             hrac.lizni();
         }
+        
+        hrac.setZivoty(hrac.getMaximumZivotu());
     }
 
     @Override
     public  boolean muzeVylozit(Hrac kdo, VylozitelnaKarta co){
-        return !kdo.getVylozeneKarty().contains(co);
+        return !kdo.getVylozeneKarty().contains(co); //špatně. musíš podle názvu
     }
     
     @Override
@@ -165,6 +196,13 @@ public class PravidlaBangu implements HerniPravidla{
     public int vzdalenost(Hrac od, Hrac k){
         return 0;
     }
+
+    @Override
+    public void spustitPrvniTah(SpravceTahu spravceTahu) {
+        spravceTahu.dalsiHracPodleRole(Role.SERIF);
+    }
+    
+    
 
     
 }

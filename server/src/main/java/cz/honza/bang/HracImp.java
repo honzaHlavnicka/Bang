@@ -602,6 +602,11 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         sb.append('}');
         return sb.toString();
     }
+
+    @Override
+    public boolean jeZivy() {
+        return zivoty > 0;
+    }
 }
 
 

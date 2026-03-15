@@ -281,11 +281,13 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     @Override
     public void posliVysledky(Hrac[][] vysledky) {
         int radky = vysledky.length;
-        int sloupce = vysledky[0].length;
-        int[][] idPole = new int[radky][sloupce];
+        int[][] idPole = new int[radky][];
 
         for (int i = 0; i < radky; i++) {
-            for (int j = 0; j < sloupce; j++) {
+            int pocetHracuVeSkupine = vysledky[i].length;
+            idPole[i] = new int[pocetHracuVeSkupine];
+
+            for (int j = 0; j < pocetHracuVeSkupine; j++) {
                 idPole[i][j] = vysledky[i][j].getId();
             }
         }

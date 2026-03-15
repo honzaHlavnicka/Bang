@@ -15,7 +15,6 @@ public interface HerniPravidla {
     
     /**
      * Spustí se po spuštění hry. Může například vyložit kartu..
-     * Musí zavolat privení ke hře na každého hráče.
      * @see #pripravitHrace(cz.honza.bang.Hrac)
      */
     public void poSpusteniHry();

@@ -74,6 +74,12 @@ public interface Hrac {
     public Hra getHra();
     
     /**
+     * Jeho počet životů je >0
+     * @return je živý
+     */
+    public boolean jeZivy();
+    
+    /**
      * Nastaví hráčovu postavu, neinformuje o tom nikoho.
      * @param jmeno name() postavy.
      */

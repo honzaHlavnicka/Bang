@@ -128,6 +128,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
             hrac = dalsiHrac();
         } while (hrac.getRole() != role);
         naTahu = hrac;
+        hrac.zahajitTah();
         return hrac;
     }
 
