@@ -4,8 +4,9 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang;
+package cz.honza.bang.pluginy.bang.postavy;
 
+import cz.honza.bang.sdk.Efekt;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Postava;
 
@@ -13,45 +14,51 @@ import cz.honza.bang.sdk.Postava;
  *
  * @author honza
  */
-public enum PostavaImp implements Postava{
-    TESTOVACI("TESTOVACÍ","pouze pro test",4)
-    ;
+public class RoseDoolan implements Postava, Efekt{
 
-    String jmeno;
-    int maximumZivotu;
-    String popis;
-
-    private PostavaImp(String jmeno, String popis,int maximumZivotu) {
-        this.jmeno = jmeno;
-        this.maximumZivotu = maximumZivotu;
-        this.popis = popis;
-    }
-    
     @Override
     public String getJmeno() {
-        return jmeno;
-        }
+        return "Rose Doolan";
+    }
+
+    @Override
+    public String name() {
+        return "roseDoolan";
+    }
 
     @Override
     public String getPopis() {
-        return popis;
+        return "Vidí všechny hráče na vzdálenost o jedna menší";
     }
 
     @Override
     public int getMaximumZivotu() {
-        return maximumZivotu;
+        return 4;
     }
 
     @Override
     public void pridaniPostavy(Hrac komu) {
+        komu.getEfekty().add(this);
     }
 
     @Override
     public void odebraniPostavy(Hrac komu) {
+        komu.getEfekty().remove(this);
     }
 
+    @Override
+    public void prirazeni(Hrac komu) {
+    }
+
+    @Override
+    public void odebrani(Hrac odKoho) {
+    }
+
+    @Override
+    public int getBonusDosahu() {
+        return 1;
+    }
+    
     
 
-
-    
 }

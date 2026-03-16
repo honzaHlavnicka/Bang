@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.pluginy.bang;
 
+import cz.honza.bang.pluginy.bang.postavy.JednoduchePostavy;
 import cz.honza.bang.pluginy.bang.zbrane.Zbran;
 import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Hra;
@@ -43,7 +44,7 @@ public class Bang extends Karta implements HratelnaKarta{
                 naKoho.odeberZivot();
                 
                 
-                if(!kym.getEfekty().stream().filter(e -> e instanceof Zbran).findAny().map(e -> ((Zbran) e).umoznujeBangBezLimitu()).orElse(false)){
+                if(!kym.getEfekty().stream().filter(e -> e instanceof Zbran).findAny().map(e -> ((Zbran) e).umoznujeBangBezLimitu()).orElse(false) && kym.getPostava() != JednoduchePostavy.WILLY_THE_KID){
                     hra.getSpravceTahu().dalsiHracSUpozornenim();
                 }
                 

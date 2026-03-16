@@ -17,7 +17,7 @@ export default function AfterGamePage(){
                     {gameState.winningPlaces?.map((place, index) => (
                         <li key={index}>
                             {place.map((playerId) => (
-                                <span key={playerId}>Hráč {gameState.players?.find(player => player.id === playerId)?.name}, </span>
+                                <span key={playerId}>{gameState.players?.find(player => player.id === playerId)?.name}, </span>
                             ))} na {index + 1}. místě
                         </li>
                     ))}

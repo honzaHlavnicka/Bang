@@ -11,10 +11,16 @@ package cz.honza.bang.sdk;
  * @author honza
  */
 public interface Postava {
-    String jmeno();
+    String getJmeno();
+    
+    /**
+     * Jedinečný identifikátor, zároven nazev obrázku
+     * @return 
+     */
     String name();
-    String popis();
-    int maximumZivotu();
-    void inicializace();
+    String getPopis();
+    int getMaximumZivotu();
+    default void pridaniPostavy(Hrac komu){};
+    default void odebraniPostavy(Hrac komu){};
 
 }

@@ -1,10 +1,10 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang;
+package cz.honza.bang.pluginy.bang.postavy;
 
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Postava;
@@ -13,24 +13,23 @@ import cz.honza.bang.sdk.Postava;
  *
  * @author honza
  */
-public enum PostavaImp implements Postava{
-    TESTOVACI("TESTOVACÍ","pouze pro test",4)
-    ;
-
+public enum JednoduchePostavy implements Postava{
+    WILLY_THE_KID("Willy the Kid","Může zahrát neomezeně mnoho bangů.",4);
+    
     String jmeno;
     int maximumZivotu;
     String popis;
 
-    private PostavaImp(String jmeno, String popis,int maximumZivotu) {
+    private JednoduchePostavy (String jmeno, String popis, int maximumZivotu) {
         this.jmeno = jmeno;
         this.maximumZivotu = maximumZivotu;
         this.popis = popis;
     }
-    
+
     @Override
     public String getJmeno() {
         return jmeno;
-        }
+    }
 
     @Override
     public String getPopis() {
@@ -50,8 +49,6 @@ public enum PostavaImp implements Postava{
     public void odebraniPostavy(Hrac komu) {
     }
 
-    
-
-
-    
 }
+
+

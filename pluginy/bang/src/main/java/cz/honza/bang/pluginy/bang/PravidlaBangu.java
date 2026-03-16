@@ -4,6 +4,9 @@
  */
 package cz.honza.bang.pluginy.bang;
 
+import cz.honza.bang.pluginy.bang.postavy.JednoduchePostavy;
+import cz.honza.bang.pluginy.bang.postavy.PaulRegret;
+import cz.honza.bang.pluginy.bang.postavy.RoseDoolan;
 import cz.honza.bang.pluginy.bang.zbrane.Remington;
 import cz.honza.bang.pluginy.bang.zbrane.RevCarabine;
 import cz.honza.bang.pluginy.bang.zbrane.Schofield;
@@ -121,7 +124,6 @@ public class PravidlaBangu implements HerniPravidla{
             balicek.vratNahoru(new Bang(hra, balicek));
             balicek.vratNahoru(new Bang(hra, balicek));
             balicek.vratNahoru(new Bang(hra, balicek));
-
             balicek.vratNahoru(new BangNaVsechny(hra, balicek));
             balicek.vratNahoru(new Barel(hra, balicek));
             balicek.vratNahoru(new Dostavnik(hra, balicek));
@@ -171,9 +173,9 @@ public class PravidlaBangu implements HerniPravidla{
     @Override
     public void pripravitHrace(Hrac hrac) {
         if (hrac.getRole() != Role.SERIF) {
-            hrac.setMaximumZivotu(hrac.getPostava().maximumZivotu());
+            hrac.setMaximumZivotu(hrac.getPostava().getMaximumZivotu());
         } else {
-            hrac.setMaximumZivotu(hrac.getPostava().maximumZivotu() + 1);
+            hrac.setMaximumZivotu(hrac.getPostava().getMaximumZivotu() + 1);
         }
         
         for (int i = 0; i < hrac.getMaximumZivotu(); i++) {
@@ -191,7 +193,13 @@ public class PravidlaBangu implements HerniPravidla{
     
     @Override
     public void pripravBalicekPostav(java.util.Stack<cz.honza.bang.sdk.Postava> balicekPostav){
-
+        for (int i = 0; i < 10; i++) {
+            balicekPostav.add(new RoseDoolan());
+            balicekPostav.add(new PaulRegret());
+            balicekPostav.add(JednoduchePostavy.WILLY_THE_KID);
+        }
+        
+        Collections.shuffle(balicekPostav);
     }
     
     @Override

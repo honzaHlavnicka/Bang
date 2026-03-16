@@ -13,6 +13,7 @@ import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
+import cz.honza.bang.sdk.KomunikatorHry;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,21 +66,21 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         
         //vytvoří json ve formátu vyberPostavu[{"jmeno":"jmeno","popis":"popis"},..]
         StringBuilder sb = new StringBuilder("vyberPostavu:[{\"jmeno\":\"");
-        sb.append(p1.jmeno());
+        sb.append(p1.getJmeno());
         sb.append("\",\"obrazek\":\"");
         sb.append(p1.name());
         sb.append("\",\"popis\":\"");
-        sb.append(p1.popis());
+        sb.append(p1.getPopis());
         sb.append("\",\"zivoty\":\"");
-        sb.append(p1.maximumZivotu());
+        sb.append(p1.getMaximumZivotu());
         sb.append("\"},{\"jmeno\":\"");
-        sb.append(p2.jmeno());
+        sb.append(p2.getJmeno());
         sb.append("\",\"obrazek\":\"");
         sb.append(p2.name());
         sb.append("\",\"popis\":\"");
-        sb.append(p2.popis());
+        sb.append(p2.getPopis());
         sb.append("\",\"zivoty\":\"");
-        sb.append(p2.maximumZivotu());
+        sb.append(p2.getMaximumZivotu());
         sb.append("\"}]");
 
         hra.getKomunikator().posli(this,sb.toString());
@@ -186,6 +187,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     @Override
     public void setJmeno(String jmeno) {
         this.jmeno = jmeno;
+        hra.getKomunikator().posliZmenuJmena(this);
     }
     
     @Override
@@ -200,7 +202,9 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
 
     @Override
     public void setPostava(cz.honza.bang.sdk.Postava postava) {
-        //this.postava = (Postava) postava;
+        this.postava = postava;
+        
+
     }
 
     public void setRole(cz.honza.bang.sdk.Role role) {
@@ -220,7 +224,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     public void setPostava(String jmeno){
         for (cz.honza.bang.sdk.Postava postava : postavyNaVyber) {
             if(postava.name().equals(jmeno)){
-                this.postava =  postava; 
+                setPostava(postava);
                 return;
             }
         }

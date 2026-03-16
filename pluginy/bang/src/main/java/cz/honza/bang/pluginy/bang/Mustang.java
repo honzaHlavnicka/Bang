@@ -57,7 +57,7 @@ public class Mustang extends Karta implements Efekt,VylozitelnaKarta{
 
     @Override
     public int getBonusOdstupu() {
-        return 1;
+        return 1; 
     }
     
     
