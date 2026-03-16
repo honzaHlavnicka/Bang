@@ -45,14 +45,26 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         nextId++;
     }
     
+    
+    /**
+     * Volá hra úplně na konci kdy už je vše připravené. Prostor pro finální přípravu před spuštěním 1. tahu.
+     */
+    public void poZahajeniHry(){
+        hra.getKomunikator().posliZmenuPoctuZivotu(this);
+        if(postava == null){
+            setPostava(PostavaImp.TESTOVACI);
+        }
+    }
+    
     /**
      * Přiřadí roli na začátku hry.
      * @param role
      */
     @Override
     public void priraditRoliNaZacatkuHry(cz.honza.bang.sdk.Role role) {
-        hra.getKomunikator().posli(this, "role:"+role.name());
         this.role = role;
+        hra.getKomunikator().posli(this, "role:"+role.name());
+        
     }
     
     /**
@@ -150,8 +162,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     
     @Override
     public void setZivoty(int zivoty){
-        hra.getKomunikator().posliZmenuPoctuZivotu(this);
         this.zivoty = zivoty;
+        hra.getKomunikator().posliZmenuPoctuZivotu(this);
     }
 
     @Override
@@ -202,23 +214,25 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
 
     @Override
     public void setPostava(cz.honza.bang.sdk.Postava postava) {
+        if(postava != null){
+            postava.odebraniPostavy(this);
+        }
         this.postava = postava;
-        
-
+        postava.pridaniPostavy(this);
+        hra.getKomunikator().posliZmenuPostavy(this);
     }
 
     public void setRole(cz.honza.bang.sdk.Role role) {
         this.role = role;
+        hra.getKomunikator().posli(this, "role:" + role.name());
     }
-
-  
 
     public Hra getHra() {
         return hra;
     }
     
     /**
-     * Nastaví hráčovu postavu, neinformuje o tom nikoho.
+     * Nastaví hráčovu postavu.
      * @param jmeno name() postavy.
      */
     public void setPostava(String jmeno){
@@ -443,8 +457,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         }
         karty.add(karta);
         System.out.println("lizani si");
-        hra.getKomunikator().posli(this,karta.toJSONold());
-        hra.getKomunikator().posliVsem("novyPocetKaret:" + this.id + "," + karty.size(), this);
+        hra.getKomunikator().posliNovouKartu(this,karta);
 
     }
     

@@ -33,6 +33,11 @@ public interface KomunikatorHry {
     public void posli(Hrac komu, String co);
 
     // ===== METODY AKCÍ =====
+    /**
+     * Pošle všem hráčům informaci o změně postavy hráče. 
+     * @param hrac Hráč, jehož postava se změnila
+     */
+    public void posliZmenuPostavy(Hrac hrac);
 
     
     /**
@@ -111,6 +116,14 @@ public interface KomunikatorHry {
      * @param karta Spálená karta
      */
     public void posliSpaleniKarty(Hrac hrac, Karta karta);
+    
+    /**
+     * Pošle všem hráčům informaci o líznutí nebo získání karty.
+     *
+     * @param hrac Hráč, jehož karta byla spálena
+     * @param karta Spálená karta
+     */
+    public void posliNovouKartu(Hrac hrac,Karta karta);
     
     /**
      * Pošle všem hráčům informaci o spálení vyložené karty.

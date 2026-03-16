@@ -167,7 +167,13 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
             
             System.out.println("zahájen tah v setzahajena");
             
+
+            
             herniPravidla.spustitPrvniTah(spravceTahu);
+            
+            for (HracImp hrac : hraci) {
+                hrac.poZahajeniHry();
+            }
                         
             
         }

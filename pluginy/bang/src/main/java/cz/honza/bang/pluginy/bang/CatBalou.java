@@ -71,7 +71,7 @@ public class CatBalou extends Karta implements HratelnaKarta{
         return true;
     }
     
-    private String pripravJSONvyberuKarty(Hrac naKoho){
+    String pripravJSONvyberuKarty(Hrac naKoho){
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
         json.put("nadpis", "Vyber jakou kartu!");
@@ -86,7 +86,7 @@ public class CatBalou extends Karta implements HratelnaKarta{
         return json.toString();
     }
     
-    private String pripravJSONvyberuHrace(Hrac hracCoOdehral) { //TODO: DRY: Bang
+    String pripravJSONvyberuHrace(Hrac hracCoOdehral) { //TODO: DRY: Bang
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
         json.put("nadpis", "Vyber komu sebereš kartu!");

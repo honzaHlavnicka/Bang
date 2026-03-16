@@ -137,8 +137,7 @@ public class PravidlaBangu implements HerniPravidla{
             balicek.vratNahoru(new Winchester(hra, balicek));
             balicek.vratNahoru(new Hledi(hra, balicek));
             balicek.vratNahoru(new Mustang(hra, balicek));
-
-
+            balicek.vratNahoru(new Panika(hra,balicek));
         }
         balicek.zamichej();
     }

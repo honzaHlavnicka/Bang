@@ -10,6 +10,7 @@ import cz.honza.bang.sdk.Chyba;
 import cz.honza.bang.HraImp;
 import cz.honza.bang.HracImp;
 import cz.honza.bang.sdk.Hrac;
+import cz.honza.bang.sdk.Karta;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -216,7 +217,11 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
     
     // ===== IMPLEMENTACE METOD AKCÍ =====
-    
+
+    @Override
+    public void posliZmenuPostavy(Hrac hrac) {
+        posliVsem("setPostava:" + hrac.getId() + "," + hrac.getPostava().name());
+    }
     @Override
     public void posliZmenuPoctuKaret(Hrac hrac) {
         posliVsem("zmenaPoctuKaret:" + hrac.getId() + "," + hrac.getKarty().size(), hrac);
@@ -428,6 +433,12 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
        //poslat informace o změně hráčům
        
         //<s>zahájit hru</s>, nebo přesunout všechny do čekací místnosti.        
+    }
+
+    @Override
+    public void posliNovouKartu(Hrac hrac, Karta karta) {
+        posli(hrac,"novaKarta:"+karta.toJSON());
+        posliZmenuPoctuKaret(hrac);
     }
 
    
