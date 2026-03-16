@@ -1,5 +1,5 @@
 import Player from "./Player";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useMemo } from "react";
 import css from "../../styles/scrolable.module.css"
 import { useGame } from "../../modules/GameContext";
 
@@ -24,6 +24,26 @@ export default function Players() {
         }
     }, []);
 
+    const ostatniHraci = useMemo(() => {
+        if (!gameState.players || gameState.playerId == null) {
+            return gameState.players || [];
+        }
+
+        const mujIndex = gameState.players.findIndex(p => p.id === gameState.playerId);
+
+        // Pokud náhodou nejsem ve hře (třeba divák), vrátím všechny
+        if (mujIndex === -1) {
+            return gameState.players;
+        }
+
+        // Zrotuje pole tak, že hráči po mně jdou na začátek, a hráči přede mnou na konec.
+        // Zároveň mě (mujIndex) z pole rovnou vynechá.
+        return [
+            ...gameState.players.slice(mujIndex + 1),
+            ...gameState.players.slice(0, mujIndex)
+        ];
+    }, [gameState.players, gameState.playerId]);
+
     return (
         <div
             ref={containerRef}
@@ -43,8 +63,8 @@ export default function Players() {
             }}
             onWheel={handleWheel}
         >
-           {gameState.players!.map((player)=>{
-            if(player.id != gameState.playerId){
+           {ostatniHraci.map((player)=>{
+            
                    return <Player 
                             jmeno={player.name}
                             key={player.id} 
@@ -55,9 +75,7 @@ export default function Players() {
                             vylozeneKarty={player.inPlayCards}
                             povoleneUI={gameState.allowedUIElements}
                         />
-            }
-           })}
-
+            })}
         </div>
     );
 }
