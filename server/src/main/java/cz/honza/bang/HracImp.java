@@ -149,6 +149,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     
     @Override
     public void setZivoty(int zivoty){
+        hra.getKomunikator().posliZmenuPoctuZivotu(this);
         this.zivoty = zivoty;
     }
 
@@ -529,7 +530,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
             }else{
                 rozdilPodleMist = rozdil;
             }
-            if(rozdilPodleMist >= max && i != i1){
+            if(rozdilPodleMist <= max && i != i1){
                 vysledniHraci.add(hraci.get(i));
             }
         }

@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.pluginy.bang;
 
+import cz.honza.bang.pluginy.bang.zbrane.Zbran;
 import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
@@ -41,7 +42,11 @@ public class Bang extends Karta implements HratelnaKarta{
                 
                 naKoho.odeberZivot();
                 
-                hra.getSpravceTahu().dalsiHracSUpozornenim();
+                
+                if(!kym.getEfekty().stream().filter(e -> e instanceof Zbran).findAny().map(e -> ((Zbran) e).umoznujeBangBezLimitu()).orElse(false)){
+                    hra.getSpravceTahu().dalsiHracSUpozornenim();
+                }
+                
         });
         
         return true;
@@ -58,7 +63,11 @@ public class Bang extends Karta implements HratelnaKarta{
         json.put("id", "data-id");
         json.put("nadpis", "Vyber koho chceš zastřelit!");
         JSONArray hraciNaVyber = new JSONArray();
-        for (Hrac hrac : hracCoOdehral.vzdalenostPod(1)) {
+        
+        int vzdalenostKamDosahnePodleZbrane = hracCoOdehral.getEfekty().stream().filter(e -> e instanceof Zbran).findAny().map(e -> ((Zbran) e).getVzdalenost()).orElse(1);
+        
+        
+        for (Hrac hrac : hracCoOdehral.vzdalenostPod(vzdalenostKamDosahnePodleZbrane, true)) {
            hraciNaVyber.put(hrac.getId());
         }
         json.put("hraci", hraciNaVyber);

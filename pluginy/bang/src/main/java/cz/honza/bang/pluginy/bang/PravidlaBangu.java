@@ -4,6 +4,11 @@
  */
 package cz.honza.bang.pluginy.bang;
 
+import cz.honza.bang.pluginy.bang.zbrane.Remington;
+import cz.honza.bang.pluginy.bang.zbrane.RevCarabine;
+import cz.honza.bang.pluginy.bang.zbrane.Schofield;
+import cz.honza.bang.pluginy.bang.zbrane.Volcanic;
+import cz.honza.bang.pluginy.bang.zbrane.Winchester;
 import cz.honza.bang.sdk.HerniPravidla;
 
 
@@ -120,6 +125,11 @@ public class PravidlaBangu implements HerniPravidla{
             balicek.vratNahoru(new WellsFarkgo(hra, balicek));
             balicek.vratNahoru(new Pivo(hra, balicek));
             balicek.vratNahoru(new CatBalou(hra, balicek));
+            balicek.vratNahoru(new Schofield(hra, balicek));
+            balicek.vratNahoru(new Volcanic(hra, balicek));
+            balicek.vratNahoru(new Remington(hra, balicek));
+            balicek.vratNahoru(new RevCarabine(hra, balicek));
+            balicek.vratNahoru(new Winchester(hra, balicek));
         }
         balicek.zamichej();
     }

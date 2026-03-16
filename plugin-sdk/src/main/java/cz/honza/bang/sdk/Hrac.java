@@ -47,6 +47,10 @@ public interface Hrac {
     
     public int getZivoty();
     
+    /**
+     * Ntvrdo nastaví počet životů. Pošle oznámení hráčům, ale nekontroluje žádné podmínky (smrt nebo přebytek)
+     * @param zivoty
+     */
     public void setZivoty(int zivoty);
 
     public int getMaximumZivotu();
