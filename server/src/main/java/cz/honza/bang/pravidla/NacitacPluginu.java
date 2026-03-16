@@ -55,12 +55,10 @@ public class NacitacPluginu {
     public static List<HerniPlugin> nactiPluginyZJARu(Path cesta) throws Exception{
         List<HerniPlugin> pluginy = new ArrayList<>();
         
-        URLClassLoader classLoader = new URLClassLoader(
-                new URL[]{cesta.toUri().toURL()},
-                NacitacPluginu.class.getClassLoader()
-        );
-        
-        try (JarFile jar = new JarFile(cesta.toFile())) {
+    try (URLClassLoader classLoader = new URLClassLoader(
+        new URL[]{cesta.toUri().toURL()},
+        NacitacPluginu.class.getClassLoader()
+    ); JarFile jar = new JarFile(cesta.toFile())) {
             Enumeration<JarEntry> entries = jar.entries();
 
             while (entries.hasMoreElements()) {
