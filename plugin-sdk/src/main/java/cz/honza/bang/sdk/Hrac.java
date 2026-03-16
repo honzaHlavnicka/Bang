@@ -125,11 +125,11 @@ public interface Hrac {
      * @return vzdálenost k požadovnému hráči
      * @throws IllegalArgumentException
      * @see #vzdalenostPod(int)
-     * @see #vzdalenostKCista(cz.honza.bang.Hrac) 
+     * @see #vzdalenostK(cz.honza.bang.Hrac) 
      */
     public int fyzickaVzdalenostK(Hrac komu)throws IllegalArgumentException;
     
-    public int vzdalenostKCista(Hrac komu);
+    public int vzdalenostK(Hrac komu);
     
     /**
      * Vrací List hráčů, jejichš vzdálenost je větší než <code>max</code>.
@@ -175,4 +175,21 @@ public interface Hrac {
      * společnosti správce tahů, jinak by mohli být klienti zmatení.
      */
     public void zahajitTah();
+    
+    /**
+     * Součet všech efektů a jejich getBonusOdstupu
+     * @return kolik se bude přřičítat
+     * @see #Efekt.getBonusOdstupu()
+     */
+    int getCelkovyBonusOdstupu();
+    
+    /**
+     * Součet všech efektů a jejich getBonusOdstupu
+     *
+     * @return kolik se bude přřičítat
+     * @see #Efekt.getBonusOdstupu()
+     */
+    int getCelkovyBonusDosahu();
+    
+    
 }

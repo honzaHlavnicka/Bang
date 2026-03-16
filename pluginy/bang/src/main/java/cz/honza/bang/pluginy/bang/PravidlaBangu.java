@@ -119,6 +119,9 @@ public class PravidlaBangu implements HerniPravidla{
     public void pripravBalicek(Balicek<Karta> balicek) {
         for (int i = 0; i < 10; i++) {        
             balicek.vratNahoru(new Bang(hra, balicek));
+            balicek.vratNahoru(new Bang(hra, balicek));
+            balicek.vratNahoru(new Bang(hra, balicek));
+
             balicek.vratNahoru(new BangNaVsechny(hra, balicek));
             balicek.vratNahoru(new Barel(hra, balicek));
             balicek.vratNahoru(new Dostavnik(hra, balicek));
@@ -130,6 +133,10 @@ public class PravidlaBangu implements HerniPravidla{
             balicek.vratNahoru(new Remington(hra, balicek));
             balicek.vratNahoru(new RevCarabine(hra, balicek));
             balicek.vratNahoru(new Winchester(hra, balicek));
+            balicek.vratNahoru(new Hledi(hra, balicek));
+            balicek.vratNahoru(new Mustang(hra, balicek));
+
+
         }
         balicek.zamichej();
     }

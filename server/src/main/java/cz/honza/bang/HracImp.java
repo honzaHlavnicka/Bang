@@ -496,9 +496,16 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     }
     
     @Override
-    public int vzdalenostKCista(Hrac komu){
-        //TODO: neignorovat efekty
-        return fyzickaVzdalenostK(komu);
+    public int vzdalenostK(Hrac komu) {
+        int fyzickaVzdalenost = fyzickaVzdalenostK(komu);
+
+        // efekty z enginu
+        int mujDosah = this.getCelkovyBonusDosahu();
+        int odstupCile = komu.getCelkovyBonusOdstupu();
+
+        // výpočet (s pojistkou, že vzdálenost neklesne pod 1)
+        int efektivniVzdalenost = fyzickaVzdalenost + odstupCile - mujDosah;
+        return Math.max(1, efektivniVzdalenost);
     }
     
     /**
@@ -510,30 +517,50 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @see #fyzickaVzdalenostK(cz.honza.bang.Hrac) 
      */
     @Override
-    public List<Hrac> vzdalenostPod(int max, boolean iZpetne){
+    public List<Hrac> vzdalenostPod(int max, boolean iZpetne) {
         List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
+        List<Hrac> vysledniHraci = new ArrayList<>();
 
         int velikost = hraci.size();
         int i1 = hraci.indexOf(this);
-        if(i1 == -1){
+
+        if (i1 == -1) {
             throw new IllegalArgumentException("Hráč nebyl nalezen v seznamu");
         }
-        
-        List<Hrac> vysledniHraci = new ArrayList<>();
-        
+
+        int mujDosah = this.getCelkovyBonusDosahu();
+
         for (int i = 0; i < hraci.size(); i++) {
-            int rozdil = Math.abs(i1 - i);
-            int rozdilPodleMist;
-            if(iZpetne){
-                int zpetnaVzdalenost = velikost - rozdil;
-                rozdilPodleMist = Math.min(rozdil, zpetnaVzdalenost);
-            }else{
-                rozdilPodleMist = rozdil;
+            // na sebe nestřílíme
+            if (i == i1) {
+                continue;
             }
-            if(rozdilPodleMist <= max && i != i1){
-                vysledniHraci.add(hraci.get(i));
+
+            Hrac cil = hraci.get(i);
+            int rozdil = Math.abs(i1 - i);
+            int fyzickaVzdalenost;
+
+            // Logika pro výpočet u kulatého stolu vs. v řadě
+            if (iZpetne) {
+                int zpetnaVzdalenost = velikost - rozdil;
+                fyzickaVzdalenost = Math.min(rozdil, zpetnaVzdalenost);
+            } else {
+                fyzickaVzdalenost = rozdil;
+            }
+
+            // Aplikace efektů pro konkrétní cíl
+            int odstupCile = cil.getCelkovyBonusOdstupu();
+            int efektivniVzdalenost = fyzickaVzdalenost + odstupCile - mujDosah;
+
+            // Ošetření minimální vzdálenosti (1)
+            efektivniVzdalenost = Math.max(1, efektivniVzdalenost);
+
+            // Pokud je cíl v dostřelu (včetně), přidáme ho do seznamu
+            if (efektivniVzdalenost <= max) {
+                vysledniHraci.add(cil);
             }
         }
+
         return vysledniHraci;
     }
     
@@ -609,6 +636,16 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     @Override
     public boolean jeZivy() {
         return zivoty > 0;
+    }
+
+    @Override
+    public int getCelkovyBonusOdstupu() {
+        return this.getEfekty().stream().mapToInt(Efekt::getBonusOdstupu).sum();
+    }
+
+    @Override
+    public int getCelkovyBonusDosahu() {
+        return this.getEfekty().stream().mapToInt(Efekt::getBonusDosahu).sum();
     }
 }
 
