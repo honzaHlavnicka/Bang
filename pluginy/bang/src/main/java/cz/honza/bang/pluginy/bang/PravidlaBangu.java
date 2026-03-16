@@ -167,8 +167,9 @@ public class PravidlaBangu implements HerniPravidla{
     }
 
     @Override
-    public  boolean muzeVylozit(Hrac kdo, VylozitelnaKarta co){
-        return !kdo.getVylozeneKarty().contains(co); //špatně. musíš podle názvu
+    public boolean muzeVylozit(Hrac kdo, VylozitelnaKarta co) {
+        Karta kontrolovanaKarta = (Karta) co;
+        return kdo.getVylozeneKarty().stream().noneMatch(karta -> karta.getJmeno().equals(kontrolovanaKarta.getJmeno()));
     }
     
     @Override

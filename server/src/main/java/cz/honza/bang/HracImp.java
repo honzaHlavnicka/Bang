@@ -97,6 +97,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         if (zivoty <= 0) {
             // Hráč je už mrtvý, nic se nedělá
             hra.getHerniPravidla().dosliZivoty(this);
+            hra.getKomunikator().posliZmenuPoctuZivotu(this);
+
             return false;
         }
         
@@ -129,7 +131,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @return přidal se život úspěšně.
      */
     @Override
-    public boolean pridejZivot() {//TODO: kdyz ma moc zivotu, nez kolik muze mit
+    public boolean pridejZivot() {
         if (zivoty >= maximumZivotu) {
             return false; 
         } else {
@@ -217,7 +219,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     public void setPostava(String jmeno){
         for (cz.honza.bang.sdk.Postava postava : postavyNaVyber) {
             if(postava.name().equals(jmeno)){
-                this.postava =  postava; //TODO: odstranit ořetypování, vyřešit znovu a lépe
+                this.postava =  postava; 
                 return;
             }
         }
@@ -363,7 +365,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     }
     
     @Override
-    public void vylozitKartu(String id, String idHrace){ //TODO: asi by mohlo brát objekty a prevodni metoda by mela byt jina
+    public void vylozitKartu(String id, String idHrace){ 
         int idKarty;
         int idPredKoho;
         try{
