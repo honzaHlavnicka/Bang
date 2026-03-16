@@ -66,7 +66,6 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     return (
         <GameContext.Provider value={{
             gameState,
-            setGameValue: (data, type) => setGameValue(ws, data, type),
             connectToGame: (gameCode, name) => connectToGame(ws, setGameState, gameCode, name),
             changePlayerName: (newName) => changePlayerName(ws, newName),
             chooseCharacter: (characterName) => chooseCharacter(ws, setGameState, characterName),

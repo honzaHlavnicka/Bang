@@ -495,18 +495,6 @@ export function updatePlayerProperty(
     }));
 }
 
-//@deprecated
-export function setGameValue(ws: WebSocket | null, data: unknown, type: string) {
-    if (ws !== null) {
-        if (type === "DRAW_CARD") {
-            ws.send("linuti");
-        } else if (type === "CONNECT") {
-            const d = data as { kod: string; jmeno: string };
-            ws.send("pripojeni:" + d.kod);
-            ws.send("noveJmeno:" + d.jmeno);
-        }
-    }
-}
 
 export function connectToGame(
     ws: WebSocket | null,

@@ -23,7 +23,7 @@ public class BanggPlugin implements HerniPlugin{
 
     @Override
     public String getPopis() {
-        return "TODO: popis";
+        return "Populární karetní hra na motivy Divokého západu. Každý hráč získá svou tajnou roli – šerif s pomocníky loví bandity, banditi chtějí dostat šerifa a odpadlík hraje sám za sebe.";
     }
 
     @Override

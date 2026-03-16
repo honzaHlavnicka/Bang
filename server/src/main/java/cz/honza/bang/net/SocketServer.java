@@ -18,9 +18,9 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SocketServer extends WebSocketServer {
     private Map<WebSocket, KomunikatorHryImp> komunikatoryHracu = new  ConcurrentHashMap<>();
     private Map<String, KomunikatorHryImp> hryPodleId = new ConcurrentHashMap<>();
-    private List<Integer> pouziteKody = new ArrayList<>();
+    private Set<Integer> pouziteKody = new HashSet<>();
     private Random random = new Random();
 
     public SocketServer(InetSocketAddress address) {
@@ -104,6 +104,7 @@ public class SocketServer extends WebSocketServer {
             int kodKry = nahodneIdHry();
             KomunikatorHryImp komunikator = KomunikatorHryImp.vytvor(this, kodKry, typHry);
             hryPodleId.put(Integer.toString(kodKry), komunikator);
+            pouziteKody.add(Integer.valueOf(kodKry));
             System.out.println("novaHra:" + kodKry);
             conn.send("novaHra:" + kodKry);
             komunikator.novyHrac(conn);
@@ -134,6 +135,10 @@ public class SocketServer extends WebSocketServer {
         }
         
         if(message.startsWith("vraceniSe:")){
+            if(message.length() < 16 + 8){
+                conn.send("error:{\"error\":\"neplatný token\"}");
+                return;
+            }
             KomunikatorHryImp komunikator = hryPodleId.get(message.substring(10, 16));
             if(komunikator == null){
                 conn.send("error:{\"error\":\"hra do které se snažíš připojit neexistuje\"}");
@@ -172,7 +177,7 @@ public class SocketServer extends WebSocketServer {
    
     private int nahodneIdHry(){
         int kod = random.nextInt(999999 - 100000 + 1) + 100000;
-        if(pouziteKody.indexOf(Integer.valueOf(kod)) != -1){
+        if(pouziteKody.contains(kod)){
             return nahodneIdHry(); 
         }
         return kod;
@@ -180,6 +185,7 @@ public class SocketServer extends WebSocketServer {
     
     public void ukoncitHru(int kod){
         hryPodleId.remove(String.valueOf(kod));
+        pouziteKody.remove(Integer.valueOf(kod));
         
     }
     

@@ -23,7 +23,7 @@ public class UNOPlugin implements HerniPlugin {
 
     @Override
     public String getPopis() {
-        return "TODO: popis";
+        return "Slavná základní karetní hra , která funguje na podobném principu jako české Prší. Vaším hlavním cílem je co nejrychleji se zbavit všech karet v ruce.";
     }
 
     @Override
