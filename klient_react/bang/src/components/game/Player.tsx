@@ -7,6 +7,7 @@ import {type CardType } from "../../modules/GameContext";
 
 export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,pocetZivotu = 0,vylozeneKarty=[],naTahu=false,povoleneUI}:{jmeno:string,postava?:string,pocetKaret?:number,pocetZivotu?:number,vylozeneKarty?:Array<CardType>|null,naTahu?:boolean,povoleneUI:string[]}) {
     vylozeneKarty = vylozeneKarty ? vylozeneKarty : [];
+    const isDead = pocetZivotu !== undefined && pocetZivotu <= 0;
     const playerStyle: React.CSSProperties = {
         display: "flex",
         flexDirection: "column",
@@ -16,7 +17,7 @@ export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,poce
             <div style={playerStyle}>
                 <div style={{ display: "flex" , justifyContent:"center"}}>
                     <div>
-                    <NameTag jmeno={jmeno}  style={{backgroundColor:(naTahu?"yellow":"white")}}/>
+                    <NameTag jmeno={jmeno} isDead={isDead} showDeadIndicator={povoleneUI.includes("ZIVOTY")} style={{backgroundColor:(naTahu?"yellow":"white")}}/>
                     <div style={{display:"flex",flexDirection:"row"}}>
                         {povoleneUI.includes("POSTAVA") ? <Card name={"postava:" + postava.toLowerCase()} image={`/img/karty/postavy/${postava}.png`} />: null}
                         {povoleneUI.includes("ZIVOTY") ? <Card name={`${pocetZivotu} životů.`} image={`/img/velkeZivoty/${pocetZivotu}zivoty.png`} />:null}

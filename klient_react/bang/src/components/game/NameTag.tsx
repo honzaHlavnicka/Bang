@@ -13,15 +13,16 @@ const nameCss = {
 
 
 
-export default function NameTag({jmeno,style,}: {jmeno: string;style?: React.CSSProperties;}) {
+export default function NameTag({jmeno,style,isDead=false,showDeadIndicator=true}: {jmeno: string;style?: React.CSSProperties;isDead?: boolean;showDeadIndicator?: boolean;}) {
     jmeno = jmeno ? jmeno : "bezejmený hráč";
     const displayName = jmeno.length > 13 ? jmeno.slice(0, 12) + "…" : jmeno;
+    const deadIndicator = isDead && showDeadIndicator ? " ☠️" : "";
     return (
         <span
             style={{ ...nameCss, ...style }}
             title={jmeno}
         >
-            {displayName}
+            {deadIndicator}{displayName}
         </span>
     );
 }

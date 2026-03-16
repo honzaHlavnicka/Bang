@@ -12,6 +12,7 @@ import NameTag from "./NameTag";
     const postava = gameState.character || "TESTOVACI";
     const vylozeneKarty = gameState.inPlayCards || [];
     const zdravy = gameState.health || 0;
+    const isDead = zdravy !== undefined && zdravy <= 0;
 
     function CardClick(e: React.MouseEvent<HTMLDivElement>){
         const cardId = parseInt((e.currentTarget as HTMLDivElement).getAttribute("data-id") || "-1");
@@ -24,7 +25,7 @@ import NameTag from "./NameTag";
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
             <div style={{ marginRight: "32px" }}>
-                <NameTag jmeno={jmeno || "nepojmenovaný hráč"} style={{backgroundColor:(gameState.playerId === gameState.turnPlayerId)?"yellow":"white"}} />
+                <NameTag jmeno={jmeno || "nepojmenovaný hráč"} isDead={isDead} showDeadIndicator={gameState.allowedUIElements.includes("ZIVOTY")} style={{backgroundColor:(gameState.playerId === gameState.turnPlayerId)?"yellow":"white"}} />
                 <div style={{display:"flex",justifyContent:"center"}}>
                     {gameState.allowedUIElements.includes("ROLE") ?    <Card image={`/img/karty/role/${role}.png`} />: null}
                     {gameState.allowedUIElements.includes("POSTAVA") ? <Card image={`/img/karty/postavy/${postava}.png`} />: null}
