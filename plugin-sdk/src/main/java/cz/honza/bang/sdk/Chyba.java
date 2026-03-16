@@ -27,7 +27,8 @@ public enum Chyba {
     SPATNE_HESLO("Špatné heslo.",14,1),
     UZ_PRIPOJEN("Už jsi připojen ke hře.",15,2),
     DOSLI_KARTY_V_BALICKU("Došli karty v balíčcích, už nejde lízat.",16,3),
-    NEJSI_ADMIN_HRY("Toto může dělat pouze admin hry, což ty nejsi.",17,1)
+    NEJSI_ADMIN_HRY("Toto může dělat pouze admin hry, což ty nejsi.",17,1),
+    PLNY_SERVER("Server je bohužel plný.",18,1)
     
     ;
     private final String zprava;
