@@ -109,7 +109,6 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
             } else {
                 // přeskočí vyřazeného hráče
                 return dalsiHrac();
-                //TODO: udelat limit poctu hracu treba 30, aby nemohlo nastata preteceni zasobniku
             }
         }
 

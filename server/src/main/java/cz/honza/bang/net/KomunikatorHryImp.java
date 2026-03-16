@@ -33,6 +33,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     private final Map<Integer, CompletableFuture<String>> cekajiciOdpovedi = new ConcurrentHashMap<>();
     private int podleniIdCekaciOdpovedi = 0;
     private HracImp admin;
+    private int pocetPripojenychHracu = 0;
     
     public KomunikatorHryImp(SocketServer socket,int id) {
         this.socket = socket;
@@ -147,6 +148,11 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
             websocket.send("error:{\"error\":\"tato hra už byla zahájena. Bohužel se už nejde připojit.\"}");
             return false;
         }
+
+        if(pocetPripojenychHracu >= 30){
+            websocket.send("error:{\"error\":\"server je plný.\"}");
+            return false;
+        }
         
         websocket.send("pripojenKeHre");
         HracImp hrac = hra.novyHrac();
@@ -160,7 +166,12 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         hraciPodlIdentifikatoru.put(identifikator, hrac);
         hra.hracVytvoren(hrac);
         posliNovehoHrace(hrac);
+
+        pocetPripojenychHracu++;
+
         return true;
+
+
     }
     
     public void nactiHru(WebSocket conn){

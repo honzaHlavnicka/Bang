@@ -102,7 +102,6 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         }
         hrac.vyberZPostav(balicekPostav.pop(),balicekPostav.pop());//nechá hráče vybrat ze dvou postav
         
-        //TODO: vývěr z postav pokud hra potřebuje.
     }
 
     /**
