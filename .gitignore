@@ -209,3 +209,9 @@ README.html
 /server/nbproject/
 */build/*
 *.webp
+
+# Environment configuration files
+.env
+.env.local
+.env.*.local
+!.env.example

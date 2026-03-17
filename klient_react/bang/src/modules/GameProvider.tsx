@@ -20,19 +20,10 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     }, [gameState]);
 
     useEffect(() => {
-
-        //====================== nastavení režimu adresy serveru ===============================================
-        //socketAdress can be: wss://<thisHost>/ws or ws://localhost:9999 or ws://<ServerPcIpAddress>:9999    //
-        //const socketAdress =  "wss://" + window.location.host + "/ws";                                       //
-        const socketAdress = "ws://localhost:22207";   //22207     #60898                                                   //
-        //const socketAdress = "ws://:9999";                                                                  //
-        //const socketAdress = "ws://192.168.0.118:60898";  //22207                                            //  
-        //const socketAdress = "ws://10.42.0.1:22207"; 
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // allow overriding socket address via ?adress=xxxxx (e.g. ?adress=localhost:9999 or ?adress=ws://host:9999)
+        const socketAddress = `${import.meta.env.VITE_SERVER_PROTOCOL || "ws"}://${import.meta.env.VITE_SERVER_HOST || "localhost"}:${import.meta.env.VITE_SERVER_PORT || "22207"}/ws`;
         const params = new URLSearchParams(window.location.search);
         const addrParam = params.get("adress");
-        let socketUrl = socketAdress;
+        let socketUrl = socketAddress;
         if (addrParam && addrParam.trim().length > 0) {
             socketUrl = addrParam.trim();
             if (!/^wss?:\/\//i.test(socketUrl)) {
@@ -42,11 +33,15 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         }
 
         const socket = new WebSocket(socketUrl);
-        console.log("pokus o připojení k ws serveru na adrese " + socketAdress);
+        console.log("pokus o připojení k ws serveru na adrese " + socketAddress);
         socket.onopen = () => {
             setWs(socket);
             toast.success("Připojeno k serveru");
-            (window as unknown as { ws: WebSocket }).ws = socket; //TODO: odstranit testovací přiřazení
+            if (import.meta.env.VITE_DEBUG) {
+                console.log("Debug mode is ON. Socket address: " + socketUrl);
+                (window as unknown as { ws: WebSocket }).ws = socket; //Přiřadí se pouze v debug módu, v produkci ochráněn před self-XSS
+            }
+            
         };
         socket.onmessage = (event) => { handleGameMessage(event, setGameState, stateRef,openDialog,socket,notify); };
         socket.onclose = () => {

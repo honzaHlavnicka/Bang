@@ -30,11 +30,19 @@ public class SocketServer extends WebSocketServer {
     private Map<String, KomunikatorHryImp> hryPodleId = new ConcurrentHashMap<>();
     private Set<Integer> pouziteKody = new HashSet<>();
     private Random random = new Random();
+    private String adminPassword;
 
     public SocketServer(InetSocketAddress address) {
         super(address);
         System.out.println("Adresa serveru je: " + address.toString());
         System.out.println("Port je: " + address.getPort());
+        
+        // Načti heslo z proměnné prostředí
+        this.adminPassword = System.getenv("ADMIN_PASSWORD");
+        if (this.adminPassword == null || this.adminPassword.isEmpty()) {
+            this.adminPassword = "heslo123"; // Výchozí heslo
+            System.out.println("[!] ADMIN_PASSWORD není nastaveno, použije se výchozí heslo. Nastavte ADMIN_PASSWORD pro produkci!");
+        }
         
         // Načti pluginy už při startu
         System.out.println("Načítám pluginy...");
@@ -64,14 +72,14 @@ public class SocketServer extends WebSocketServer {
         System.out.println("zpráva: " + message);
 
         if(message.startsWith("serverInfo:")){
-            if(message.replace("serverInfo:", "").equals("heslo123")){ //TODO: později přidat heslo do env.
+            if(message.replace("serverInfo:", "").equals(adminPassword)){
                 conn.send("serverDataHTML:"+serverDataHTML());
             }
             posliChybu(conn, Chyba.SPATNE_HESLO);
             return;
         }
         if(message.startsWith("restartovatPluginy:")){
-            if (message.replace("restartovatPluginy:", "").equals("heslo123")) { //TODO: později přidat heslo do env.
+            if (message.replace("restartovatPluginy:", "").equals(adminPassword)) {
                 SpravceHernichPravidel.pregeneruj();
                 conn.send("ok");
                 return;

@@ -62,7 +62,32 @@ fi
 echo "📋 Vytvářím startovací script..."
 cat > "$BUILD_DIR/start.sh" << 'EOF'
 #!/bin/bash
-cd "$(dirname "$0")"
+# Startovací script pro server Bang
+# Načte konfiguraci z .env souboru pokud existuje
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+# Načti .env soubor pokud existuje
+if [ -f "$SCRIPT_DIR/.env" ]; then
+    echo "📝 Načítám konfiguraci z .env..."
+    export $(cat "$SCRIPT_DIR/.env" | grep -v '^#' | xargs)
+elif [ -f "$SCRIPT_DIR/../.env" ]; then
+    echo "📝 Načítám konfiguraci z ../.env..."
+    export $(cat "$SCRIPT_DIR/../.env" | grep -v '^#' | xargs)
+else
+    echo "⚠️  .env soubor nenalezen, používám výchozí nastavení"
+fi
+
+# Nastav výchozí hodnoty pokud nejsou nastaveny
+SERVER_PORT=${SERVER_PORT:-8080}
+ADMIN_PASSWORD=${ADMIN_PASSWORD:-heslo123}
+
+echo "🎮 Spouštím server:"
+echo "   Port: $SERVER_PORT"
+echo "   Heslo: (nastaveno)"
+echo ""
+
+cd "$SCRIPT_DIR"
 java -jar server.jar
 EOF
 chmod +x "$BUILD_DIR/start.sh"
@@ -73,6 +98,12 @@ echo ""
 echo "📍 Umístění:"
 echo "   Server: $BUILD_DIR/server.jar"
 echo "   Pluginy: $PLUGINS_DIR/"
+echo ""
+echo "📝 Konfigurace:"
+echo "   Vytvořte soubor .env v kořeni projektu nebo v $BUILD_DIR/"
+echo "   Příklad:"
+echo "     SERVER_PORT=8080"
+echo "     ADMIN_PASSWORD=heslo123"
 echo ""
 echo "🚀 Spuštění serveru:"
 echo "   cd $BUILD_DIR && bash start.sh"

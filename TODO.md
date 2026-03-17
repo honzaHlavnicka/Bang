@@ -184,17 +184,6 @@ Metoda vytvoří nové mapy hráčů a WebSocket spojení, ale:
 
 ---
 
-### C9 – `nactiHru` posílá klientovi doslova ladící větu
-**Soubor:**
-- `server/src/main/java/cz/honza/bang/net/KomunikatorHryImp.java` – řádek 167
-
-```java
-conn.send("načítání hry. tohle bude nejakej json.");
-```
-
-Klientovi se posílá neparsovatelný ladící text namísto skutečné strukturované zprávy.
-
----
 
 ### C10 – `podleniIdCekaciOdpovedi` není thread-safe
 **Soubor:**
@@ -303,15 +292,6 @@ if(zmenenSmer){
 // Správně: zmenenSmer = !zmenenSmer;
 ```
 
----
-
-### K8 – Zakomentovaný kód (celé třídy) v repozitáři
-**Soubory:**
-- `server/src/main/java/cz/honza/bang/postavy/Postava.java` – celá třída je zakomentovaná
-- `server/src/main/java/cz/honza/bang/pravidla/SpravceHernichPravidel.java` – původní implementace je zakomentovaná
-
-Zakomentovaný kód by měl být odstraněn (správa verzí zajišťuje historii).
-
 
 
 
@@ -341,21 +321,8 @@ gameStateMessegeFull?: string;   // správně: gameStateMessageFull
 ---
 
 
-### K15 – Zakomentované testovací dialogy v produkčním kódu
-**Soubor:**
-- `klient_react/bang/src/modules/GameProvider.tsx` – řádky 24–28
 
-Rozsáhlý blok zakomentovaného kódu pro testování dialogů by měl být odstraněn (viz TODO komentář).
 
----
-
-### K16 – `NacitacPluginu` neuzavírá `URLClassLoader` (resource leak)
-**Soubor:**
-- `server/src/main/java/cz/honza/bang/pravidla/NacitacPluginu.java` – metoda `nactiPluginyZJARu`
-
-`URLClassLoader` je vytvořen, ale nikdy uzavřen. Použití `try-with-resources` by zajistilo správné uvolnění zdrojů.
-
----
 
 ### K17 – `SpravceHernichPravidel.getJSONVytvoritelneHry()` přiřazuje ID přes `AtomicInteger` v lambda
 **Soubor:**
@@ -387,15 +354,6 @@ Pokud žádný hráč nemá hledanou roli (nebo jsou všichni s touto rolí vyř
 
 ---
 
-### K19 – `vzdalenostPod()` v `HracImp` – překlep v Javadoc a logická chyba v podmínce
-**Soubor:**
-- `server/src/main/java/cz/honza/bang/HracImp.java` – metoda `vzdalenostPod`
-
-1. Javadoc říká: *"Vrací List hráčů, jejichž vzdálenost je větší než `max`"*, ale podmínka je `>= max`. Nesoulad dokumentace a kódu.
-2. Samotná podmínka `rozdilPodleMist >= max` vrací hráče ve vzdálenosti **rovné nebo větší** než `max` – název parametru `max` a text Javadoc je proto zavádějící.
-
-
----
 
 ## 🔵 NEDOKONČENÉ FUNKCE (TODO v kódu)
 
