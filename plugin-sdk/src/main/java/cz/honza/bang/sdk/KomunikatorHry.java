@@ -216,6 +216,23 @@ public interface KomunikatorHry {
      */
     public CompletableFuture<String> pozadejOText(Hrac odKoho, String nadpis, String placeholder, String buttonText);
 
+    /**
+     * Přidá nebo upraví vlastní tlačítko pro hráče.
+     * @param komu Hráč, kterému se prvek zobrazí
+     * @param buttonId Jedinečný identifikátor tlačítka (opakovaným voláním s stejným id se mění parametry)
+     * @param text Text na tlačítku
+     * @param disabled Zda je tlačítko deaktivované
+     * @return ID tlačítka
+     */
+    public int pridejUIButton(Hrac komu, int buttonId, String text, boolean disabled);
+
+    /**
+     * Odstraní vlastní UI prvek.
+     * @param komu Hráč, od kterého se prvek odebere
+     * @param uiId ID prvku k odstranění
+     */
+    public void smazatUI(Hrac komu, int uiId);
+
     public int getIdHry();
     public int pocetHracu();
 

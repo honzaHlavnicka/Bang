@@ -21,6 +21,17 @@
     background-color: #025f78; 
 }
 
+.button:disabled{
+    background-color: #c0c0c0; 
+    color: #808080;
+    cursor: not-allowed;
+}
+
+:global(.darkMode) .button:disabled{
+    background-color: #555555; 
+    color: #aaaaaa;
+}
+
 .darkmodeReverseColor{
     color:black;
 }

@@ -38,6 +38,21 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     private int posledniIdCekaciOdpovedi = 0;
     private HracImp admin;
     private int pocetPripojenychHracu = 0;
+    private Map<HracImp, Map<Integer, CustomUIButton>> customUIByPlayer = new ConcurrentHashMap<>();
+    private int nextUIButtonId = 1000;
+    
+    // Třída pro reprezentaci vlastního UI prvku
+    private static class CustomUIButton {
+        int id;
+        String text;
+        boolean disabled;
+        
+        CustomUIButton(int id, String text, boolean disabled) {
+            this.id = id;
+            this.text = text;
+            this.disabled = disabled;
+        }
+    }
     
     public KomunikatorHryImp(SocketServer socket,int id) {
         this.socket = socket;
@@ -88,7 +103,19 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         }
         if(message.startsWith("dialog:")){ //očekávaný formát: "dialog:<ID>,<DATA>"
             String[] data = message.replace("dialog:", "").split(",",2);
-            zpracujPozadanouOdpoved(Integer.valueOf(data[0]), data[1]);
+            try{
+                zpracujPozadanouOdpoved(Integer.valueOf(data[0]), data[1]);
+            }catch(Exception ex){
+                posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
+            }
+        }
+        if(message.startsWith("uiClick:")){ //očekávaný formát: "uiClick:<ID>"
+            try {
+                int uiId = Integer.parseInt(message.replace("uiClick:", ""));
+                hra.getHerniPravidla().uiButtonClicked(hrac, uiId);
+            } catch (NumberFormatException ex) {
+                posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
+            }
         }
         if(message.startsWith("vylozeni:")){
             String[] data = message.replace("vylozeni:", "").split(",",2);
@@ -108,8 +135,12 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
                 posliChybu(hrac, Chyba.NEJSI_ADMIN_HRY);
                 return;
             }
-            int id = Integer.parseInt(message.replace("novaHraSHracema:", ""));
-            smazatHruAVyrobytNovou(id);
+            try {
+                int id = Integer.parseInt(message.replace("novaHraSHracema:", ""));
+                smazatHruAVyrobytNovou(id);
+            } catch (NumberFormatException ex) {
+                posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
+            }
         }
     }
     
@@ -179,7 +210,6 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
     
     public void nactiHru(WebSocket conn){
-        conn.send("načítání hry. tohle bude nejakej json.");
         hra.nactiHru(conn,hraciPodleWebsocketu.get(conn));
     }
     
@@ -502,6 +532,42 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     public void posliNovouKartu(Hrac hrac, Karta karta) {
         posli(hrac,"novaKarta:"+karta.toJSON());
         posliZmenuPoctuKaret(hrac);
+    }
+
+    @Override
+    public int pridejUIButton(Hrac komu, int buttonId, String text, boolean disabled) {
+        HracImp hracImp = (HracImp) komu;
+        customUIByPlayer.computeIfAbsent(hracImp, k -> new ConcurrentHashMap<>());
+        Map<Integer, CustomUIButton> playerUI = customUIByPlayer.get(hracImp);
+        
+        // Pokud je buttonId 0 nebo záporné, přidělíme nový ID
+        if (buttonId <= 0) {
+            buttonId = nextUIButtonId++;
+        }
+        
+        CustomUIButton button = new CustomUIButton(buttonId, text, disabled);
+        playerUI.put(buttonId, button);
+        
+        // Pošli zprávu klientovi
+        JSONObject json = new JSONObject();
+        json.put("id", buttonId);
+        json.put("text", text);
+        json.put("disabled", disabled);
+        
+        posli(komu, "noveUI:" + json.toString());
+        
+        return buttonId;
+    }
+
+    @Override
+    public void smazatUI(Hrac komu, int uiId) {
+        HracImp hracImp = (HracImp) komu;
+        Map<Integer, CustomUIButton> playerUI = customUIByPlayer.get(hracImp);
+        
+        if (playerUI != null) {
+            playerUI.remove(uiId);
+            posli(komu, "odebratUI:" + uiId);
+        }
     }
 
    

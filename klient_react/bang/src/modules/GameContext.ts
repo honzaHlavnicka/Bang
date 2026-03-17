@@ -8,6 +8,12 @@ export type CardType = {
     id:number;
 }
 
+export type CustomUIButton = {
+    id: number;
+    text: string;
+    disabled: boolean;
+}
+
 export type GameStateType = {
     startedConection:boolean;
     inGame:boolean;
@@ -37,6 +43,7 @@ export type GameStateType = {
     discardPile: Array<string>;
 
     allowedUIElements: string[];
+    customUIButtons: Array<CustomUIButton>;
 
     gameStateMessege?:string;
     gameStateMessegeFull?:string;
@@ -60,6 +67,7 @@ export const gameStateDefault: GameStateType = {
     discardPile: [],
 
     allowedUIElements: ["ZIVOTY","UKONCENI_TAHU","POSTAVA","ROLE","VYLOZENE_KARTY","ODHAZOVACI_BALICEK","DOBIRACI_BALICEK"],
+    customUIButtons: [],
 };
 
 export const GameContext = createContext<{
@@ -75,7 +83,7 @@ export const GameContext = createContext<{
     returnToGame (): void;
     fireCard: (cardId:number) => void;
     putCardInPlay: (cardId:number) => void;
-
+    clickUIButton: (buttonId:number) => void;
 
 } | null>(null);
 

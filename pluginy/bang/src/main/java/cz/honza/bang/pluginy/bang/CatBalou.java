@@ -65,20 +65,24 @@ public class CatBalou extends Karta implements HratelnaKarta{
 
                 hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "Jakou kartu mu spálíš?", 1, 1)
                     .thenAccept(idKarty -> {
-                        int idKartyCislo = Integer.parseInt(idKarty);
-                        if(zastupnaKarta.getNahodna().getId() == idKartyCislo){
-                            Random rand = new Random();
-                            Karta nahodnaKarta = naKoho.getKarty().remove(rand.nextInt(naKoho.getKarty().size()));     
-                            hra.getKomunikator().posliSpaleniKarty(naKoho, nahodnaKarta);
-                        }else{
-                            for (Karta karta : naKoho.getVylozeneKarty()) {
-                                if(karta.getId() == idKartyCislo){
-                                    naKoho.getVylozeneKarty().remove(karta); //todo: kdyz mezitim karta se spali jinak, tak bude vizualne 2x
-                                    hra.getKomunikator().posliSpaleniVylozenéKarty(karta, naKoho);
+                        try {
+                            int idKartyCislo = Integer.parseInt(idKarty);
+                            if(zastupnaKarta.getNahodna().getId() == idKartyCislo){
+                                Random rand = new Random();
+                                Karta nahodnaKarta = naKoho.getKarty().remove(rand.nextInt(naKoho.getKarty().size()));     
+                                hra.getKomunikator().posliSpaleniKarty(naKoho, nahodnaKarta);
+                            }else{
+                                for (Karta karta : naKoho.getVylozeneKarty()) {
+                                    if(karta.getId() == idKartyCislo){
+                                        naKoho.getVylozeneKarty().remove(karta); //todo: kdyz mezitim karta se spali jinak, tak bude vizualne 2x
+                                        hra.getKomunikator().posliSpaleniVylozenéKarty(karta, naKoho);
+                                    }
                                 }
                             }
+                        } catch (NumberFormatException ex) {
+                            hra.getKomunikator().posliChybu(kym, Chyba.CHYBA_PROTOKOLU);
                         }
-                });
+                    });
         });
         return true;
     }

@@ -111,4 +111,13 @@ public interface HerniPravidla {
     default public  void spustitPrvniTah(SpravceTahu spravceTahu){
         spravceTahu.dalsiHrac();
     }
+
+    /**
+     * Volá se když hráč klikne na vlastní UI prvek.
+     * @param hrac Hráč, který klikl
+     * @param uiId ID prvku, na který hráč klikl
+     */
+    default public void uiButtonClicked(Hrac hrac, int uiId){
+        // Výchozí chování - nic se neděje
+    }
 }

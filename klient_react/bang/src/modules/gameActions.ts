@@ -474,6 +474,40 @@ export function handleGameMessage(
             setGameState(prev=>({...prev, gameEnded:true}));
             break;
         }
+        case "noveUI": {
+            try {
+                const json = JSON.parse(payload) as {id: number, text: string, disabled: boolean};
+                setGameState(prev => {
+                    const existingIndex = prev.customUIButtons.findIndex(btn => btn.id === json.id);
+                    if (existingIndex >= 0) {
+                        // Aktualizace existujícího tlačítka
+                        const updated = [...prev.customUIButtons];
+                        updated[existingIndex] = { id: json.id, text: json.text, disabled: json.disabled };
+                        return { ...prev, customUIButtons: updated };
+                    } else {
+                        // Přidání nového tlačítka
+                        return { ...prev, customUIButtons: [...prev.customUIButtons, { id: json.id, text: json.text, disabled: json.disabled }] };
+                    }
+                });
+            } catch (error) {
+                console.error("chyba při parsování noveUI", error, payload);
+                toast.error('Chybná odpověď serveru');
+            }
+            break;
+        }
+        case "odebratUI": {
+            try {
+                const uiId = parseInt(payload);
+                setGameState(prev => ({
+                    ...prev,
+                    customUIButtons: prev.customUIButtons.filter(btn => btn.id !== uiId)
+                }));
+            } catch (error) {
+                console.error("chyba při parsování odebratUI", error, payload);
+                toast.error('Chybná odpověď serveru');
+            }
+            break;
+        }
         case "vyberText": {
             try {
                 const json = JSON.parse(payload) as {id:number, title?:string, placeholder?:string, buttonText?:string};
@@ -661,5 +695,11 @@ export function putCardInPlay(ws: WebSocket | null, cardId: number) {
     if (ws !== null) {
         console.log("putCardInPlay - vykládám kartu do hry:", cardId);
         ws.send("vylozeni:" + cardId);
+    }
+}
+
+export function clickUIButton(ws: WebSocket | null, buttonId: number) {
+    if (ws !== null) {
+        ws.send(`uiClick:${buttonId}`);
     }
 }

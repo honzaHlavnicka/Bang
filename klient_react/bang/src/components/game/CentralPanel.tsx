@@ -8,10 +8,9 @@ import Fire from "./Fire";
 import { useDialog } from "../../modules/DialogContext";
 export default function CentralPanel() {
     //const [deckImages, setDeckImages] =  React.useState<string[]>([]);
-    const {gameState, drawCard, endTurn} = useGame();
+    const {gameState, drawCard, endTurn, clickUIButton} = useGame();
     const {openDialog} = useDialog();
 
-    
     //const imagesForDeck = deckImages.length ? deckImages : gameState.discardPile;
     const imagesForDeck = gameState.discardPile;
     return (<>
@@ -34,6 +33,17 @@ export default function CentralPanel() {
             {gameState.allowedUIElements.includes("DOBIRACI_BALICEK") ?
                 <Card image={"/img/karty/zezadu.png"} name="dobírací balíček" onClick={()=>drawCard()} id={-2}/>
             : null}
+            {gameState.customUIButtons.map(btn => (
+                <button 
+                    key={btn.id} 
+                    className={globalCSS.button}
+                    disabled={btn.disabled}
+                    style={{marginRight: 20}}
+                    onClick={() => clickUIButton(btn.id)}
+                >
+                    {btn.text}
+                </button>
+            ))}
             <ZoomToggleButton />
             
         </div>
