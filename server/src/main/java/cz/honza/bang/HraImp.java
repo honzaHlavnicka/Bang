@@ -247,7 +247,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     @Override
     public void prohodBalicky(){
         odhazovaciBalicek.otoc();
-        BalicekImp novyOdhazovaciBalicek = balicek;
+        BalicekImp<Karta> novyOdhazovaciBalicek = balicek;
         balicek = odhazovaciBalicek;
         odhazovaciBalicek = novyOdhazovaciBalicek;   
     }

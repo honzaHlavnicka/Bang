@@ -217,11 +217,8 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      */
     @Override
     public void zmenaSmeru(){
-        if(zmenenSmer){
-            zmenenSmer = false;
-        }else{
-            zmenenSmer = true;
-        }
+        zmenenSmer = !zmenenSmer;
+        poradiAktualni = false;
     }
 }
 

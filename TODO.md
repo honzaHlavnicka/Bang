@@ -7,58 +7,6 @@ Soubory jsou uváděny relativně ke kořeni projektu.
 
 ## 🔴 BEZPEČNOST (kritické)
 
-### B1 – Hardcoded heslo pro admin příkazy
-**Soubory:**
-- `server/src/main/java/cz/honza/bang/net/SocketServer.java` – řádky 67 a 74
-
-Heslo `"heslo123"` je natvrdo zapsáno v kódu. Útočník, který získá přístup ke zdrojovému kódu (nebo jen k JAR souboru a `javap`), může příkazy `serverInfo` a `restartovatPluginy` volat neomezeně. Heslo by mělo být načítáno z proměnné prostředí (např. `System.getenv("ADMIN_PASSWORD")`). Na problém upozorňují i komentáře `//TODO`.
-
----
-
-### B2 – Logická chyba: chybná `return` po úspěšném admin příkazu `serverInfo`
-**Soubor:**
-- `server/src/main/java/cz/honza/bang/net/SocketServer.java` – řádky 66–71
-
-```java
-if(message.startsWith("serverInfo:")){
-    if(message.replace("serverInfo:", "").equals("heslo123")){
-        conn.send("serverDataHTML:"+serverDataHTML()); // odeslána data...
-    }
-    posliChybu(conn, Chyba.SPATNE_HESLO); // ...ale pak se VŽDY odešle i chyba!
-    return;
-}
-```
-
-Po odeslání HTML dat chybí `return`, takže se klientovi za každou okolnost odešle i chybová zpráva `SPATNE_HESLO`, i když bylo heslo správné.
-
----
-
-### ✅ B3 – `substring()` bez kontroly délky – riziko `StringIndexOutOfBoundsException`
-**Soubor:**
-- `server/src/main/java/cz/honza/bang/net/SocketServer.java` – řádky 137–138
-
-```java
-KomunikatorHryImp komunikator = hryPodleId.get(message.substring(10, 16));
-if(komunikator.vraciSeHrac(conn, message.substring(16))){
-```
-
-Zpráva ve formátu `vraceniSe:<token>` musí mít délku alespoň 17 znaků. Pokud klient pošle kratší zprávu, vyhodí JVM výjimku `StringIndexOutOfBoundsException`, která server neshodí (je zachycena WebSocket knihovnou), ale způsobí neočekávané chování. Chybí validace délky vstupní zprávy.
-
----
-
-### B4 – Expozice WebSocket objektu do globálního scope prohlížeče
-**Soubor:**
-- `klient_react/bang/src/modules/GameProvider.tsx` – řádek 55
-
-```typescript
-(window as unknown as { ws: WebSocket }).ws = socket; //TODO: odstranit testovací přiřazení
-```
-
-WebSocket spojení je přístupné přes `window.ws`, takže jakýkoli JavaScript na stránce (včetně třetí strany při XSS útoku) může posílat zprávy serveru bez vědomí aplikace. Pouze testovací kód, ale nesmí být v produkci.
-
----
-
-
 
 ## 🟠 CHYBY V LOGICE (bugs)
 
@@ -142,19 +90,6 @@ return !kdo.getVylozeneKarty().contains(co); //špatně. musíš podle názvu
 ```
 
 Komentář v kódu přímo říká, že implementace je špatná – porovnává instanci karty místo jejího jména/typu.
-
----
-
-### C6 – `Bang.odehrat` a `CatBalou.odehrat` volají `Integer.parseInt()` bez ošetření výjimky
-**Soubory:**
-- `pluginy/bang/src/main/java/cz/honza/bang/pluginy/bang/Bang.java` – řádek 34
-- `pluginy/bang/src/main/java/cz/honza/bang/pluginy/bang/CatBalou.java` – řádek 49
-
-```java
-Hrac naKoho = hra.getHrac(Integer.parseInt(odpoved)); //TODO: možná nějaká exception kontrola
-```
-
-Pokud klient odpoví textem, který není číslo, vyhodí se `NumberFormatException`, která není zachycena. Komentář v CatBalou na problém upozorňuje.
 
 ---
 
@@ -242,23 +177,6 @@ nextId++;
 
 ---
 
-### K4 – `Timer` v `hracOdpojen` bez uloženého odkazu – nelze zrušit
-**Soubor:**
-- `server/src/main/java/cz/honza/bang/net/KomunikatorHryImp.java` – řádky 177–185
-
-```java
-new Timer().schedule(new TimerTask() {
-    @Override
-    public void run() {
-        socket.ukoncitHru(idHry);
-    }
-}, SMAZAT_NEAKTIVNI_HRU_MS);
-```
-
-Reference na `Timer` se nikam neukládá. Pokud se hráč znovu připojí před vypršením časovače, nelze ho zrušit a hra se po 5 minutách smaže, i když se aktivně hraje. Při opakovaném odpojování téhož hráče vznikají neomezené `Timer` objekty.
-
----
-
 ### K5 – `BalicekImp` používá raw typ `@Deprecated` metodu
 **Soubor:**
 - `server/src/main/java/cz/honza/bang/BalicekImp.java` – metoda `toDeque()` (řádek 136)
@@ -266,33 +184,6 @@ Reference na `Timer` se nikam neukládá. Pokud se hráč znovu připojí před 
 Metoda je označena `@Deprecated` a vrací přímý odkaz na vnitřní kolekci (porušuje encapsulation). Pokud tato metoda existuje pouze pro testovací účely, měla by být odstraněna.
 
 ---
-
-### K6 – `HraImp.prohodBalicky()` používá raw typ bez generik
-**Soubor:**
-- `server/src/main/java/cz/honza/bang/HraImp.java` – řádky 198–203
-
-```java
-BalicekImp novyOdhazovaciBalicek = balicek; // raw type, varování kompilátoru
-```
-
-Použití raw typu způsobuje unchecked warning a obchází typovou bezpečnost generik.
-
----
-
-### K7 – `zmenaSmeru()` používá zbytečné if-else místo negace
-**Soubor:**
-- `server/src/main/java/cz/honza/bang/SpravceTahuImp.java` – řádky 208–213
-
-```java
-if(zmenenSmer){
-    zmenenSmer = false;
-}else{
-    zmenenSmer = true;
-}
-// Správně: zmenenSmer = !zmenenSmer;
-```
-
-
 
 
 ### K11 – Pole `HraImp.obrazekZadniStrany` je deklarováno, ale nikde nepoužíváno
@@ -319,8 +210,6 @@ gameStateMessegeFull?: string;   // správně: gameStateMessageFull
 ```
 
 ---
-
-
 
 
 

@@ -7,8 +7,8 @@ import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  *
@@ -26,15 +26,12 @@ public class SpravceHernichPravidel {
     }
 
     public static String getJSONVytvoritelneHry() {
-        AtomicInteger id = new AtomicInteger(); //int nefunguje a chatGPT doporučil toto
-        
-        return pluginy.stream()
-                .map(p -> {
-                    
-                    int myId = id.getAndIncrement();
+        return IntStream.range(0, pluginy.size())
+                .mapToObj(i -> {
+                    HerniPlugin p = pluginy.get(i);
                     return String.format(
                             "{\"id\":%d,\"jmeno\":\"%s\",\"popis\":\"%s\",\"url\":\"%s\"}",
-                            myId, escapeJSON(p.getJmeno()), escapeJSON(p.getPopis()), escapeJSON(p.getURLPravidel())
+                            i, escapeJSON(p.getJmeno()), escapeJSON(p.getPopis()), escapeJSON(p.getURLPravidel())
                     );
                 })
                 .collect(Collectors.joining(", ", "[", "]"));

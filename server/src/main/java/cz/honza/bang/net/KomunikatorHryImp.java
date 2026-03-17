@@ -41,6 +41,10 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     private Map<HracImp, Map<Integer, CustomUIButton>> customUIByPlayer = new ConcurrentHashMap<>();
     private int nextUIButtonId = 1000;
     
+    // Timeout pro smazání neaktivní hry
+    private Timer hraCleupTimer = null;
+    private TimerTask hraCleupTask = null;
+    
     // Třída pro reprezentaci vlastního UI prvku
     private static class CustomUIButton {
         int id;
@@ -189,6 +193,9 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
             return false;
         }
         
+        // Zrušit timeout smazání hry - nějaký hráč se znovu připojil
+        zrusitTimeoutSmezaniHry();
+        
         websocket.send("pripojenKeHre");
         HracImp hrac = hra.novyHrac();
         if(websocketPodleHracu.isEmpty()){
@@ -218,13 +225,18 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         hraciPodleWebsocketu.remove(conn);
         websocketPodleHracu.remove(hrac);
         if(hraciPodleWebsocketu.isEmpty()){
-            new Timer().schedule(new TimerTask() {
+            // Zrušit starý timeout pokud existuje
+            zrusitTimeoutSmezaniHry();
+            
+            // Vytvořit nový timeout
+            hraCleupTimer = new Timer("HraCleanupTimer-" + idHry, true);
+            hraCleupTask = new TimerTask() {
                 @Override
                 public void run() {
                     socket.ukoncitHru(idHry);
                 }
-            }, SMAZAT_NEAKTIVNI_HRU_MS); 
-
+            };
+            hraCleupTimer.schedule(hraCleupTask, SMAZAT_NEAKTIVNI_HRU_MS);
         }
     }
     
@@ -570,6 +582,25 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         }
     }
 
-   
-
+    /**
+     * Zruší timeout smazání hry. Volá se při reconnectu hráče.
+     */
+    private void zrusitTimeoutSmezaniHry() {
+        if (hraCleupTask != null) {
+            hraCleupTask.cancel();
+            hraCleupTask = null;
+        }
+        if (hraCleupTimer != null) {
+            hraCleupTimer.cancel();
+            hraCleupTimer = null;
+        }
+    }
+    
+    /**
+     * Čistí všechny zdroje hry. Volá se při zrušení hry.
+     */
+    public void cleanup() {
+        zrusitTimeoutSmezaniHry();
+    }
+    
 }
