@@ -448,6 +448,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         }
         
         nactiHru(conn);
+        posliVsechnaUITlacitka(hrac);
         return true;
     }
     
@@ -579,6 +580,25 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         if (playerUI != null) {
             playerUI.remove(uiId);
             posli(komu, "odebratUI:" + uiId);
+        }
+    }
+
+    /**
+     * Pošle všechna UI tlačítka pro hráče. Volá se při reconnectu.
+     * @param komu hráč kterému se mají poslat tlačítka
+     */
+    public void posliVsechnaUITlacitka(cz.honza.bang.sdk.Hrac komu) {
+        HracImp hracImp = (HracImp) komu;
+        Map<Integer, CustomUIButton> playerUI = customUIByPlayer.get(hracImp);
+        
+        if (playerUI != null && !playerUI.isEmpty()) {
+            for (CustomUIButton button : playerUI.values()) {
+                JSONObject json = new JSONObject();
+                json.put("id", button.id);
+                json.put("text", button.text);
+                json.put("disabled", button.disabled);
+                posli(komu, "noveUI:" + json.toString());
+            }
         }
     }
 
