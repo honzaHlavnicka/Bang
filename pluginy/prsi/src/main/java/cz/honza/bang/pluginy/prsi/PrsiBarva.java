@@ -11,12 +11,18 @@ package cz.honza.bang.pluginy.prsi;
  * @author honza
  */
 public enum PrsiBarva {
-    CERVENE("cervene"),ZELENE("zelene"),KULE("kule"),ZALUDY("zalud");
+    CERVENE("cervene","červené"),ZELENE("zelene","zelené"),KULE("kule","kule"),ZALUDY("zalud", "žaludy");
     String imagePrefix;
-    private PrsiBarva(String imagePrefix){
+    String nazev;
+    private PrsiBarva(String imagePrefix, String nazev){
         this.imagePrefix = imagePrefix;
+        this.nazev = nazev;
     }
     public String getImagePrefix(){
         return imagePrefix;
+    }
+
+    public String getNazev() {
+        return nazev;
     }
 }

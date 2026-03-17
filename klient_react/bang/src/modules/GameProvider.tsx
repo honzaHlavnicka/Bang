@@ -20,11 +20,6 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     }, [gameState]);
 
     useEffect(() => {
-        //TODO: odstranit testovací dialog
-        //openDialog({type:"SELECT_CARD", data:{cards:[{image:"/img/karty/bang.png",id:70},{image:"/img/karty/dostavnik.png",id:71},{image:"img/karty/uno/red4.png",id:1}],min:1,max:2},dialogHeader:"Vyber si jednu kartu co se ti zlíbí!",notCloasable:true});
-        //openDialog({type:"SELECT_PLAYER", data:{players:[{id:1,name:"Honza"},{id:2,name:"Pepa"},{id:3,name:"Karel"}]},dialogHeader:"Vyber si hráče!",notCloasable:true,callback:(selectedPlayer:number)=>{alert(selectedPlayer)}});
-        //openDialog({type:"CONFIRM_ACTION", data:{actions:[{id:1,name:"Akce 1"},{id:2,name:"Akce 2"},{id:3,name:"Akce 3"},{id:4,name:"asdsd"},{id:5,name:"fkolod"},{id:6,name:"asddfsgsd"},{id:7,name:"dfb"}]},dialogHeader:"Co chceš udělat???!",notCloasable:false,callback:(selectedAction:number)=>{alert(selectedAction)}});
-        //openDialog({type:"INFO", data:{header:"Něco se stalo",message:"Toto je informační hláška pro hráče."},dialogHeader:"Info",notCloasable:false});
 
         //====================== nastavení režimu adresy serveru ===============================================
         //socketAdress can be: wss://<thisHost>/ws or ws://localhost:9999 or ws://<ServerPcIpAddress>:9999    //

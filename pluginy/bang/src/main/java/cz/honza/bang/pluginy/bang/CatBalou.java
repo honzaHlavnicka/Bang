@@ -9,10 +9,13 @@ package cz.honza.bang.pluginy.bang;
 
 import cz.honza.bang.sdk.zastupnaKarta;
 import cz.honza.bang.sdk.Balicek;
+import cz.honza.bang.sdk.Chyba;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,16 +45,25 @@ public class CatBalou extends Karta implements HratelnaKarta{
         // Zobrazit stavovou zprávu že hráč vybírá cíl
         hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá cíl útoku...");
         
-        hra.getKomunikator().pozadejOdpoved( "vyberHrace:" + pripravJSONvyberuHrace(kym), kym)
+        hra.getKomunikator().pozadejOHrace(kym, hra.getHraci(), "Vyber komu kartu spálíš", 1, 1) 
             .thenAccept(odpoved -> {
-                
                 System.out.println("Hráč odpověděl: " + odpoved);
-                Hrac naKoho = hra.getHrac(Integer.parseInt(odpoved)); //TODO: možná nějaká exception kontrola, DRY:Bang
                 
-                // Zobrazit stavovou zprávu že hráč vybírá kartu
+                Hrac naKoho;
+                try{
+                    naKoho = hra.getHrac(Integer.parseInt(odpoved));
+                }catch(NumberFormatException ex){
+                    hra.getKomunikator().posliChybu(kym, Chyba.CHYBA_PROTOKOLU);
+                    return; // Nemá cenu pokračovat bez vůle hráče
+                }
+                
                 hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá kartu od " + naKoho.getJmeno() + "...");
                 
-                hra.getKomunikator().pozadejOdpoved("vyberKartu:" + pripravJSONvyberuKarty(naKoho), kym)
+                List<Karta> kartyNaVyber = new ArrayList<>();
+                kartyNaVyber.addAll(naKoho.getVylozeneKarty());
+                kartyNaVyber.add(zastupnaKarta.getNahodna());
+
+                hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "Jakou kartu mu spálíš?", 1, 1)
                     .thenAccept(idKarty -> {
                         int idKartyCislo = Integer.parseInt(idKarty);
                         if(zastupnaKarta.getNahodna().getId() == idKartyCislo){
@@ -71,30 +83,5 @@ public class CatBalou extends Karta implements HratelnaKarta{
         return true;
     }
     
-    String pripravJSONvyberuKarty(Hrac naKoho){
-        JSONObject json = new JSONObject();
-        json.put("id", "data-id");
-        json.put("nadpis", "Vyber jakou kartu!");
-        JSONArray kartyNaVyber = new JSONArray();
-        kartyNaVyber.put(new JSONObject(zastupnaKarta.getNahodna().toJSON()));
-        System.out.println("Připravuju karty na výběr: "+naKoho.getVylozeneKarty().size());
-        for (Karta karta : naKoho.getVylozeneKarty()) {
-            System.out.println(karta.getJmeno());
-            kartyNaVyber.put(new JSONObject(karta.toJSON()));
-        }
-        json.put("karty", kartyNaVyber);
-        return json.toString();
-    }
     
-    String pripravJSONvyberuHrace(Hrac hracCoOdehral) { //TODO: DRY: Bang
-        JSONObject json = new JSONObject();
-        json.put("id", "data-id");
-        json.put("nadpis", "Vyber komu sebereš kartu!");
-        JSONArray hraciNaVyber = new JSONArray();
-        for (Hrac hrac : hra.getHraci()) {
-            hraciNaVyber.put(hrac.getId());
-        }
-        json.put("hraci", hraciNaVyber);
-        return json.toString();
-    }
 }

@@ -12,6 +12,8 @@ import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
 import cz.honza.bang.sdk.zastupnaKarta;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,7 +22,7 @@ import org.json.JSONObject;
  *
  * @author honza
  */
-public class Panika extends CatBalou implements HratelnaKarta{
+public class Panika extends Karta implements HratelnaKarta{
 
     public Panika(Hra hra, Balicek<Karta> balicek) {
         super(hra, balicek);
@@ -40,8 +42,10 @@ public class Panika extends CatBalou implements HratelnaKarta{
     public boolean odehrat(Hrac kym) {
         // Zobrazit stavovou zprávu že hráč vybírá cíl
         hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá cíl útoku...");
-
-        hra.getKomunikator().pozadejOdpoved("vyberHrace:" + pripravJSONvyberuHrace(kym), kym)
+        
+        List<Hrac> povoleniHraci = kym.vzdalenostPod(1); // Neplatí na ní zbraně, ale efekty platí. (Vzdálenost max 1, ale s hledím to je 2 apod.)
+        
+        hra.getKomunikator().pozadejOHrace(kym, povoleniHraci, "Vyber koho kartu si vezmeš", 1, 1)
                 .thenAccept(odpoved -> {
 
                     System.out.println("Hráč odpověděl: " + odpoved);
@@ -49,8 +53,12 @@ public class Panika extends CatBalou implements HratelnaKarta{
 
                     // Zobrazit stavovou zprávu že hráč vybírá kartu
                     hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá kartu od " + naKoho.getJmeno() + "...");
+                    
+                    List<Karta> kartyNaVyber = new ArrayList<>();
+                    kartyNaVyber.addAll(naKoho.getVylozeneKarty());
+                    kartyNaVyber.add(zastupnaKarta.getNahodna());
 
-                    hra.getKomunikator().pozadejOdpoved("vyberKartu:" + pripravJSONvyberuKarty(naKoho), kym)
+                    hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "Jakou kartu mu spálíš?", 1, 1)
                             .thenAccept(idKarty -> {
                                 int idKartyCislo = Integer.parseInt(idKarty);
                                 if (zastupnaKarta.getNahodna().getId() == idKartyCislo) {
@@ -74,21 +82,5 @@ public class Panika extends CatBalou implements HratelnaKarta{
                             });
                 });
         return true;
-    }
-    
-    
-    @Override
-    String pripravJSONvyberuHrace(Hrac hracCoOdehral) {
-        JSONObject json = new JSONObject();
-        json.put("id", "data-id");
-        json.put("nadpis", "Vyber komu sebereš kartu! (A budeš si ji moc nechat)");
-        JSONArray hraciNaVyber = new JSONArray();
-        
-        for (Hrac hrac : hracCoOdehral.vzdalenostPod(1)) {  // Neplatí na ní zbraně, ale efekty platí. (Vzdálenost max 1, ale s hledím to je 2 apod.)
-            hraciNaVyber.put(hrac.getId());
-        }
-        
-        json.put("hraci", hraciNaVyber);
-        return json.toString();
     }
 }

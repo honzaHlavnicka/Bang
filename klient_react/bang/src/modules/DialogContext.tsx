@@ -18,9 +18,11 @@ type selectCardDialog = {
 type selectPlayerDialog = {
     type:"SELECT_PLAYER",
     data:{
-        players:Array<{id:number,name:string}> //TODO: předpřipravený typ
+        players:Array<{id:number,name:string}>,
+        min:number,
+        max:number
     }
-    callback:(selectedPlayer:number)=>void;
+    callback:(selectedPlayers:number[])=>void;
 }
 
 type confirmActionDialog = {
@@ -48,7 +50,18 @@ type confirmDialog = {
     callback?:(confirmed:boolean)=>void;
 }
 
-export type DialogState = (dialogBase & selectCardDialog) | (dialogBase & selectPlayerDialog) | (dialogBase & confirmActionDialog) | (dialogBase & infoDialog) | (dialogBase & confirmDialog) | null;
+type textDialog = {
+    type:"TEXT",
+    data:{
+        title?:string;
+        placeholder?:string;
+        buttonText?:string;
+        defaultValue?:string;
+    },
+    callback?:(text:string)=>void;
+}
+
+export type DialogState = (dialogBase & selectCardDialog) | (dialogBase & selectPlayerDialog) | (dialogBase & confirmActionDialog) | (dialogBase & infoDialog) | (dialogBase & confirmDialog) | (dialogBase & textDialog) | null;
 
 export type DialogContextType = {
     dialog: DialogState;

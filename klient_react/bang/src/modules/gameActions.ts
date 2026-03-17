@@ -303,11 +303,13 @@ export function handleGameMessage(
         }
         case "vyberHrace": {
             try {
-                const json = JSON.parse(payload) as {id:number,hraci:number[], nadpis?:string}; 
+                const json = JSON.parse(payload) as {id:number,hraci:number[], nadpis?:string, min?:number, max?:number}; 
                 const heading = json.nadpis ?? "Vyber hráče";
+                const min = json.min ?? 1;
+                const max = json.max ?? 1;
                 const players = (stateRef.current?.players ?? []).filter(p=>json.hraci.includes(p.id)).map(p=>({id:p.id,name:p.name}));
-                openDialog({type:"SELECT_PLAYER", data:{players},dialogHeader:heading,notCloasable:false,callback:(selectedAction:number)=>{
-                    console.log("vybraný hráč:",selectedAction);
+                openDialog({type:"SELECT_PLAYER", data:{players,min,max},dialogHeader:heading,notCloasable:false,callback:(selectedPlayers:number[])=>{
+                    console.log("vybraní hráči:",selectedPlayers);
                     if(stateRef.current?.playerId == null){
                         toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
                         return;
@@ -316,7 +318,7 @@ export function handleGameMessage(
                         toast.error("Nelze provést akci, protože není navázáno spojení se serverem");
                         return;
                     }
-                    socket.send(`dialog:${json.id},${selectedAction}`);
+                    socket.send(`dialog:${json.id},${selectedPlayers.join(",")}`);
                     
                 }});
             }catch (error) {
@@ -327,11 +329,13 @@ export function handleGameMessage(
         }
         case "vyberKartu": {
             try {
-                const json = JSON.parse(payload) as {id:(string | number),karty:{obrazek:string,id:number,jmeno:string}[], nadpis?:string}; 
+                const json = JSON.parse(payload) as {id:(string | number),karty:{obrazek:string,id:number,jmeno:string}[], nadpis?:string, min?:number, max?:number}; 
                 const heading = json.nadpis ?? "Vyber kartu";
+                const min = json.min ?? 1;
+                const max = json.max ?? 1;
                 const cards = json.karty.map(k=>({image:k.obrazek,id:k.id}));
-                openDialog({type:"SELECT_CARD", data:{cards,min:1,max:1},dialogHeader:heading,notCloasable:false,callback:(selectedCard:number[])=>{ 
-                    console.log("vybraná karta:",selectedCard);
+                openDialog({type:"SELECT_CARD", data:{cards,min,max},dialogHeader:heading,notCloasable:false,callback:(selectedCards:number[])=>{ 
+                    console.log("vybrané karty:",selectedCards);
                     if(stateRef.current?.playerId == null){
                         toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
                         return;
@@ -340,7 +344,7 @@ export function handleGameMessage(
                         toast.error("Nelze provést akci, protože není navázáno spojení se serverem");
                         return;
                     }
-                    socket.send(`dialog:${json.id},${selectedCard[0]}`);
+                    socket.send(`dialog:${json.id},${selectedCards.join(",")}`);
                 }});
             }catch (error) {
                 console.error("chyba při parsování", error, payload);
@@ -468,6 +472,27 @@ export function handleGameMessage(
         }
         case "konecHry":{
             setGameState(prev=>({...prev, gameEnded:true}));
+            break;
+        }
+        case "vyberText": {
+            try {
+                const json = JSON.parse(payload) as {id:number, title?:string, placeholder?:string, buttonText?:string};
+                openDialog({type:"TEXT", data:{title:json.title, placeholder:json.placeholder, buttonText:json.buttonText},dialogHeader:json.title ?? "Zadej text",notCloasable:false,callback:(text:string)=>{
+                    console.log("zadaný text:",text);
+                    if(stateRef.current?.playerId == null){
+                        toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
+                        return;
+                    }
+                    if(socket == null){
+                        toast.error("Nelze provést akci, protože není navázáno spojení se serverem");
+                        return;
+                    }
+                    socket.send(`dialog:${json.id},${text}`);
+                }});
+            }catch (error) {
+                console.error("chyba při parsování", error, payload);
+                toast.error('Chybná odpověď serveru')
+            }
             break;
         }
         default: {

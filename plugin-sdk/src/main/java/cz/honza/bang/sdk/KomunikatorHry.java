@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.sdk;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 
@@ -158,9 +159,62 @@ public interface KomunikatorHry {
      * @param vysledky pole, jehož každá položka je jedno umístění (index 0 = místo 1...) a v jednom umístění se může naházet více hráčů spolu.
      */
     public void posliVysledky(Hrac[][] vysledky);
+    
+    /**
+     * Pošle jednomu hráči otázku a možnosti odpovědí. Vrátí odpověď hráče jako CompletableFuture, které se splní, až hráč odpoví.
+     * @param odKoho Hráč, kterému se otázka klade
+     * @param moznosti Seznam možných odpovědí (Pořadí je důležité, protože odpověď bude indexem do tohoto seznamu)
+     * @param nadpis Nadpis otázky
+     * @return CompletableFuture, které se splní, až hráč odpoví (Ve formátu indexu do seznamu možností)
+     */
+    public CompletableFuture<String> pozadejOVyberMoznosti(Hrac odKoho, List<String> moznosti, String nadpis);
 
+
+    /**
+     * Pošle jednomu hráči otázku a možnosti odpovědí, které jsou reprezentovány kartami. Vrátí odpověď hráče jako CompletableFuture, které se splní, až hráč odpoví.
+     * @param odKoho Hráč, kterému se otázka klade
+     * @param karty Seznam karet, které reprezentují možnosti odpovědí (Pořadí není důležité, protože odpověď bude id vybrané karty)
+     * @param nadpis Nadpis otázky
+     * @param min Minimální počet karet, které musí hráč vybrat (obvykle 1)
+     * @param max Maximální počet karet, které může hráč vybrat (obvykle 1, ale může být i více pro výběr více karet)
+     * @return CompletableFuture, které se splní, až hráč odpoví (Ve formátu "id1,id2,..." s id vybraných karet)
+     */
+    public CompletableFuture<String> pozadejOKarty(Hrac odKoho, List<Karta> karty, String nadpis, int min, int max);
+
+
+    /**
+     * Pošle jednomu hráči otázku a možnosti odpovědí, které jsou reprezentovány jinými hráči. Vrátí odpověď hráče jako CompletableFuture, které se splní, až hráč odpoví.
+     * @param odKoho Hráč, kterému se otázka klade
+     * @param hraci Seznam hráčů, které reprezentují možnosti odpovědí (Pořadí není důležité, protože odpověď bude id vybraného hráče)
+     * @param nadpis Nadpis otázky
+     * @param min Minimální počet hráčů, které musí hráč vybrat (obvykle 1)
+     * @param max Maximální počet hráčů, které může hráč vybrat (obvykle 1, ale může být i více pro výběr více hráčů)
+     * @return CompletableFuture, které se splní, až hráč odpoví (Ve formátu "id1,id2,..." s id vybraných hráčů)
+     */
+    public CompletableFuture<String> pozadejOHrace(Hrac odKoho, List<Hrac> hraci,String nadpis,int min, int max);
+
+
+    /**
+     * Pošle příkaz klientovy v parametru @param <komu>. V té nahradí řetězec "data-id" reálným řetězcem,
+     * který  jde využít na interní dohledání otázky zpět. Vrátí odpověď hráče jako CompletableFuture,
+     * které se splní, až hráč odpoví. Většinou by se NNEMĚLO používat přímo, ale spíše přes pozadejOVyberMoznosti() nebo pozadejOKarty() a pod.
+     * @param komu Hráč, kterému se otázka klade
+     * @return CompletableFuture, které se splní, až hráč odpoví
+     * 
+     * @see pozadejOVyberMoznosti() pro výběr z možností
+     * @see pozadejOKarty() pro výběr karet
+     */
     public CompletableFuture<String> pozadejOdpoved(String otazka,Hrac komu);
-       
+
+    /**
+     * Pošle jednomu hráči otázku s textovým vstupem. Vrátí odpověď hráče jako CompletableFuture, které se splní, až hráč odpoví.
+     * @param odKoho Hráč, kterému se otázka klade
+     * @param nadpis Nadpis otázky
+     * @param placeholder Placeholder text v textovém poli (volitelné)
+     * @param buttonText Text na tlačítku (volitelné)
+     * @return CompletableFuture, které se splní, až hráč odpoví (s textem, který hráč zadal)
+     */
+    public CompletableFuture<String> pozadejOText(Hrac odKoho, String nadpis, String placeholder, String buttonText);
 
     public int getIdHry();
     public int pocetHracu();

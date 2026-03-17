@@ -10,6 +10,7 @@ import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
+import java.util.ArrayList;
 
 /**
  *
@@ -28,17 +29,15 @@ public class PrsiSvrsek extends PrsiKarta{
             // Zobrazit stavovou zprávu že hráč vybírá barvu
             hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá barvu...");
             
-            hra.getKomunikator().pozadejOdpoved(
-                    "vyberAkci:{\"id\":data-id,\"akce\":["
-                    + "{\"id\":0,\"nazev\":\"Kule\"},"
-                    + "{\"id\":1,\"nazev\":\"Zelené\"},"
-                    + "{\"id\":2,\"nazev\":\"Červené\"},"
-                    + "{\"id\":3,\"nazev\":\"Žaludy\"}"
-                    + "]}",
-                    kym
-            ).thenAccept(odpoved -> {
+            
+            ArrayList moznosti = new ArrayList(4);
+            moznosti.add("Kule");
+            moznosti.add("Zelené");
+            moznosti.add("Červené");
+            moznosti.add("Žaludy");
+            hra.getKomunikator().pozadejOVyberMoznosti(kym, moznosti, "Na co chceš změnit?").thenAccept(odpoved -> {
                 System.out.println("Hráč odpověděl: " + odpoved);
-                switch (odpoved) {
+                switch ( (String) odpoved) {
                     case "0":
                         poslendniBarva = PrsiBarva.KULE;
                         break;
@@ -51,14 +50,16 @@ public class PrsiSvrsek extends PrsiKarta{
                     case "3":
                         poslendniBarva = PrsiBarva.ZALUDY;
                         break;
+                    default:
+                        poslendniBarva = PrsiBarva.CERVENE; // Výchozí barva při chybě
+                        break;
                 }
                 // Zobrazit informaci o vybrané barvě
-                hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " si vybral barvu: " + poslendniBarva);
+                hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " si vybral barvu: " + poslendniBarva.getNazev());
                 // Dodatečná zpráva pro plugin - zvláštní oznámení
-                hra.getKomunikator().posliRychleOznameni(String.valueOf(poslendniBarva), kym);
+                hra.getKomunikator().posliRychleOznameni(String.valueOf(poslendniBarva.getNazev()), kym);
 
-            });//toto nmůže blokovat thred!
-            //TODO: udelat, aby neslo hrat, nez se slib splní
+            });//toto nemůže blokovat thred!
             return true;
         } 
 

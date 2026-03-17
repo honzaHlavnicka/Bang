@@ -14,6 +14,7 @@ export default function Dialog() {
     const {closeDialog,dialog} = useDialog();
     const [seleckted,setSelected] = useState<Array<number>>([]);
     let maxSelected = 0;
+    const [text,setText] = useState("");
     if(dialog == null){
         return;
     }
@@ -62,7 +63,7 @@ export default function Dialog() {
             );
             break;
         case "SELECT_PLAYER":
-                maxSelected = 1;
+                maxSelected = dialog.data.max;
                 content = (
                     
                     <div style={{display:"flex",flexDirection:"column",alignItems:"flex-start"}} >
@@ -71,18 +72,18 @@ export default function Dialog() {
                             <>
                             
                                 <label key={val.id} style={{background:(seleckted.includes(val.id) ? "grey" : "transparent"),borderRadius:10,margin:3,padding:2,cursor:"pointer"}} >
-                                    <input type="radio" name="player" value={val.id} style={{marginRight:10}} onChange={()=>select(val.id)} checked={seleckted.includes(val.id)}/>
+                                    <input type={dialog.data.max === 1 ? "radio" : "checkbox"} name="player" value={val.id} style={{marginRight:10}} onChange={()=>select(val.id)} checked={seleckted.includes(val.id)}/>
                                     {val.name}
                                 </label>
                             
                             <br/>
                             </>
                         ))}
-                        {seleckted.length > 0 ? <button onClick={()=>{
+                        {seleckted.length >= dialog.data.min ? <button onClick={()=>{
                             closeDialog();
-                            dialog.callback(seleckted[0]);
+                            dialog.callback(seleckted);
                             setSelected([]);
-                        }} className={globalCSS.button} >Potvrdit</button> : <div>Vyberte hráče.</div>}
+                        }} className={globalCSS.button} >Potvrdit</button> : <div>Vyberte ještě {dialog.data.min - seleckted.length} {dialog.data.min - seleckted.length === 1 ? "hráče" : "hráčů"}.</div>}
                     </div>
                 );
             break;
@@ -137,6 +138,20 @@ export default function Dialog() {
                 </div>
             );
         break;
+        case "TEXT":
+            content = (
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10}} >
+                    <h2>{dialog.data.title || "Zadejte text"}</h2>
+                    <input type="text" value={text} onChange={e=>setText(e.currentTarget.value)} placeholder={dialog.data.placeholder} style={{padding:5,borderRadius:5,border:"1px solid black"}}/>
+                    <button className={globalCSS.button} onClick={()=>{
+                        closeDialog();
+                        if(dialog.callback){
+                            dialog.callback(text);
+                        }
+                    }}>{dialog.data.buttonText || "Potvrdit"}</button>
+                </div>
+            );
+            break;
         default:
             break;
     }

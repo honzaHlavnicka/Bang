@@ -11,6 +11,8 @@ import cz.honza.bang.HraImp;
 import cz.honza.bang.HracImp;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
+import cz.honza.bang.sdk.zastupnaKarta;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -18,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import org.java_websocket.WebSocket;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -32,7 +35,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     private int idHry;
     private final long SMAZAT_NEAKTIVNI_HRU_MS = 300_000;
     private final Map<Integer, CompletableFuture<String>> cekajiciOdpovedi = new ConcurrentHashMap<>();
-    private int podleniIdCekaciOdpovedi = 0;
+    private int posledniIdCekaciOdpovedi = 0;
     private HracImp admin;
     private int pocetPripojenychHracu = 0;
     
@@ -292,7 +295,67 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     public void posliKonecHry() {
         posliVsem("konecHry");
     }
+    
+    public CompletableFuture<String> pozadejOHrace(Hrac odKoho, List<Hrac> hraci,String nadpis,int min, int max){
+        JSONObject json = new JSONObject();
+        json.put("id", "data-id");
+        json.put("nadpis", nadpis);
+        json.put("min", min);
+        json.put("max", max);
+        JSONArray hraciNaVyber = new JSONArray();
+        for (Hrac hrac : hraci) {
+            hraciNaVyber.put(hrac.getId());
+        }
+        json.put("hraci", hraciNaVyber);
+        
+        
+        return pozadejOdpoved("vyberHrace:" + json.toString(), odKoho);
+    }
+    
+    public CompletableFuture<String> pozadejOKarty(Hrac odKoho, List<Karta> karty, String nadpis, int min, int max){
+        JSONObject json = new JSONObject();
+        json.put("id", "data-id");
+        json.put("nadpis", nadpis);
+        json.put("min", min);
+        json.put("max", max);
+        JSONArray kartyNaVyber = new JSONArray();
+        for (Karta karta : karty) {
+            JSONObject kartaJson = new JSONObject();
+            kartaJson.put("id", karta.getId());
+            kartaJson.put("obrazek", karta.getObrazek());
+            kartaJson.put("jmeno", karta.getJmeno());
+            kartyNaVyber.put(kartaJson);
+            
+        }
+        json.put("karty", kartyNaVyber);
+        
+        return pozadejOdpoved("vyberKartu:" + json.toString(), odKoho);
+    }
+    
+    public CompletableFuture<String> pozadejOVyberMoznosti(Hrac odKoho, List<String> moznosti, String nadpis){
+        JSONObject json = new JSONObject();
+        json.put("id", "data-id");
+        JSONArray akce = new JSONArray();
+        for (int i = 0; i < moznosti.size(); i++) {
+            JSONObject akceObj = new JSONObject();
+            akceObj.put("id", i);
+            akceObj.put("nazev", moznosti.get(i));
+            akce.put(akceObj);
+        }
+        json.put("akce", akce); 
 
+        return pozadejOdpoved("vyberAkci:" + json.toString(), odKoho);
+    }
+
+    public CompletableFuture<String> pozadejOText(Hrac odKoho, String nadpis, String placeholder, String buttonText){
+        JSONObject json = new JSONObject();
+        json.put("id", "data-id");
+        json.put("title", nadpis);
+        if(placeholder != null) json.put("placeholder", placeholder);
+        if(buttonText != null) json.put("buttonText", buttonText);
+        
+        return pozadejOdpoved("vyberText:" + json.toString(), odKoho);
+    }
 
     @Override
     public void posliVysledky(Hrac[][] vysledky) {
@@ -349,8 +412,8 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     @Override
     public CompletableFuture<String> pozadejOdpoved(String otazka,cz.honza.bang.sdk.Hrac komu) {
         //připravý si id:
-        podleniIdCekaciOdpovedi++;
-        Integer id = podleniIdCekaciOdpovedi;
+        posledniIdCekaciOdpovedi++;
+        Integer id = posledniIdCekaciOdpovedi;
         
         
         CompletableFuture<String> future = new CompletableFuture<>();
