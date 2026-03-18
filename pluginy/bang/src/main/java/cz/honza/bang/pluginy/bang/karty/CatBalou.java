@@ -4,7 +4,7 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.pluginy.bang;
+package cz.honza.bang.pluginy.bang.karty;
 
 
 import cz.honza.bang.sdk.zastupnaKarta;
@@ -14,6 +14,7 @@ import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
+import cz.honza.bang.sdk.VylozitelnaKarta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -74,8 +75,7 @@ public class CatBalou extends Karta implements HratelnaKarta{
                             }else{
                                 for (Karta karta : naKoho.getVylozeneKarty()) {
                                     if(karta.getId() == idKartyCislo){
-                                        naKoho.getVylozeneKarty().remove(karta); //todo: kdyz mezitim karta se spali jinak, tak bude vizualne 2x
-                                        hra.getKomunikator().posliSpaleniVylozenéKarty(karta, naKoho);
+                                        naKoho.odeberVylozenouKartu((VylozitelnaKarta) karta);
                                     }
                                 }
                             }

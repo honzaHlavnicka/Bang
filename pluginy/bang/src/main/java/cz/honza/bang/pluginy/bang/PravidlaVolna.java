@@ -8,6 +8,12 @@ package cz.honza.bang.pluginy.bang;
 
 
 
+import cz.honza.bang.pluginy.bang.karty.Pivo;
+import cz.honza.bang.pluginy.bang.karty.Bang;
+import cz.honza.bang.pluginy.bang.karty.WellsFarkgo;
+import cz.honza.bang.pluginy.bang.karty.Dostavnik;
+import cz.honza.bang.pluginy.bang.karty.BangNaVsechny;
+import cz.honza.bang.pluginy.bang.karty.Barel;
 import cz.honza.bang.sdk.HerniPravidla;
 
 

@@ -192,4 +192,11 @@ public interface Hrac {
     int getCelkovyBonusDosahu();
     
     
+    /**
+     * Odebere bez kontrol s upozorněním kartu, která je mezi vyloženými. Obstará i efekty.
+     * @param karta, která se má odebrat
+     */
+    public void odeberVylozenouKartu(VylozitelnaKarta karta);
+
+    
 }

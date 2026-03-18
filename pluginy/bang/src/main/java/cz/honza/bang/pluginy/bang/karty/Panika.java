@@ -4,7 +4,7 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.pluginy.bang;
+package cz.honza.bang.pluginy.bang.karty;
 
 import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Chyba;
@@ -12,6 +12,7 @@ import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
+import cz.honza.bang.sdk.VylozitelnaKarta;
 import cz.honza.bang.sdk.zastupnaKarta;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,7 @@ public class Panika extends Karta implements HratelnaKarta{
                     kartyNaVyber.addAll(naKoho.getVylozeneKarty());
                     kartyNaVyber.add(zastupnaKarta.getNahodna());
 
-                    hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "Jakou kartu mu spálíš?", 1, 1)
+                    hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "Jakou kartu mu vezmeš?", 1, 1)
                             .thenAccept(idKarty -> {
                                 try {
                                     int idKartyCislo = Integer.parseInt(idKarty);
@@ -80,10 +81,10 @@ public class Panika extends Karta implements HratelnaKarta{
                                         for (Karta karta : naKoho.getVylozeneKarty()) {
                                             if (karta.getId() == idKartyCislo) {
                                                 naKoho.getVylozeneKarty().remove(karta);
+                                                naKoho.odeberVylozenouKartu((VylozitelnaKarta) karta);
                                                 kym.getKarty().add(karta);
                                                 hra.getKomunikator().posliNovouKartu(kym, karta);
                                                 hra.getKomunikator().posliZmenuPoctuKaret(naKoho);
-                                                hra.getKomunikator().posliSpaleniVylozenéKarty(karta, naKoho);
                                             }
                                         }
                                     }

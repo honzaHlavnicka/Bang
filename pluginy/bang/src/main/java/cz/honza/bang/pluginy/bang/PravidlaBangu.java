@@ -4,6 +4,16 @@
  */
 package cz.honza.bang.pluginy.bang;
 
+import cz.honza.bang.pluginy.bang.karty.Hledi;
+import cz.honza.bang.pluginy.bang.karty.Panika;
+import cz.honza.bang.pluginy.bang.karty.Pivo;
+import cz.honza.bang.pluginy.bang.karty.CatBalou;
+import cz.honza.bang.pluginy.bang.karty.Bang;
+import cz.honza.bang.pluginy.bang.karty.Mustang;
+import cz.honza.bang.pluginy.bang.karty.WellsFarkgo;
+import cz.honza.bang.pluginy.bang.karty.Dostavnik;
+import cz.honza.bang.pluginy.bang.karty.BangNaVsechny;
+import cz.honza.bang.pluginy.bang.karty.Barel;
 import cz.honza.bang.pluginy.bang.postavy.JednoduchePostavy;
 import cz.honza.bang.pluginy.bang.postavy.PaulRegret;
 import cz.honza.bang.pluginy.bang.postavy.RoseDoolan;

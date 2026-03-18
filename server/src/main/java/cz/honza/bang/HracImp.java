@@ -484,6 +484,16 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         efekty.add(efekt);
     }
     
+    @Override
+    public void odeberVylozenouKartu(VylozitelnaKarta karta){
+        Efekt efekt = karta.getEfekt();
+        efekty.remove(efekt);
+        efekt.odebrani(this);
+        vylozeneKarty.remove(karta);
+        karta.spalitVylozenou();
+        hra.getKomunikator().posliSpaleniVylozenéKarty((Karta) karta, this);
+    }
+    
     /**
      * Vrátí fyickou vzdálenost k dalšímu hráči. Nebere v potaz žádné efekty. Funguje
      * zpětně. Pokud hráči sedí vedle sebe, tak je vzdálenst 1.

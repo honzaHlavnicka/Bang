@@ -4,8 +4,9 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.pluginy.bang;
+package cz.honza.bang.pluginy.bang.karty;
 
+import cz.honza.bang.pluginy.bang.BarelEfekt;
 import cz.honza.bang.sdk.Efekt;
 import cz.honza.bang.sdk.VylozitelnaKarta;
 import cz.honza.bang.sdk.Balicek;

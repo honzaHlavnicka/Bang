@@ -4,38 +4,41 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.pluginy.bang;
+package cz.honza.bang.pluginy.bang.karty;
 
- 
 import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
-import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
+
 
 /**
  *
  * @author honza
  */
-public class Pivo extends Karta implements HratelnaKarta{
+public class BangNaVsechny extends Bang{
     
-    public Pivo(Hra hra, Balicek<Karta> balicek) {
+    public BangNaVsechny(Hra hra, Balicek<Karta> balicek) {
         super(hra, balicek);
     }
-
     @Override
-    public String getJmeno() {
-        return "pivo";
-    }
-
-    @Override
-    public String getObrazek() {
-        return "pivo";
-    }
-
-    @Override
-    public boolean odehrat(Hrac kym) {
-        kym.pridejZivot();
+    public boolean odehrat(Hrac kym){
+        for (Hrac hrac : hra.getHraci()) {
+            if(!hrac.equals(kym)){
+                hrac.odeberZivot();
+            }
+            
+        }
         return true;
     }
+    @Override
+    public String getObrazek(){
+        return "dvojitybang";
+    }
+    
+    @Override
+    public String getJmeno(){
+        return "Bang! na všechny.";
+    }
+    
 }
