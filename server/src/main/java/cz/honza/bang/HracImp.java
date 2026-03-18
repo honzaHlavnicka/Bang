@@ -204,7 +204,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     
     @Override
     public boolean jeNaTahu(){
-        return hra.getSpravceTahu().getNaTahu().equals(this);
+        Hrac naTahu = hra.getSpravceTahu().getNaTahu();
+        return naTahu != null && naTahu.equals(this);
     }
     
     @Override
@@ -273,7 +274,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
             hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);
             return;
         }
-        if(!hra.getSpravceTahu().getNaTahu().equals(this)){
+        Hrac naTahu = hra.getSpravceTahu().getNaTahu();
+        if(naTahu == null || !naTahu.equals(this)){
             hra.getKomunikator().posliChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
         }
@@ -335,7 +337,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
             hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);
             return;
         }
-        if (!hra.getSpravceTahu().getNaTahu().equals(this)) {
+        Hrac naTahu = hra.getSpravceTahu().getNaTahu();
+        if (naTahu == null || !naTahu.equals(this)) {
             hra.getKomunikator().posliChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
         }
@@ -394,7 +397,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
             hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);
             return;
         }
-        if (!hra.getSpravceTahu().getNaTahu().equals(this)) {
+        Hrac naTahu = hra.getSpravceTahu().getNaTahu();
+        if (naTahu == null || !naTahu.equals(this)) {
             hra.getKomunikator().posliChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
         }
@@ -468,7 +472,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     @Override
     public void lizniKontrolovane(){
         if(!hra.getHerniPravidla().hracChceLiznout(this)){
-            if (hra.getSpravceTahu().getNaTahu().equals(this)) {
+            Hrac naTahu = hra.getSpravceTahu().getNaTahu();
+            if (naTahu != null && naTahu.equals(this)) {
                 hra.getKomunikator().posliChybu(this, Chyba.NEJDE_SI_LIZNOUT);
             }else{
                 hra.getKomunikator().posliChybu(this, Chyba.NEJSI_NA_TAHU);

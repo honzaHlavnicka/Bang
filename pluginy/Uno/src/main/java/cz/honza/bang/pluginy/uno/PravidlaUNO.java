@@ -12,6 +12,8 @@ import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
 import cz.honza.bang.sdk.UIPrvek;
+import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -22,6 +24,7 @@ import cz.honza.bang.sdk.UIPrvek;
  */
 public class PravidlaUNO implements HerniPravidla{
     private final Hra hra;
+    private List<Hrac> poradiVyher = new ArrayList<>();  // Pořadí končících hráčů
 
     public PravidlaUNO( Hra hra) {
         this.hra = hra;
@@ -33,7 +36,17 @@ public class PravidlaUNO implements HerniPravidla{
         hra.getSpravceTahu().dalsiHracSUpozornenim();
         if(kym.getKarty().isEmpty()){
             hra.skoncil(kym);
-            hra.vyhral(kym);
+            poradiVyher.add(kym);  // Přidej do pořadí
+            
+            int pocetZbyvajicichHracu = hra.getHraci().size() - poradiVyher.size();
+            
+            // Pokud zbyl jen jeden hráč, tak hra skončila
+            if(pocetZbyvajicichHracu <= 1){
+                ukoncitHru();
+            } else {
+                // Zatím jen oznám vítězství toho hráče
+                hra.vyhral(kym);
+            }
         }
     }
 
@@ -111,5 +124,45 @@ public class PravidlaUNO implements HerniPravidla{
         hrac.lizni();
     }
     
+    /**
+     * Ukončí hru a pošle výsledky hráčům.
+     * Vytvoří 2D pole kde každá řada je jedno umístění a obsahuje hráče na tom místě.
+     */
+    private void ukoncitHru(){
+        // Zbývá jeden hráč - poslední (vítěz)
+        List<Hrac> zbyvajici = new ArrayList<>();
+        for(Hrac hrac : hra.getHraci()){
+            if(!poradiVyher.contains(hrac)){
+                zbyvajici.add(hrac);
+            }
+        }
+        
+        // Oznám vítězství posledního zbývajícího hráče
+        for(Hrac hrac : zbyvajici){
+            hra.vyhral(hrac);
+        }
+        
+        // Vytvoř 2D pole výsledků: každé místo je jedno vnitřní pole
+        Hrac[][] vysledky = new Hrac[poradiVyher.size() + zbyvajici.size()][];
+        
+        // První místa jsou v pořadí kdy skončili (0 index = 1. místo, atd.)
+        for(int i = 0; i < poradiVyher.size(); i++){
+            vysledky[i] = new Hrac[]{poradiVyher.get(i)};
+        }
+        
+        // Poslední místo(a) jsou zbývající hráči (1. vítěz)
+        if(zbyvajici.size() > 0){
+            vysledky[poradiVyher.size()] = new Hrac[zbyvajici.size()];
+            for(int i = 0; i < zbyvajici.size(); i++){
+                vysledky[poradiVyher.size()][i] = zbyvajici.get(i);
+            }
+        }
+        
+        // Pošli výsledky
+        hra.getKomunikator().posliVysledky(vysledky);
+        
+        // Oznám konec hry
+        hra.getKomunikator().posliKonecHry();
+    }
     
 }

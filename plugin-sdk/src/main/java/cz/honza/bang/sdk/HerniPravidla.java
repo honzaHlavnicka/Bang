@@ -109,7 +109,9 @@ public interface HerniPravidla {
     }
     
     default public  void spustitPrvniTah(SpravceTahu spravceTahu){
-        spravceTahu.dalsiHracSUpozornenim();
+        // Výchozí chování: získej prvního hráče a zahaj jeho tah
+        Hrac prvniHrac = spravceTahu.dalsiHrac();
+        prvniHrac.zahajitTah();
     }
 
     /**

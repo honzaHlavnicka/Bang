@@ -150,10 +150,9 @@ public class PravidlaPrsi implements HerniPravidla{
     
     /**
      * Ukončí hru a pošle výsledky hráčům.
-     * Vytvoří 2D pole kde každá řada je jedno umístění a obsahuje hráče na tom místě.
+     * Vytvoří 2D pole kde každá řada je jedno umístění a obsahuje hráče na tom místě.  //TODO: zkontrolovat
      */
     private void ukoncitHru(){
-        // Zbývá jeden hráč - poslední (vítěz)
         List<Hrac> zbyvajici = new ArrayList<>();
         for(Hrac hrac : hra.getHraci()){
             if(!poradiVyher.contains(hrac)){
@@ -161,15 +160,12 @@ public class PravidlaPrsi implements HerniPravidla{
             }
         }
         
-        // Vytvoř 2D pole výsledků: každé místo je jedno vnitřní pole
         Hrac[][] vysledky = new Hrac[poradiVyher.size() + zbyvajici.size()][];
         
-        // První místa jsou v pořadí kdy skončili (0 index = 1. místo, atd.)
         for(int i = 0; i < poradiVyher.size(); i++){
             vysledky[i] = new Hrac[]{poradiVyher.get(i)};
         }
         
-        // Poslední místo(a) jsou zbývající hráči (1. vítěz)
         if(zbyvajici.size() > 0){
             vysledky[poradiVyher.size()] = new Hrac[zbyvajici.size()];
             for(int i = 0; i < zbyvajici.size(); i++){
@@ -177,10 +173,7 @@ public class PravidlaPrsi implements HerniPravidla{
             }
         }
         
-        // Pošli výsledky
         hra.getKomunikator().posliVysledky(vysledky);
-        
-        // Oznám konec hry
         hra.getKomunikator().posliKonecHry();
     }
     
