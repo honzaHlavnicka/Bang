@@ -11,6 +11,7 @@ import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
+import java.util.List;
 
 /**
  *
@@ -27,15 +28,11 @@ public class unoZmenaBarvy extends UnoKarta {
     @Override
     public boolean odehrat(Hrac kym){
         podleniBarva = "neni";
-        hra.getKomunikator().pozadejOdpoved(
-                "vyberAkci:{\"id\":data-id,\"akce\":["
-                + "{\"id\":0,\"nazev\":\"Červené\"},"
-                + "{\"id\":1,\"nazev\":\"Modré\"},"
-                + "{\"id\":2,\"nazev\":\"Zelené\"},"
-                + "{\"id\":3,\"nazev\":\"Žluté\"}"
-                + "]}",
-                kym
-        ).thenAccept(odpoved -> {
+        
+        List<String> moznosti = List.of("Červené", "Modré", "Zelené", "Žluté");
+        
+        hra.getKomunikator().pozadejOVyberMoznosti(kym, moznosti, "Vyber barvu", false)
+                .thenAccept(odpoved -> {
             System.out.println("Hráč odpověděl: " + odpoved);
             switch(odpoved){
                 case "0":

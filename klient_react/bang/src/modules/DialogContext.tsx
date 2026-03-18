@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 import type { CardType } from "./GameContext";
 
 type dialogBase = {
-    notCloasable?: boolean;
+    notClosable?: boolean;
     dialogHeader?: string;
 }
 type selectCardDialog = {

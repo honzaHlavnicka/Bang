@@ -165,9 +165,10 @@ public interface KomunikatorHry {
      * @param odKoho Hráč, kterému se otázka klade
      * @param moznosti Seznam možných odpovědí (Pořadí je důležité, protože odpověď bude indexem do tohoto seznamu)
      * @param nadpis Nadpis otázky
+     * @param closable Zda lze dialog zavřít bez odpovědi (výchozí: false - nelze zavřít)
      * @return CompletableFuture, které se splní, až hráč odpoví (Ve formátu indexu do seznamu možností)
      */
-    public CompletableFuture<String> pozadejOVyberMoznosti(Hrac odKoho, List<String> moznosti, String nadpis);
+    public CompletableFuture<String> pozadejOVyberMoznosti(Hrac odKoho, List<String> moznosti, String nadpis, boolean closable);
 
 
     /**
@@ -177,9 +178,10 @@ public interface KomunikatorHry {
      * @param nadpis Nadpis otázky
      * @param min Minimální počet karet, které musí hráč vybrat (obvykle 1)
      * @param max Maximální počet karet, které může hráč vybrat (obvykle 1, ale může být i více pro výběr více karet)
+     * @param closable Zda lze dialog zavřít bez odpovědi (výchozí: false - nelze zavřít)
      * @return CompletableFuture, které se splní, až hráč odpoví (Ve formátu "id1,id2,..." s id vybraných karet)
      */
-    public CompletableFuture<String> pozadejOKarty(Hrac odKoho, List<Karta> karty, String nadpis, int min, int max);
+    public CompletableFuture<String> pozadejOKarty(Hrac odKoho, List<Karta> karty, String nadpis, int min, int max, boolean closable);
 
 
     /**
@@ -189,9 +191,10 @@ public interface KomunikatorHry {
      * @param nadpis Nadpis otázky
      * @param min Minimální počet hráčů, které musí hráč vybrat (obvykle 1)
      * @param max Maximální počet hráčů, které může hráč vybrat (obvykle 1, ale může být i více pro výběr více hráčů)
+     * @param closable Zda lze dialog zavřít bez odpovědi (výchozí: false - nelze zavřít)
      * @return CompletableFuture, které se splní, až hráč odpoví (Ve formátu "id1,id2,..." s id vybraných hráčů)
      */
-    public CompletableFuture<String> pozadejOHrace(Hrac odKoho, List<Hrac> hraci,String nadpis,int min, int max);
+    public CompletableFuture<String> pozadejOHrace(Hrac odKoho, List<Hrac> hraci,String nadpis,int min, int max, boolean closable);
 
 
     /**
@@ -212,9 +215,10 @@ public interface KomunikatorHry {
      * @param nadpis Nadpis otázky
      * @param placeholder Placeholder text v textovém poli (volitelné)
      * @param buttonText Text na tlačítku (volitelné)
+     * @param closable Zda lze dialog zavřít bez odpovědi (výchozí: true - lze zavřít)
      * @return CompletableFuture, které se splní, až hráč odpoví (s textem, který hráč zadal)
      */
-    public CompletableFuture<String> pozadejOText(Hrac odKoho, String nadpis, String placeholder, String buttonText);
+    public CompletableFuture<String> pozadejOText(Hrac odKoho, String nadpis, String placeholder, String buttonText, boolean closable);
 
     /**
      * Přidá nebo upraví vlastní tlačítko pro hráče.

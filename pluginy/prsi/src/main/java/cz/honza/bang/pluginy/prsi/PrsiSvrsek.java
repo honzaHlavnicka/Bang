@@ -35,7 +35,7 @@ public class PrsiSvrsek extends PrsiKarta{
             moznosti.add("Zelené");
             moznosti.add("Červené");
             moznosti.add("Žaludy");
-            hra.getKomunikator().pozadejOVyberMoznosti(kym, moznosti, "Na co chceš změnit?").thenAccept(odpoved -> {
+            hra.getKomunikator().pozadejOVyberMoznosti(kym, moznosti, "Na co chceš změnit?", false).thenAccept(odpoved -> {
                 System.out.println("Hráč odpověděl: " + odpoved);
                 switch ( (String) odpoved) {
                     case "0":

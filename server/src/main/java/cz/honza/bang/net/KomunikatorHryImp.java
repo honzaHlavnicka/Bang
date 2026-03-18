@@ -338,28 +338,33 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         posliVsem("konecHry");
     }
     
-    public CompletableFuture<String> pozadejOHrace(Hrac odKoho, List<Hrac> hraci,String nadpis,int min, int max){
+    @Override
+    public CompletableFuture<String> pozadejOHrace(Hrac odKoho, List<Hrac> hraci,String nadpis,int min, int max, boolean closable){
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
         json.put("nadpis", nadpis);
         json.put("min", min);
         json.put("max", max);
+        json.put("notClosable", !closable);
         JSONArray hraciNaVyber = new JSONArray();
         for (Hrac hrac : hraci) {
             hraciNaVyber.put(hrac.getId());
         }
         json.put("hraci", hraciNaVyber);
         
-        
         return pozadejOdpoved("vyberHrace:" + json.toString(), odKoho);
     }
     
-    public CompletableFuture<String> pozadejOKarty(Hrac odKoho, List<Karta> karty, String nadpis, int min, int max){
+
+    
+    @Override
+    public CompletableFuture<String> pozadejOKarty(Hrac odKoho, List<Karta> karty, String nadpis, int min, int max, boolean closable){
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
         json.put("nadpis", nadpis);
         json.put("min", min);
         json.put("max", max);
+        json.put("notClosable", !closable);
         JSONArray kartyNaVyber = new JSONArray();
         for (Karta karta : karty) {
             JSONObject kartaJson = new JSONObject();
@@ -374,9 +379,11 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         return pozadejOdpoved("vyberKartu:" + json.toString(), odKoho);
     }
     
-    public CompletableFuture<String> pozadejOVyberMoznosti(Hrac odKoho, List<String> moznosti, String nadpis){
+    @Override
+    public CompletableFuture<String> pozadejOVyberMoznosti(Hrac odKoho, List<String> moznosti, String nadpis, boolean closable){
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
+        json.put("notClosable", !closable);
         JSONArray akce = new JSONArray();
         for (int i = 0; i < moznosti.size(); i++) {
             JSONObject akceObj = new JSONObject();
@@ -389,10 +396,12 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         return pozadejOdpoved("vyberAkci:" + json.toString(), odKoho);
     }
 
-    public CompletableFuture<String> pozadejOText(Hrac odKoho, String nadpis, String placeholder, String buttonText){
+    @Override
+    public CompletableFuture<String> pozadejOText(Hrac odKoho, String nadpis, String placeholder, String buttonText, boolean closable){
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
         json.put("title", nadpis);
+        json.put("notClosable", !closable);
         if(placeholder != null) json.put("placeholder", placeholder);
         if(buttonText != null) json.put("buttonText", buttonText);
         

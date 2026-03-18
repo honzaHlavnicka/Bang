@@ -161,7 +161,7 @@ export default function Dialog() {
     return createPortal((
         <>
         <DarkModeSwitch style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
-        <div className={css.dialogBackground} style={{cursor:(dialog.notCloasable ? "not-allowed" : "auto"),display:(dialog.type == null ? "none" : "flex")}} onClick={()=>{if(dialog.notCloasable){toast.error("Musíš si něco vybrat.")}else{closeDialog()}}}>
+        <div className={css.dialogBackground} style={{cursor:(dialog.notClosable ? "not-allowed" : "auto"),display:(dialog.type == null ? "none" : "flex")}} onClick={()=>{if(dialog.notClosable){toast.error("Musíš si něco vybrat.")}else{closeDialog()}}}>
             <div className={css.dialogBox} onClick={e => e.stopPropagation()} style={{cursor:"auto"}}>
                 <div className={css.dialogHeader}>
                     {header}

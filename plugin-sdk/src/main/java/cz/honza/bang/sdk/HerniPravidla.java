@@ -109,7 +109,7 @@ public interface HerniPravidla {
     }
     
     default public  void spustitPrvniTah(SpravceTahu spravceTahu){
-        spravceTahu.dalsiHrac();
+        spravceTahu.dalsiHracSUpozornenim();
     }
 
     /**

@@ -13,8 +13,6 @@ import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 
 /**
@@ -30,7 +28,10 @@ public class Bang extends Karta implements HratelnaKarta{
     @Override
     public boolean odehrat(cz.honza.bang.sdk.Hrac kym){
         
-        hra.getKomunikator().pozadejOdpoved( "vyberHrace:" + pripravJSONvyberuHrace(kym), kym)
+        int vzdalenostKamDosahnePodleZbrane = kym.getEfekty().stream().filter(e -> e instanceof Zbran).findAny().map(e -> ((Zbran) e).getVzdalenost()).orElse(1);
+        java.util.List<Hrac> hraciNaVyber = kym.vzdalenostPod(vzdalenostKamDosahnePodleZbrane, true);
+        
+        hra.getKomunikator().pozadejOHrace(kym, hraciNaVyber, "Vyber koho chceš zastřelit!", 1, 1, true)
             .thenAccept(odpoved -> {
 
                 System.out.println("Hráč odpověděl: " + odpoved);
@@ -53,29 +54,6 @@ public class Bang extends Karta implements HratelnaKarta{
         return true;
  
     }
-    
-    /**
-     * Pomocná metoda, která vytvoří JSON všech hráčů, na které jde zautocit.
-     * @param hracCoOdehral
-     * @return json pro klienta.
-     */
-    private String pripravJSONvyberuHrace(Hrac hracCoOdehral){
-        JSONObject json = new JSONObject();
-        json.put("id", "data-id");
-        json.put("nadpis", "Vyber koho chceš zastřelit!");
-        JSONArray hraciNaVyber = new JSONArray();
-        
-        int vzdalenostKamDosahnePodleZbrane = hracCoOdehral.getEfekty().stream().filter(e -> e instanceof Zbran).findAny().map(e -> ((Zbran) e).getVzdalenost()).orElse(1);
-        
-        
-        for (Hrac hrac : hracCoOdehral.vzdalenostPod(vzdalenostKamDosahnePodleZbrane, true)) {
-           hraciNaVyber.put(hrac.getId());
-        }
-        json.put("hraci", hraciNaVyber);
-        return json.toString();
-
-    }
-    
     
     @Override
     public String getObrazek(){

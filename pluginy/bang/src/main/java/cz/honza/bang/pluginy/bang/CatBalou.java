@@ -4,7 +4,7 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.pluginy.bang.karty;
+package cz.honza.bang.pluginy.bang;
 
 
 import cz.honza.bang.sdk.ZastupnaKarta;
@@ -15,6 +15,7 @@ import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
 import cz.honza.bang.sdk.VylozitelnaKarta;
+import cz.honza.bang.sdk.ZastupnaKarta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -46,7 +47,7 @@ public class CatBalou extends Karta implements HratelnaKarta{
         // Zobrazit stavovou zprávu že hráč vybírá cíl
         hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá cíl útoku...");
         
-        hra.getKomunikator().pozadejOHrace(kym, hra.getHraci(), "Vyber komu kartu spálíš", 1, 1, true) 
+        hra.getKomunikator().pozadejOHrace(kym, hra.getHraci(), "Vyber komu kartu spálíš", 1, 1, false) 
             .thenAccept(odpoved -> {
                 System.out.println("Hráč odpověděl: " + odpoved);
                 
@@ -64,7 +65,7 @@ public class CatBalou extends Karta implements HratelnaKarta{
                 kartyNaVyber.addAll(naKoho.getVylozeneKarty());
                 kartyNaVyber.add(ZastupnaKarta.getNahodna());
 
-                hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "Jakou kartu mu spálíš?", 1, 1, true)
+                hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "Jakou kartu mu spálíš?", 1, 1, false)
                     .thenAccept(idKarty -> {
                         try {
                             int idKartyCislo = Integer.parseInt(idKarty);

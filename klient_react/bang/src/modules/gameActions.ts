@@ -280,9 +280,10 @@ export function handleGameMessage(
         }
         case "vyberAkci": {
             try {
-                const json = JSON.parse(payload) as {id:number,akce:{ id: number; nazev: string }[]}; 
+                const json = JSON.parse(payload) as {id:number,akce:{ id: number; nazev: string }[], notClosable?: boolean}; 
                 const actions = json.akce.map(a=>({id:a.id,name:a.nazev}));
-                openDialog({type:"CONFIRM_ACTION", data:{actions},dialogHeader:"Vyber akci kterou chceš provést.",notCloasable:false,callback:(selectedAction:number)=>{
+                const notClosable = json.notClosable ?? true;
+                openDialog({type:"CONFIRM_ACTION", data:{actions},dialogHeader:"Vyber akci kterou chceš provést.",notClosable,callback:(selectedAction:number)=>{
                     console.log("vybraná akce",selectedAction);
                     if(stateRef.current?.playerId == null){
                         toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
@@ -303,12 +304,13 @@ export function handleGameMessage(
         }
         case "vyberHrace": {
             try {
-                const json = JSON.parse(payload) as {id:number,hraci:number[], nadpis?:string, min?:number, max?:number}; 
+                const json = JSON.parse(payload) as {id:number,hraci:number[], nadpis?:string, min?:number, max?:number, notClosable?: boolean}; 
                 const heading = json.nadpis ?? "Vyber hráče";
                 const min = json.min ?? 1;
                 const max = json.max ?? 1;
+                const notClosable = json.notClosable ?? true;
                 const players = (stateRef.current?.players ?? []).filter(p=>json.hraci.includes(p.id)).map(p=>({id:p.id,name:p.name}));
-                openDialog({type:"SELECT_PLAYER", data:{players,min,max},dialogHeader:heading,notCloasable:false,callback:(selectedPlayers:number[])=>{
+                openDialog({type:"SELECT_PLAYER", data:{players,min,max},dialogHeader:heading,notClosable,callback:(selectedPlayers:number[])=>{
                     console.log("vybraní hráči:",selectedPlayers);
                     if(stateRef.current?.playerId == null){
                         toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
@@ -329,12 +331,13 @@ export function handleGameMessage(
         }
         case "vyberKartu": {
             try {
-                const json = JSON.parse(payload) as {id:(string | number),karty:{obrazek:string,id:number,jmeno:string}[], nadpis?:string, min?:number, max?:number}; 
+                const json = JSON.parse(payload) as {id:(string | number),karty:{obrazek:string,id:number,jmeno:string}[], nadpis?:string, min?:number, max?:number, notClosable?: boolean}; 
                 const heading = json.nadpis ?? "Vyber kartu";
                 const min = json.min ?? 1;
                 const max = json.max ?? 1;
+                const notClosable = json.notClosable ?? true;
                 const cards = json.karty.map(k=>({image:k.obrazek,id:k.id}));
-                openDialog({type:"SELECT_CARD", data:{cards,min,max},dialogHeader:heading,notCloasable:false,callback:(selectedCards:number[])=>{ 
+                openDialog({type:"SELECT_CARD", data:{cards,min,max},dialogHeader:heading,notClosable,callback:(selectedCards:number[])=>{ 
                     console.log("vybrané karty:",selectedCards);
                     if(stateRef.current?.playerId == null){
                         toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
@@ -364,7 +367,7 @@ export function handleGameMessage(
                 toast.error("Někdo vyhrál, nevím kho.");
                 return;
             }
-            openDialog({type:"INFO", data:{header:"Konec hry",message:`Hru vyhrál hráč ${winner.name}. Gratuluji!`},dialogHeader:"Konec hry",notCloasable:false});
+            openDialog({type:"INFO", data:{header:"Konec hry",message:`Hru vyhrál hráč ${winner.name}. Gratuluji!`},dialogHeader:"Konec hry",notClosable:false});
             break;
         }
         case "welcome": {
@@ -510,8 +513,9 @@ export function handleGameMessage(
         }
         case "vyberText": {
             try {
-                const json = JSON.parse(payload) as {id:number, title?:string, placeholder?:string, buttonText?:string};
-                openDialog({type:"TEXT", data:{title:json.title, placeholder:json.placeholder, buttonText:json.buttonText},dialogHeader:json.title ?? "Zadej text",notCloasable:false,callback:(text:string)=>{
+                const json = JSON.parse(payload) as {id:number, title?:string, placeholder?:string, buttonText?:string, notClosable?: boolean};
+                const notClosable = json.notClosable ?? false;
+                openDialog({type:"TEXT", data:{title:json.title, placeholder:json.placeholder, buttonText:json.buttonText},dialogHeader:json.title ?? "Zadej text",notClosable,callback:(text:string)=>{
                     console.log("zadaný text:",text);
                     if(stateRef.current?.playerId == null){
                         toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");

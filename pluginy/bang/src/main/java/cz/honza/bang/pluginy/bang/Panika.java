@@ -4,7 +4,7 @@
 
 Toto je domácí verze souborů z programování.
  */
-package cz.honza.bang.pluginy.bang.karty;
+package cz.honza.bang.pluginy.bang;
 
 import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Chyba;
@@ -47,7 +47,7 @@ public class Panika extends Karta implements HratelnaKarta{
         
         List<Hrac> povoleniHraci = kym.vzdalenostPod(1); // Neplatí na ní zbraně, ale efekty platí. (Vzdálenost max 1, ale s hledím to je 2 apod.)
         
-        hra.getKomunikator().pozadejOHrace(kym, povoleniHraci, "Vyber koho kartu si vezmeš", 1, 1, true)
+        hra.getKomunikator().pozadejOHrace(kym, povoleniHraci, "Vyber koho kartu si vezmeš", 1, 1, false)
                 .thenAccept(odpoved -> {
 
                     System.out.println("Hráč odpověděl: " + odpoved);
@@ -66,7 +66,7 @@ public class Panika extends Karta implements HratelnaKarta{
                     kartyNaVyber.addAll(naKoho.getVylozeneKarty());
                     kartyNaVyber.add(ZastupnaKarta.getNahodna());
 
-                    hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "Jakou kartu mu vezmeš?", 1, 1, true)
+                    hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "Jakou kartu mu vezmeš?", 1, 1, false)
                             .thenAccept(idKarty -> {
                                 try {
                                     int idKartyCislo = Integer.parseInt(idKarty);
