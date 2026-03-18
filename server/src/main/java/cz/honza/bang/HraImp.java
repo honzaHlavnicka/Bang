@@ -289,4 +289,9 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         return karta;
     }
 
+    @Override
+    public List<Hrac> getHrajiciHraci() {
+        return spravceTahu.getHrajiciHraci();
+    }
+
 }

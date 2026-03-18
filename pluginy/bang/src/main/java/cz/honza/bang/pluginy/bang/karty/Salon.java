@@ -34,7 +34,7 @@ public class Salon extends Karta implements HratelnaKarta{
 
     @Override
     public boolean odehrat(Hrac kym) {
-        for (Hrac hrac : hra.getHraci()) {
+        for (Hrac hrac : hra.getHrajiciHraci()) {
             hrac.pridejZivot();
         }
         return true;

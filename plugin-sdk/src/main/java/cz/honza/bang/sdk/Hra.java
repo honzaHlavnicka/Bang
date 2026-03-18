@@ -35,7 +35,20 @@ public interface Hra {
      */
     public void hracVytvoren(Hrac hrac);
 
+    /**
+     * Vrátí kopii seznamu všech hráčů, včetně těch vyřazených
+     * @return seznam hráčů
+     * @see #getHrajiciHraci() 
+     */
     public List<Hrac> getHraci();
+    
+    /**
+     * Vrátí seznam všech hrajících hráčů. 
+     * Je to poze volání stejnojmené metody na spravce tahu.
+     * @return kolekce hráčů seřazená podle pořadí hraní.
+     * @see Hrac.getHrajicHraci()
+     */
+    public List<Hrac> getHrajiciHraci();
 
     /**
      * Vrátí hráče podle jeho id.

@@ -38,7 +38,7 @@ public class Indiani extends Karta implements HratelnaKarta{
 
     @Override
     public boolean odehrat(Hrac kym) {
-        for (Hrac hrac : hra.getHraci()) {
+        for (Hrac hrac : hra.getHrajiciHraci()) {
             if(!hrac.equals(kym)){
                 List<Karta> karty = new ArrayList<>(2);
                 karty.add(ZastupnaKarta.getZivot());

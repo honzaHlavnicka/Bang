@@ -47,7 +47,7 @@ public class CatBalou extends Karta implements HratelnaKarta{
         // Zobrazit stavovou zprávu že hráč vybírá cíl
         hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá cíl útoku...");
         
-        hra.getKomunikator().pozadejOHrace(kym, hra.getHraci(), "Vyber komu kartu spálíš", 1, 1, false) 
+        hra.getKomunikator().pozadejOHrace(kym, hra.getHrajiciHraci(), "Vyber komu kartu spálíš", 1, 1, false) 
             .thenAccept(odpoved -> {
                 System.out.println("Hráč odpověděl: " + odpoved);
                 

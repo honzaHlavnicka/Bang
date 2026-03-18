@@ -14,6 +14,7 @@ import cz.honza.bang.pluginy.bang.karty.WellsFarkgo;
 import cz.honza.bang.pluginy.bang.karty.Dostavnik;
 import cz.honza.bang.pluginy.bang.karty.BangNaVsechny;
 import cz.honza.bang.pluginy.bang.karty.Barel;
+import cz.honza.bang.pluginy.bang.karty.Duel;
 import cz.honza.bang.pluginy.bang.karty.Indiani;
 import cz.honza.bang.pluginy.bang.karty.Salon;
 import cz.honza.bang.pluginy.bang.postavy.JednoduchePostavy;
@@ -152,6 +153,7 @@ public class PravidlaBangu implements HerniPravidla{
             balicek.vratNahoru(new Panika(hra,balicek));
             balicek.vratNahoru(new Indiani(hra, balicek));
             balicek.vratNahoru(new Salon(hra,balicek));
+            balicek.vratNahoru(new Duel(hra, balicek));
         }
         balicek.zamichej();
     }

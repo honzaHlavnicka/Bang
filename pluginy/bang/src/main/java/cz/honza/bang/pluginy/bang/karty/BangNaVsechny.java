@@ -23,7 +23,7 @@ public class BangNaVsechny extends Bang{
     }
     @Override
     public boolean odehrat(Hrac kym){
-        for (Hrac hrac : hra.getHraci()) {
+        for (Hrac hrac : hra.getHrajiciHraci()) {
             if(!hrac.equals(kym)){
                 hrac.odeberZivot();
             }
