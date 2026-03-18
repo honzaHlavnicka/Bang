@@ -185,18 +185,20 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     
     /**
      * Pošle všechny informace o hře, které má právo hráč vědět.
+     * Volá se při počátečním připojení a při reconnectu.
      * @param conn
      * @param hrac 
      */
     public void nactiHru(WebSocket conn, HracImp hrac){
+        // Základní info o hráči
         conn.send("noveIdHrace:" + hrac.getId());
 
-        
+        // Karty v ruce hráče
         for (Karta karta : hrac.getKarty()) {
             conn.send(karta.toJSONold());
         }
         
-        
+        // Seznam všech hráčů s jejich základními informacemi
         StringBuilder sb = new StringBuilder("hraci:[");
         boolean jePrvni = true;
         for (HracImp hrac1 : hraci) {
@@ -209,16 +211,40 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         sb.append(']');
         conn.send(sb.toString());
         
-        if(zahajena){
-          conn.send("role:" + hrac.getRole().name());
+        // Vyložené karty všech hráčů
+        for (HracImp hrac1 : hraci) {
+            for (Karta vylozena : hrac1.getVylozeneKarty()) {
+                conn.send("vylozeni:" + hrac1.getId() + "," + hrac1.getId() + "," + vylozena.toJSON());
+            }
         }
         
+        if(zahajena){
+          // Role hráče
+          conn.send("role:" + hrac.getRole().name());
+          
+          // Kdo je na tahu
+          if (spravceTahu != null && spravceTahu.getNaTahu() != null) {
+              conn.send("tahZacal:" + spravceTahu.getNaTahu().getId());
+          }
+        }
+        
+        // UI prvky dostupné pro hráče
         JSONArray povoleneUIJSON = new JSONArray();
         UIPrvek[] povoleneUI = herniPravidla.getViditelnePrvky();
         for (int i = 0; i < povoleneUI.length; i++) {
             povoleneUIJSON.put(i, povoleneUI[i].name());
         }
         conn.send("povoleneUI:" + povoleneUIJSON.toString());
+        
+        // Počty životů všech hráčů (znovu pro jistotu)
+        for (HracImp hrac1 : hraci) {
+            conn.send("pocetZivotu:" + hrac1.getId() + "," + hrac1.getZivoty());
+        }
+        
+        // Všechna aktivní UI tlačítka pro hráče
+        komunikator.posliVsechnaUITlacitka(hrac);
+
+        komunikator.posliZmenuJmena(hrac);
     }
 
     /**
