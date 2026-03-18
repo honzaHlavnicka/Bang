@@ -7,7 +7,7 @@ Toto je domácí verze souborů z programování.
 package cz.honza.bang.pluginy.bang.karty;
 
 
-import cz.honza.bang.sdk.zastupnaKarta;
+import cz.honza.bang.sdk.ZastupnaKarta;
 import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Chyba;
 import cz.honza.bang.sdk.Hra;
@@ -62,13 +62,13 @@ public class CatBalou extends Karta implements HratelnaKarta{
                 
                 List<Karta> kartyNaVyber = new ArrayList<>();
                 kartyNaVyber.addAll(naKoho.getVylozeneKarty());
-                kartyNaVyber.add(zastupnaKarta.getNahodna());
+                kartyNaVyber.add(ZastupnaKarta.getNahodna());
 
                 hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "Jakou kartu mu spálíš?", 1, 1)
                     .thenAccept(idKarty -> {
                         try {
                             int idKartyCislo = Integer.parseInt(idKarty);
-                            if(zastupnaKarta.getNahodna().getId() == idKartyCislo){
+                            if(ZastupnaKarta.getNahodna().getId() == idKartyCislo){
                                 Random rand = new Random();
                                 Karta nahodnaKarta = naKoho.getKarty().remove(rand.nextInt(naKoho.getKarty().size()));     
                                 hra.getKomunikator().posliSpaleniKarty(naKoho, nahodnaKarta);

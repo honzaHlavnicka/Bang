@@ -84,6 +84,6 @@ public class Bang extends Karta implements HratelnaKarta{
     
     @Override
     public String getJmeno() {
-        return "BANG!";
+        return "BANG!"; 
     }
 }

@@ -11,7 +11,7 @@ import cz.honza.bang.HraImp;
 import cz.honza.bang.HracImp;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
-import cz.honza.bang.sdk.zastupnaKarta;
+import cz.honza.bang.sdk.ZastupnaKarta;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;

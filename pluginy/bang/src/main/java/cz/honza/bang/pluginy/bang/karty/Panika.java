@@ -13,7 +13,7 @@ import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
 import cz.honza.bang.sdk.VylozitelnaKarta;
-import cz.honza.bang.sdk.zastupnaKarta;
+import cz.honza.bang.sdk.ZastupnaKarta;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -64,13 +64,13 @@ public class Panika extends Karta implements HratelnaKarta{
                     
                     List<Karta> kartyNaVyber = new ArrayList<>();
                     kartyNaVyber.addAll(naKoho.getVylozeneKarty());
-                    kartyNaVyber.add(zastupnaKarta.getNahodna());
+                    kartyNaVyber.add(ZastupnaKarta.getNahodna());
 
                     hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "Jakou kartu mu vezmeš?", 1, 1)
                             .thenAccept(idKarty -> {
                                 try {
                                     int idKartyCislo = Integer.parseInt(idKarty);
-                                    if (zastupnaKarta.getNahodna().getId() == idKartyCislo) {
+                                    if (ZastupnaKarta.getNahodna().getId() == idKartyCislo) {
                                         Random rand = new Random();
                                         Karta nahodnaKarta = naKoho.getKarty().remove(rand.nextInt(naKoho.getKarty().size())); 
                                         kym.getKarty().add(nahodnaKarta);

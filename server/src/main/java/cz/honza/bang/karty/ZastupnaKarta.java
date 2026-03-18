@@ -14,28 +14,32 @@ import cz.honza.bang.sdk.Karta;
  *
  * @author honza
  */
-public class zastupnaKarta extends Karta {
+public class ZastupnaKarta extends Karta {
     private final String obrazek;
     private final String jmeno;
 
-    private zastupnaKarta(String obrazek, String jmeno) {
+    private ZastupnaKarta(String obrazek, String jmeno) {
         super(null, null);
         this.obrazek = obrazek;
         this.jmeno = jmeno;
     }
     
-    private static final zastupnaKarta nahodna;
+    private static final ZastupnaKarta nahodna;
+    private static final ZastupnaKarta zivot;
     
     static{
-        nahodna = new zastupnaKarta("nahodna","Reprezentace náhodné karty");
+        nahodna = new ZastupnaKarta("nahodna","Reprezentace náhodné karty");
+        zivot = new ZastupnaKarta("jedenZivot", "Reprezentace života");
     }
     
-    public static zastupnaKarta getNahodna(){
+    public static ZastupnaKarta getNahodna(){
         return nahodna;
     }
-
-    
-    
+    public static ZastupnaKarta getZivot(){
+        return zivot;
+    }
+            
+            
     @Override
     public String getObrazek() {
         return obrazek;
