@@ -232,6 +232,12 @@ public interface KomunikatorHry {
      * @param uiId ID prvku k odstranění
      */
     public void smazatUI(Hrac komu, int uiId);
+    
+    /**
+     * Pošle všechna aktivní UI tlačítka hráči. Používá se při reconnectu.
+     * @param komu Hráč, kterému se tlačítka pošlou
+     */
+    public void posliVsechnaUITlacitka(Hrac komu);
 
     public int getIdHry();
     public int pocetHracu();
