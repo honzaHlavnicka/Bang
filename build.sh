@@ -4,12 +4,20 @@
 # tento script byl vygenerován AI a není přímou součástí projektu
 # --------------------------------------------------------
 
+# Zjisti, zda chceme spustit server po buildu
+RUN_SERVER=false
+if [ "$1" = "r" ]; then
+    RUN_SERVER=true
+fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BUILD_DIR="$SCRIPT_DIR/build"
 PLUGINS_DIR="$BUILD_DIR/pluginy"
 
 echo "🔨 Zahajuji build..."
+if [ "$RUN_SERVER" = true ]; then
+    echo "   (server se spustí po úspěšném buildu)"
+fi
 echo ""
 
 cd "$SCRIPT_DIR"
@@ -110,3 +118,13 @@ echo "   cd $BUILD_DIR && bash start.sh"
 echo "   nebo"
 echo "   cd $BUILD_DIR && java -jar server.jar"
 echo ""
+
+# Pokud je zadán parametr 'r', spusť server
+if [ "$RUN_SERVER" = true ]; then
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "🎮 Spouštím server..."
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    cd "$BUILD_DIR"
+    bash start.sh
+fi
