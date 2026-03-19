@@ -242,6 +242,46 @@ public interface KomunikatorHry {
      * @param komu Hráč, kterému se tlačítka pošlou
      */
     public void posliVsechnaUITlacitka(Hrac komu);
+    
+    
+    public static class MoznostKolaStesti {
+
+        private String name;
+        private String barva;
+        private int id;
+        private int velikost;
+
+        public MoznostKolaStesti(String name, String barva, int id, int velikost) {
+            this.name = name;
+            this.barva = barva;
+            this.id = id;
+            this.velikost = velikost;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getBarva() {
+            return barva;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public int getVelikost() {
+            return velikost;
+        }
+    }
+    
+    /**
+     * Pošle všem klientům kolo štěstí, které vybere možnost s id = vybranaMoznost. 
+     * @param vybranaMoznost
+     * @param nadpis
+     * @param moznosti 
+     */
+    void posliKoloStesti (int vybranaMoznost, String nadpis, List<MoznostKolaStesti> moznosti);
 
     public int getIdHry();
     public int pocetHracu();

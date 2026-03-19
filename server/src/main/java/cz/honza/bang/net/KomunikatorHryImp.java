@@ -338,6 +338,28 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         posliVsem("konecHry");
     }
     
+    
+    @Override
+    public void posliKoloStesti(int vybranaMoznost, String nadpis, List<MoznostKolaStesti> moznosti) {
+
+        JSONArray jsonMoznosti = new JSONArray();
+        for (MoznostKolaStesti m : moznosti) {
+            JSONObject obj = new JSONObject();
+            obj.put("name", m.getName());
+            obj.put("barva", m.getBarva());
+            obj.put("id", m.getId());
+            obj.put("velikost", m.getVelikost()); // Toto je ta "váha"
+            jsonMoznosti.put(obj);
+        }
+
+        JSONObject json = new JSONObject();
+        json.put("moznosti", jsonMoznosti);
+        json.put("vybranaMoznost", vybranaMoznost);
+        json.put("nadpis", nadpis);
+
+        posliVsem("koloStesti:" + json.toString());
+    }
+
     @Override
     public CompletableFuture<String> pozadejOHrace(Hrac odKoho, List<Hrac> hraci,String nadpis,int min, int max, boolean closable){
         JSONObject json = new JSONObject();

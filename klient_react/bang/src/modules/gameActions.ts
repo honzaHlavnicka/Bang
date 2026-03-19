@@ -533,6 +533,17 @@ export function handleGameMessage(
             }
             break;
         }
+        case "koloStesti": {  // Poznámka: náhoda probíhá na serveru, není třeba posílat oddpověď
+            try {
+                const json = JSON.parse(payload) as {moznosti:{name:string,barva:string,id:number,velikost:number}[], vybranaMoznost:number, nadpis:string};
+                openDialog({type:"LUCKY_WHEEL", data:{options:json.moznosti.map(o => ({name:o.name,color:o.barva,id:o.id,size:o.velikost})), chosedOptionId:json.vybranaMoznost},dialogHeader:json.nadpis,notClosable:false});
+               
+            } catch (error) {
+                console.error("chyba při parsování", error, payload);
+                toast.error('Chybná odpověď serveru');
+            }
+            break;
+        }
         default: {
             console.log("=> klient nezná");
             break;
@@ -652,6 +663,15 @@ function zbaveniSeKarty(
         const card = { image: json.obrazek, id: json.id };
         console.log("zpracovávám "+how, json, card);
         console.log("playerId", playerId, "currentPlayerId", stateRef.current?.playerId, stateRef.current);
+
+        // Speciální případ: playerId === "-1" znamená otočení vrchní karty (bez hráče)
+        if (playerId === "-1") {
+            setGameState(prev => ({
+                ...prev,
+                discardPile: [...prev.discardPile, card.image]
+            }));
+            return;
+        }
 
         setGameState(prev => {
             const isCurrent = String(prev.playerId ?? "") === String(playerId);

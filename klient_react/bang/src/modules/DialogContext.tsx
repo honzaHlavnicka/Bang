@@ -61,7 +61,17 @@ type textDialog = {
     callback?:(text:string)=>void;
 }
 
-export type DialogState = (dialogBase & selectCardDialog) | (dialogBase & selectPlayerDialog) | (dialogBase & confirmActionDialog) | (dialogBase & infoDialog) | (dialogBase & confirmDialog) | (dialogBase & textDialog) | null;
+type luckyWheelDialog = {
+    type:"LUCKY_WHEEL",
+    data:{
+        options:Array<{id:number,name:string,color:string}>;
+        chosedOptionId:number;
+
+    },
+    callback?:(selectedOption:number)=>void;
+}
+
+export type DialogState = (dialogBase & selectCardDialog) | (dialogBase & selectPlayerDialog) | (dialogBase & confirmActionDialog) | (dialogBase & infoDialog) | (dialogBase & confirmDialog) | (dialogBase & textDialog) | (dialogBase & luckyWheelDialog) | null;
 
 export type DialogContextType = {
     dialog: DialogState;

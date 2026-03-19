@@ -48,7 +48,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             console.log("WebSocket disconnected");
             setWs(null);
             toast.error("Byl jsi odpojen od serveru");
-            openDialog({type:"INFO", data:{header:"Byl jsi odpojen od serveru",message:"Zkus znovu načíst stránku a kliknout na znovu se připojit ke hře."},dialogHeader:"Odpojení"});
+            openDialog({type:"INFO", data:{header:"Byl jsi odpojen od serveru",message:"Zkus znovu načíst stránku a kliknout na znovu se připojit ke hře."},dialogHeader:"Odpojení"}); 
         };
         return () => socket.close();
     }, []);
