@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import DarkModeSwitch from "./DarkModeSwitch";
 import globalCSS from "../styles/global.module.css";
 import { Wheel } from "react-custom-roulette";
+import LuckyWheel from "./LuckyWheel";
 
 
 export default function Dialog() {
@@ -154,27 +155,13 @@ export default function Dialog() {
             );
             break;
         case "LUCKY_WHEEL": {
-            const prizeIndex = dialog.data.options.findIndex((o:{id:number,name:string,color:string})=>o.id === dialog.data.chosedOptionId);
             content = (
-                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10}} >
-                    <Wheel mustStartSpinning={true}
-                           prizeNumber={prizeIndex >= 0 ? prizeIndex : 0}
-                           data={dialog.data.options.map((o:{id:number,name:string})=>({option:o.name}))}
-                           backgroundColors={dialog.data.options.map((o:{id:number,name:string,color:string})=>o.color)}
-                           onStopSpinning={()=>setSelected([dialog.data.chosedOptionId])}
-                           
-                           />
-                           {
-                               (seleckted.length > 0) ?(
-                                   <button className={globalCSS.button} onClick={()=>{
-                                       closeDialog();
-                                       if(dialog.callback){
-                                           dialog.callback(dialog.data.chosedOptionId);
-                                       }
-                                   }} >OK</button>
-                               ) : null
-                           }
-                </div>
+                <LuckyWheel options={dialog.data.options} chosedOptionId={dialog.data.chosedOptionId} onOk={()=>{
+                    closeDialog();
+                    if(dialog.callback){
+                        dialog.callback(dialog.data.chosedOptionId);
+                    }
+                }} />
             );
             break;
         }
