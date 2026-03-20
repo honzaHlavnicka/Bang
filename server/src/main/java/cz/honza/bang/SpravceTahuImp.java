@@ -49,7 +49,8 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * Vrátí kolekci hráčů, kteří jsou zapojeni ve hře v pořadí, ve kterém se vykonávají jejich tahy.
      * Ignoruje jednorázové tahy.
      * Respektuje směr, tzn. hráči vždy budou hrát směrem od 0 do List.size().
-
+     * Aktuálně hrající hráč je poslední.
+     * 
      * @return kolekce hráčů seřazená podle pořadí hraní.
      */
     @Override

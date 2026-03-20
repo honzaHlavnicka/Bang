@@ -15,6 +15,7 @@ import cz.honza.bang.pluginy.bang.karty.Dostavnik;
 import cz.honza.bang.pluginy.bang.karty.BangNaVsechny;
 import cz.honza.bang.pluginy.bang.karty.Barel;
 import cz.honza.bang.pluginy.bang.karty.Duel;
+import cz.honza.bang.pluginy.bang.karty.Hokynarstvi;
 import cz.honza.bang.pluginy.bang.karty.Indiani;
 import cz.honza.bang.pluginy.bang.karty.Salon;
 import cz.honza.bang.pluginy.bang.karty.Vedle;
@@ -160,6 +161,7 @@ public class PravidlaBangu implements HerniPravidla{
             balicek.vratNahoru(new Salon(hra,balicek));
             balicek.vratNahoru(new Duel(hra, balicek));
             balicek.vratNahoru(new Vedle(hra, balicek));
+            balicek.vratNahoru(new Hokynarstvi(hra, balicek));
         }
         balicek.zamichej();
     }
