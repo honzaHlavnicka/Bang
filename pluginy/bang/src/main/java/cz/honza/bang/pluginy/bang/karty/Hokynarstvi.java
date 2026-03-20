@@ -42,8 +42,8 @@ public class Hokynarstvi extends Karta implements HratelnaKarta{
             karty.add(hra.getBalicek().lizni());
         }
         
-        nechatVybrat(karty, hra.getHrajiciHraci(), hra.getHrajiciHraci().size() - 1);
-        
+        nechatVybrat(karty, hra.getHrajiciHraci(), hra.getHrajiciHraci().indexOf(kym));
+        System.out.println("index v poli: " + hra.getHrajiciHraci().indexOf(kym));
         
         return true;
     }

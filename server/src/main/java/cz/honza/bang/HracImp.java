@@ -409,7 +409,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
                      Hrac predKoho = (HracImp) hra.getHrac(idPredKoho); 
 
                      if(hra.getHerniPravidla().muzeVylozit(this,vylozena)){
-                         if(vylozena.vylozit(this, predKoho)){ //todo: efekt se prida tomuto hraci, ale vyklada se pred jineho???
+                         if(vylozena.vylozit(predKoho, this)){ // Správné pořadí: (ten kdo má na stole, ten kdo vylozuje)
                             karty.remove(karta);
                             predKoho.pridejEfekt(vylozena.getEfekt());
                             predKoho.getVylozeneKarty().add(karta);
