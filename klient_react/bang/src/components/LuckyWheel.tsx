@@ -3,7 +3,7 @@ import { Wheel } from "react-custom-roulette";
 import globalCSS from "../styles/global.module.css";
 import { useState } from "react";
 
-const LuckyWheel = ({ options, chosedOptionId, onOk } : { options: {id: number;name: string;color: string;size: number;}[], chosedOptionId: number, onOk: () => void }) => {
+const LuckyWheel = ({ options, chosedOptionId, onOk } : { options: {id: number;name: string;color: string;size?: number;}[], chosedOptionId: number, onOk: () => void }) => {
     const [mustSpin, setMustSpin] = useState(false);
 
     const [hasStopped, setHasStopped] = useState(false);
