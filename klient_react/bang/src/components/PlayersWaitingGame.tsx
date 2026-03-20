@@ -1,8 +1,33 @@
 import { useGame } from "../modules/GameContext";
+import { useEffect } from "react";
 
 export default function PlayersWaitingGame() {
     const {gameState ,startGame} = useGame();
     const isAdmin = gameState.isAdmin ?? false;
+    
+    // Obsluha Enter klávesy pro spuštění hry
+    useEffect(() => {
+        if (!isAdmin || !gameState.players || gameState.players.length < 2) {
+            return;
+        }
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Ignoruj klávesy pokud je fokus na inputu, textareaě nebo selectu
+            if (document.activeElement?.tagName === "INPUT" || 
+                document.activeElement?.tagName === "TEXTAREA" ||
+                document.activeElement?.tagName === "SELECT") {
+                return;
+            }
+
+            if (e.key === "Enter") {
+                e.preventDefault();
+                startGame();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [isAdmin, gameState.players, startGame]);
     
     return (
         <div >

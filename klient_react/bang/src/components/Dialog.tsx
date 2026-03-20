@@ -2,9 +2,10 @@ import { createPortal } from "react-dom";
 import css from "../styles/dialog.module.css";
 import { useDialog } from "../modules/DialogContext";
 import Card from "./Card";
+import PlayerCardsList from "./PlayerCardsList";
 import type { CardType } from "../modules/GameContext";
 import ZoomToggleButton from "./ZoomButton";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import DarkModeSwitch from "./DarkModeSwitch";
 import globalCSS from "../styles/global.module.css";
@@ -16,11 +17,77 @@ export default function Dialog() {
     const [seleckted,setSelected] = useState<Array<number>>([]);
     let maxSelected = 0;
     const [text,setText] = useState("");
-    if(dialog == null){
-        return;
-    }
 
-    const header = dialog.dialogHeader || dialog.type || "Dialog";
+    // Obsluha Enter klávesy pro dialogy
+    useEffect(() => {
+        if (dialog == null) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Ignoruj Enter pokud je fokus na textarea nebo input (mimo TEXT dialog)
+            if (dialog?.type !== "TEXT" && (document.activeElement?.tagName === "TEXTAREA" || 
+                (document.activeElement?.tagName === "INPUT" && (document.activeElement as HTMLInputElement).type !== "text"))) {
+                return;
+            }
+
+            if (e.key === "Enter" && dialog) {
+                // Pro TEXT dialog neignoruj, tam chceme Enter v inputu
+                if (dialog.type !== "TEXT") {
+                    e.preventDefault();
+                }
+
+                switch (dialog.type) {
+                    case "INFO":
+                        closeDialog();
+                        break;
+                    case "CONFIRM":
+                        closeDialog();
+                        if (dialog.callback) {
+                            dialog.callback(true);
+                        }
+                        break;
+                    case "TEXT":
+                        // TEXT dialog je zpracován v onKeyDown inputu
+                        break;
+                    case "SELECT_PLAYER":
+                        if (seleckted.length >= dialog.data.min) {
+                            closeDialog();
+                            dialog.callback(seleckted);
+                            setSelected([]);
+                        }
+                        break;
+                    case "SELECT_CARD":
+                        if (seleckted.length >= dialog.data.min) {
+                            closeDialog();
+                            if (dialog.callback) {
+                                dialog.callback(seleckted);
+                            }
+                            setSelected([]);
+                        }
+                        break;
+                    case "CONFIRM_ACTION":
+                        // Potvrď první akci
+                        if (dialog.data.actions && dialog.data.actions.length > 0) {
+                            closeDialog();
+                            if (dialog.callback) {
+                                dialog.callback(dialog.data.actions[0].id);
+                            }
+                        }
+                        break;
+                    case "LUCKY_WHEEL":
+                        closeDialog();
+                        if (dialog.callback) {
+                            dialog.callback(dialog.data.chosedOptionId);
+                        }
+                        break;
+                }
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [dialog, seleckted, text, closeDialog]);
+
+    const header = dialog?.dialogHeader || dialog?.type || "Dialog";
 
 
     const select = (id:number) => {
@@ -35,6 +102,10 @@ export default function Dialog() {
         }
     };
 
+
+    if (dialog == null) {
+        return;
+    }
 
     let content: React.ReactNode;
     switch (dialog.type) {
@@ -143,7 +214,22 @@ export default function Dialog() {
             content = (
                 <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10}} >
                     <h2>{dialog.data.title || "Zadejte text"}</h2>
-                    <input type="text" value={text} onChange={e=>setText(e.currentTarget.value)} placeholder={dialog.data.placeholder} style={{padding:5,borderRadius:5,border:"1px solid black"}}/>
+                    <input 
+                        type="text" 
+                        value={text} 
+                        onChange={e=>setText(e.currentTarget.value)} 
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                closeDialog();
+                                if(dialog.callback){
+                                    dialog.callback(text);
+                                }
+                            }
+                        }}
+                        placeholder={dialog.data.placeholder} 
+                        style={{padding:5,borderRadius:5,border:"1px solid black"}}
+                        autoFocus
+                    />
                     <button className={globalCSS.button} onClick={()=>{
                         closeDialog();
                         if(dialog.callback){

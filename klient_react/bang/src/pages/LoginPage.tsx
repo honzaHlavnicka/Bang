@@ -11,6 +11,7 @@ export default function LoginPage() {
     const [idTypuHry, setIdTypuHry] = useState<number>(0);
     const { connectToGame, createGame, gameState, returnToGame } = useGame();
     const [openCard , setOpenCard] = useState<string>("pripojeni");
+    const gameToken = localStorage.getItem("gameToken");
     //const [menu, setMenu] = useState({x:0,y:0,visible:false})
     
 
@@ -31,9 +32,31 @@ export default function LoginPage() {
             setOpenCard("kod");
         }
     }, []);
-    
 
-    const gameToken = localStorage.getItem("gameToken");
+    // Klávesové zkratky pro přepínání karet (V, P, N)
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            // Ignoruj klávesy pokud je fokus na inputu, textareaě nebo selectu
+            if (document.activeElement?.tagName === "INPUT" || 
+                document.activeElement?.tagName === "TEXTAREA" ||
+                document.activeElement?.tagName === "SELECT") {
+                return;
+            }
+
+            const key = e.key.toLowerCase();
+            if (key === "v" && gameToken) {
+                setOpenCard("pripojeni");
+            } else if (key === "p") {
+                setOpenCard("kod");
+            } else if (key === "n") {
+                setOpenCard("vytvoreni");
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [gameToken]);
+    
 
 
     function zkontroluj(isToConnect: boolean = false) {
@@ -78,7 +101,7 @@ export default function LoginPage() {
                         className={globalCSS.button + " " + (openCard == "pripojeni" ? globalCSS.buttonActive : "") + " " + css.radioButton}
                         onClick={() => setOpenCard("pripojeni")}
                     >
-                        <span>Připojit se zpět</span><span>zpět</span>
+                        <span>Vrátit se</span><span>zpět</span>
                     </button>}
                     <button 
                         className={globalCSS.button + " " + (openCard == "kod" ? globalCSS.buttonActive : "")+ " " + css.radioButton}
