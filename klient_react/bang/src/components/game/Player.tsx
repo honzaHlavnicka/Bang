@@ -3,18 +3,27 @@ import SmallCards from "./SmallCards";
 import NameTag from "./NameTag";
 import Cards from "../Cards";
 import {type CardType } from "../../modules/GameContext";
+import { useDroppable } from "@dnd-kit/core";
 
 
-export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,pocetZivotu = 0,vylozeneKarty=[],naTahu=false,povoleneUI}:{jmeno:string,postava?:string,pocetKaret?:number,pocetZivotu?:number,vylozeneKarty?:Array<CardType>|null,naTahu?:boolean,povoleneUI:string[]}) {
+export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,pocetZivotu = 0,vylozeneKarty=[],naTahu=false,povoleneUI,playerId}:{jmeno:string,postava?:string,pocetKaret?:number,pocetZivotu?:number,vylozeneKarty?:Array<CardType>|null,naTahu?:boolean,povoleneUI:string[],playerId:number}) {
     vylozeneKarty = vylozeneKarty ? vylozeneKarty : [];
     const isDead = pocetZivotu !== undefined && pocetZivotu <= 0;
+    
+    // Uděláme hráče droppable
+    const {setNodeRef, isOver} = useDroppable({
+        id: `player-${playerId}`,
+    });
+    
     const playerStyle: React.CSSProperties = {
         display: "flex",
         flexDirection: "column",
         borderRadius: "10px",
+        backgroundColor: isOver ? "rgba(255, 255, 0, 0.3)" : "transparent",
+        transition: "background-color 0.2s",
     };
     return (
-            <div style={playerStyle}>
+            <div ref={setNodeRef} style={playerStyle}>
                 <div style={{ display: "flex" , justifyContent:"center"}}>
                     <div>
                     <NameTag jmeno={jmeno} isDead={isDead} showDeadIndicator={povoleneUI.includes("ZIVOTY")} style={{backgroundColor:(naTahu?"yellow":"white")}}/>

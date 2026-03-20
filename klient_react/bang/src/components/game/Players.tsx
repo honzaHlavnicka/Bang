@@ -60,6 +60,7 @@ export default function Players() {
                 overflowX: "auto",
                 overflowY: "hidden",
                 whiteSpace: "nowrap",
+              
             }}
             onWheel={handleWheel}
         >
@@ -74,6 +75,7 @@ export default function Players() {
                             naTahu={gameState.turnPlayerId === player.id}
                             vylozeneKarty={player.inPlayCards}
                             povoleneUI={gameState.allowedUIElements}
+                            playerId={player.id}
                         />
             })}
         </div>

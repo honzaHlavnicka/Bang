@@ -722,6 +722,13 @@ export function putCardInPlay(ws: WebSocket | null, cardId: number) {
     }
 }
 
+export function putCardInPlayOnPlayer(ws: WebSocket | null, cardId: number, playerId: number) {
+    if (ws !== null) {
+        console.log("putCardInPlayOnPlayer - vykládám kartu na hráče:", cardId, "na hráče:", playerId);
+        ws.send("vylozeni:" + cardId + "," + playerId);
+    }
+}
+
 export function clickUIButton(ws: WebSocket | null, buttonId: number) {
     if (ws !== null) {
         ws.send(`uiClick:${buttonId}`);

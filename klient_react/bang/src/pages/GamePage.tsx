@@ -8,7 +8,7 @@ import { useGame } from "../modules/GameContext";
 
 
 export default function GamePage() {
-    const {playCard,fireCard,putCardInPlay} = useGame();
+    const {playCard,fireCard,putCardInPlay,putCardInPlayOnPlayer} = useGame();
 
 
     function onDragEnd(event:DragEndEvent) {
@@ -22,6 +22,11 @@ export default function GamePage() {
             const cardId = parseInt(event.active.id as string);
             putCardInPlay(cardId);
             //alert("joooo"+cardId);
+        }else if(event.over?.id?.toString().startsWith("player-")){
+            // Drop na hráče
+            const cardId = parseInt(event.active.id as string);
+            const playerId = parseInt((event.over.id as string).replace("player-", ""));
+            putCardInPlayOnPlayer(cardId, playerId);
         }
         
     }

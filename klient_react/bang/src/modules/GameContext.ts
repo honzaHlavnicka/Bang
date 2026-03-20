@@ -83,6 +83,7 @@ export const GameContext = createContext<{
     returnToGame (): void;
     fireCard: (cardId:number) => void;
     putCardInPlay: (cardId:number) => void;
+    putCardInPlayOnPlayer: (cardId:number, playerId:number) => void;
     clickUIButton: (buttonId:number) => void;
 
 } | null>(null);
