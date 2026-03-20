@@ -8,7 +8,6 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import DarkModeSwitch from "./DarkModeSwitch";
 import globalCSS from "../styles/global.module.css";
-import { Wheel } from "react-custom-roulette";
 import LuckyWheel from "./LuckyWheel";
 
 
