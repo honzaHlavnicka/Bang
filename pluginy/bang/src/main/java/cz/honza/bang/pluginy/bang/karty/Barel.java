@@ -44,8 +44,8 @@ public class Barel extends Karta implements VylozitelnaKarta{
     public Efekt getEfekt(){
         return efekt;
     }
+    @Override
     public void spalitVylozenou(){
-        // udělat něco
     }
     
 }
