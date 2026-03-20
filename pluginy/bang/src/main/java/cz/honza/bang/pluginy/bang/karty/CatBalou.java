@@ -71,6 +71,7 @@ public class CatBalou extends Karta implements HratelnaKarta{
                             if(ZastupnaKarta.getNahodna().getId() == idKartyCislo){
                                 Random rand = new Random();
                                 Karta nahodnaKarta = naKoho.getKarty().remove(rand.nextInt(naKoho.getKarty().size()));     
+                                hra.getOdhazovaciBalicek().vratNahoru(nahodnaKarta);
                                 hra.getKomunikator().posliSpaleniKarty(naKoho, nahodnaKarta);
                             }else{
                                 for (Karta karta : naKoho.getVylozeneKarty()) {

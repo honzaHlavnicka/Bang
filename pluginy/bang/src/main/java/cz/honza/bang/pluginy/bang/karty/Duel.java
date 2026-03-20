@@ -77,6 +77,7 @@ public class Duel extends Karta implements HratelnaKarta{
                 for (Karta karta : naKoho.getKarty()) {
                     if (karta.getId() == idKarty) {
                         naKoho.getKarty().remove(karta);
+                        hra.getOdhazovaciBalicek().vratNahoru(karta);
                         hra.getKomunikator().posliSpaleniKarty(naKoho, karta);
                         hra.getKomunikator().posliZmenuPoctuKaret(naKoho);
                         

@@ -419,7 +419,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
                                     e.kdyzNemaKarty(hra, this);
                                 }
                             }
-                            hra.getKomunikator().posliVylozeniKarty(this, (HracImp)predKoho, karta);
+                            hra.getKomunikator().posliVylozeniKarty(this, predKoho, karta);
                             return;
                         }else{
                             hra.getKomunikator().posliChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);
@@ -497,6 +497,13 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         vylozeneKarty.remove(karta);
         karta.spalitVylozenou();
         hra.getKomunikator().posliSpaleniVylozenéKarty((Karta) karta, this);
+    }
+    
+    @Override
+    public void pridejVylozenouKartu(VylozitelnaKarta karta, Hrac kym){
+        hra.getKomunikator().posliVylozeniKarty(this, kym, (Karta) karta);
+        pridejEfekt(karta.getEfekt());
+        vylozeneKarty.add((Karta) karta);
     }
     
     /**

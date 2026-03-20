@@ -2,7 +2,6 @@ import { createPortal } from "react-dom";
 import css from "../styles/dialog.module.css";
 import { useDialog } from "../modules/DialogContext";
 import Card from "./Card";
-import PlayerCardsList from "./PlayerCardsList";
 import type { CardType } from "../modules/GameContext";
 import ZoomToggleButton from "./ZoomButton";
 import { useState, useEffect } from "react";

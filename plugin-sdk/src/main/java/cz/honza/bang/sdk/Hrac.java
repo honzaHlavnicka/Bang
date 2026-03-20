@@ -198,5 +198,10 @@ public interface Hrac {
      */
     public void odeberVylozenouKartu(VylozitelnaKarta karta);
 
-    
+    /**
+     * Přidá hráči kartu mezi vyložené, vezme si její efekt a provvede k tomu všechny procedury. Upozorní o tom hráče.
+     * @param karta na přidání
+     * @param kym pro klienta
+     */
+    public void pridejVylozenouKartu(VylozitelnaKarta karta, Hrac kym);
 }

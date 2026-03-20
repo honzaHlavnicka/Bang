@@ -52,7 +52,7 @@ public boolean odehrat(cz.honza.bang.sdk.Hrac kym){
                     public void run() {
                         vyresitVedleNeboZasah(kym, naKoho, zachranen);
                     }
-                }, 5000); 
+                }, 10000); 
 
             } else {
                 // Hráč nemá barel

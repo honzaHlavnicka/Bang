@@ -57,6 +57,7 @@ public class Indiani extends Karta implements HratelnaKarta{
                         for (Karta karta : hrac.getKarty()) {
                             if(karta.getId() == idKarty){
                                 hrac.getKarty().remove(karta);
+                                hra.getOdhazovaciBalicek().vratNahoru(karta);
                                 hra.getKomunikator().posliSpaleniKarty(hrac, karta);
                                 hra.getKomunikator().posliZmenuPoctuKaret(hrac);
                             }
