@@ -39,7 +39,7 @@ public class Duel extends Karta implements HratelnaKarta{
     @Override
     public boolean odehrat(Hrac kym) {
         hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " právě vybírá hráče do duelu.");
-        hra.getKomunikator().pozadejOHrace(kym, hra.getHrajiciHraci().stream().filter(h->!h.equals(kym)).toList(), "Vyber koho chceš vyzvat na duel", 1, 1, true)
+        hra.getKomunikator().pozadejOHrace(kym, hra.getHrajiciHraci().stream().filter(h->!h.equals(kym)).collect(java.util.stream.Collectors.toList()), "Vyber koho chceš vyzvat na duel", 1, 1, true)
                 .thenAccept(id->{
                     try{
                         Hrac naKoho = hra.getHrac(Integer.parseInt(id));
@@ -58,7 +58,11 @@ public class Duel extends Karta implements HratelnaKarta{
 
         List<Karta> karty = new ArrayList<>(2);
         karty.add(ZastupnaKarta.getZivot());
-        naKoho.getKarty().stream().filter(k -> k instanceof Bang).allMatch(k -> karty.add(k));
+        for (Karta k : naKoho.getKarty()) {
+            if (k instanceof Bang) {
+                karty.add(k);
+            }
+        }
         hra.getKomunikator().pozadejOKarty(naKoho, karty, "Vyber o co přijdeš v duelu!", 1, 1, false).thenAccept(id -> {
             int idKarty;
             try {
@@ -85,6 +89,8 @@ public class Duel extends Karta implements HratelnaKarta{
                         
                         // Duel pokračuje, útok se obrací
                         duelNa(odKoho,naKoho);
+                        
+                        return;
                     }
                 }
             }

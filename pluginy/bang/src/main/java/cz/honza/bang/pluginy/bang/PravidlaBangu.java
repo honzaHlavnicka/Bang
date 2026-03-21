@@ -229,6 +229,7 @@ public class PravidlaBangu implements HerniPravidla{
         for (int i = 0; i < 3; i++) {
             balicek.vratNahoru(new Duel(hra, balicek));
             balicek.vratNahoru(new Schofield(hra, balicek));
+            balicek.vratNahoru(new Vezeni(hra, balicek));
         }
 
         // Karty, které jsou v balíčku 2x 
@@ -250,7 +251,6 @@ public class PravidlaBangu implements HerniPravidla{
         balicek.vratNahoru(new Hledi(hra, balicek)); 
         balicek.vratNahoru(new Salon(hra, balicek));
         balicek.vratNahoru(new Dynamit(hra, balicek));
-        balicek.vratNahoru(new Vezeni(hra, balicek));
 
         balicek.zamichej();
     }
