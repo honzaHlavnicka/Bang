@@ -10,7 +10,7 @@ package cz.honza.bang.pluginy.bang;
 
 import cz.honza.bang.pluginy.bang.karty.Pivo;
 import cz.honza.bang.pluginy.bang.karty.Bang;
-import cz.honza.bang.pluginy.bang.karty.WellsFarkgo;
+import cz.honza.bang.pluginy.bang.karty.WellsFargo;
 import cz.honza.bang.pluginy.bang.karty.Dostavnik;
 import cz.honza.bang.pluginy.bang.karty.BangNaVsechny;
 import cz.honza.bang.pluginy.bang.karty.Barel;
@@ -55,7 +55,7 @@ public class PravidlaVolna implements HerniPravidla{
             balicek.vratNahoru(new BangNaVsechny(hra, balicek));
             balicek.vratNahoru(new Barel(hra, balicek));
             balicek.vratNahoru(new Dostavnik(hra, balicek));
-            balicek.vratNahoru(new WellsFarkgo(hra, balicek));
+            balicek.vratNahoru(new WellsFargo(hra, balicek));
             balicek.vratNahoru(new Pivo(hra, balicek));
         }
         balicek.zamichej();

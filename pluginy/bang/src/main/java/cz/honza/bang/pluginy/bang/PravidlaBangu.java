@@ -10,7 +10,7 @@ import cz.honza.bang.pluginy.bang.karty.Pivo;
 import cz.honza.bang.pluginy.bang.karty.CatBalou;
 import cz.honza.bang.pluginy.bang.karty.Bang;
 import cz.honza.bang.pluginy.bang.karty.Mustang;
-import cz.honza.bang.pluginy.bang.karty.WellsFarkgo;
+import cz.honza.bang.pluginy.bang.karty.WellsFargo;
 import cz.honza.bang.pluginy.bang.karty.Dostavnik;
 import cz.honza.bang.pluginy.bang.karty.BangNaVsechny;
 import cz.honza.bang.pluginy.bang.karty.Barel;
@@ -243,7 +243,7 @@ public class PravidlaBangu implements HerniPravidla{
 
         // --- Unikátní a silné karty (pouze 1x v balíčku) 
         balicek.vratNahoru(new Kulomet(hra, balicek)); 
-        balicek.vratNahoru(new WellsFarkgo(hra, balicek));
+        balicek.vratNahoru(new WellsFargo(hra, balicek));
         balicek.vratNahoru(new Remington(hra, balicek));
         balicek.vratNahoru(new RevCarabine(hra, balicek));
         balicek.vratNahoru(new Winchester(hra, balicek));

@@ -18,9 +18,9 @@ import cz.honza.bang.sdk.Karta;
  *
  * @author honza
  */
-public class WellsFarkgo extends Karta implements HratelnaKarta{
+public class WellsFargo extends Karta implements HratelnaKarta{
 
-    public WellsFarkgo(Hra hra, Balicek<Karta> balicek) {
+    public WellsFargo(Hra hra, Balicek<Karta> balicek) {
         super(hra, balicek);
     }
     @Override
