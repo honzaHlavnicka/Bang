@@ -15,10 +15,13 @@ import cz.honza.bang.pluginy.bang.karty.Dostavnik;
 import cz.honza.bang.pluginy.bang.karty.BangNaVsechny;
 import cz.honza.bang.pluginy.bang.karty.Barel;
 import cz.honza.bang.pluginy.bang.karty.Duel;
+import cz.honza.bang.pluginy.bang.karty.Dynamit;
 import cz.honza.bang.pluginy.bang.karty.Hokynarstvi;
 import cz.honza.bang.pluginy.bang.karty.Indiani;
+import cz.honza.bang.pluginy.bang.karty.Kulomet;
 import cz.honza.bang.pluginy.bang.karty.Salon;
 import cz.honza.bang.pluginy.bang.karty.Vedle;
+import cz.honza.bang.pluginy.bang.karty.Vezeni;
 import cz.honza.bang.pluginy.bang.postavy.JednoduchePostavy;
 import cz.honza.bang.pluginy.bang.postavy.PaulRegret;
 import cz.honza.bang.pluginy.bang.postavy.RoseDoolan;
@@ -31,15 +34,22 @@ import cz.honza.bang.sdk.HerniPravidla;
 
 
 import cz.honza.bang.sdk.Balicek;
+import cz.honza.bang.sdk.Chyba;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
+import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
 import cz.honza.bang.sdk.SpravceTahu;
 import cz.honza.bang.sdk.VylozitelnaKarta;
+import cz.honza.bang.sdk.ZastupnaKarta;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /**
  *
@@ -59,6 +69,68 @@ public class PravidlaBangu implements HerniPravidla{
 
     @Override
     public void dosliZivoty(Hrac komu) {
+        
+        // Kontrola piva před smrtí
+        
+        List<Karta> piva = new ArrayList<>();
+        for (Karta karta : komu.getKarty()) {
+            if(karta instanceof Pivo){
+                piva.add(karta);
+            }
+        }
+        
+        if(!piva.isEmpty()){
+            piva.add(ZastupnaKarta.getSmrt());
+            hra.getKomunikator().pozadejOKarty(komu, piva, "Došli ti životy! Co chceš? Pokud zbíváte jen 2, tak pivo může být kničemu!", 1, 1, false)
+                    .thenAccept(id->{
+                        try{
+                            int idInt = Integer.parseInt(id);
+                            if(idInt == ZastupnaKarta.getSmrt().getId()){
+                                smrtHrace(komu);
+                                //smrt
+                                return;
+                            }
+                            
+                            for (Karta karta : piva) {
+                                if(karta.getId() == idInt){
+                                    komu.getKarty().remove(karta);
+                                    hra.getOdhazovaciBalicek().vratNahoru(karta);
+                                    ((HratelnaKarta) karta).odehrat(komu);
+                                    hra.getKomunikator().posliSpaleniKarty(komu, karta);
+                                    hra.getKomunikator().posliZmenuPoctuKaret(komu);
+                                    
+                                    if(komu.getZivoty() <= 0){
+                                        // Pivo nefungovalo (Např. zbívají jen 2 hráči)
+                                        smrtHrace(komu);
+                                        return;
+                                    }
+                                    
+                                    hra.getKomunikator().posliRychleOznameni(komu.getJmeno() + " těsně zachráněn!", komu);
+                                    // nesmrt
+                                    return;
+                                }
+                                
+                                System.out.println("karta nenalezena");
+                                smrtHrace(komu);
+                                hra.getKomunikator().posliChybu(komu, Chyba.CHYBA_PROTOKOLU);
+                            }
+                        }catch(NumberFormatException ex){
+                            hra.getKomunikator().posliChybu(komu, Chyba.CHYBA_PROTOKOLU);
+                            smrtHrace(komu);
+                            System.out.println("špatný parse: "+id);
+
+                            // smrt
+                        }
+                    });
+        }else{
+            smrtHrace(komu);
+        }
+        
+    }
+
+    private void smrtHrace(Hrac komu){
+        hra.getKomunikator().posliRychleOznameni(komu.getJmeno() + " umřel/a 💔", null);
+        
         hra.getSpravceTahu().vyraditHrace(komu);
 
         long pocetZivychBanditu = hra.getHraci().stream().filter(h -> h.getRole() == Role.BANDITA && h.jeZivy()).count();
@@ -99,25 +171,25 @@ public class PravidlaBangu implements HerniPravidla{
             hra.getKomunikator().posliKonecHry();
         }
 
-
-
+        
             
         List<Karta> karty = komu.getKarty();
         for (Karta karta : karty) {
             hra.getOdhazovaciBalicek().vratNahoru(karta);
             hra.getKomunikator().posli(komu, "odehrat:" + komu.getId() + "," + karta.toJSON());
+            hra.getKomunikator().posliSpaleniKarty(komu, karta);
         }
         karty.clear();
 
         karty = komu.getVylozeneKarty();
         for (Karta karta : karty) {
             hra.getOdhazovaciBalicek().vratNahoru(karta);
-            hra.getKomunikator().posli(komu,"spalit:"+komu.getId()+ "," + karta.toJSON()); 
+            hra.getKomunikator().posliSpaleniVylozenéKarty(karta, komu);
        }
-       karty.clear();     
-        
-        //TODO: poslat smrt, poslat karty
-        
+       karty.clear();    
+       
+       hra.getKomunikator().posliZmenuPoctuKaret(komu);
+                
     }
 
     @Override
@@ -135,34 +207,51 @@ public class PravidlaBangu implements HerniPravidla{
 
     @Override
     public void pripravBalicek(Balicek<Karta> balicek) {
-        for (int i = 0; i < 10; i++) {        
+        // Základní časté
+        for (int i = 0; i < 25; i++) {
             balicek.vratNahoru(new Bang(hra, balicek));
-            balicek.vratNahoru(new Bang(hra, balicek));
-            balicek.vratNahoru(new Bang(hra, balicek));
-            balicek.vratNahoru(new Bang(hra, balicek));
-            balicek.vratNahoru(new Bang(hra, balicek));
-            balicek.vratNahoru(new Bang(hra, balicek));
-            balicek.vratNahoru(new BangNaVsechny(hra, balicek));
-            balicek.vratNahoru(new Barel(hra, balicek));
+
+        }
+        for (int i = 0; i < 12; i++) {
+            balicek.vratNahoru(new Vedle(hra, balicek));
+        }
+        for (int i = 0; i < 6; i++) {
+            balicek.vratNahoru(new Pivo(hra, balicek));
+        }
+
+        // Karty, které jsou v balíčku 4x 
+        for (int i = 0; i < 4; i++) {
+            balicek.vratNahoru(new CatBalou(hra, balicek));
+            balicek.vratNahoru(new Panika(hra, balicek));
+        }
+
+        // Karty, které jsou v balíčku 3x 
+        for (int i = 0; i < 3; i++) {
+            balicek.vratNahoru(new Duel(hra, balicek));
+            balicek.vratNahoru(new Schofield(hra, balicek));
+        }
+
+        // Karty, které jsou v balíčku 2x 
+        for (int i = 0; i < 2; i++) {
             balicek.vratNahoru(new Barel(hra, balicek));
             balicek.vratNahoru(new Dostavnik(hra, balicek));
-            balicek.vratNahoru(new WellsFarkgo(hra, balicek));
-            balicek.vratNahoru(new Pivo(hra, balicek));
-            balicek.vratNahoru(new CatBalou(hra, balicek));
-            balicek.vratNahoru(new Schofield(hra, balicek));
-            balicek.vratNahoru(new Volcanic(hra, balicek));
-            balicek.vratNahoru(new Remington(hra, balicek));
-            balicek.vratNahoru(new RevCarabine(hra, balicek));
-            balicek.vratNahoru(new Winchester(hra, balicek));
-            balicek.vratNahoru(new Hledi(hra, balicek));
             balicek.vratNahoru(new Mustang(hra, balicek));
-            balicek.vratNahoru(new Panika(hra,balicek));
+            balicek.vratNahoru(new Volcanic(hra, balicek));
             balicek.vratNahoru(new Indiani(hra, balicek));
-            balicek.vratNahoru(new Salon(hra,balicek));
-            balicek.vratNahoru(new Duel(hra, balicek));
-            balicek.vratNahoru(new Vedle(hra, balicek));
             balicek.vratNahoru(new Hokynarstvi(hra, balicek));
         }
+
+        // --- Unikátní a silné karty (pouze 1x v balíčku) 
+        balicek.vratNahoru(new Kulomet(hra, balicek)); 
+        balicek.vratNahoru(new WellsFarkgo(hra, balicek));
+        balicek.vratNahoru(new Remington(hra, balicek));
+        balicek.vratNahoru(new RevCarabine(hra, balicek));
+        balicek.vratNahoru(new Winchester(hra, balicek));
+        balicek.vratNahoru(new Hledi(hra, balicek)); 
+        balicek.vratNahoru(new Salon(hra, balicek));
+        balicek.vratNahoru(new Dynamit(hra, balicek));
+        balicek.vratNahoru(new Vezeni(hra, balicek));
+
         balicek.zamichej();
     }
 
@@ -240,8 +329,6 @@ public class PravidlaBangu implements HerniPravidla{
         return "bang";
     }
     
-    
-    
     public int vzdalenost(Hrac od, Hrac k){
         return 0;
     }
@@ -251,7 +338,87 @@ public class PravidlaBangu implements HerniPravidla{
         spravceTahu.dalsiHracPodleRole(Role.SERIF);
     }
     
+    /**
+     * Pokusí se zastřelit hráče naKoho, ale nechá ho použít barel a vedle.
+     * @param kym kdo ho vyvolal
+     * @param naKoho kdo bude zastřelen
+     * @param poUtoku co udělat po útoku
+     */
+    public void vyvolejAkciBang(Hrac kym, Hrac naKoho, BiConsumer<Hrac, Hrac> poUtoku){
+        boolean melBarel = naKoho.getEfekty().stream().anyMatch(e -> e instanceof BarelEfekt);
+
+        if (melBarel) {
+            boolean zachranen = ((BarelEfekt) naKoho.getEfekty().stream().filter(e -> e instanceof BarelEfekt).findFirst().get()).aktivovat(hra, naKoho);
+
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    vyresitVedleNeboZasah(kym, naKoho, zachranen,poUtoku);
+                }
+            }, 10000);
+
+        } else {
+            // Hráč nemá barel
+            vyresitVedleNeboZasah(kym, naKoho, false,poUtoku);
+        }
+    }
     
+    /**
+     * Pomocná metoda pro vyvolejAkciBang, která se volá po kontrole barelu.
+     * @param kym
+     * @param naKoho
+     * @param zachranenBarelem
+     * @param poUtoku 
+     */
+    private void vyresitVedleNeboZasah(Hrac kym, Hrac naKoho, boolean zachranenBarelem, BiConsumer<Hrac, Hrac> poUtoku) {
+        if (!zachranenBarelem) {
+            List<Karta> vedleNaKoho = naKoho.getKarty().stream()
+                    .filter(k -> k instanceof Vedle)
+                    .collect(java.util.stream.Collectors.toList());
+
+            if (!vedleNaKoho.isEmpty()) {
+                vedleNaKoho.add(ZastupnaKarta.getZivot());
+                hra.getKomunikator().posliStavovuZpravu(naKoho.getJmeno() + " může ještě použít vedle na odražení útoku!");
+
+                hra.getKomunikator().pozadejOKarty(naKoho, vedleNaKoho, "Vyber o co přijdeš. (Může za to " + kym.getJmeno() + " )", 1, 1, false)
+                        .thenAccept(id -> {
+                            int idInt;
+                            try {
+                                idInt = Integer.parseInt(id);
+                            } catch (NumberFormatException ex) {
+                                naKoho.odeberZivot();
+                                poUtoku.accept(kym,naKoho);
+                                return;
+                            }
+
+                            if (idInt == ZastupnaKarta.getZivot().getId()) {
+                                hra.getKomunikator().posliRychleOznameni("Trefa!", null);
+                                naKoho.odeberZivot();
+                            } else {
+                                for (Karta karta : vedleNaKoho) {
+                                    if (karta.getId() == idInt) {
+                                        naKoho.getKarty().remove(karta);
+                                        hra.getOdhazovaciBalicek().vratNahoru(karta);
+                                        hra.getKomunikator().posliOdebraniKarty(naKoho, karta);
+                                        hra.getKomunikator().posliZmenuPoctuKaret(naKoho);
+                                        hra.getKomunikator().posliRychleOznameni("Vedle!", null);
+                                        break;
+                                    }
+                                }
+                            }
+                            poUtoku.accept(kym, naKoho);
+                        });
+            } else {
+                // Nemá ani barel, ani Vedle, přichází o život
+                hra.getKomunikator().posliRychleOznameni("Trefa!", null);
+                naKoho.odeberZivot();
+                poUtoku.accept(kym, naKoho);
+            }
+        } else {
+            // Byl zachráněn barelem
+            poUtoku.accept(kym, naKoho);
+        }
+    }
 
     
 }

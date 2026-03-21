@@ -6,18 +6,16 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.pluginy.bang.karty;
 
-import cz.honza.bang.pluginy.bang.BarelEfekt;
+import cz.honza.bang.pluginy.bang.PravidlaBangu;
 import cz.honza.bang.pluginy.bang.postavy.JednoduchePostavy;
 import cz.honza.bang.pluginy.bang.zbrane.Zbran;
 import cz.honza.bang.sdk.Balicek;
+import cz.honza.bang.sdk.Chyba;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
-import cz.honza.bang.sdk.ZastupnaKarta;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+
 
 
 
@@ -33,41 +31,29 @@ public class Bang extends Karta implements HratelnaKarta{
     }
     
 
-@Override
-public boolean odehrat(cz.honza.bang.sdk.Hrac kym){
-    int vzdalenostKamDosahnePodleZbrane = kym.getEfekty().stream().filter(e -> e instanceof Zbran).findAny().map(e -> ((Zbran) e).getVzdalenost()).orElse(1);
-    java.util.List<Hrac> hraciNaVyber = kym.vzdalenostPod(vzdalenostKamDosahnePodleZbrane, true);
-    
-    hra.getKomunikator().pozadejOHrace(kym, hraciNaVyber, "Vyber koho chceš zastřelit!", 1, 1, true)
-        .thenAccept(odpoved -> {
-            Hrac naKoho = hra.getHrac(Integer.parseInt(odpoved));
-            
-            boolean melBarel = naKoho.getEfekty().stream().anyMatch(e -> e instanceof BarelEfekt);
+    @Override
+    public boolean odehrat(cz.honza.bang.sdk.Hrac kym){
+        int vzdalenostKamDosahnePodleZbrane = kym.getEfekty().stream().filter(e -> e instanceof Zbran).findAny().map(e -> ((Zbran) e).getVzdalenost()).orElse(1);
+        java.util.List<Hrac> hraciNaVyber = kym.vzdalenostPod(vzdalenostKamDosahnePodleZbrane, true);
 
-            if (melBarel) {
-                boolean zachranen = ((BarelEfekt) naKoho.getEfekty().stream().filter(e -> e instanceof BarelEfekt).findFirst().get()).aktivovat(hra, naKoho);
-                
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        vyresitVedleNeboZasah(kym, naKoho, zachranen);
-                    }
-                }, 10000); 
+        hra.getKomunikator().pozadejOHrace(kym, hraciNaVyber, "Vyber koho chceš zastřelit!", 1, 1, true)
+            .thenAccept(odpoved -> {
+                try{
+                    Hrac naKoho = hra.getHrac(Integer.parseInt(odpoved));
+                    ((PravidlaBangu) hra.getHerniPravidla()).vyvolejAkciBang(kym, naKoho, this::poUtoku);
+                }catch(NumberFormatException ex){
+                    hra.getKomunikator().posliChybu(kym, Chyba.CHYBA_PROTOKOLU);
+                }
+            })
+            .exceptionally(ex -> {
+                ex.printStackTrace();
+                return null;
+            });
 
-            } else {
-                // Hráč nemá barel
-                vyresitVedleNeboZasah(kym, naKoho, false);
-            }
-        })
-        .exceptionally(ex -> {
-            ex.printStackTrace();
-            return null;
-        });
-        
-    return true;
-}
+        return true;
+    }
 
-    private void poUtoku(Hrac kym) {
+    private void poUtoku(Hrac kym, Hrac naKoho) { // Neodstranovat nepoužitý parametr! Je potřeba pro budoucí účeli a tato funkce se postupně propašovává až do pravidelbangu do vyresvedle
         boolean maVolcanic = kym.getEfekty().stream()
                 .filter(e -> e instanceof Zbran)
                 .anyMatch(e -> ((Zbran) e).umoznujeBangBezLimitu());
@@ -76,56 +62,7 @@ public boolean odehrat(cz.honza.bang.sdk.Hrac kym){
             hra.getSpravceTahu().dalsiHracSUpozornenim();
         }
     }
-
-    private void vyresitVedleNeboZasah(Hrac kym, Hrac naKoho, boolean zachranenBarelem) {
-    if (!zachranenBarelem) {
-        List<Karta> vedleNaKoho = naKoho.getKarty().stream()
-                .filter(k -> k instanceof Vedle)
-                .collect(java.util.stream.Collectors.toList());
-        
-        if (!vedleNaKoho.isEmpty()) {
-            vedleNaKoho.add(ZastupnaKarta.getZivot());
-            hra.getKomunikator().posliStavovuZpravu(naKoho.getJmeno() +" může ještě použít vedle na odražení útoku!");
-            
-            hra.getKomunikator().pozadejOKarty(naKoho, vedleNaKoho, "Vyber o co přijdeš. (Může za to " + kym.getJmeno() + " )", 1, 1, false)
-                .thenAccept(id -> {
-                    int idInt;
-                    try {
-                        idInt = Integer.parseInt(id);
-                    } catch(NumberFormatException ex) {
-                        naKoho.odeberZivot();
-                        poUtoku(kym);
-                        return;
-                    }
-                    
-                    if (idInt == ZastupnaKarta.getZivot().getId()) {
-                        hra.getKomunikator().posliRychleOznameni("Trefa!", null);
-                        naKoho.odeberZivot();
-                    } else {
-                        for (Karta karta : vedleNaKoho) {
-                            if(karta.getId() == idInt) {
-                                naKoho.getKarty().remove(karta);
-                                hra.getOdhazovaciBalicek().vratNahoru(karta);
-                                hra.getKomunikator().posliOdebraniKarty(naKoho, karta);
-                                hra.getKomunikator().posliZmenuPoctuKaret(naKoho);
-                                hra.getKomunikator().posliRychleOznameni("Vedle!", null);
-                                break; 
-                            }
-                        }
-                    }
-                    poUtoku(kym); 
-                });
-        } else {
-            // Nemá ani barel, ani Vedle, přichází o život
-            hra.getKomunikator().posliRychleOznameni("Trefa!", null);
-            naKoho.odeberZivot();
-            poUtoku(kym);
-        }
-    } else {
-         // Byl zachráněn barelem
-         poUtoku(kym);
-    }
-}
+    
     
     @Override
     public String getObrazek(){

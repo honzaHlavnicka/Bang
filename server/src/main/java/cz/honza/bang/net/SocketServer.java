@@ -78,6 +78,30 @@ public class SocketServer extends WebSocketServer {
             posliChybu(conn, Chyba.SPATNE_HESLO);
             return;
         }
+        if(message.startsWith("gameInfo:")){
+            String[] parts = message.substring("gameInfo:".length()).split(":", 2);
+            if(parts.length < 2){
+                posliChybu(conn, Chyba.CHYBA_PROTOKOLU);
+                return;
+            }
+            String kod = parts[0];
+            String heslo = parts[1];
+            
+            if(!heslo.equals(adminPassword)){
+                posliChybu(conn, Chyba.SPATNE_HESLO);
+                return;
+            }
+            
+            KomunikatorHryImp komunikator = hryPodleId.get(kod);
+            if(komunikator == null){
+                posliChybu(conn, Chyba.HRA_NEEXISTUJE);
+                return;
+            }
+            
+            String gameInfoJSON = komunikator.getGameStateJSON();
+            conn.send("gameInfoJSON:" + gameInfoJSON);
+            return;
+        }
         if(message.startsWith("restartovatPluginy:")){
             if (message.replace("restartovatPluginy:", "").equals(adminPassword)) {
                 SpravceHernichPravidel.pregeneruj();

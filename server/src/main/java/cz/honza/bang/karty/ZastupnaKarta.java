@@ -26,10 +26,12 @@ public class ZastupnaKarta extends Karta {
     
     private static final ZastupnaKarta nahodna;
     private static final ZastupnaKarta zivot;
+    private static final ZastupnaKarta smrt;
     
     static{
         nahodna = new ZastupnaKarta("nahodna","Reprezentace náhodné karty");
         zivot = new ZastupnaKarta("jedenZivot", "Reprezentace života");
+        smrt = new ZastupnaKarta("smrt", "Reprezentace smrti");
     }
     
     public static ZastupnaKarta getNahodna(){
@@ -38,6 +40,10 @@ public class ZastupnaKarta extends Karta {
     public static ZastupnaKarta getZivot(){
         return zivot;
     }
+    public static ZastupnaKarta getSmrt(){
+        return smrt;
+    }
+    
             
             
     @Override

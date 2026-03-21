@@ -400,9 +400,8 @@ export function handleGameMessage(
             }
             break;
         }
-        case "vylozeni":{
-            //payload: "predKoho,kym,{json}"
-            // 1,1,{"jmeno":"barel","obrazek":"barel","id":38}
+        case "vylozeni": {
+            // payload ze serveru je: "kym,predKoho,{json}"
             const firstComma = payload.indexOf(",");
             const secondComma = payload.indexOf(",", firstComma + 1);
 
@@ -412,8 +411,8 @@ export function handleGameMessage(
                 break;
             }
 
-            const predKoho = Number(payload.slice(0, firstComma));
-            const kym = Number(payload.slice(firstComma + 1, secondComma));
+            const kym = Number(payload.slice(0, firstComma));
+            const predKoho = Number(payload.slice(firstComma + 1, secondComma));
             const jsonStr = payload.slice(secondComma + 1).trim();
 
             let co: { id: number; obrazek: string };
@@ -425,26 +424,32 @@ export function handleGameMessage(
                 break;
             }
 
-            console.log("zpracovávám vylozeni", payload, { predKoho, kym, co });
+            console.log("zpracovávám vylozeni", payload, { kym, predKoho, co });
             const card: CardType = { id: co.id, image: co.obrazek };
 
             setGameState((prev) => {
-                const statePlayerId = prev.playerId ?? null;
-                if (statePlayerId !== null && predKoho === statePlayerId) {
-                    return {
-                        ...prev,
-                        inPlayCards: [...prev.inPlayCards, card],
-                        handCards: (prev.handCards ?? []).filter((c) => c.id !== card.id),
-                    };
+                const nextState = { ...prev };
+                const statePlayerId = nextState.playerId ?? null;
+
+                // Odebrání karty z ruky hráči, který ji zahrál (kym)
+                if (statePlayerId !== null && kym === statePlayerId) {
+                    nextState.handCards = (nextState.handCards ?? []).filter((c) => c.id !== card.id);
                 }
 
-                const updatedPlayers = (prev.players ?? []).map((p) =>
-                    p.id === predKoho
-                        ? { ...p, inPlayCards: [...(p.inPlayCards ?? []), card] }
-                        : p
-                );
+                // Přidání karty na stůl před hráče, který je cíl (predKoho)
+                if (statePlayerId !== null && predKoho === statePlayerId) {
+                    // Hráč to hraje sám před sebe, nebo na něj
+                    nextState.inPlayCards = [...(nextState.inPlayCards ?? []), card];
+                } else {
+                    // vykládá se před někoho jiného
+                    nextState.players = (nextState.players ?? []).map((p) =>
+                        p.id === predKoho
+                            ? { ...p, inPlayCards: [...(p.inPlayCards ?? []), card] }
+                            : p
+                    );
+                }
 
-                return { ...prev, players: updatedPlayers };
+                return nextState;
             });
 
             break;

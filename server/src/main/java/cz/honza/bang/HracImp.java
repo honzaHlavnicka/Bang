@@ -120,7 +120,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         hra.getKomunikator().posliZmenuPoctuZivotu(this);
         
         // Událost po ztrátě života pro efekty tohoto hráče
-        for (Efekt e : efekty) {
+        for (Efekt e : new ArrayList<>(efekty)) {
             e.poZtrateZivota(hra, this);
         }
         
@@ -255,7 +255,8 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         hra.getKomunikator().posli(this, "tvujTahZacal");
         hra.getKomunikator().posliZahajeniTahu(this);
         // Spuštění efektů na začátku tahu
-        for (Efekt e : efekty) {
+        
+        for (Efekt e : new ArrayList<>(efekty)) {
             e.naZacatekTahu(hra, this);
         }
         hra.getHerniPravidla().zacalTah(this);
@@ -293,12 +294,12 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
                             hra.getKomunikator().posliZmenuPoctuKaret(this);
 
                             // Událost po odehrání karty pro všechny efekty hráče
-                            for (Efekt e : efekty) {
+                            for (Efekt e : new ArrayList<>(efekty)) {
                                 e.poOdehraniKarty(hra, this);
                             }
                             // Pokud už nemá karty v ruce, vyvolej příslušnou událost
                             if (karty.isEmpty()) {
-                                for (Efekt e : efekty) {
+                                for (Efekt e : new ArrayList<>(efekty)) {
                                     e.kdyzNemaKarty(hra, this);
                                 }
                             }
@@ -349,7 +350,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
                     hra.getOdhazovaciBalicek().vratNahoru(karta);
                     // Pokud po spálení nemám žádné karty, vyvolej událost
                     if (karty.isEmpty()) {
-                        for (Efekt e : efekty) {
+                        for (Efekt e : new ArrayList<>(efekty)) {
                             e.kdyzNemaKarty(hra, this);
                         }
                     }
@@ -415,7 +416,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
                             predKoho.getVylozeneKarty().add(karta);
                             // pokud po vyložení nezůstaly v ruce žádné karty, upozorni efekty
                             if (karty.isEmpty()) {
-                                for (Efekt e : efekty) {
+                                for (Efekt e : new ArrayList<>(efekty)) {
                                     e.kdyzNemaKarty(hra, this);
                                 }
                             }
@@ -625,7 +626,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     @Override
     public void konecTahu() {
         // Události na konci tahu pro efekty tohoto hráče
-        for (Efekt e : efekty) {
+        for (Efekt e : new ArrayList<>(efekty)) {
             e.naKonecTahu(hra, this);
         }
         // zachovat původní pořadí: nejdříve další hráč, pak pravidla.skoncilTah

@@ -12,6 +12,9 @@ import cz.honza.bang.HracImp;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
 import cz.honza.bang.sdk.ZastupnaKarta;
+import cz.honza.bang.sdk.Efekt;
+import cz.honza.bang.sdk.HratelnaKarta;
+import cz.honza.bang.sdk.VylozitelnaKarta;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -323,7 +326,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
     
     @Override
-    public void posliVylozeniKarty(Hrac hrac, Hrac predKoho, cz.honza.bang.sdk.Karta karta) {
+    public void posliVylozeniKarty(Hrac hrac, Hrac predKoho, Karta karta) {
         String predKohoId = (predKoho != null) ? String.valueOf(predKoho.getId()) : String.valueOf(hrac.getId());
         posliVsem("vylozeni:" + hrac.getId() + "," + predKohoId + "," + karta.toJSON());
     }
@@ -652,6 +655,140 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
      */
     public void cleanup() {
         zrusitTimeoutSmezaniHry();
+    }
+
+    /**
+     * Vrátí JSON s aktuálním stavem hry pro admin debug stránku
+     * @return JSON string s informacemi o hře
+     */
+    public String getGameStateJSON() {
+        JSONObject json = new JSONObject();
+        
+        // Základní informace o hře
+        json.put("kodHry", idHry);
+        json.put("typPravidel", hra.getHerniPravidla().getClass().getName());
+        json.put("jeZahajena", hra.isZahajena() ? "Zahájena" : "čekání");
+        List<Hrac> hraciList = hra.getHraci();
+        List<Hrac> hrajiciHraci = hra.getHrajiciHraci();
+        json.put("pocetHracuRealne", hraciList.size());
+        json.put("pocetHracuPodleKomunikatoru", pocetPripojenychHracu);
+        json.put("pocetHrajiichHracu", hrajiciHraci.size());
+
+        // Informace o hráčích
+        JSONArray seznamHracu = new JSONArray();
+        int pocetKaretVRuce = 0;
+        int pocetKaretVeHre = 0;
+        int pocetKaretVBalicku = hra.getBalicek().pocet();
+        int pocetKaretVOdhazovacimBalicku = hra.getOdhazovaciBalicek().pocet();
+        
+        
+        for (Hrac hrac : hraciList) {
+            JSONObject hracJson = new JSONObject();
+            hracJson.put("id", hrac.getId());
+            hracJson.put("name", hrac.getJmeno());
+            hracJson.put("role", hrac.getRole() != null ? hrac.getRole().name() : "neví se");
+            hracJson.put("zivoty", hrac.getZivoty());
+            hracJson.put("maxZivoty", hrac.getMaximumZivotu());
+            hracJson.put("zijePodleZivotu", hrac.getZivoty() > 0);
+            hracJson.put("hrajiciHraciIndex",hrajiciHraci.indexOf(hrac));
+            hracJson.put("postava", hrac.getPostava() != null ? hrac.getPostava().getJmeno() : "žádná postava");
+            hracJson.put("jeNaTahu", hrac.jeNaTahu());
+            hracJson.put("jeAdmin", admin.equals(hrac));
+
+            // Karty v ruce
+            JSONArray kartyVRuce = new JSONArray();
+            for (Karta karta : hrac.getKarty()) {
+                kartyVRuce.put(kartaToJSON(karta));
+            }
+            hracJson.put("pocetKaret", kartyVRuce.length());
+            hracJson.put("karty", kartyVRuce);
+            pocetKaretVRuce += kartyVRuce.length();
+
+            // Vyložené karty
+            JSONArray vylozeneKarty = new JSONArray();
+            for (Karta karta : hrac.getVylozeneKarty()) {
+                vylozeneKarty.put(kartaToJSON(karta));
+            }
+            hracJson.put("vylozeneKarty", vylozeneKarty);
+            pocetKaretVeHre += vylozeneKarty.length();
+
+            // Efekty
+            JSONArray effectsArray = new JSONArray();
+            for (Efekt efekt : hrac.getEfekty()) {
+                effectsArray.put(efekt.getClass().getSimpleName());
+            }
+            hracJson.put("efekty", effectsArray);
+
+            seznamHracu.put(hracJson);
+        }
+        json.put("hraci", seznamHracu);
+
+        // Informace o správci tahu
+        if (hra.getSpravceTahu() != null) {
+            JSONObject spravceTahu = new JSONObject();
+            Hrac naTahu = hra.getSpravceTahu().getNaTahu();
+            spravceTahu.put("naTahu", naTahu != null ? naTahu.getJmeno() : "N/A");
+            JSONArray poradiHrajicichHracu = new JSONArray();
+            for (Hrac hrac : hrajiciHraci) {
+                poradiHrajicichHracu.put(hrac.getJmeno());
+            }
+            spravceTahu.put("poradiHrajicichHracu", poradiHrajicichHracu);
+            
+            json.put("spravceTahu",spravceTahu);
+        }
+
+        // Balíčky
+        JSONObject balicky = new JSONObject();
+        JSONArray lizaci = new JSONArray();
+        for (Karta karta : hra.getBalicek().nahledni(pocetKaretVBalicku)){ // nahoře v balíčku = první 
+            lizaci.put(kartaToJSON(karta));
+        }
+        balicky.put("lizaci", lizaci);
+        JSONArray odhazovaci = new JSONArray();
+        for (Karta karta : hra.getOdhazovaciBalicek().nahledni(pocetKaretVOdhazovacimBalicku)) { // nahoře v balíčku = první 
+            odhazovaci.put(kartaToJSON(karta));
+        }
+        balicky.put("odhazovaci",odhazovaci);
+        json.put("baliceks", balicky);
+
+        // Shrnutí karet
+        JSONObject shrnutiKaret = new JSONObject();
+        shrnutiKaret.put("vRuce", pocetKaretVRuce);
+        shrnutiKaret.put("vylozene", pocetKaretVeHre);
+        shrnutiKaret.put("vBalicku", pocetKaretVBalicku);
+        shrnutiKaret.put("vOdhazovacimBalicku", pocetKaretVOdhazovacimBalicku);
+        int celkemKaret = pocetKaretVRuce + pocetKaretVeHre + pocetKaretVBalicku + pocetKaretVOdhazovacimBalicku;
+        shrnutiKaret.put("celkem", celkemKaret);
+        json.put("shrnutiKaret", shrnutiKaret);
+        
+        
+        // Čekající dialogy
+        JSONArray cekajiciOdpovediJson  = new JSONArray();
+        cekajiciOdpovedi.forEach((id,cekajiciOdpoved)->{
+            JSONObject cekajiciOdpovedJson = new JSONObject();
+            cekajiciOdpovedJson.put("id",id);
+            cekajiciOdpovedJson.put("jeHotova", cekajiciOdpoved.isDone());
+            cekajiciOdpovediJson.put(cekajiciOdpoved);
+        });
+        
+        json.put("cekajiciOdpovedi", cekajiciOdpovediJson);
+        
+        return json.toString();
+    }
+
+    /**
+     * Konvertuje Kartu do JSON objektu
+     */
+    private JSONObject kartaToJSON(Karta karta) {
+        JSONObject kartaObj = new JSONObject();
+        kartaObj.put("id", karta.getId());
+        kartaObj.put("nazev", karta.getJmeno());
+        kartaObj.put("obrazek", karta.getObrazek());
+        kartaObj.put("zadniObrazek",karta.getZadniObrazek());
+        kartaObj.put("jeHratelna",karta instanceof HratelnaKarta);
+        kartaObj.put("jeVylozitelna", karta instanceof VylozitelnaKarta);
+        kartaObj.put("jeEfekt", karta instanceof Efekt);
+        return kartaObj;
     }
     
 }

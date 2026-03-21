@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.pluginy.bang.karty;
 
+import cz.honza.bang.pluginy.bang.Role;
 import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Efekt;
 import cz.honza.bang.sdk.Hra;
@@ -39,6 +40,7 @@ public class Vezeni extends Karta implements VylozitelnaKarta, Efekt{
 
     @Override
     public boolean vylozit(Hrac predKoho, Hrac kym) {
+        if(predKoho.getRole() == Role.SERIF){return false;}
         return (!predKoho.equals(kym));
     }
 
@@ -61,17 +63,22 @@ public class Vezeni extends Karta implements VylozitelnaKarta, Efekt{
 
         List<KomunikatorHry.MoznostKolaStesti> moznosti = new ArrayList<>(0);
         moznosti.add(new KomunikatorHry.MoznostKolaStesti("", "#d6b058", 1, 1));
-        moznosti.add(new KomunikatorHry.MoznostKolaStesti("Vězení", "##fc6f03", 2, 1));
-        moznosti.add(new KomunikatorHry.MoznostKolaStesti("Vězení", "##fc6f03", 3, 1));
-        moznosti.add(new KomunikatorHry.MoznostKolaStesti("Vězení", "##fc6f03", 0, 1));
+        moznosti.add(new KomunikatorHry.MoznostKolaStesti("Vězení", "#fc6f03", 2, 1));
+        moznosti.add(new KomunikatorHry.MoznostKolaStesti("Vězení", "#fc6f03", 3, 1));
+        moznosti.add(new KomunikatorHry.MoznostKolaStesti("Vězení", "#fc6f03", 0, 1));
         hra.getKomunikator().posliKoloStesti(cislo, "Zůstane " + hrac.getJmeno() + " ve vězení?", moznosti);
         hra.otocVrchniKartu();
         
         if(cislo == 1){
             hrac.odeberVylozenouKartu(this);
+            hra.getKomunikator().posliSpaleniVylozenéKarty(this, hrac);
+            hra.getOdhazovaciBalicek().vratNahoru(this);
         }else{
             hra.getSpravceTahu().dalsiHracSUpozornenim();
             hrac.odeberVylozenouKartu(this);
+            hra.getKomunikator().posliSpaleniVylozenéKarty(this, hrac);
+            hra.getOdhazovaciBalicek().vratNahoru(this);
+
         }
     }
 

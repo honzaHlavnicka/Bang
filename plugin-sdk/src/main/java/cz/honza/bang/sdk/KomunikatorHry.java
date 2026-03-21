@@ -136,7 +136,7 @@ public interface KomunikatorHry {
     /**
      * Pošle všem hráčům informaci o vyložení karty.
      * @param hrac Hráč, který kartu vyložil
-     * @param predKoho Hráč, kterému se karta vykladá (nebo nula/prázdné jméno?)
+     * @param predKoho Hráč, kterému se karta vykladá 
      * @param karta Vyložená karta
      */
     public void posliVylozeniKarty(Hrac hrac, Hrac predKoho, Karta karta);

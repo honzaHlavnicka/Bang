@@ -56,7 +56,7 @@ public class Dynamit extends Karta implements VylozitelnaKarta, Efekt{
     @Override
     public void naZacatekTahu(Hra hra, Hrac hrac) {
         Random r = new Random();
-        int cislo = r.nextInt(4);
+        int cislo = r.nextInt(13);
         System.out.println("Dynamit vygeneroval: " + cislo);
 
         List<KomunikatorHry.MoznostKolaStesti> moznosti = new ArrayList<>(0);
