@@ -33,10 +33,9 @@ export default function LoginPage() {
         }
     }, []);
 
-    // Klávesové zkratky pro přepínání karet (V, P, N)
+    // Klávesové zkratky pro přepínání karet (Z, P, V)
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            // Ignoruj klávesy pokud je fokus na inputu, textareaě nebo selectu
             if (document.activeElement?.tagName === "INPUT" || 
                 document.activeElement?.tagName === "TEXTAREA" ||
                 document.activeElement?.tagName === "SELECT") {
@@ -44,11 +43,11 @@ export default function LoginPage() {
             }
 
             const key = e.key.toLowerCase();
-            if (key === "v" && gameToken) {
+            if (key === "z" && gameToken) {
                 setOpenCard("pripojeni");
             } else if (key === "p") {
                 setOpenCard("kod");
-            } else if (key === "n") {
+            } else if (key === "v") {
                 setOpenCard("vytvoreni");
             }
         };

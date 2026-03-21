@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bang Game Info</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        /* Vystředění přihlašovacího bloku */
+        .login-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 5vh;
+            margin-bottom: 20px;
+        }
+
+        .connection-form {
+            background-color: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .connection-form h2 {
+            margin-top: 0;
+            color: #4fc3f7;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #b0bec5;
+        }
+
+        .form-group input {
+            padding: 10px;
+            border: 1px solid #455a64;
+            border-radius: 4px;
+            background-color: #37474f;
+            color: #e0e0e0;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4fc3f7;
+            box-shadow: 0 0 5px rgba(79, 195, 247, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-connect { background-color: #4fc3f7; color: #000; }
+        .btn-connect:hover { background-color: #29b6f6; }
+        
+        .btn-refresh { background-color: #ffca28; color: #000; }
+        .btn-refresh:hover { background-color: #ffc107; }
+
+        .btn-disconnect { background-color: #ef5350; color: #fff; }
+        .btn-disconnect:hover { background-color: #e53935; }
+
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .status.connected { background-color: #43a047; color: #fff; }
+        .status.disconnected { background-color: #e53935; color: #fff; }
+        .status.connecting { background-color: #ff9800; color: #fff; }
+
+        #gameContainer { display: none; }
+
+        .game-section {
+            background-color: #2d2d2d;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4fc3f7;
+        }
+
+        .game-section h2 {
+            margin-top: 0;
+            color: #4fc3f7;
+            border-bottom: 2px solid #455a64;
+            padding-bottom: 10px;
+        }
+
+        .game-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background-color: #37474f;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 3px solid #4fc3f7;
+        }
+
+        .info-item label {
+            display: block;
+            font-weight: bold;
+            color: #90caf9;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .info-item .value {
+            font-size: 18px;
+            color: #fff;
+            word-break: break-all;
+        }
+
+        .players-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .player-card {
+            background-color: #37474f;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid #81c784;
+        }
+
+        .player-card.dead {
+            opacity: 0.6;
+            border-left-color: #ef5350;
+        }
+
+        .player-card.admin {
+            border: 2px solid #ffca28;
+        }
+
+        .player-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #455a64;
+            padding-bottom: 10px;
+        }
+
+        .player-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .player-role {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            background-color: #4fc3f7;
+            color: #000;
+        }
+
+        .player-role.serif { background-color: #ffb74d; }
+        .player-role.bandita { background-color: #ef5350; }
+        .player-role.pomocnik { background-color: #81c784; }
+        .player-role.odpadlik { background-color: #ba68c8; }
+
+        .player-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            background-color: #455a64;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 11px;
+            color: #90caf9;
+            margin-bottom: 3px;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .cards-section { margin-top: 15px; }
+        .cards-title {
+            font-weight: bold;
+            color: #90caf9;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 8px;
+        }
+
+        .card-item {
+            background-color: #455a64;
+            border-radius: 4px;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #546e7a;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 3px;
+            margin-bottom: 5px;
+            background-color: #263238;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .card-image:hover {
+            transform: scale(1.05);
+        }
+
+        .card-info {
+            font-size: 11px;
+            color: #e0e0e0;
+            line-height: 1.3;
+        }
+
+        .card-name { font-weight: bold; color: #90caf9; margin-bottom: 2px; }
+        .card-id { color: #78909c; font-size: 10px; margin-bottom: 4px; }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            justify-content: center;
+        }
+
+        .card-tag {
+            font-size: 9px;
+            padding: 2px 4px;
+            border-radius: 2px;
+            color: #000;
+            font-weight: bold;
+        }
+        .card-tag.hratelna { background-color: #81c784; }
+        .card-tag.vylozitelna { background-color: #ffb74d; }
+        .card-tag.efekt { background-color: #ba68c8; }
+
+        .effects-list {
+            background-color: #455a64;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .effect-item {
+            padding: 8px;
+            background-color: #37474f;
+            border-radius: 3px;
+            margin-bottom: 5px;
+            border-left: 3px solid #4fc3f7;
+        }
+        .effect-name {
+            font-weight: bold; color: #fff; font-family: monospace; font-size: 12px;
+        }
+
+        .summary {
+            background-color: #1b5e20;
+            color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .summary h3 { margin-top: 0; }
+        .summary-item { display: inline-block; margin-right: 20px; font-weight: bold; }
+
+        .error {
+            background-color: #c62828;
+            color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .turn-indicator {
+            display: inline-block;
+            background-color: #ffeb3b;
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .admin-badge {
+            font-size: 10px;
+            background-color: #ffca28;
+            color: #000;
+            padding: 2px 5px;
+            border-radius: 3px;
+            vertical-align: super;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="connection-form">
+            <h2>⚙️ Bang! Debugger</h2>
+            <div class="form-group">
+                <label for="gameCode">Kód hry:</label>
+                <input type="text" id="gameCode" placeholder="Zadej kód hry" maxlength="6">
+            </div>
+            <div class="form-group">
+                <label for="adminPassword">Admin heslo:</label>
+                <input type="password" id="adminPassword" placeholder="Zadej heslo">
+            </div>
+            <div class="button-group">
+                <button class="btn-connect" onclick="connectToGame()" id="connectBtn">Připojit</button>
+                <button class="btn-refresh" onclick="connectToGame()" id="refreshBtn" style="display: none;">Aktualizovat</button>
+                <button class="btn-disconnect" onclick="disconnectFromGame()" id="disconnectBtn" style="display: none;">Odpojit</button>
+            </div>
+            <div class="status disconnected" id="connectionStatus">Odpojeno</div>
+        </div>
+    </div>
+
+    <div id="gameContainer">
+        <div id="errorContainer"></div>
+        <div id="gameInfo"></div>
+    </div>
+
+    <script>
+        let ws = null;
+
+        function connectToGame() {
+            const gameCode = document.getElementById('gameCode').value.trim();
+            const adminPassword = document.getElementById('adminPassword').value;
+
+            if (!gameCode || !adminPassword) {
+                showError('Zadej kód hry i heslo!');
+                return;
+            }
+
+            const socketAddress = "ws://localhost:22207/ws";
+            
+            updateStatus('connecting');
+            document.getElementById('gameContainer').style.display = 'none';
+            clearError();
+
+            if (ws) {
+                ws.close();
+            }
+
+            try {
+                ws = new WebSocket(socketAddress);
+
+                ws.onopen = function() {
+                    console.log('WebSocket připojen, žádám o info hry...');
+                    ws.send(`gameInfo:${gameCode}:${adminPassword}`);
+                };
+
+                ws.onmessage = function(event) {
+                    console.log('Přijato:', event.data);
+                    
+                    if (event.data.startsWith('gameInfoJSON:')) {
+                        try {
+                            const jsonStr = event.data.substring('gameInfoJSON:'.length);
+                            const gameData = JSON.parse(jsonStr);
+                            displayGameInfo(gameData);
+                            updateStatus('connected');
+                            document.getElementById('gameContainer').style.display = 'block';
+                        } catch (e) {
+                            showError('Chyba při parsování dat ze serveru: ' + e.message);
+                            console.error(e);
+                        }
+                    } else if (event.data.startsWith('error:')) {
+                        let errorMsg = event.data.substring('error:'.length);
+                        // Zkusíme, jestli nepřišel JSON error objekt (jak jsi psal: {"error":"popis chyby"})
+                        try {
+                            const errJson = JSON.parse(errorMsg);
+                            if (errJson.error) errorMsg = errJson.error;
+                        } catch(e) {
+                            // Nebyl to JSON, necháme to jako string
+                        }
+                        showError(errorMsg);
+                        updateStatus('disconnected');
+                    }
+                };
+
+                ws.onerror = function(error) {
+                    console.error('WebSocket chyba:', error);
+                    showError('Nelze se spojit se serverem.');
+                    updateStatus('disconnected');
+                };
+
+                ws.onclose = function() {
+                    console.log('WebSocket zavřen');
+                    if(document.getElementById('connectionStatus').className.includes('connected')){
+                        updateStatus('disconnected');
+                    }
+                };
+
+            } catch (e) {
+                showError('Kritická chyba: ' + e.message);
+                updateStatus('disconnected');
+            }
+        }
+
+        function disconnectFromGame() {
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+            updateStatus('disconnected');
+            document.getElementById('gameContainer').style.display = 'none';
+        }
+
+        function updateStatus(status) {
+            const statusEl = document.getElementById('connectionStatus');
+            const connectBtn = document.getElementById('connectBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const disconnectBtn = document.getElementById('disconnectBtn');
+            
+            statusEl.className = 'status ' + status;
+            
+            switch (status) {
+                case 'connected':
+                    statusEl.textContent = '✓ Připojeno';
+                    connectBtn.style.display = 'none';
+                    refreshBtn.style.display = 'block';
+                    disconnectBtn.style.display = 'block';
+                    break;
+                case 'connecting':
+                    statusEl.textContent = '⟳ Připojování...';
+                    connectBtn.style.display = 'block';
+                    connectBtn.disabled = true;
+                    refreshBtn.style.display = 'none';
+                    disconnectBtn.style.display = 'none';
+                    break;
+                case 'disconnected':
+                    statusEl.textContent = '✗ Odpojeno';
+                    connectBtn.style.display = 'block';
+                    connectBtn.disabled = false;
+                    refreshBtn.style.display = 'none';
+                    disconnectBtn.style.display = 'none';
+                    break;
+            }
+        }
+
+        function showError(message) {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.innerHTML = `<div class="error">⚠️ ${message}</div>`;
+            document.getElementById('gameContainer').style.display = 'block'; // Zobrazíme aby byl vidět error
+        }
+
+        function clearError() {
+            document.getElementById('errorContainer').innerHTML = '';
+        }
+        
+        // Funkce pro otočení karty na kliknutí
+        window.flipCard = function(imgElement, frontSrc, backSrc) {
+            const isBack = imgElement.getAttribute('data-is-back') === 'true';
+            if (isBack) {
+                imgElement.src = frontSrc;
+                imgElement.setAttribute('data-is-back', 'false');
+            } else {
+                imgElement.src = backSrc;
+                imgElement.setAttribute('data-is-back', 'true');
+            }
+        }
+
+        function displayGameInfo(data) {
+            const container = document.getElementById('gameInfo');
+            let html = '';
+
+            // 1. OBECNÉ INFORMACE
+            html += `
+                <div class="game-section">
+                    <h2>📋 Obecné informace</h2>
+                    <div class="game-info">
+                        <div class="info-item">
+                            <label>Kód hry</label>
+                            <div class="value">${data.kodHry}</div>
+                        </div>
+                        <div class="info-item">
+                            <label>Typ pravidel</label>
+                            <div class="value">${data.typPravidel}</div>
+                        </div>
+                        <div class="info-item">
+                            <label>Stav hry</label>
+                            <div class="value">${data.jeZahajena}</div>
+                        </div>
+                        <div class="info-item">
+                            <label>Hráčů (Reálně / Komunikátor / Hrající)</label>
+                            <div class="value">${data.pocetHracuRealne} / ${data.pocetHracuPodleKomunikatoru} / ${data.pocetHrajiichHracu}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 2. SHRNUTÍ KARET
+            if (data.shrnutiKaret) {
+                const sum = data.shrnutiKaret;
+                html += `
+                    <div class="summary">
+                        <h3>📊 Shrnutí karet na serveru</h3>
+                        <div class="summary-item">V ruce: <strong>${sum.vRuce}</strong></div>
+                        <div class="summary-item">Vyloženo: <strong>${sum.vylozene}</strong></div>
+                        <div class="summary-item">V balíčku: <strong>${sum.vBalicku}</strong></div>
+                        <div class="summary-item">V odhazovacím: <strong>${sum.vOdhazovacimBalicku}</strong></div>
+                        <div class="summary-item">📈 Celkem (kontrolní součet): <strong style="color: #ffeb3b;">${sum.celkem}</strong></div>
+                    </div>
+                `;
+            }
+
+            // 3. SPRÁVCE TAHU
+            if (data.spravceTahu) {
+                const tm = data.spravceTahu;
+                html += `
+                    <div class="game-section">
+                        <h2>🎯 Správce tahu</h2>
+                        <div class="game-info">
+                            <div class="info-item">
+                                <label>Aktuální hráč na tahu</label>
+                                <div class="value">${tm.naTahu || 'N/A'}</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Pořadí hrajících hráčů</label>
+                                <div class="value">${(tm.poradiHrajicichHracu || []).join(' ➔ ')}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // 4. ČEKAJÍCÍ ODPOVĚDI
+            if (data.cekajiciOdpovedi && data.cekajiciOdpovedi.length > 0) {
+                html += `
+                    <div class="game-section">
+                        <h2>⏳ Čekající dialogy u klientů</h2>
+                        <div class="game-info">
+                            ${data.cekajiciOdpovedi.map(odp => `
+                                <div class="info-item">
+                                    <label>ID Dialogu: ${odp.id}</label>
+                                    <div class="value">${odp.jeHotova ? '✅ Hotovo' : '❌ Čeká na hráče'}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 5. HRÁČI
+            if (data.hraci && data.hraci.length > 0) {
+                html += '<div class="game-section"><h2>👥 Hráči</h2><div class="players-container">';
+                
+                data.hraci.forEach(player => {
+                    const roleClass = (player.role || 'unknown').toLowerCase();
+                    const adminTag = player.jeAdmin ? '<span class="admin-badge">ADMIN</span>' : '';
+                    
+                    html += `
+                        <div class="player-card ${!player.zijePodleZivotu ? 'dead' : ''} ${player.jeAdmin ? 'admin' : ''}">
+                            <div class="player-header">
+                                <div>
+                                    <div class="player-name">
+                                        [${player.id}] ${player.name} ${adminTag}
+                                        ${player.jeNaTahu ? '<span class="turn-indicator">NA TAHU</span>' : ''}
+                                    </div>
+                                    <span class="player-role ${roleClass}">${player.role}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="player-stats">
+                                <div class="stat">
+                                    <span class="stat-label">Zdraví (Zije: ${player.zijePodleZivotu ? 'Ano':'Ne'})</span>
+                                    <span class="stat-value">${player.zivoty} / ${player.maxZivoty}</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-label">Postava</span>
+                                    <span class="stat-value">${player.postava}</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-label">Index hrajícího</span>
+                                    <span class="stat-value">${player.hrajiciHraciIndex}</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-label">Počet karet</span>
+                                    <span class="stat-value">${player.pocetKaret}</span>
+                                </div>
+                            </div>
+                    `;
+
+                    // Vyložené karty
+                    if (player.vylozeneKarty && player.vylozeneKarty.length > 0) {
+                        html += `
+                            <div class="cards-section">
+                                <div class="cards-title">🃏 Vyložené karty (${player.vylozeneKarty.length})</div>
+                                <div class="cards-grid">
+                                    ${player.vylozeneKarty.map(card => renderCard(card)).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    // Karty v ruce
+                    if (player.karty && player.karty.length > 0) {
+                        html += `
+                            <div class="cards-section">
+                                <div class="cards-title">🎴 Karty v ruce (${player.karty.length})</div>
+                                <div class="cards-grid">
+                                    ${player.karty.map(card => renderCard(card)).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    // Efekty
+                    if (player.efekty && player.efekty.length > 0) {
+                        html += `
+                            <div class="cards-section">
+                                <div class="cards-title">⚡ Aktivní Efekty</div>
+                                <div class="effects-list">
+                                    ${player.efekty.map(effect => `<div class="effect-item"><span class="effect-name">${effect}</span></div>`).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    html += '</div>';
+                });
+
+                html += '</div></div>';
+            }
+
+            // 6. BALÍČKY
+            if (data.baliceks) {
+                html += '<div class="game-section"><h2>🎴 Náhled do balíčků</h2>';
+
+                if (data.baliceks.lizaci && data.baliceks.lizaci.length > 0) {
+                    html += `
+                        <div class="cards-section">
+                            <div class="cards-title">🔃 Dobírací balíček (Vrchní karty)</div>
+                            <div class="cards-grid">
+                                ${data.baliceks.lizaci.map(card => renderCard(card)).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (data.baliceks.odhazovaci && data.baliceks.odhazovaci.length > 0) {
+                    html += `
+                        <div class="cards-section" style="margin-top:20px;">
+                            <div class="cards-title">🗑️ Odhazovací balíček (Vrchní karty)</div>
+                            <div class="cards-grid">
+                                ${data.baliceks.odhazovaci.map(card => renderCard(card)).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                html += '</div>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        function renderCard(card) {
+            if (!card) return '';
+            
+            const frontImg = `/img/karty/${card.obrazek || 'zezadu'}.png`;
+            const backImg = `/img/karty/${card.zadniObrazek || 'zezadu'}.png`;
+            
+            // Sestavení dynamických štítků
+            let tags = '';
+            if (card.jeHratelna) tags += '<span class="card-tag hratelna">Hratelná</span>';
+            if (card.jeVylozitelna) tags += '<span class="card-tag vylozitelna">Vylož.</span>';
+            if (card.jeEfekt) tags += '<span class="card-tag efekt">Efekt</span>';
+
+            return `
+                <div class="card-item">
+                    <img src="${frontImg}" alt="${card.nazev}" class="card-image" title="Klikni pro otočení"
+                         data-is-back="false" 
+                         onclick="flipCard(this, '${frontImg}', '${backImg}')" 
+                         onerror="this.src='/img/karty/zezadu.png'">
+                    <div class="card-info">
+                        <div class="card-name">${card.nazev || 'Neznámá'}</div>
+                        <div class="card-id">ID: ${card.id}</div>
+                        <div class="card-tags">${tags}</div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

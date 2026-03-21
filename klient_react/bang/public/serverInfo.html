@@ -81,10 +81,9 @@
     <h1>Connecting to Bang Server...</h1>
     <p>Pokud trvá moc dlouho, server není možná zapnutý.</p>
     <script>
-        const socketAdress =  "wss://" + window.location.host + "/ws";                                       //
+        const socketAdress =  "ws://localhost:22207/ws";
 
         ws = new WebSocket(socketAdress);
-        console.log("Connecting to ws://localhost:9999/");
         console.log(ws);
         ws.onopen = function() {
             document.body.innerHTML = "<h1>Connected to Bang Server</h1><form><input autofocus id=heslo type=password><button onclick='ws.send(\"serverInfo:\" + heslo.value);return false'>načíst</button></form><div id=container></div>";
