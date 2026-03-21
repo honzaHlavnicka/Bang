@@ -12,18 +12,20 @@ package cz.honza.bang.net;
  */
 import cz.honza.bang.pravidla.SpravceHernichPravidel;
 import cz.honza.bang.sdk.Chyba;
-import cz.honza.bang.sdk.Hrac;
 import org.java_websocket.server.WebSocketServer;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 
 import java.net.InetSocketAddress;
-import java.util.Collection;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class SocketServer extends WebSocketServer {
     private Map<WebSocket, KomunikatorHryImp> komunikatoryHracu = new  ConcurrentHashMap<>();
@@ -31,7 +33,9 @@ public class SocketServer extends WebSocketServer {
     private Set<Integer> pouziteKody = new HashSet<>();
     private Random random = new Random();
     private String adminPassword;
-
+    private Set<WebSocket> overeniAdmini = ConcurrentHashMap.newKeySet();
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    
     public SocketServer(InetSocketAddress address) {
         super(address);
         System.out.println("Adresa serveru je: " + address.toString());
@@ -61,6 +65,7 @@ public class SocketServer extends WebSocketServer {
         System.out.println("Closed connection: " + reason);
        
         KomunikatorHryImp komunikator = komunikatoryHracu.remove(conn);
+        overeniAdmini.remove(conn);
         
         if(komunikator != null){           //Pokud byl uživatel připojen ke hře.
             komunikator.hracOdpojen(conn);
@@ -71,44 +76,45 @@ public class SocketServer extends WebSocketServer {
     public void onMessage(WebSocket conn, String message) {
         System.out.println("zpráva: " + message);
 
-        if(message.startsWith("serverInfo:")){
-            if(message.replace("serverInfo:", "").equals(adminPassword)){
-                conn.send("serverDataHTML:"+serverDataHTML());
-            }
-            posliChybu(conn, Chyba.SPATNE_HESLO);
+        if (message.startsWith("serverInfo:")) {
+            String zadaneHeslo = message.replace("serverInfo:", "");
+            overAdminHeslo(conn, zadaneHeslo).thenAccept(uspech -> {
+                if (uspech) {
+                    conn.send("serverDataHTML:" + serverDataHTML());
+                }
+            });
             return;
         }
-        if(message.startsWith("gameInfo:")){
+        if (message.startsWith("gameInfo:")) {
             String[] parts = message.substring("gameInfo:".length()).split(":", 2);
-            if(parts.length < 2){
+            if (parts.length < 2) {
                 posliChybu(conn, Chyba.CHYBA_PROTOKOLU);
                 return;
             }
             String kod = parts[0];
             String heslo = parts[1];
-            
-            if(!heslo.equals(adminPassword)){
-                posliChybu(conn, Chyba.SPATNE_HESLO);
-                return;
-            }
-            
-            KomunikatorHryImp komunikator = hryPodleId.get(kod);
-            if(komunikator == null){
-                posliChybu(conn, Chyba.HRA_NEEXISTUJE);
-                return;
-            }
-            
-            String gameInfoJSON = komunikator.getGameStateJSON();
-            conn.send("gameInfoJSON:" + gameInfoJSON);
+
+            overAdminHeslo(conn, heslo).thenAccept(uspech -> {
+                if (uspech) {
+                    KomunikatorHryImp komunikator = hryPodleId.get(kod);
+                    if (komunikator == null) {
+                        posliChybu(conn, Chyba.HRA_NEEXISTUJE);
+                        return;
+                    }
+                    String gameInfoJSON = komunikator.getGameStateJSON();
+                    conn.send("gameInfoJSON:" + gameInfoJSON);
+                }
+            });
             return;
         }
-        if(message.startsWith("restartovatPluginy:")){
-            if (message.replace("restartovatPluginy:", "").equals(adminPassword)) {
-                SpravceHernichPravidel.pregeneruj();
-                conn.send("ok");
-                return;
-            }
-            posliChybu(conn, Chyba.SPATNE_HESLO);
+        if (message.startsWith("restartovatPluginy:")) {
+            String zadaneHeslo = message.replace("restartovatPluginy:", "");
+            overAdminHeslo(conn, zadaneHeslo).thenAccept(uspech -> {
+                if (uspech) {
+                    SpravceHernichPravidel.pregeneruj();
+                    conn.send("ok");
+                }
+            });
             return;
         }
         if(message.startsWith("infoHer")){
@@ -238,7 +244,6 @@ public class SocketServer extends WebSocketServer {
         sb.append(pouziteKody.toString());
 
         
-
         sb.append("<h2>připojení:</h2>");
         sb.append("<table><Thead><tr><th>remoteSocketAdress</th></th>gameId</th><th>isOpen</th><th>ReadyState</th></tr></thead><tbopdy>");
         
@@ -291,6 +296,36 @@ public class SocketServer extends WebSocketServer {
     }
     public void posliChybu(WebSocket conn, Chyba chyba) {
         conn.send("error:{\"error\":\"" + chyba.getZprava() + "\",\"kod\":" + chyba.getKod() + ",\"skupina\":" + chyba.getSkupina() + "}");
+    }
+    
+    /**
+     * Ověří heslo. První pokus na spojení trvá 4 sekundy. 
+     * Další pokusy ze stejného (již ověřeného) spojení jsou okamžité.
+     *
+     * @return true pokud je heslo správné, false pokud je špatné.
+     */
+    private CompletableFuture<Boolean> overAdminHeslo(WebSocket conn, String zadaneHeslo) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+
+        if (overeniAdmini.contains(conn)) {
+            // Spojení je už ověřené
+            future.complete(adminPassword.equals(zadaneHeslo));
+            return future;
+        }
+
+        // Spojení není ověřené.
+        scheduler.schedule(() -> {
+            if (adminPassword.equals(zadaneHeslo)) {
+                overeniAdmini.add(conn);
+                future.complete(true);
+            } else {
+                System.out.println("[SECURITY] Odmítnut admin přístup z " + conn.getRemoteSocketAddress());
+                posliChybu(conn, Chyba.SPATNE_HESLO);
+                future.complete(false);
+            }
+        }, 4, TimeUnit.SECONDS);
+
+        return future;
     }
 
     public static void main(String[] args) {

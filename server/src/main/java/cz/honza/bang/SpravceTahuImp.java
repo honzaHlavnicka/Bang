@@ -123,13 +123,16 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      */
     @Override
     public HracImp dalsiHracPodleRole(cz.honza.bang.sdk.Role role) {
-       HracImp hrac;
-        do {
-            hrac = dalsiHrac();
-        } while (hrac.getRole() != role);
-        naTahu = hrac;
+        Hrac hrac =  frontaTahu.getLast().hrac;
+        for(Hrac h : getHrajiciHraci()){
+            if(h.getRole().equals(role)){
+                hrac = h;
+                break;
+            }
+        }
+        naTahu = (HracImp) hrac;
         hrac.zahajitTah();
-        return hrac;
+        return (HracImp) hrac;
     }
 
  

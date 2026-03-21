@@ -10,25 +10,6 @@ Soubory jsou uváděny relativně ke kořeni projektu.
 
 ## 🟠 CHYBY V LOGICE (bugs)
 
-### C1 – `pouziteKody` (seznam použitých kódů her) se nikdy nenaplní
-**Soubor:**
-- `server/src/main/java/cz/honza/bang/net/SocketServer.java` – řádky 31, 172–178
-
-```java
-private List<Integer> pouziteKody = new ArrayList<>();
-
-private int nahodneIdHry(){
-    int kod = random.nextInt(999999 - 100000 + 1) + 100000;
-    if(pouziteKody.indexOf(Integer.valueOf(kod)) != -1){ // tato podmínka NIKDY není true
-        return nahodneIdHry();
-    }
-    return kod;
-}
-```
-
-Kódy se do `pouziteKody` nikde nepřidávají, takže `indexOf()` vždy vrátí -1. Kontrola duplicitních kódů her je zcela nefunkční. Dvě hry tak mohou dostat stejný kód, přičemž druhá hra přepíše první v mapě `hryPodleId`.
-
----
 
 ### C2 – `message.startsWith("novaHra")` zachytí i zprávu `novaHraSHracema:`
 **Soubor:**
@@ -40,28 +21,7 @@ if (message.startsWith("novaHra") || message.startsWith("pripojeniKeHre:111")) {
 
 Zpráva `novaHraSHracema:<id>` (určená pro reset hry) začíná `"novaHra"`, a proto se zachytí v této větvi místo v `prislaZprava()`. Výsledkem je, že pokus o reset hry způsobí chybu `UZ_PRIPOJEN` (pokud je hráč ve hře) nebo vytvoří novou hru (pokud není).
 
----
 
-### C3 – `BarelEfekt.poZtrateZivota` – nesprávná herní logika a testovací zpráva v produkci
-**Soubor:**
-- `pluginy/bang/src/main/java/cz/honza/bang/pluginy/bang/BarelEfekt.java` – řádky 29–40
-
-```java
-//TODO: naprogramovat tento efekt :)
-public void poZtrateZivota(Hra hra, Hrac hrac) {
-    Random r = new Random();
-    if(r.nextInt(3) == 0){
-        hrac.pridejZivot();
-        hra.getKomunikator().posli(hrac,"TODO: byl jsi zachráněn barelem"); // doslova "TODO:..."
-    }
-}
-```
-
-1. Efekt barelu je implementován jako náhodná 1/3 šance, ne jako otočení karty (pravidla hry Bang!).
-2. Klientovi se posílá zpráva `"TODO: byl jsi zachráněn barelem"` – doslova tento text jako protokolová zpráva.
-3. Komentář `//TODO: naprogramovat tento efekt :)` přímo říká, že efekt není hotový.
-
----
 
 ### C4 – `SpravceTahuImp.dalsiHrac()` používá rekurzi bez limitu hloubky
 **Soubor:**
@@ -81,17 +41,6 @@ Pokud jsou všichni hráči vyřazeni (nebo kvůli jiné chybě), metoda se reku
 
 ---
 
-### C5 – `PravidlaBangu.muzeVylozit` porovnává objekt místo jména karty
-**Soubor:**
-- `pluginy/bang/src/main/java/cz/honza/bang/pluginy/bang/PravidlaBangu.java` – řádek 138
-
-```java
-return !kdo.getVylozeneKarty().contains(co); //špatně. musíš podle názvu
-```
-
-Komentář v kódu přímo říká, že implementace je špatná – porovnává instanci karty místo jejího jména/typu.
-
----
 
 ### C7 – `vylozitKartu` v `HracImp`: možný `NullPointerException` při neexistujícím hráči
 **Soubor:**
@@ -209,39 +158,6 @@ gameStateMessege?: string;       // správně: gameStateMessage
 gameStateMessegeFull?: string;   // správně: gameStateMessageFull
 ```
 
----
-
-
-
-### K17 – `SpravceHernichPravidel.getJSONVytvoritelneHry()` přiřazuje ID přes `AtomicInteger` v lambda
-**Soubor:**
-- `server/src/main/java/cz/honza/bang/pravidla/SpravceHernichPravidel.java`
-
-```java
-AtomicInteger id = new AtomicInteger(); //int nefunguje a chatGPT doporučil toto
-```
-
-Komentář přímo přiznává, že řešení bylo přijato na základě rady chatbotu bez hlubšího pochopení. Správné řešení je použít `IntStream.range()` nebo klasický cyklus `for`.
-
----
-
-### K18 – Chybí `return` nebo `else` v `dalsiHracPodleRole` – potenciálně nekončící smyčka
-**Soubor:**
-- `server/src/main/java/cz/honza/bang/SpravceTahuImp.java` – metoda `dalsiHracPodleRole`
-
-```java
-public HracImp dalsiHracPodleRole(cz.honza.bang.sdk.Role role) {
-    HracImp hrac;
-    do {
-        hrac = dalsiHrac();
-    } while (hrac.getRole() != role);
-    ...
-}
-```
-
-Pokud žádný hráč nemá hledanou roli (nebo jsou všichni s touto rolí vyřazeni), metoda se zacyklí donekonečna.
-
----
 
 
 ## 🔵 NEDOKONČENÉ FUNKCE (TODO v kódu)

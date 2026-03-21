@@ -394,14 +394,23 @@
                 return;
             }
 
+            clearError();
+
+            // 1. KROK: Pokud už máme aktivní a otevřené spojení, jen pošleme dotaz
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                console.log('Používám existující WebSocket spojení pro okamžitou aktualizaci...');
+                ws.send(`gameInfo:${gameCode}:${adminPassword}`);
+                return; // Zbytek funkce se neprovede, čekáme rovnou na onmessage
+            }
+
+            // 2. KROK: Pokud spojení neexistuje nebo spadlo, vytvoříme nové
             const socketAddress = "ws://localhost:22207/ws";
             
             updateStatus('connecting');
             document.getElementById('gameContainer').style.display = 'none';
-            clearError();
 
             if (ws) {
-                ws.close();
+                ws.close(); // Zavřeme případné uvízlé spojení v jiném stavu než OPEN
             }
 
             try {
@@ -428,7 +437,6 @@
                         }
                     } else if (event.data.startsWith('error:')) {
                         let errorMsg = event.data.substring('error:'.length);
-                        // Zkusíme, jestli nepřišel JSON error objekt (jak jsi psal: {"error":"popis chyby"})
                         try {
                             const errJson = JSON.parse(errorMsg);
                             if (errJson.error) errorMsg = errJson.error;
@@ -448,6 +456,7 @@
 
                 ws.onclose = function() {
                     console.log('WebSocket zavřen');
+                    // Změníme status na odpojeno pouze pokud jsme si mysleli, že jsme připojeni
                     if(document.getElementById('connectionStatus').className.includes('connected')){
                         updateStatus('disconnected');
                     }
