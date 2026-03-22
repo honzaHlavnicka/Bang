@@ -3,10 +3,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    /* nechat prvky přirozeně růst, ale omezit maximální velikost */
     border-radius: 8px;
     padding: 20px;
     max-width: 400px;
     margin: 40px auto;
+ }
+ .scrollArea{
+    max-height: calc(100dvh); 
+    overflow-y: auto;
  }
 .content{
     margin-top: 24px;

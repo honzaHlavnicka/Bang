@@ -46,17 +46,6 @@ export default function CentralPanel() {
             {gameState.allowedUIElements.includes("DOBIRACI_BALICEK") ?
                 <Card image={"/img/karty/zezadu.png"} name="dobírací balíček" onClick={()=>drawCard()} id={-2}/>
             : null}
-            {gameState.customUIButtons.map(btn => (
-                <button 
-                    key={btn.id} 
-                    className={globalCSS.button}
-                    disabled={btn.disabled}
-                    style={{marginRight: 20}}
-                    onClick={() => clickUIButton(btn.id)}
-                >
-                    {btn.text}
-                </button>
-            ))}
             
             
         </div>

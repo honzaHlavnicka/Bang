@@ -13,6 +13,6 @@ export default function BeforeGameWaiting() {
             {gameState.allowedUIElements.includes("POSTAVA") ?
             <CharacterPicker />: null}
             <PlayersWaitingGame/>
-            </WaitingRoom>
+        </WaitingRoom>
     );
 }

@@ -24,8 +24,8 @@ import NameTag from "./NameTag";
     const hasVerticalSpace = useMediaQuery("(min-height: 1000px)");
 
     return (
-        <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "flex-end", flex: "0 0 auto"}}>
-            <div style={{ marginRight: "32px" }}>
+        <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "flex-end", flex: "0 0 auto", }}>
+            <div style={{ marginRight: "32px", width: "fit-content" }}>
                 <NameTag jmeno={jmeno || "nepojmenovaný hráč"} isDead={isDead} showDeadIndicator={gameState.allowedUIElements.includes("ZIVOTY")} style={{backgroundColor:(gameState.playerId === gameState.turnPlayerId)?"yellow":"white"}} />
                 <div style={{display:"flex",justifyContent:"center"}}>
                     {gameState.allowedUIElements.includes("ROLE") ?    <Card image={`/img/karty/role/${role}.png`} />: null}
@@ -33,7 +33,7 @@ import NameTag from "./NameTag";
                     {gameState.allowedUIElements.includes("ZIVOTY") ? <Card image={`/img/velkeZivoty/${zdravy}zivoty.png`} />: null}
                 </div>
             </div>
-            <div style={{flex: 1, display: "flex", justifyContent: "center",flexDirection:(hasVerticalSpace ? "column" : "row") }}>
+            <div style={{flex: 1, display: "flex", justifyContent: "center",flexDirection:(hasVerticalSpace ? "column" : "row"), zIndex:3 }}>
                 {(gameState.allowedUIElements.includes("VYLOZENE_KARTY")) ?
                     <InPlayCards vylozeneKarty={vylozeneKarty} />
                 : null}
