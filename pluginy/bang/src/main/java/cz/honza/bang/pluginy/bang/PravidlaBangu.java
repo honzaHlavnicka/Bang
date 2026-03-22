@@ -22,7 +22,9 @@ import cz.honza.bang.pluginy.bang.karty.Kulomet;
 import cz.honza.bang.pluginy.bang.karty.Salon;
 import cz.honza.bang.pluginy.bang.karty.Vedle;
 import cz.honza.bang.pluginy.bang.karty.Vezeni;
+import cz.honza.bang.pluginy.bang.postavy.BartCassidy;
 import cz.honza.bang.pluginy.bang.postavy.JednoduchePostavy;
+import cz.honza.bang.pluginy.bang.postavy.Jourdonnais;
 import cz.honza.bang.pluginy.bang.postavy.PaulRegret;
 import cz.honza.bang.pluginy.bang.postavy.RoseDoolan;
 import cz.honza.bang.pluginy.bang.postavy.SidKetchum;
@@ -133,6 +135,10 @@ public class PravidlaBangu implements HerniPravidla{
         hra.getKomunikator().posliRychleOznameni(komu.getJmeno() + " umřel/a 💔", null);
         
         hra.getSpravceTahu().vyraditHrace(komu);
+        
+        if(komu.jeNaTahu()){
+            hra.getSpravceTahu().dalsiHracSUpozornenim();
+        }
 
         long pocetZivychBanditu = hra.getHraci().stream().filter(h -> h.getRole() == Role.BANDITA && h.jeZivy()).count();
         long pocetZivychOdpadliku = hra.getHraci().stream().filter(h -> h.getRole() == Role.ODPADLIK && h.jeZivy()).count();
@@ -182,6 +188,7 @@ public class PravidlaBangu implements HerniPravidla{
                 hra.getKomunikator().posliOdebraniKarty(komu, karta);
                 hra.getKomunikator().posliZmenuPoctuKaret(komu);
                 hra.getKomunikator().posliZmenuPoctuKaret(vultureSam);
+                hra.getKomunikator().posliNovouKartu(vultureSam, karta);
             }else{
                 hra.getOdhazovaciBalicek().vratNahoru(karta);
                 hra.getKomunikator().posli(komu, "odehrat:" + komu.getId() + "," + karta.toJSON());
@@ -212,6 +219,7 @@ public class PravidlaBangu implements HerniPravidla{
     @Override
     public boolean hracChceLiznout(Hrac kdo) {
         if(kdo.getPostava().equals(JednoduchePostavy.SUZY_LAFAYTTE) && kdo.getKarty().isEmpty()){
+            kdo.lizni();
             return true;
         }
         return false; //Hráč si při bangu nesmí lízat kdy se mu zachce.
@@ -299,6 +307,7 @@ public class PravidlaBangu implements HerniPravidla{
         if (hrac.getRole() != Role.SERIF) {
             hrac.setMaximumZivotu(hrac.getPostava().getMaximumZivotu());
         } else {
+            hra.getKomunikator().posliVsem("noveJmeno:" + hrac.getId() + ",✪ " + hrac.getJmeno() );
             hrac.setMaximumZivotu(hrac.getPostava().getMaximumZivotu() + 1);
         }
         
@@ -317,13 +326,17 @@ public class PravidlaBangu implements HerniPravidla{
     
     @Override
     public void pripravBalicekPostav(java.util.Stack<cz.honza.bang.sdk.Postava> balicekPostav){
-        for (int i = 0; i < 10; i++) {
-            //balicekPostav.add(new RoseDoolan());
-            //balicekPostav.add(new PaulRegret());
-            //balicekPostav.add(JednoduchePostavy.WILLY_THE_KID);
+        for (int i = 0; i < 2; i++) {
+            balicekPostav.add(new RoseDoolan());
+            balicekPostav.add(new PaulRegret());
+            balicekPostav.add(JednoduchePostavy.WILLY_THE_KID);
+            balicekPostav.add(JednoduchePostavy.VULTURE_SAM);
+            balicekPostav.add(JednoduchePostavy.SUZY_LAFAYTTE);
             balicekPostav.add(new SidKetchum(hra));
+            balicekPostav.add(new BartCassidy());
+            balicekPostav.add(new Jourdonnais());
         }
-        
+
         Collections.shuffle(balicekPostav);
     }
     

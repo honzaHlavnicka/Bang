@@ -24,7 +24,7 @@ public class BartCassidy implements Postava, Efekt{
 
     @Override
     public String name() {
-        return "bardCassidy";
+        return "bartCassidy";
     }
 
     @Override
