@@ -228,7 +228,7 @@ public interface KomunikatorHry {
      * @param disabled Zda je tlačítko deaktivované
      * @return ID tlačítka
      */
-    public int pridejUIButton(Hrac komu, int buttonId, String text, boolean disabled);
+    public int pridejUIButton(Hrac komu, int buttonId, String text, boolean disabled, Runnable akce);
 
     /**
      * Odstraní vlastní UI prvek.

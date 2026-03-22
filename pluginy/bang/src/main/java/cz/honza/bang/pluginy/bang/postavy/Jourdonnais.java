@@ -6,8 +6,8 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.pluginy.bang.postavy;
 
+import cz.honza.bang.pluginy.bang.BarelEfekt;
 import cz.honza.bang.sdk.Efekt;
-import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Postava;
 
@@ -15,42 +15,41 @@ import cz.honza.bang.sdk.Postava;
  *
  * @author honza
  */
-public class BartCassidy implements Postava, Efekt{
-
+public class Jourdonnais implements Postava{
+    
+    private Efekt efekt;
+    
     @Override
     public String getJmeno() {
-        return "Bart Cassidy";
+        return "Jourdonnais";
     }
 
     @Override
     public String name() {
-        return "bardCassidy";
+        return "jourdonnais";
     }
 
     @Override
     public String getPopis() {
-        return "Klikoliv je zasažen, lízne si kartu.";
+        return "Chová se jako barel";
     }
 
     @Override
     public int getMaximumZivotu() {
         return 4;
     }
-    
-    
+
     @Override
     public void pridaniPostavy(Hrac komu) {
-        komu.getEfekty().add(this);
+        komu.getEfekty().add(efekt);
+    }
+
+    public Jourdonnais() {
+        this.efekt = new BarelEfekt();
     }
 
     @Override
     public void odebraniPostavy(Hrac komu) {
-        komu.getEfekty().remove(this);
+        komu.getEfekty().remove(efekt);
     }
-
-    @Override
-    public void poZtrateZivota(Hra hra, Hrac hrac) {
-        hrac.lizni();
-    }
-    
 }

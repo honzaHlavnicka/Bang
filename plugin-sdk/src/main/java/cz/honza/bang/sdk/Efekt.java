@@ -29,7 +29,7 @@ public interface Efekt {
         return 0;
     }
     
-    void odebrani(Hrac odKoho);
-    void prirazeni(Hrac komu);
+    default void odebrani(Hrac odKoho){};
+    default void prirazeni(Hrac komu){};
     
 }

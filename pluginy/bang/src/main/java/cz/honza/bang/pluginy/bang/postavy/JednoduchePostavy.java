@@ -14,7 +14,10 @@ import cz.honza.bang.sdk.Postava;
  * @author honza
  */
 public enum JednoduchePostavy implements Postava{
-    WILLY_THE_KID("Willy the Kid","Může zahrát neomezeně mnoho bangů.",4);
+    WILLY_THE_KID("Willy the Kid","Může zahrát neomezeně mnoho bangů.",4),
+    SLAB_THE_KILLER("Slab the Killer","Proti jeho kartě Bang! jsou potřeba dvě vedle",4),
+    VULTURE_SAM("Vulture Sam","Kdykoliv je nějaký hráč vyřazen ze hry, vezme si všechny jeho karty",4),
+    SUZY_LAFAYTTE("Suzy Lafayette","Jakmile nemá žádnou kartu v ruce, může si líznout",4);
     
     String jmeno;
     int maximumZivotu;

@@ -25,6 +25,7 @@ import cz.honza.bang.pluginy.bang.karty.Vezeni;
 import cz.honza.bang.pluginy.bang.postavy.JednoduchePostavy;
 import cz.honza.bang.pluginy.bang.postavy.PaulRegret;
 import cz.honza.bang.pluginy.bang.postavy.RoseDoolan;
+import cz.honza.bang.pluginy.bang.postavy.SidKetchum;
 import cz.honza.bang.pluginy.bang.zbrane.Remington;
 import cz.honza.bang.pluginy.bang.zbrane.RevCarabine;
 import cz.honza.bang.pluginy.bang.zbrane.Schofield;
@@ -170,14 +171,22 @@ public class PravidlaBangu implements HerniPravidla{
             hra.getKomunikator().posliVysledky(vycistenePoradi);
             hra.getKomunikator().posliKonecHry();
         }
-
         
+        Hrac vultureSam = hra.getHrajiciHraci().stream().filter(h->h.getPostava().equals(JednoduchePostavy.VULTURE_SAM)).findFirst().orElse(null);
+
             
         List<Karta> karty = komu.getKarty();
         for (Karta karta : karty) {
-            hra.getOdhazovaciBalicek().vratNahoru(karta);
-            hra.getKomunikator().posli(komu, "odehrat:" + komu.getId() + "," + karta.toJSON());
-            hra.getKomunikator().posliSpaleniKarty(komu, karta);
+            if (vultureSam != null) {
+                vultureSam.getKarty().add(karta);
+                hra.getKomunikator().posliOdebraniKarty(komu, karta);
+                hra.getKomunikator().posliZmenuPoctuKaret(komu);
+                hra.getKomunikator().posliZmenuPoctuKaret(vultureSam);
+            }else{
+                hra.getOdhazovaciBalicek().vratNahoru(karta);
+                hra.getKomunikator().posli(komu, "odehrat:" + komu.getId() + "," + karta.toJSON());
+                hra.getKomunikator().posliSpaleniKarty(komu, karta);
+            }
         }
         karty.clear();
 
@@ -202,6 +211,9 @@ public class PravidlaBangu implements HerniPravidla{
 
     @Override
     public boolean hracChceLiznout(Hrac kdo) {
+        if(kdo.getPostava().equals(JednoduchePostavy.SUZY_LAFAYTTE) && kdo.getKarty().isEmpty()){
+            return true;
+        }
         return false; //Hráč si při bangu nesmí lízat kdy se mu zachce.
     }
 
@@ -306,9 +318,10 @@ public class PravidlaBangu implements HerniPravidla{
     @Override
     public void pripravBalicekPostav(java.util.Stack<cz.honza.bang.sdk.Postava> balicekPostav){
         for (int i = 0; i < 10; i++) {
-            balicekPostav.add(new RoseDoolan());
-            balicekPostav.add(new PaulRegret());
-            balicekPostav.add(JednoduchePostavy.WILLY_THE_KID);
+            //balicekPostav.add(new RoseDoolan());
+            //balicekPostav.add(new PaulRegret());
+            //balicekPostav.add(JednoduchePostavy.WILLY_THE_KID);
+            balicekPostav.add(new SidKetchum(hra));
         }
         
         Collections.shuffle(balicekPostav);
@@ -379,7 +392,7 @@ public class PravidlaBangu implements HerniPravidla{
             if (!vedleNaKoho.isEmpty()) {
                 vedleNaKoho.add(ZastupnaKarta.getZivot());
                 hra.getKomunikator().posliStavovuZpravu(naKoho.getJmeno() + " může ještě použít vedle na odražení útoku!");
-
+                
                 hra.getKomunikator().pozadejOKarty(naKoho, vedleNaKoho, "Vyber o co přijdeš. (Může za to " + kym.getJmeno() + " )", 1, 1, false)
                         .thenAccept(id -> {
                             int idInt;

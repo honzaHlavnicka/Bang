@@ -11,7 +11,6 @@ import cz.honza.bang.HraImp;
 import cz.honza.bang.HracImp;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
-import cz.honza.bang.sdk.ZastupnaKarta;
 import cz.honza.bang.sdk.Efekt;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.VylozitelnaKarta;
@@ -53,11 +52,13 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         int id;
         String text;
         boolean disabled;
+        Runnable akce;
         
-        CustomUIButton(int id, String text, boolean disabled) {
+        CustomUIButton(int id, String text, boolean disabled,Runnable akce) {
             this.id = id;
             this.text = text;
             this.disabled = disabled;
+            this.akce = akce;
         }
     }
     
@@ -116,10 +117,28 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
                 posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
             }
         }
-        if(message.startsWith("uiClick:")){ //očekávaný formát: "uiClick:<ID>"
+        if (message.startsWith("uiClick:")) { // očekávaný formát: "uiClick:<ID>"
             try {
                 int uiId = Integer.parseInt(message.replace("uiClick:", ""));
-                hra.getHerniPravidla().uiButtonClicked(hrac, uiId);
+                HracImp hracImp = (HracImp) hrac;
+
+                boolean akceVyresenaCallbackem = false;
+
+                Map<Integer, CustomUIButton> playerUI = customUIByPlayer.get(hracImp);
+
+                if (playerUI != null) {
+                    CustomUIButton button = playerUI.get(uiId);
+
+                    if (button != null && button.akce != null) {
+                        button.akce.run();
+                        akceVyresenaCallbackem = true;
+                    }
+                }
+
+                if (!akceVyresenaCallbackem) {
+                    hra.getHerniPravidla().uiButtonClicked(hrac, uiId);
+                }
+
             } catch (NumberFormatException ex) {
                 posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
             }
@@ -170,19 +189,25 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
      * @param komuNe Hráč, který zprávu neobdrží
      */
     @Override
-
-    public void posliVsem(String co,cz.honza.bang.sdk.Hrac komuNe) {
+    public void posliVsem(String co, cz.honza.bang.sdk.Hrac komuNe) {
         for (WebSocket conn : hraciPodleWebsocketu.keySet()) {
-            if(!hraciPodleWebsocketu.get(conn).equals(komuNe)){
-                conn.send(co);
+            if (conn != null && conn.isOpen()) {
+                if (!hraciPodleWebsocketu.get(conn).equals(komuNe)) {
+                    conn.send(co);
+                }
             }
         }
     }
-    
+
     @Override
-    public void posli(cz.honza.bang.sdk.Hrac komu, String co){
-        websocketPodleHracu.get(komu).send(co);
-        System.out.println("posilani zpravy: " + co + ", ::: "+websocketPodleHracu.get(komu));
+    public void posli(cz.honza.bang.sdk.Hrac komu, String co) {
+        WebSocket ws = websocketPodleHracu.get(komu);
+        if (ws != null && ws.isOpen()) {
+            ws.send(co);
+            System.out.println("posilani zpravy: " + co + ", ::: " + ws);
+        } else {
+            System.out.println("Hráč " + komu.getJmeno() + " je odpojen. Zpráva zahozena: " + co);
+        }
     }
     
     public boolean novyHrac(WebSocket websocket){
@@ -582,7 +607,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
 
     @Override
-    public int pridejUIButton(Hrac komu, int buttonId, String text, boolean disabled) {
+    public int pridejUIButton(Hrac komu, int buttonId, String text, boolean disabled, Runnable akce) {
         HracImp hracImp = (HracImp) komu;
         customUIByPlayer.computeIfAbsent(hracImp, k -> new ConcurrentHashMap<>());
         Map<Integer, CustomUIButton> playerUI = customUIByPlayer.get(hracImp);
@@ -592,7 +617,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
             buttonId = nextUIButtonId++;
         }
         
-        CustomUIButton button = new CustomUIButton(buttonId, text, disabled);
+        CustomUIButton button = new CustomUIButton(buttonId, text, disabled, akce);
         playerUI.put(buttonId, button);
         
         // Pošli zprávu klientovi
