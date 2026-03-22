@@ -294,9 +294,12 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
                             hra.getKomunikator().posliZmenuPoctuKaret(this);
 
                             // Událost po odehrání karty pro všechny efekty hráče
-                            for (Efekt e : new ArrayList<>(efekty)) {
-                                e.poOdehraniKarty(hra, this);
+                            for (Hrac hrac : hra.getHraci()){
+                                for (Efekt e : new ArrayList<>(efekty)) {
+                                    e.poOdehraniKarty(hra, hrac, this, karta);
+                                }
                             }
+
                             // Pokud už nemá karty v ruce, vyvolej příslušnou událost
                             if (karty.isEmpty()) {
                                 for (Efekt e : new ArrayList<>(efekty)) {
