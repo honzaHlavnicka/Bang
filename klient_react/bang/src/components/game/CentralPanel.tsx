@@ -15,15 +15,28 @@ export default function CentralPanel() {
     const imagesForDeck = gameState.discardPile;
     return (<>
 
-        <h2 className={globalCSS.darkmodeReverseColor} style={{textAlign:"center"}}>
+        <h2 className={globalCSS.darkmodeReverseColor} style={{textAlign:"center", zIndex:4}}>
               {gameState.gameStateMessege ? gameState.gameStateMessege : ""}
              {gameState.gameStateMessegeFull ?  <button onClick={()=>openDialog({type:"INFO",dialogHeader:"Tvůj stav hry.",data:{message:gameState.gameStateMessegeFull || "", header:gameState.gameStateMessege}})} className={globalCSS.button}>?</button> : null}
              </h2>
 
         <div style={{flex:1, minHeight:0, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", }}>
-            {gameState.allowedUIElements.includes("UKONCENI_TAHU") ? 
+            <div style={{display:"flex", flexDirection:"column", alignItems:"flex-start", flexWrap:"wrap", marginRight: "2em"}}>
+                {gameState.allowedUIElements.includes("UKONCENI_TAHU") ? 
                 <button className={globalCSS.button}  onClick={()=>{endTurn();}} style={{marginRight:20}}>Ukončit tah</button>
-            : null}
+                : null}
+                <ZoomToggleButton />
+                {gameState.customUIButtons.length > 0 && 
+                    <div>
+                        {gameState.customUIButtons.map(btn => (
+                            <button key={btn.id} className={globalCSS.button} onClick={() => clickUIButton(btn.id)}>
+                                {btn.text}
+                            </button>
+                        ))}
+                    </div>
+                }
+            </div>
+
             {gameState.allowedUIElements.includes("OHEN") ?
             <Fire />
             : null}
@@ -44,7 +57,7 @@ export default function CentralPanel() {
                     {btn.text}
                 </button>
             ))}
-            <ZoomToggleButton />
+            
             
         </div>
         </>

@@ -8,7 +8,8 @@ const nameCss = {
     display: "block",
     width: "fit-content",
     marginTop: "5px",
-    marginBottom: "1em"
+    marginBottom: "5px",
+    marginLeft: "5px",
 };
 
 

@@ -52,7 +52,6 @@ export default function Players() {
                 flexShrink: 0,
                 flexDirection: "row",
                 display: "flex",
-                alignItems: "center",
                 justifyContent: "space-between",
                 padding: "0",
                 margin: "0",
@@ -60,7 +59,8 @@ export default function Players() {
                 overflowX: "auto",
                 overflowY: "hidden",
                 whiteSpace: "nowrap",
-              
+                alignItems: "flex-start",
+
             }}
             onWheel={handleWheel}
         >

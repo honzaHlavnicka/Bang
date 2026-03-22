@@ -4,16 +4,19 @@ import DragableCard from "./game/DragableCard";
 
 
 export default function Cards({
+    isInline = true,
     isRotated = true,
     cards,
     onClickCard,
     isAnimated = true,
-    size = "NORMAL"
+    size = "NORMAL",
 }: {isRotated?: boolean,
     isAnimated?:boolean,
     cards:Array<CardType>,
     size?:CardSizeType,
-    onClickCard?:{(e: React.MouseEvent<HTMLDivElement>): void}}
+    isInline?: boolean
+    onClickCard?:{(e: React.MouseEvent<HTMLDivElement>): void}},
+   
 ) {
     if(cards === undefined || cards.length === 0 || cards === null){
         return;
@@ -21,7 +24,9 @@ export default function Cards({
     return (
         <div style={{display: "flex",
             flexDirection:"row",
-            alignItems: "center"}}>
+            alignItems: "center",
+            marginLeft: "5em"
+            }}>
             {cards.map(card => (
             <DragableCard
                 {...(onClickCard ? { onClick: onClickCard } : {})}
@@ -31,7 +36,7 @@ export default function Cards({
                 id={card.id}
                 animationOnStart={isAnimated}
                 biggerOnHover={false}
-                isInLine
+                isInLine={isInline}
                 isRotated={isRotated}
                 size={size}
             />

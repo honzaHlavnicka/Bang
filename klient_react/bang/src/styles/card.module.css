@@ -1,4 +1,4 @@
-
+/*
         .karta{
             width:7em;
             transition: all .3s;
@@ -35,5 +35,54 @@
         :global(.darkMode) .karta{
             filter: brightness(0.8) contrast(1.1);
         }
+*/
+.karta {
+    width: 7em; 
+    transition: translate 0.3s, scale 0.3s, rotate 0.1s, margin 0.3s, filter 0.3s;
+    border-radius: .5em;
+    box-shadow: -2px 2px 2px black;
+    position: relative;
+    transform-origin: bottom center; 
+    
+    rotate: 0deg;
+    scale: 1;
+    translate: 0 0;
+}
 
-        
+.karta {
+    margin: 4px;
+}
+
+.jeDole .karta {
+    width:9em;
+    margin: 0;
+    margin-left: -3.5em; 
+}
+
+
+.jeDole .karta.pootocena {
+    rotate: 4deg; 
+}
+
+/* 2. Hover změní scale a translate (ale zachová rotaci 4deg z předchozí třídy!) */
+.jeDole .karta.zvetsitelna:hover {
+    translate: 0 -4em; 
+    scale: 1.2 !important; 
+    rotate: 0deg !important;
+    z-index: 1; 
+}
+
+
+@keyframes prijetiKarty {
+    from { scale: 0.2; translate: 0 -50vh; opacity: 0; }
+    50%  { scale: 1.2; translate: 0 -2em; opacity: 1; }
+    to   { scale: 1; translate: 0 0; }
+}
+
+.animacePrijeti .karta {
+    animation: prijetiKarty 1.3s ease-out forwards; 
+}
+
+:global(.darkMode) .karta {
+    filter: brightness(0.8) contrast(1.1);
+}

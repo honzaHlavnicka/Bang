@@ -23,8 +23,8 @@ export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,poce
         transition: "background-color 0.2s",
     };
     return (
-            <div ref={setNodeRef} style={playerStyle}>
-                <div style={{ display: "flex" , justifyContent:"center"}}>
+            <div ref={setNodeRef} style={{...playerStyle,  }}>
+                <div style={{ display: "flex" , justifyContent:"flex-start", alignItems:"center"}}>
                     <div>
                     <NameTag jmeno={jmeno} isDead={isDead} showDeadIndicator={povoleneUI.includes("ZIVOTY")} style={{backgroundColor:(naTahu?"yellow":"white")}}/>
                     <div style={{display:"flex",flexDirection:"row"}}>
@@ -36,11 +36,10 @@ export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,poce
                     <SmallCards count={pocetKaret} />
                 </div>
                 <div
-                    style={{ transform: "scale(0.7)", transition: "transform 0.2s" }}
-                    onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.1)")}
-                    onMouseLeave={e => (e.currentTarget.style.transform = "scale(0.7)")}
+                    style={{ transform: "scale(0.7)", transition: "transform 0.2s", marginTop:"-2em", marginBottom:"-2em", marginLeft:"-5em", marginRight:"-5em", minHeight:"4em", minWidth:"100px" }}
+
                 >
-                    <Cards cards={vylozeneKarty}  isRotated={false} />
+                    <Cards cards={vylozeneKarty}  isRotated={false}  isInline={false}/>
                 </div>
             </div>
     );

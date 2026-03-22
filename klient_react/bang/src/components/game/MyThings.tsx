@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useGame } from "../../modules/GameContext";
 import Card from "../Card";
 import Cards from "../Cards";
@@ -20,10 +21,10 @@ import NameTag from "./NameTag";
             playCard(cardId);
         }
     }
-
+    const hasVerticalSpace = useMediaQuery("(min-height: 1000px)");
 
     return (
-        <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+        <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "flex-end", flex: "0 0 auto"}}>
             <div style={{ marginRight: "32px" }}>
                 <NameTag jmeno={jmeno || "nepojmenovaný hráč"} isDead={isDead} showDeadIndicator={gameState.allowedUIElements.includes("ZIVOTY")} style={{backgroundColor:(gameState.playerId === gameState.turnPlayerId)?"yellow":"white"}} />
                 <div style={{display:"flex",justifyContent:"center"}}>
@@ -32,7 +33,7 @@ import NameTag from "./NameTag";
                     {gameState.allowedUIElements.includes("ZIVOTY") ? <Card image={`/img/velkeZivoty/${zdravy}zivoty.png`} />: null}
                 </div>
             </div>
-            <div style={{flex: 1, display: "flex", justifyContent: "center",flexDirection:"column" }}>
+            <div style={{flex: 1, display: "flex", justifyContent: "center",flexDirection:(hasVerticalSpace ? "column" : "row") }}>
                 {(gameState.allowedUIElements.includes("VYLOZENE_KARTY")) ?
                     <InPlayCards vylozeneKarty={vylozeneKarty} />
                 : null}
@@ -40,4 +41,21 @@ import NameTag from "./NameTag";
             </div>
         </div>
     );
+}
+
+
+function useMediaQuery(query: string): boolean {
+    const [matches, setMatches] = useState(false);
+
+    useEffect(() => {
+        const media = window.matchMedia(query);
+        setMatches(media.matches);
+        const listener = (event: MediaQueryListEvent) => {
+            setMatches(event.matches);
+        };
+        media.addEventListener("change", listener);
+        return () => media.removeEventListener("change", listener);
+    }, [query]);
+
+    return matches;
 }
