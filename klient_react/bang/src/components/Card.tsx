@@ -45,7 +45,7 @@ export default function Card({
     }
 
     return (
-        <div  data-id={key} onClick={handleClick} className={` ${animationOnStart ? css.animacePrijeti : ""} ${isInLine ? css.jeDole : ""}`}  >
+        <div  data-id={key} onClick={handleClick} className={` ${animationOnStart ? css.animacePrijeti : ""} ${isInLine ? css.jeDole : ""}`} style={{cursor: isZoomMode ? "zoom-in" : "auto"}} >
             <img className={`${css.karta} ${(biggerOnHover ? css.zvetsitelna : null)} ${(isRotated ? css.pootocena : null)} `} style={style} src={image} alt={name ?? undefined} title={name ?? undefined} />
         </div>
     );

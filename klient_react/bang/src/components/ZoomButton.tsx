@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useZoom } from "../../src/modules/ZoomContext";
 import globalCSS from "../styles/global.module.css";
-export default function ZoomToggleButton() {
+export default function ZoomToggleButton({style}:{style?:React.CSSProperties}) {
   const { isZoomMode, toggleZoomMode } = useZoom();
   
   useEffect(() => {
@@ -17,9 +17,10 @@ export default function ZoomToggleButton() {
     className={globalCSS.button}
     title={isZoomMode ? "Lupa je zapnutá, kliknutím vypnete" : "Zapnout lupu, kliknutím vypnete"}
     onClick={toggleZoomMode}
+    style={style}
     >
       
-      {isZoomMode ? <>🔎lupa zapnuta🔍</> : "🔎Zapnout lupu"}
+      {isZoomMode ? <>🔍lupa zapnuta</> : "🔎Zapnout lupu"}
     </button>
   );
 }

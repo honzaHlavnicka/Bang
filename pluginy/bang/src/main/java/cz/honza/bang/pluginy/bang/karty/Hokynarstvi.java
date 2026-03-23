@@ -59,7 +59,7 @@ public class Hokynarstvi extends Karta implements HratelnaKarta{
         Hrac hrac = hrajiciHraci.get(uKohoZacit);
         hra.getKomunikator().posliStavovuZpravu(hrac.getJmeno() + " vybírá kartu od hokynářství");
         
-        hra.getKomunikator().pozadejOKarty(hrac, karty, "Jakou kartu si chceě nechat?", 1, 1, false)
+        hra.getKomunikator().pozadejOKarty(hrac, karty, "Jakou kartu si chceš nechat?", 1, 1, false)
                 .thenAccept(id->{
                     int idKarty;
                     try{

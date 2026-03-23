@@ -1,35 +1,41 @@
+import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import css from "../styles/dialog.module.css";
 import { useDialog } from "../modules/DialogContext";
 import Card from "./Card";
 import type { CardType } from "../modules/GameContext";
 import ZoomToggleButton from "./ZoomButton";
-import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import DarkModeSwitch from "./DarkModeSwitch";
 import globalCSS from "../styles/global.module.css";
 import LuckyWheel from "./LuckyWheel";
 
-
 export default function Dialog() {
-    const {closeDialog,dialog} = useDialog();
-    const [seleckted,setSelected] = useState<Array<number>>([]);
-    let maxSelected = 0;
-    const [text,setText] = useState("");
+    const { closeDialog, dialog} = useDialog();
+    const [selected, setSelected] = useState<Array<number>>([]);
+    const [text, setText] = useState("");
+
+    // Resetování stavů při změně dialogu
+    useEffect(() => {
+        setSelected([]);
+        if (dialog?.type === "TEXT") {
+            setText(dialog.data.defaultValue || "");
+        } else {
+            setText("");
+        }
+    }, [dialog]);
 
     // Obsluha Enter klávesy pro dialogy
     useEffect(() => {
         if (dialog == null) return;
 
         const handleKeyDown = (e: KeyboardEvent) => {
-            // Ignoruj Enter pokud je fokus na textarea nebo input (mimo TEXT dialog)
             if (dialog?.type !== "TEXT" && (document.activeElement?.tagName === "TEXTAREA" || 
                 (document.activeElement?.tagName === "INPUT" && (document.activeElement as HTMLInputElement).type !== "text"))) {
                 return;
             }
 
             if (e.key === "Enter" && dialog) {
-                // Pro TEXT dialog neignoruj, tam chceme Enter v inputu
                 if (dialog.type !== "TEXT") {
                     e.preventDefault();
                 }
@@ -45,26 +51,24 @@ export default function Dialog() {
                         }
                         break;
                     case "TEXT":
-                        // TEXT dialog je zpracován v onKeyDown inputu
                         break;
                     case "SELECT_PLAYER":
-                        if (seleckted.length >= dialog.data.min) {
+                        if (selected.length >= dialog.data.min) {
                             closeDialog();
-                            dialog.callback(seleckted);
+                            dialog.callback(selected);
                             setSelected([]);
                         }
                         break;
                     case "SELECT_CARD":
-                        if (seleckted.length >= dialog.data.min) {
+                        if (selected.length >= dialog.data.min) {
                             closeDialog();
                             if (dialog.callback) {
-                                dialog.callback(seleckted);
+                                dialog.callback(selected);
                             }
                             setSelected([]);
                         }
                         break;
                     case "CONFIRM_ACTION":
-                        // Potvrď první akci
                         if (dialog.data.actions && dialog.data.actions.length > 0) {
                             closeDialog();
                             if (dialog.callback) {
@@ -84,134 +88,137 @@ export default function Dialog() {
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [dialog, seleckted, text, closeDialog]);
+    }, [dialog, selected, text, closeDialog]);
 
     const header = dialog?.dialogHeader || dialog?.type || "Dialog";
 
-
-    const select = (id:number) => {
-        if(seleckted.includes(id)){
-            setSelected(seleckted.filter(v=>v!=id));
+    const select = (id: number, max: number) => {
+        if (selected.includes(id)){
+            setSelected(selected.filter(v => v !== id));
         } else {
-            if(seleckted.length >= maxSelected){
-                setSelected([...seleckted.slice(1),id]);
-            }else{
-                setSelected([...seleckted,id]);
+            if (selected.length >= max) {
+                // Odstraní nejstarší výběr a přidá nový
+                setSelected([...selected.slice(1), id]); 
+            } else {
+                setSelected([...selected, id]);
             }
         }
     };
 
-
     if (dialog == null) {
-        return;
+        return null; 
     }
 
     let content: React.ReactNode;
+    
     switch (dialog.type) {
         case "SELECT_CARD": 
-            maxSelected = dialog.data.max;
             content = (
                 <div>
-                    <div style={{display:"flex",flexDirection:"row",flexWrap:"wrap"}} >
-                        {dialog.data.cards.map((val:CardType)=>(
-                            <div key={val.id} style={{background:(seleckted.includes(val.id) ? "brown" : "transparent"),borderRadius:10,margin:5,padding:2}} onClick={()=>select(val.id)} >
-                                <Card key={val.id} id={val.id}  image={"/img/karty/" + val.image + ".png"}/>
+                    <div style={{display:"flex", flexDirection:"row", flexWrap:"wrap"}} >
+                        {dialog.data.cards.map((val: CardType) => (
+                            <div 
+                                key={val.id} 
+                                style={{background: (selected.includes(val.id) ? "brown" : "transparent"), borderRadius: 10, margin: 5, padding: 2}} 
+                                onClick={() => select(val.id, dialog.data.max)} 
+                            >
+                                <Card id={val.id} image={"/img/karty/" + val.image + ".png"}/>
                             </div>
                         ))}
                     </div>
-                    <div>Vybráno {seleckted.length} z {dialog.data.max}.</div>
-                    {(seleckted.length >= dialog.data.min) ? 
-                        <button className={globalCSS.button} onClick={()=>{
+                    <div>Vybráno {selected.length} z {dialog.data.max}.<br/>min {dialog.data.min}, max {dialog.data.max}</div>
+                    <ZoomToggleButton style={{filter:"grayscale(70%)",scale:0.8}}/>
+                    {(selected.length >= dialog.data.min) ? 
+                        <button className={globalCSS.button} onClick={() => {
                             closeDialog();
                             if(dialog.callback){
-                                dialog.callback(seleckted);
+                                dialog.callback(selected);
                             }
                             setSelected([]);
                         }}>Potvrdit výběr</button> 
-                    : <div>Vyber ještě {dialog.data.min - seleckted.length} karty.</div>}
-                    <ZoomToggleButton/>
+                    : <div>Vyber ještě {dialog.data.min - selected.length} karty.</div>}
                 </div>
             );
             break;
+            
         case "SELECT_PLAYER":
-                maxSelected = dialog.data.max;
-                content = (
-                    
-                    <div style={{display:"flex",flexDirection:"column",alignItems:"flex-start"}} >
-
-                        {dialog.data.players.map((val:{id:number,name:string})=>(
-                            <>
-                            
-                                <label key={val.id} style={{background:(seleckted.includes(val.id) ? "grey" : "transparent"),borderRadius:10,margin:3,padding:2,cursor:"pointer"}} >
-                                    <input type={dialog.data.max === 1 ? "radio" : "checkbox"} name="player" value={val.id} style={{marginRight:10}} onChange={()=>select(val.id)} checked={seleckted.includes(val.id)}/>
-                                    {val.name}
-                                </label>
-                            
-                            <br/>
-                            </>
-                        ))}
-                        {seleckted.length >= dialog.data.min ? <button onClick={()=>{
-                            closeDialog();
-                            dialog.callback(seleckted);
-                            setSelected([]);
-                        }} className={globalCSS.button} >Potvrdit</button> : <div>Vyberte ještě {dialog.data.min - seleckted.length} {dialog.data.min - seleckted.length === 1 ? "hráče" : "hráčů"}.</div>}
-                    </div>
-                );
-            break;
-        case "CONFIRM_ACTION":
-            maxSelected = 1;
             content = (
-                <div style={{display:"flex",flexDirection:"row",alignItems:"flex-start",flexWrap:"wrap",gap:10}} >
-                    {dialog.data.actions.map((val:{id:number,name:string})=>(   
-                            <button className={globalCSS.button}  key={val.id} onClick={()=>{
-                                closeDialog();
-                                if(dialog.callback){
-                                    dialog.callback(val.id);
-                                }
-                            }} >
+                <div style={{display:"flex", flexDirection:"column", alignItems:"flex-start"}} >
+                    {dialog.data.players.map((val: {id: number, name: string}) => (
+                        <React.Fragment key={val.id}>
+                            <label style={{background: (selected.includes(val.id) ? "grey" : "transparent"), borderRadius: 10, margin: 3, padding: 2, cursor: "pointer"}} >
+                                <input 
+                                    type={dialog.data.max === 1 ? "radio" : "checkbox"} 
+                                    name="player" 
+                                    value={val.id} 
+                                    style={{marginRight: 10}} 
+                                    onChange={() => select(val.id, dialog.data.max)} 
+                                    checked={selected.includes(val.id)}
+                                />
                                 {val.name}
-                            </button>
+                            </label>
+                            <br/>
+                        </React.Fragment>
+                    ))}
+                    {selected.length >= dialog.data.min ? 
+                        <button onClick={() => {
+                            closeDialog();
+                            dialog.callback(selected);
+                            setSelected([]);
+                        }} className={globalCSS.button}>Potvrdit</button> 
+                    : <div>Vyberte ještě {dialog.data.min - selected.length} {dialog.data.min - selected.length === 1 ? "hráče" : "hráčů"}.</div>}
+                </div>
+            );
+            break;
+            
+        case "CONFIRM_ACTION":
+            content = (
+                <div style={{display:"flex",flexDirection:"row",alignItems:"flex-start", flexWrap:"wrap", gap: 10}} >
+                    {dialog.data.actions.map((val:{id:number,name:string})=>(   
+                        <button className={globalCSS.button} key={val.id} onClick={() => {
+                            closeDialog();
+                            if(dialog.callback){
+                                dialog.callback(val.id);
+                            }
+                        }}>
+                            {val.name}
+                        </button>
                     ))}
                 </div>
             );
             break;
+            
         case "INFO":
             content = (
-                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:5}} >
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center", gap: 5}} >
                     {dialog.data.image ? <img src={dialog.data.image} alt={dialog.data.header} style={{width:"100%"}}/>: null}
                     {dialog.data.header ? <h2>{dialog.data.header}</h2> : null}
                     <p>{dialog.data.message}</p>
-                    <button className={globalCSS.button} onClick={()=>{
-                        closeDialog();
-                    }}>OK</button>
+                    <button className={globalCSS.button} onClick={() => closeDialog()}>OK</button>
                 </div>
             );
-        break;
+            break;
         case "CONFIRM":
             content = (
-                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10}} >
+                <div style={{display:"flex", flexDirection:"column", alignItems:"center", gap: 10}} >
                     <h2>{dialog.data.title || "Potvrzení"}</h2>
                     <p>{dialog.data.message}</p>
-                    <div style={{display:"flex",flexDirection:"row",gap:10}}>
-                        <button className={globalCSS.button} onClick={()=>{
+                    <div style={{display:"flex", flexDirection:"row", gap: 10}}>
+                        <button className={globalCSS.button} onClick={() => {
                             closeDialog();
-                            if(dialog.callback){
-                                dialog.callback(true);
-                            }
+                            if(dialog.callback) dialog.callback(true);
                         }}>Ano</button>
-                        <button className={globalCSS.button} onClick={()=>{
+                        <button className={globalCSS.button} onClick={() => {
                             closeDialog();
-                            if(dialog.callback){
-                                dialog.callback(false);
-                            }
+                            if(dialog.callback) dialog.callback(false);
                         }}>Ne</button>
                     </div>
                 </div>
             );
-        break;
+            break;
         case "TEXT":
             content = (
-                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:10}} >
+                <div style={{display:"flex",flexDirection:"column", alignItems:"center", gap: 10}} >
                     <h2>{dialog.data.title || "Zadejte text"}</h2>
                     <input 
                         type="text" 
@@ -220,39 +227,31 @@ export default function Dialog() {
                         onKeyDown={(e) => {
                             if (e.key === "Enter") {
                                 closeDialog();
-                                if(dialog.callback){
-                                    dialog.callback(text);
-                                }
+                                if(dialog.callback) dialog.callback(text);
                             }
                         }}
                         placeholder={dialog.data.placeholder} 
-                        style={{padding:5,borderRadius:5,border:"1px solid black"}}
+                        style={{padding: 5, borderRadius: 5, border: "1px solid black"}}
                         autoFocus
                     />
-                    <button className={globalCSS.button} onClick={()=>{
+                    <button className={globalCSS.button} onClick={() => {
                         closeDialog();
-                        if(dialog.callback){
-                            dialog.callback(text);
-                        }
+                        if (dialog.callback) dialog.callback(text);
                     }}>{dialog.data.buttonText || "Potvrdit"}</button>
                 </div>
             );
             break;
-        case "LUCKY_WHEEL": {
+        case "LUCKY_WHEEL":
             content = (
                 <LuckyWheel options={dialog.data.options} chosedOptionId={dialog.data.chosedOptionId} onOk={()=>{
                     closeDialog();
-                    if(dialog.callback){
-                        dialog.callback(dialog.data.chosedOptionId);
-                    }
+                    if(dialog.callback) dialog.callback(dialog.data.chosedOptionId);
                 }} />
             );
             break;
-        }
         default:
             break;
     }
-    
 
     return createPortal((
         <>
@@ -265,7 +264,6 @@ export default function Dialog() {
                 <div className={css.dialogContent}>
                     {content}
                 </div>
-               
             </div>
         </div>
         </>

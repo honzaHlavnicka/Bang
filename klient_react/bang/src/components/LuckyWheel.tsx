@@ -30,11 +30,11 @@ const LuckyWheel = ({ options, chosedOptionId, onOk } : { options: {id: number;n
                     setHasStopped(true); // Zobrazíme tlačítko
                 }}
             />
-            {hasStopped && (
+           
                 <button className={globalCSS.button} onClick={onOk}>
-                    OK
+                    {!hasStopped ? "zavřít" : "OK"}
                 </button>
-            )}
+            
         </div>
     );
 };

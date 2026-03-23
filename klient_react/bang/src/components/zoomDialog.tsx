@@ -4,7 +4,7 @@ import css from "../styles/zoomDialog.module.css";
 import DarkModeSwitch from "./DarkModeSwitch";
 
 export default function ZoomDialog() {
-    const { zoomedCard, setZoomedCard } = useZoom();
+    const { zoomedCard, setZoomedCard , toggleZoomMode} = useZoom();
     const isOpen = zoomedCard !== null;
 
     return createPortal(
@@ -17,10 +17,12 @@ export default function ZoomDialog() {
                 <DarkModeSwitch style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
 
                 <div className={css.header}>
-                    Přiblížená karta (kliknutím mimo kartu zavřít)
+                    Přiblížená karta (kliknutím mimo kartu zavřít, kliknutím na kartu vypnou lupu)
                 </div>
                 {zoomedCard && (
                     <img
+                        style={{cursor:"zoom-out"}}
+                        onClick={toggleZoomMode}
                         src={zoomedCard}
                         alt="Zoomed Card"
                         className={css.image}
