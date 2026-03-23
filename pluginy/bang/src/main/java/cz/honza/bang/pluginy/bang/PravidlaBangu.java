@@ -60,9 +60,22 @@ import java.util.function.Consumer;
  */
 public class PravidlaBangu implements HerniPravidla{
     private final Hra hra;
+    private final boolean PIVO_FUNGUJE_VZDY;
+    private final boolean JE_OMEZENY_POCET_KARET;
+    private boolean uzZahralBang = false;
 
-    public PravidlaBangu(Hra hra) {
+
+
+    public PravidlaBangu(Hra hra, boolean jeVariantaBezLimituNaPivaAKarty) {
         this.hra = hra;
+        
+        if(jeVariantaBezLimituNaPivaAKarty){
+            JE_OMEZENY_POCET_KARET = false;
+            PIVO_FUNGUJE_VZDY = true;
+        }else{
+            JE_OMEZENY_POCET_KARET = true;
+            PIVO_FUNGUJE_VZDY = false;
+        }
     }
     
     @Override
@@ -210,10 +223,18 @@ public class PravidlaBangu implements HerniPravidla{
 
     @Override
     public boolean hracChceUkoncitTah(Hrac kdo) {
+        if (kdo.getKarty().size() > kdo.getMaximumZivotu() && JE_OMEZENY_POCET_KARET) {
+            hra.getKomunikator().posliRychleOznameni("Moc karet", kdo);
+            return false;
+        }
+        
         if(kdo.jeNaTahu()){
             kdo.konecTahu();
+            uzZahralBang = false;
+            return true;
         }
-        return true;
+        
+        return false;
     }
 
     @Override
@@ -444,6 +465,23 @@ public class PravidlaBangu implements HerniPravidla{
             // Byl zachráněn barelem
             poUtoku.accept(kym, naKoho);
         }
+    }
+    
+    
+    public boolean fungujePivoVzdy() {
+        return PIVO_FUNGUJE_VZDY;
+    }
+
+    public boolean jeOmezenyPocetKaret() {
+        return JE_OMEZENY_POCET_KARET;
+    }
+    
+    public void setUzZahralBang(boolean uzZahralBang) {
+        this.uzZahralBang = uzZahralBang;
+    }
+
+    public boolean UzZahralBang() {
+        return uzZahralBang;
     }
 
     

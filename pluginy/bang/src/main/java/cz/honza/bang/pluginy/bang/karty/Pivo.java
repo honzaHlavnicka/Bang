@@ -7,6 +7,7 @@ Toto je domácí verze souborů z programování.
 package cz.honza.bang.pluginy.bang.karty;
 
  
+import cz.honza.bang.pluginy.bang.PravidlaBangu;
 import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
@@ -35,7 +36,7 @@ public class Pivo extends Karta implements HratelnaKarta{
 
     @Override
     public boolean odehrat(Hrac kym) {
-        if(hra.getHrajiciHraci().size() > 2){
+        if(hra.getHrajiciHraci().size() > 2 || ((PravidlaBangu) hra.getHerniPravidla()).fungujePivoVzdy()){
             kym.pridejZivot();
         }else{
             hra.getKomunikator().posliRychleOznameniVsem("Pivo nefunguje", null);

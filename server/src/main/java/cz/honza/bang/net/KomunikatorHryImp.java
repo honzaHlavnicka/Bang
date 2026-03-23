@@ -46,6 +46,8 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     // Timeout pro smazání neaktivní hry
     private Timer hraCleupTimer = null;
     private TimerTask hraCleupTask = null;
+
+
     
     // Třída pro reprezentaci vlastního UI prvku
     private static class CustomUIButton {
@@ -359,6 +361,11 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     @Override
     public void posliRychleOznameniVsem(String oznameni, Hrac vyjimka) {
         posliVsem("rychleOznameni:" + oznameni, vyjimka);
+    }
+    
+    @Override
+    public void posliRychleOznameni(String oznameni, Hrac komu) {
+        posli(komu,"rychleOznameni:" + oznameni);
     }
 
     @Override

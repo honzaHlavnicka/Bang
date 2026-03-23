@@ -14,26 +14,27 @@ import cz.honza.bang.sdk.Hra;
  *
  * @author honza
  */
-public class BanggPlugin implements HerniPlugin{
+public class BangPluginBezLimitu implements HerniPlugin{
 
     @Override
     public String getJmeno() {
-        return "Bang!";
+        return "Bang! –⁠⁠⁠⁠⁠⁠ neomezené karty, pivo vždy";
     }
 
     @Override
     public String getPopis() {
-        return "Populární karetní hra na motivy Divokého západu. Každý hráč získá svou tajnou roli – šerif s pomocníky loví bandity, banditi chtějí dostat šerifa a odpadlík hraje sám za sebe.";
+        return "Verze Bangu, ve které můžete mít na konci tahu libovolný počet karet a pivo jde použít i když hrají jenom dva hráči.";
     }
 
     @Override
     public HerniPravidla vytvor(Hra hra) {
-        return new PravidlaBangu(hra,false);
+        return new PravidlaBangu(hra, true);
     }
 
     @Override
     public String getURLPravidel() {
         return "https://albi.cz/data/files/products/24327/1603711687-bang-pravidla-zakladni-hry.pdf";
-    };
+    }
+;
     
 }
