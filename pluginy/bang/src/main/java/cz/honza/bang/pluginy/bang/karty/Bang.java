@@ -15,6 +15,7 @@ import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
+import java.util.List;
 
 
 
@@ -59,7 +60,61 @@ public class Bang extends Karta implements HratelnaKarta{
                 .anyMatch(e -> ((Zbran) e).umoznujeBangBezLimitu());
 
         if (!maVolcanic && kym.getPostava() != JednoduchePostavy.WILLY_THE_KID) {
-            hra.getSpravceTahu().dalsiHracSUpozornenim();
+
+            int pocetKeSpaleni = kym.getKarty().size() - kym.getMaximumZivotu();
+
+            // Pokud nemáme pravidlo o omezeném počtu, nebo hráč nepřekročil limit, rovnou posouváme tah.
+            if (!((PravidlaBangu) hra.getHerniPravidla()).jeOmezenyPocetKaret() || pocetKeSpaleni <= 0) {
+                hra.getSpravceTahu().dalsiHracSUpozornenim();
+            } else {
+                hra.getKomunikator().pozadejOKarty(kym, kym.getKarty(), "Na konec tahu musíš spálit karty.", pocetKeSpaleni, kym.getKarty().size(), false)
+                        .thenAccept((String ids) -> {
+
+                            if (ids == null) {
+                                ids = "";
+                            }
+                            String[] idArray = ids.trim().isEmpty() ? new String[0] : ids.split(",");
+
+                            int uspesneSpaleno = 0;
+                            boolean nalezenaChyba = false;
+
+                            List<String> platnaIds = new java.util.ArrayList<>();
+                            for (var karta : kym.getKarty()) {
+                                platnaIds.add(String.valueOf(karta.getId()));
+                            }
+
+                            for (String id : idArray) {
+                                String cisteId = id.trim();
+                                if (platnaIds.contains(cisteId)) {
+                                    kym.spalitKartu(cisteId);
+                                    platnaIds.remove(cisteId);
+                                    uspesneSpaleno++;
+                                } else {
+                                    nalezenaChyba = true;
+                                }
+                            }
+
+                            if (nalezenaChyba || uspesneSpaleno < pocetKeSpaleni) {
+                                hra.getKomunikator().posliChybu(kym, Chyba.CHYBA_PROTOKOLU);
+                                System.out.println("Chyba protože, uspesneSpaleno:" + uspesneSpaleno + ", pocetKeSpaleni:" + pocetKeSpaleni + ", nalezenaChyba:" + nalezenaChyba);
+                            }
+
+                            // pokud hráč zmanipuloval dialog nebo poslal nesmysly
+                            while (uspesneSpaleno < pocetKeSpaleni && !kym.getKarty().isEmpty()) {
+                                String idKeSpaleni = String.valueOf(kym.getKarty().get(0).getId());
+                                kym.spalitKartu(idKeSpaleni);
+                                uspesneSpaleno++;
+                            }
+
+                            hra.getSpravceTahu().dalsiHracSUpozornenim();
+
+                        }).exceptionally(t -> {
+                    hra.getKomunikator().posliChybu(kym, Chyba.CHYBA_PROTOKOLU);
+
+                    hra.getSpravceTahu().dalsiHracSUpozornenim();
+                    return null;
+                });
+            }
         }
     }
     
