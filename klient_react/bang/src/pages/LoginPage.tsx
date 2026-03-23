@@ -84,6 +84,7 @@ export default function LoginPage() {
     }
 
     return (
+        <>
         <div className={css.kontent}>
             <DarkModeSwitch  style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
 
@@ -91,8 +92,7 @@ export default function LoginPage() {
                     <div className={`${css.sectionCard} ${css.sectionHero} ${css.box}`} >
                 <h1>Bang!</h1>
                 <p>
-                    tadyto bude text, který bude něco říkat. Teď sice něco říká, 
-                    ale doopravdy o hře neřekne nic. jenom zabírá místo.
+                   Vítej v online multiplayer karetním enginu! Připoj se do hry níže. Pokud umíš programovat, tak si vyrob vlastní <a href='https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md' target='_blank'>plugin</a>.
                 </p>
                 <div className={css.radioButtonsParent} >
                     {gameToken &&
@@ -189,11 +189,30 @@ export default function LoginPage() {
                             vytvořit hru
                         </button>
                     </form>
-                    <a href="https://www.flaticon.com/free-animated-icons/fire" title="fire animated icons">Fire animated icons created by Freepik - Flaticon</a>
+                    
                 </div>
                 : null}               
             </main >
             {/*<ContextMenu x={menu.x} y={menu.y} options={[{text:"odhodit"},{text:"spalit"}]} />*/}
         </div >
+        {/*<footer className={css.footer}>
+            <div className={css.footerContent}>
+                <p>
+                    &copy; 2026 Jan Hlavnička. Zdrojový kód samotného herního enginu je dostupný na <a href="https://github.com/honzaHlavnicka/Bang/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">GitHubu</a>.
+                </p>
+                <p>
+                    <strong>Upozornění:</strong> Tento web je nekomerční studentský a osobní projekt. Není nijak spojen s původními vydavateli her a neklade si žádné nároky na vlastnictví jejich duševního vlastnictví.
+                </p>
+                <p>
+                    BANG!® je registrovaná ochranná známka společnosti daVinci Editrice S.r.l. (dV Giochi). V České republice hru vydává ALBI Česká republika a.s. Veškerá autorská práva k ilustracím karet, názvům a herním mechanismům patří jejich příslušným majitelům.
+                    <br />
+                    UNO® je registrovaná ochranná známka společnosti Mattel, Inc.
+                </p>
+                <p>
+                    Použité ikony třetích stran: <a href="https://www.flaticon.com/free-icons/fire" title="fire icons" target="_blank" rel="noopener noreferrer">Fire icon created by Freepik - Flaticon</a>.
+                </p>
+            </div>
+        </footer>*/}
+        </>
     );
 }
