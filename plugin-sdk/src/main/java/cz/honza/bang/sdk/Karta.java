@@ -1,20 +1,27 @@
 package cz.honza.bang.sdk;
 
-
-
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
-
-Toto je domácí verze souborů z programování.
- */
-
 /**
- *
+ * Objekt karty reprezentuje jednu konkrétní fyzickou kartu ve hře.
+ * Karta sama o sobě nic neumí, může být v balíčku, může se lízat a
+ * může být spálena. Pokud chce autor pluginu udělat kartu hratelnou,
+ * tak jeho třída musí dědit z této třídy a zárověn implementovat 
+ * {@link HratelnaKarta hratelnou kartu}. Pokud ji chce vyložitelnou,
+ * tak musí implementovat {@link VylozitelnaKarta vyložitelnou kartu}
+ * <p>
+ * Každá Karta má své vlastní jedinečné id, podle kteerého jde identifikovat.
+ * Karta vám také poskytuje přístup k vlastnosti <code>hra</code>, která
+ * odkazuje na současnou hru. Jde se z ní dostat ke všem hráčům, komunikátoru
+ * a podobně. Karta vám taky poskytuje vlastnost Balicek, která je ale
+ * nicneříkající, protože se nastavuje pouze jednou při přípravě lízacího
+ * balíčku.
+ * 
+ * <p>
+ * Určena pro dědění od autora pluginu.
  * @author honza
  */
 public abstract class Karta{
     protected Hra hra;
+    @Deprecated
     protected Balicek<Karta> balicek;
     static private int nextId = 0;
     private final int id;
@@ -28,7 +35,11 @@ public abstract class Karta{
     }
     
     
-    public int getId(){
+    /**
+     * Vrátí unikátní id karty.
+     * @return 
+     */
+    public final int getId(){
         return id;
     }
     
@@ -37,7 +48,7 @@ public abstract class Karta{
      * @return json ve formátu: novaKarta:{"jmeno":jmeno,"obrazek":obrazek,"id":id}
      */
     @Deprecated
-    public String toJSONold(){
+    public final String toJSONold(){
         StringBuilder sb = new StringBuilder("novaKarta:{\"jmeno\":\"");
         sb.append(this.getJmeno());
         sb.append("\",\"obrazek\":\"");
@@ -68,13 +79,25 @@ public abstract class Karta{
     /**
      *  Akce, které by se měli provést před spálením.
      */
-    public void predSpalenim(){
-        //Obecně karta nic dělat nemusí
-    }
+    public void predSpalenim(){}
     
+    /**
+     * Metoda by měla vráti pojmenování obrázku nez přípony. Cesta začíná od všech karet.
+     * @return 
+     */
     public abstract String getObrazek();
+    
+    /**
+     * Mělo by vrátit pro lidi čitelné jméno.
+     * @return 
+     */
     public abstract String getJmeno();
     
+    /**
+     * Vrátí obrázek, který se nachází zezadu karty.
+     * Pokud není překryta, tak obrázek vezme z {@link HerniPravidla#getVychoziZadniObrazek() pravidel hry}
+     * @return 
+     */
     public String getZadniObrazek(){
         return hra.getHerniPravidla().getVychoziZadniObrazek();
     }

@@ -13,7 +13,10 @@ package cz.honza.bang.sdk;
 
 import java.util.*;
 
-
+/**
+ * Balíček pro (většinou) karty. Umožnuje karty přidávat, odebírat lízat a podobně.
+ * Není nijak napojený na žádné komunikátory, nebo hry, stojí sám za sebe.
+*/
 public interface Balicek<T> {
     /**
      * Zamíchá balíček.

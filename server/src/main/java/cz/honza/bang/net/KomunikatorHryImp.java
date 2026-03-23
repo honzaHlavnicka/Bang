@@ -357,7 +357,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
     
     @Override
-    public void posliRychleOznameni(String oznameni, Hrac vyjimka) {
+    public void posliRychleOznameniVsem(String oznameni, Hrac vyjimka) {
         posliVsem("rychleOznameni:" + oznameni, vyjimka);
     }
 

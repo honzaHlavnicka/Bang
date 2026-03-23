@@ -1,11 +1,12 @@
-
 package cz.honza.bang.sdk;
 
 
 import cz.honza.bang.sdk.Karta;
 
 /**
- *
+ * Nějaké užitečné karty, které se mohou hodit do dialogů při požadování karet od hráče jako zástupce něčeho abstraktního, ale NEměli 
+ * by se dávat do balíčku, hrát apod.
+ * 
  * @author honza
  */
 public class ZastupnaKarta extends Karta {

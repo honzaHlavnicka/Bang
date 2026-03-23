@@ -74,7 +74,7 @@ public class Duel extends Karta implements HratelnaKarta{
             }
             if (idKarty == ZastupnaKarta.getZivot().getId()) {
                 naKoho.odeberZivot();
-                hra.getKomunikator().posliRychleOznameni("Duel vyhrál " + odKoho.getJmeno(),naKoho);
+                hra.getKomunikator().posliRychleOznameniVsem("Duel vyhrál " + odKoho.getJmeno(),naKoho);
                 hra.getKomunikator().posliStavovuZpravu("");
                 // Duel tímto skončil
             } else {
@@ -85,7 +85,7 @@ public class Duel extends Karta implements HratelnaKarta{
                         hra.getKomunikator().posliSpaleniKarty(naKoho, karta);
                         hra.getKomunikator().posliZmenuPoctuKaret(naKoho);
                         
-                        hra.getKomunikator().posliRychleOznameni("Duel pokračuje",naKoho);
+                        hra.getKomunikator().posliRychleOznameniVsem("Duel pokračuje",naKoho);
                         
                         // Duel pokračuje, útok se obrací
                         duelNa(odKoho,naKoho);

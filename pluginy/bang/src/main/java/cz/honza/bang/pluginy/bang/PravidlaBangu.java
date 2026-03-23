@@ -108,7 +108,7 @@ public class PravidlaBangu implements HerniPravidla{
                                         return;
                                     }
                                     
-                                    hra.getKomunikator().posliRychleOznameni(komu.getJmeno() + " těsně zachráněn!", komu);
+                                    hra.getKomunikator().posliRychleOznameniVsem(komu.getJmeno() + " těsně zachráněn!", komu);
                                     // nesmrt
                                     return;
                                 }
@@ -132,7 +132,7 @@ public class PravidlaBangu implements HerniPravidla{
     }
 
     private void smrtHrace(Hrac komu){
-        hra.getKomunikator().posliRychleOznameni(komu.getJmeno() + " umřel/a 💔", null);
+        hra.getKomunikator().posliRychleOznameniVsem(komu.getJmeno() + " umřel/a 💔", null);
         
         hra.getSpravceTahu().vyraditHrace(komu);
         
@@ -418,7 +418,7 @@ public class PravidlaBangu implements HerniPravidla{
                             }
 
                             if (idInt == ZastupnaKarta.getZivot().getId()) {
-                                hra.getKomunikator().posliRychleOznameni("Trefa!", null);
+                                hra.getKomunikator().posliRychleOznameniVsem("Trefa!", null);
                                 naKoho.odeberZivot();
                             } else {
                                 for (Karta karta : vedleNaKoho) {
@@ -427,7 +427,7 @@ public class PravidlaBangu implements HerniPravidla{
                                         hra.getOdhazovaciBalicek().vratNahoru(karta);
                                         hra.getKomunikator().posliOdebraniKarty(naKoho, karta);
                                         hra.getKomunikator().posliZmenuPoctuKaret(naKoho);
-                                        hra.getKomunikator().posliRychleOznameni("Vedle!", null);
+                                        hra.getKomunikator().posliRychleOznameniVsem("Vedle!", null);
                                         break;
                                     }
                                 }
@@ -436,7 +436,7 @@ public class PravidlaBangu implements HerniPravidla{
                         });
             } else {
                 // Nemá ani barel, ani Vedle, přichází o život
-                hra.getKomunikator().posliRychleOznameni("Trefa!", null);
+                hra.getKomunikator().posliRychleOznameniVsem("Trefa!", null);
                 naKoho.odeberZivot();
                 poUtoku.accept(kym, naKoho);
             }

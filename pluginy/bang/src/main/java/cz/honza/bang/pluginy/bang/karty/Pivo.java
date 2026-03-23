@@ -38,7 +38,7 @@ public class Pivo extends Karta implements HratelnaKarta{
         if(hra.getHrajiciHraci().size() > 2){
             kym.pridejZivot();
         }else{
-            hra.getKomunikator().posliRychleOznameni("Pivo nefunguje", null);
+            hra.getKomunikator().posliRychleOznameniVsem("Pivo nefunguje", null);
         }
         
         return true;

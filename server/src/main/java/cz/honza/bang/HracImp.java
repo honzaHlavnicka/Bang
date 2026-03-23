@@ -14,6 +14,7 @@ import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.Karta;
 import cz.honza.bang.sdk.KomunikatorHry;
+import cz.honza.bang.sdk.Postava;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -214,13 +215,16 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     }
 
     @Override
-    public void setPostava(cz.honza.bang.sdk.Postava postava) {
+    public Postava setPostava(cz.honza.bang.sdk.Postava postava) {
+        Postava stara = this.postava;
         if(postava != null){
             postava.odebraniPostavy(this);
         }
         this.postava = postava;
         postava.pridaniPostavy(this);
         hra.getKomunikator().posliZmenuPostavy(this);
+        
+        return stara;
     }
 
     public void setRole(cz.honza.bang.sdk.Role role) {

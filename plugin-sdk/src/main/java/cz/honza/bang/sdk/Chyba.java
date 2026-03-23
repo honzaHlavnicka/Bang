@@ -1,13 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Enum.java to edit this template
 
-Toto je domácí verze souborů z programování.
- */
 package cz.honza.bang.sdk;
 
 /**
- *
+ * Chyba ve hře a její kody, které jsou společné pro všechny strany komunikace.
  * @author honza
  */
 public enum Chyba {
@@ -44,7 +39,7 @@ public enum Chyba {
     
     /**
      * Vrací zprávu, která by se měla zobrazit uživateli. Tato zpráva by se neměla používat k identifikaci zpráv, protože se může měnit nezávisle na verzi protokolu. Místo toho použij {@link #getKod() metodu getKod()} 
-     * @return zpráva v srozumitelném jazyce
+     * @return zpráva v sroézumitelném jazyce
      */
     public String getZprava() {
         return zprava;

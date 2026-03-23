@@ -57,7 +57,7 @@ public class PrsiSvrsek extends PrsiKarta{
                 // Zobrazit informaci o vybrané barvě
                 hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " si vybral barvu: " + poslendniBarva.getNazev());
                 // Dodatečná zpráva pro plugin - zvláštní oznámení
-                hra.getKomunikator().posliRychleOznameni(String.valueOf(poslendniBarva.getNazev()), kym);
+                hra.getKomunikator().posliRychleOznameniVsem(String.valueOf(poslendniBarva.getNazev()), kym);
 
             });//toto nemůže blokovat thred!
             return true;

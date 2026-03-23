@@ -11,13 +11,15 @@ import java.util.List;
 
 
 /**
- * Třída reprezentující jednoho hráče.
+ * Třída reprezentující jednoho hráče. Pro plugin obsahuje spoustu užitečných metod
+ * 
+ * <p><b>NEočekává se implementace od autora pluginu</b>, ale měl by používat její dostupné metody.
  * @author honza
  */
 public interface Hrac {
      
     /**
-     * Mělo by se spustit pře začátkem hry. Přiřadí hráči roli a připravý ho ke hře.
+     * Mělo by se spustit před začátkem hry. Přiřadí hráči roli a připravý ho ke hře.
      * @param role
      */
     public void priraditRoliNaZacatkuHry(Role role);
@@ -45,6 +47,9 @@ public interface Hrac {
      */
     public boolean pridejZivot();
     
+    /**
+     * Vrátí počet životů
+     */
     public int getZivoty();
     
     /**
@@ -53,26 +58,54 @@ public interface Hrac {
      */
     public void setZivoty(int zivoty);
 
+    /**
+     * Kolik nejvíce může hráč získat životů
+     * @see #setMaximumZivotu(int) 
+     */
     public int getMaximumZivotu();
 
     public Role getRole();
 
     public Postava getPostava();
-
+    
+    /**
+     * Vrátí upravitelný seznam karet
+     */
     public List<Karta> getKarty();
-
+    
+    /**
+     * Jedinečné id hráče
+     * @return Jedinečné id hráče
+     */
     public int getId();
-
+    
+    /**
+     * Jméno, které si hráč zvolil
+     * @return 
+     */
     public String getJmeno();
-
+    
+    /**
+     * Přenastaví jméno a pošle ho hráčům
+     * @param jmeno 
+     */
     public void setJmeno(String jmeno);
     
     public boolean jeNaTahu();
     
     public void setMaximumZivotu(int maximumZivotu);
-
-    public void setPostava(Postava postava);
-
+    
+    /**
+     * Nastaví novou postavu a pošle ji hráčům. Zavolá na postavě přiřazení a na staré postavě odebrání.
+     * @param postava novvá postava
+     * @return stará postava
+     */
+    public Postava setPostava(Postava postava);
+    
+    /**
+     * Nastaví roly, řekne to hráči.
+     * @param role 
+     */
     public void setRole(Role role);
 
     public Hra getHra();
@@ -84,14 +117,17 @@ public interface Hrac {
     public boolean jeZivy();
     
     /**
-     * Nastaví hráčovu postavu, neinformuje o tom nikoho.
+     * Nastaví hráčovu postavu podle jejího jména z postav na výběr uvnitř hráče.
+     * 
      * @param jmeno name() postavy.
+     * @see #setPostava(cz.honza.bang.sdk.Postava) 
      */
     public void setPostava(String jmeno);
 
     
     /**
-     * Spustit, pokud hráč odehraje kartu. najde kartu, dá jí na odhazovací balíček a provede její efekt.
+     * Spustit, pokud hráč odehraje kartu. Najde kartu, dá jí na odhazovací balíček a provede její efekt.
+     * Mělo by se volat, pokud je to akce, kterou hráč hctěl udělat a ještě jde zvrátit.
      * @param id id karty
      */
     public void odehranaKarta(String id);
@@ -103,10 +139,16 @@ public interface Hrac {
      */
     public void spalitKartu(String id);
     
+    /**
+     * Vyloží kartu před hráče. Kontroluje všechny podmínky od pravidel a podobně.
+     * @param id id karty
+     * @param idHrace před koho ji položí
+     */
     public void vylozitKartu(String id, String idHrace);
     
     /**
-     * Přidá hráči karu z balíčku hry. Pošle o tom upozornění všem hráčům, nekontroluje zda hráč může lízat.
+     * Přidá hráči karu z balíčku hry. Pošle o tom upozornění všem hráčům,
+     * nekontroluje zda hráč může lízat.
      */
     public void lizni();
     
@@ -116,6 +158,10 @@ public interface Hrac {
      */
     public void lizniKontrolovane();
     
+    /**
+     * Přidá efekt. Zařídí i jeho inicializaci.
+     * @param efekt 
+     */
     public void pridejEfekt(Efekt efekt);
     
     /**
@@ -129,6 +175,14 @@ public interface Hrac {
      */
     public int fyzickaVzdalenostK(Hrac komu)throws IllegalArgumentException;
     
+    /**
+     * Spočítá vzdálenost z pohledu tohoto hráče
+     * k {@code komu}. Bere v potaz Efekty.
+     * @param komu
+     * @return vzdálenost
+     * @see #vzdalenostPod(int) 
+     * @see #vzdalenostPod(int, boolean) 
+     */
     public int vzdalenostK(Hrac komu);
     
     /**
@@ -159,13 +213,21 @@ public interface Hrac {
      */
     public void konecTahu();
 
+    /**
+     * Vrátí originál seznamu vyložených karet
+     * @return 
+     */
     public List<Karta> getVylozeneKarty() ;
-
+    
+    /**
+     * Vrátí originál seznamu efektů.
+     * @return 
+     */
     public List<Efekt> getEfekty();
     
     
     /**
-     * vrátí všechny veřejné informace o hráči ve formátu JSON
+     * Vrátí všechny veřejné informace o hráči ve formátu JSON
      * @return json ve formátu: {"jmeno":jmeno,"zivoty",pocetZivotu,"pocetKaret":pocetKaret,"postava":postava.name(),"maximumZivotu",maximumZivotu}
      */
     public String toJSON();
@@ -179,7 +241,7 @@ public interface Hrac {
     /**
      * Součet všech efektů a jejich getBonusOdstupu
      * @return kolik se bude přřičítat
-     * @see #Efekt.getBonusOdstupu()
+     * @see Efekt#getBonusOdstupu()
      */
     int getCelkovyBonusOdstupu();
     
@@ -187,7 +249,7 @@ public interface Hrac {
      * Součet všech efektů a jejich getBonusOdstupu
      *
      * @return kolik se bude přřičítat
-     * @see #Efekt.getBonusOdstupu()
+     * @see Efekt#getBonusOdstupu()
      */
     int getCelkovyBonusDosahu();
     

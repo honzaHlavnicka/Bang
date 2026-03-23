@@ -11,14 +11,20 @@ import java.util.concurrent.CompletableFuture;
 
 
 /**
- *
+ * Třída určená k udržování komunikace s klienty po síti. Jde se k ní dostat pomocí {@link Hra#getKomunikator()}.
+ * Události někdy posílá přímo engine, ale u některých akcí to nedělá. U metod, kde by šlo očekávat jinačí chováání je to napsáno v dokumentaci.
+ * 
+ * <p><b>NEočekává se implementace od autora pluginu</b>
+ * 
  * @author honza
  */
 public interface KomunikatorHry {
 
     /**
-     * Pošle zprávu všekm hráčům ve hře.
-     * @param co Zpráva, která se pošle všem hráčům
+     * Pošle zprávu všem hráčům ve hře.
+     * Většinou by se nemělo používat a místo toho používat metody, které si zprávu sestaví samy.
+     * @param co Zpráva, která se pošle všem hráčům, ve formátu protokolu, viz <a href="https://github.com/honzaHlavnicka/Bang/tree/master/docs/protocol" >jeho dokumentace</a>
+     * @see #posliVsem(java.lang.String, cz.honza.bang.sdk.Hrac) 
      */
     public void posliVsem(String co);
     
@@ -26,11 +32,18 @@ public interface KomunikatorHry {
     
     /**
      * Pošle zprávu všem hráčům ve hře, kromě jednoho. Hodí se pro poslání podrobné informace jednomu hráči a méně podrobné informaci ostatním.
-     * @param co Zpráva, která se pošle všem hráčům, kromě jednoho
+     * Většinou by se nemělo používat a místo toho používat metody, které si zprávu sestaví samy.
+     * @param co Zpráva, která se pošle všem hráčům, kromě jednoho, ve formátu protokolu, viz <a href="https://github.com/honzaHlavnicka/Bang/tree/master/docs/protocol" >jeho dokumentace</a>
      * @param komuNe Hráč, který zprávu neobdrží
+     * @see #posliVsem(java.lang.String) 
      */
     public void posliVsem(String co,Hrac komuNe);
     
+    /**
+     * Pošle zprávu konrétně jednomu hráči. Většinou by se nemělo používat a místo toho používat metody, které si zprávu sestaví samy.
+     * @param komu kdo zprávu obdrží
+     * @param co Zpráva co se mu pošle, ve formátu protokolu, viz <a href="https://github.com/honzaHlavnicka/Bang/tree/master/docs/protocol" >jeho dokumentace</a>
+     */
     public void posli(Hrac komu, String co);
 
     // ===== METODY AKCÍ =====
@@ -88,18 +101,26 @@ public interface KomunikatorHry {
     
     /**
      * Pošle všem hráčům informaci o zahájení hry.
+     * Plugin nemusí volat, server si to vyřeší sám.
      */
     public void posliZahajeniHry();
     
     /**
      * Pošle všem hráčům informaci o skončení hráče v hře.
+     * 
      * @param hrac Hráč, který skončil
+     * @see #posliVitezstvi(cz.honza.bang.sdk.Hrac) 
      */
     public void posliSkonceniHrace(Hrac hrac);
     
     /**
      * Pošle všem hráčům informaci o vítězství hráče.
+     * Klient ukáže zavíratelný dialogg s gratulací. Hodí se, pokud vám stačí takovéhle jednoduché ukázání, které 
+     * neukončí hru. Pro pořádnou tabulku výsledků a ukončení hry použijte metody {@link #posliVysledky(cz.honza.bang.sdk.Hrac[][])} a {@link #posliKonecHry()}
+     * 
      * @param hrac Hráč, který vyhrál
+     * @see #posliVysledky(cz.honza.bang.sdk.Hrac[][]) 
+     * @see #posliKonecHry() 
      */
     public void posliVitezstvi(Hrac hrac);
     
@@ -115,14 +136,17 @@ public interface KomunikatorHry {
      * Pošle všem hráčům informaci o spálení karty.
      * @param hrac Hráč, jehož karta byla spálena
      * @param karta Spálená karta
+     * @see #posliSpaleniVylozenéKarty(cz.honza.bang.sdk.Karta, cz.honza.bang.sdk.Hrac) 
      */
     public void posliSpaleniKarty(Hrac hrac, Karta karta);
     
     /**
-     * Pošle všem hráčům informaci o líznutí nebo získání karty.
+     * Pošle všem hráčům informaci o líznutí nebo získání karty. Hráčovi, který kartu dostal se pošlou o
+     * kartě všechny informace a ostatním hráčům se jenom pošle změna počtu karet.
      *
      * @param hrac Hráč, jehož karta byla spálena
      * @param karta Spálená karta
+     * @see #posliZmenuPoctuKaret(cz.honza.bang.sdk.Hrac) 
      */
     public void posliNovouKartu(Hrac hrac,Karta karta);
     
@@ -142,21 +166,46 @@ public interface KomunikatorHry {
     public void posliVylozeniKarty(Hrac hrac, Hrac predKoho, Karta karta);
     
     /**
-     * Pošle hráčům rychlé oznámení (plugin-specifická zpráva).
-     * Používá se v pluginech (např. Prší - zmena barvy, Uno - zmena barvy).
+     * Pošle všem hráčům rychlé oznámení. Toto oznámení vyjede do prostředka obrazovky a postupně zmizí.
+     * Pomáhá dělat hru akční.
+     * Používá se v pluginech (např. Prší - změna barvy, Uno - změna barvy, Bang - Vedle).
      * @param oznameni Obsah oznámení (např. název barvy)
-     * @param vyjimka Hráč, který zprávu neobdrží (obvykle ten, co ji vyvolal)
+     * @param vyjimka Hráč, který zprávu neobdrží (obvykle ten, co ji vyvolal), může být null
      */
-    public void posliRychleOznameni(String oznameni, Hrac vyjimka);
-
+    public void posliRychleOznameniVsem(String oznameni, Hrac vyjimka);
+    
     /**
-     * Všem hráčům pošle zprávu, že hra skončila.
+     * Pošle hráčovi rychlé oznámení. Toto oznámení vyjede do prostředka
+     * obrazovky a postupně zmizí. Pomáhá dělat hru akční. Používá se v
+     * pluginech (např. Prší - změna barvy, Uno - změna barvy, Bang - Vedle).
+     *
+     * @param oznameni Obsah oznámení (např. název barvy)
+     * @param komu Komu se zobrazí
+     */
+    public void posliRychleOznameni(String oznameni, Hrac komu);
+    
+    /**
+     * Všem hráčům pošle zprávu, že hra skončila. Zobrazí jim tabulku  vítězů,
+     * která by se měla poslat přes {@link #posliVysledky(cz.honza.bang.sdk.Hrac[][])}
+     * ještě před voláním této metody.
+     * 
+     * @see #posliVysledky(cz.honza.bang.sdk.Hrac[][]) 
+     * @see #posliVitezstvi(cz.honza.bang.sdk.Hrac) 
      */
     public void posliKonecHry();
 
     /**
-     * Pošle všem hráčům výsledkovou tabulku. Není to konec hry.
-     * @param vysledky pole, jehož každá položka je jedno umístění (index 0 = místo 1...) a v jednom umístění se může naházet více hráčů spolu.
+     * Pošle všem hráčům výsledkovou tabulku. Není to konec hry, tabulka se hráčům
+     * neukáže, dokud se nazavolá {@link #posliKonecHry()}.
+     * <p>
+     * Tabulka podporuje více hráčů na stejném místě. Pole které je v parametru reprezentuje
+     * pořadí. V tomto pořadí jsou další pole, ve kterých jsou spolu hráči na stejném místě.
+     * Pokud má být na každém místě jenom jeden hráč, tak ve vnitřním poli bude vždy sám.
+     * 
+     * @param vysledky pole, jehož každá položka je jedno umístění (index 0 = místo 1...) a
+     * v jednom umístění se může naházet více hráčů spolu.
+     * @see #posliKonecHry() 
+     * @see #posliVitezstvi(cz.honza.bang.sdk.Hrac) 
      */
     public void posliVysledky(Hrac[][] vysledky);
     
@@ -198,14 +247,15 @@ public interface KomunikatorHry {
 
 
     /**
-     * Pošle příkaz klientovy v parametru @param <komu>. V té nahradí řetězec "data-id" reálným řetězcem,
+     * Pošle příkaz klientovi v parametru {@code komu}. V té nahradí řetězec "data-id" reálným řetězcem,
      * který  jde využít na interní dohledání otázky zpět. Vrátí odpověď hráče jako CompletableFuture,
-     * které se splní, až hráč odpoví. Většinou by se NNEMĚLO používat přímo, ale spíše přes pozadejOVyberMoznosti() nebo pozadejOKarty() a pod.
+     * které se splní, až hráč odpoví. Většinou by se NEMĚLO používat přímo, ale spíše přes pozadejOVyberMoznosti() nebo pozadejOKarty() a pod.
      * @param komu Hráč, kterému se otázka klade
      * @return CompletableFuture, které se splní, až hráč odpoví
      * 
-     * @see pozadejOVyberMoznosti() pro výběr z možností
-     * @see pozadejOKarty() pro výběr karet
+     * @see #pozadejOVyberMoznosti(cz.honza.bang.sdk.Hrac, java.util.List, java.lang.String, boolean) pro výběr z možností
+     * @see #pozadejOKarty(cz.honza.bang.sdk.Hrac, java.util.List, java.lang.String, int, int, boolean) pro výběr karet
+     * @see #pozadejOText(cz.honza.bang.sdk.Hrac, java.lang.String, java.lang.String, java.lang.String, boolean) 
      */
     public CompletableFuture<String> pozadejOdpoved(String otazka,Hrac komu);
 
@@ -223,10 +273,14 @@ public interface KomunikatorHry {
     /**
      * Přidá nebo upraví vlastní tlačítko pro hráče.
      * @param komu Hráč, kterému se prvek zobrazí
-     * @param buttonId Jedinečný identifikátor tlačítka (opakovaným voláním s stejným id se mění parametry)
+     * @param buttonId Jedinečný identifikátor tlačítka (Opakovaným voláním se stejným id se mění ostatní parametry), pomocí 0 se vytvoří tlačítko nové
      * @param text Text na tlačítku
      * @param disabled Zda je tlačítko deaktivované
+     * @param akce Akce, která se spustí při kliknutí na tlačítko.
      * @return ID tlačítka
+     * 
+     * @see #smazatUI(cz.honza.bang.sdk.Hrac, int) 
+     * @see HerniPravidla#uiButtonClicked(cz.honza.bang.sdk.Hrac, int)
      */
     public int pridejUIButton(Hrac komu, int buttonId, String text, boolean disabled, Runnable akce);
 
@@ -234,16 +288,24 @@ public interface KomunikatorHry {
      * Odstraní vlastní UI prvek.
      * @param komu Hráč, od kterého se prvek odebere
      * @param uiId ID prvku k odstranění
+     * @see #pridejUIButton(cz.honza.bang.sdk.Hrac, int, java.lang.String, boolean, java.lang.Runnable) 
      */
     public void smazatUI(Hrac komu, int uiId);
     
     /**
      * Pošle všechna aktivní UI tlačítka hráči. Používá se při reconnectu.
      * @param komu Hráč, kterému se tlačítka pošlou
+     * @see #smazatUI(cz.honza.bang.sdk.Hrac, int) 
+     * @see #pridejUIButton(cz.honza.bang.sdk.Hrac, int, java.lang.String, boolean, java.lang.Runnable) 
      */
     public void posliVsechnaUITlacitka(Hrac komu);
     
     
+    /**
+     * Pomocná třída pro posílání dat do kola štěstí.
+     * 
+     * @see KomunikatorHry#posliKoloStesti(int, java.lang.String, java.util.List) 
+     */
     public static class MoznostKolaStesti {
 
         private String name;
@@ -258,38 +320,43 @@ public interface KomunikatorHry {
             this.velikost = velikost;
         }
 
-        public String getName() {
-            return name;
-        }
-
-        public String getBarva() {
-            return barva;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public int getVelikost() {
-            return velikost;
-        }
+        public String getName() {return name;}
+        public String getBarva() {return barva;}
+        public int getId() {return id;}
+        public int getVelikost() {return velikost;}
     }
     
     /**
      * Pošle všem klientům kolo štěstí, které vybere možnost s id = vybranaMoznost. 
-     * @param vybranaMoznost
-     * @param nadpis
-     * @param moznosti 
+     * Tato možnost je předem vybraná, je to jenom vizuální prvek pro pocit losování,
+     * @param vybranaMoznost id možnosti, která má být vybraná
+     * @param nadpis Nadpis dialogiu
+     * @param moznosti Výřezy kola
      */
     void posliKoloStesti (int vybranaMoznost, String nadpis, List<MoznostKolaStesti> moznosti);
 
+    /**
+     * Vrátí kod hry, který hráči na začátku zadávali
+     * @return šestimístné číslo
+     */
     public int getIdHry();
+    
+    /**
+     * Počet hráčů ve hře, kteří jsou zrovna živě připojjeni k serveru.
+     */
     public int pocetHracu();
 
+    /**
+     * Vrátí admina, většinou ten kdo hru založil, ale může být změněn.
+     * @see #setAdmin(cz.honza.bang.sdk.Hrac) 
+     */
     public Hrac getAdmin();
 
+    /**
+     * Nastaví admina.
+     * @param admin 
+     * @see #getAdmin() 
+     */
     public void setAdmin(Hrac admin);
-    
-    
-    
+
 }

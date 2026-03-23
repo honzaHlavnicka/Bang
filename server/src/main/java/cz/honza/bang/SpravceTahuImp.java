@@ -141,6 +141,8 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
     public void dalsiHracSUpozornenim() {
         if (naTahu != null) {
             naTahu.konecTahu();
+        }else{
+            dalsiHrac();
         }
     }
 

@@ -11,8 +11,10 @@ import java.util.List;
 
 
 /**
- * Třída samotné hry.
- *
+ * Třída samotné hry. Vnitřní logika serveru. 
+ * 
+ * NEočekává se od pluginu, aby třídu implemetoval
+ * <p><b>NEočekává se implementace od autora pluginu</b>, ale měl by používat její dostupné metody.
  * @author honza
  *
  */
@@ -72,12 +74,15 @@ public interface Hra {
      * @param zahajena pokud true, tak zahájí hru.
      */
     public void setZahajena(boolean zahajena);
-
+    
+    /**
+     * Vrátí originál balíčku
+     */
     public Balicek<Karta> getBalicek();
 
 
     /**
-     * Vyřadí hráče z herní smičky. Nezávisle na tom jestli vyhrál nebo prohrál,
+     * Vyřadí hráče z herní smyčky. Nezávisle na tom jestli vyhrál nebo prohrál,
      * ale už nebude hrát.
      *
      * @param kdo
@@ -96,10 +101,12 @@ public interface Hra {
      * odhazovací balíček v opačném pořadí.
      */
     public void prohodBalicky();
-
-
     
     public SpravceTahu getSpravceTahu();
+    
+    /**
+     * Vrátí originál odhazovacího balíčku
+     */
     public Balicek<Karta> getOdhazovaciBalicek();
 
     /**
