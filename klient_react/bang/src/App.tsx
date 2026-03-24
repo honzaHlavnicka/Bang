@@ -51,6 +51,6 @@ function SafeLoginPage({ startedConection }: { startedConection: boolean }) {
   } else {
     return <LoginPage />;
   }
-}
+};
 
 export default App;

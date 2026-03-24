@@ -2,6 +2,7 @@ package cz.honza.bang.sdk;
 
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Spravuje pořadí hráčů a jejich tahy.
@@ -35,12 +36,29 @@ public interface SpravceTahu {
     /**
      * Najde dalšího hráče se zadanou rolí a nechá ho hrát.
      * 
+     * Interně používá {@link #dalsiHracPodlePodminky(java.util.function.Predicate) dalsiHracPodlePodminky},
+     * takže se řídí stejnými pravidly.
+     * 
      * Pokud žádný takový hráč není, tak se na tah vrátí současný hráč.
      * @param role
      * @return Hráč co bude na tahu
+     * @see #dalsiHracPodlePodminky(java.util.function.Predicate)
      */
     public Hrac dalsiHracPodleRole(Role role);
-
+    
+    /**
+     * Najde dalšího hráče podle libovolné podmínky a přetočí frontu tak, aby po
+     * něm hráli správní hráči. Pokud podmínku nikdo nesplnuje, tak se nov tah
+     * neprovede a vrátí se aktuálně hrající hráč. Pokud více hráčů splnuje
+     * podmínku, tak se vybere první z nich. Hráč bude na tah upozorněn a budou
+     * provedeny všechyn potřebné náležitosti. Jednorázové tahy se neberou v
+     * potaz.
+     *
+     * @param podminka Funkce, která otestuje hráče a vrátí true, pokud je to
+     * ten hledaný.
+     * @return Hráč co bude na tahu
+     */
+    public Hrac dalsiHracPodlePodminky(Predicate<Hrac> podminka);
  
     /**
      * Ideální způsob jak ukončit tah. Vše zařídí. Ekvivalent k volání .ukoncitTah() na právě hrajícím hráči.

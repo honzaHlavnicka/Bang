@@ -226,6 +226,8 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
           if (spravceTahu != null && spravceTahu.getNaTahu() != null) {
               conn.send("tahZacal:" + spravceTahu.getNaTahu().getId());
           }
+
+
         }
         
         // UI prvky dostupné pro hráče
@@ -240,15 +242,19 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         for (HracImp hrac1 : hraci) {
             conn.send("pocetZivotu:" + hrac1.getId() + "," + hrac1.getZivoty());
         }
+
         
         // Všechna aktivní UI tlačítka pro hráče
         komunikator.posliVsechnaUITlacitka(hrac);
 
         komunikator.posliZmenuJmena(hrac);
+
+        komunikator.posliZmenuPoctuZivotu(hrac);
+
     }
 
     /**
-     * Vyřadí hráče z herní smičky. Nezávisle na tom jestli vyhrál nebo prohrál, ale už nebude hrát.
+     * Vyřadí hráče z herní smyčky. Nezávisle na tom jestli vyhrál nebo prohrál, ale už nebude hrát.
      * @param kdo
      */
     @Override

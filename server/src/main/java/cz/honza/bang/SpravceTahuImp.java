@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Spravuje pořadí hráčů a jejich tahy.
@@ -123,16 +124,59 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      */
     @Override
     public HracImp dalsiHracPodleRole(cz.honza.bang.sdk.Role role) {
-        Hrac hrac =  frontaTahu.getLast().hrac;
-        for(Hrac h : getHrajiciHraci()){
-            if(h.getRole().equals(role)){
-                hrac = h;
+        return dalsiHracPodlePodminky(hrac -> hrac.getRole().equals(role));
+    }
+    
+    /**
+     * Najde dalšího hráče podle libovolné podmínky a přetočí frontu tak, aby po
+     * něm hráli správní hráči. Pokud podmínku nikdo nesplnuje, tak se nov tah
+     * neprovede a vrátí se aktuálně hrající hráč. Pokud více hráčů splnuje
+     * podmínku, tak se vybere první z nich. Hráč bude na tah upozorněn a budou
+     * provedeny všechyn potřebné náležitosti. Jednorázové tahy se neberou v potaz.
+     *
+     * @param podminka Funkce, která otestuje hráče a vrátí true, pokud je to
+     * ten hledaný.
+     * @return Hráč co bude na tahu
+     */
+    public HracImp dalsiHracPodlePodminky(Predicate<Hrac> podminka) {
+        Tah hledanyTah = null;
+        for (Tah t : frontaTahu) {
+            if (podminka.test(t.hrac) && !t.jednorazovy && !t.docasneZruseny) {
+                hledanyTah = t;
                 break;
             }
         }
-        naTahu = (HracImp) hrac;
-        hrac.zahajitTah();
-        return (HracImp) hrac;
+        
+        // Nikdo nesplnuje podmínku
+        if (hledanyTah == null) {
+            return naTahu;
+        }
+        
+        // Protočení řady, aby se pořadí posunulo
+        while (true) {
+            Tah tah;
+            if (!zmenenSmer) {
+                tah = frontaTahu.pollFirst();
+            } else {
+                tah = frontaTahu.pollLast();
+            }
+
+            
+            if (zmenenSmer) {
+                frontaTahu.addFirst(tah);
+            } else {
+                frontaTahu.addLast(tah);
+            }
+            
+
+            if (tah == hledanyTah) {
+                naTahu = (HracImp) tah.hrac;
+                kolikatyTah = 1;
+                poradiAktualni = false;
+                naTahu.zahajitTah();
+                return naTahu;
+            }
+        }
     }
 
  

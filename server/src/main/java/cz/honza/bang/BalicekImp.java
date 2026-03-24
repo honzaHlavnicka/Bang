@@ -66,7 +66,7 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
      * @return kolekce líznutých karet seřazená tak, že karta, která se vytáhla jako první je první v kolekci
      */
     public List<T> lizni(int n) {
-        List<T> tah = new ArrayList<>();
+        List<T> tah = new ArrayList<>(n);
         for (int i = 0; i < n && !karty.isEmpty(); i++) {
             tah.add(lizni());
         }
