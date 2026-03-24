@@ -25,9 +25,12 @@ import cz.honza.bang.pluginy.bang.karty.Vezeni;
 import cz.honza.bang.pluginy.bang.postavy.BartCassidy;
 import cz.honza.bang.pluginy.bang.postavy.JednoduchePostavy;
 import cz.honza.bang.pluginy.bang.postavy.Jourdonnais;
+import cz.honza.bang.pluginy.bang.postavy.KitCarlson;
+import cz.honza.bang.pluginy.bang.postavy.LizaciPostava;
 import cz.honza.bang.pluginy.bang.postavy.PaulRegret;
 import cz.honza.bang.pluginy.bang.postavy.RoseDoolan;
 import cz.honza.bang.pluginy.bang.postavy.SidKetchum;
+import cz.honza.bang.pluginy.bang.postavy.WildWill;
 import cz.honza.bang.pluginy.bang.zbrane.Remington;
 import cz.honza.bang.pluginy.bang.zbrane.RevCarabine;
 import cz.honza.bang.pluginy.bang.zbrane.Schofield;
@@ -298,6 +301,10 @@ public class PravidlaBangu implements HerniPravidla{
 
     @Override
     public void zacalTah(Hrac komu) {
+        if(komu.getPostava() instanceof LizaciPostava){
+            ((LizaciPostava) komu.getPostava()).lizniNaZacatkuTahu(komu,hra);
+            return;
+        }
         komu.lizni();
         komu.lizni();
     }
@@ -347,15 +354,20 @@ public class PravidlaBangu implements HerniPravidla{
     
     @Override
     public void pripravBalicekPostav(java.util.Stack<cz.honza.bang.sdk.Postava> balicekPostav){
+
         for (int i = 0; i < 2; i++) {
             balicekPostav.add(new RoseDoolan());
             balicekPostav.add(new PaulRegret());
             balicekPostav.add(JednoduchePostavy.WILLY_THE_KID);
             balicekPostav.add(JednoduchePostavy.VULTURE_SAM);
             balicekPostav.add(JednoduchePostavy.SUZY_LAFAYTTE);
+            balicekPostav.add(JednoduchePostavy.NESMRTELNY_BILL);
+            balicekPostav.add(new KitCarlson());
             balicekPostav.add(new SidKetchum(hra));
             balicekPostav.add(new BartCassidy());
             balicekPostav.add(new Jourdonnais());
+            balicekPostav.add(new WildWill());
+            
         }
 
         Collections.shuffle(balicekPostav);
