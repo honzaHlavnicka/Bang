@@ -549,6 +549,11 @@ export function handleGameMessage(
             }
             break;
         }
+
+        case "obrazekDobiracihoBalicku": {
+            setGameState(prev => ({ ...prev, talonTopCard: payload }));
+            break;
+        }
         default: {
             console.log("=> klient nezná");
             break;

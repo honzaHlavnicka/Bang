@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Consumer;
 import org.java_websocket.WebSocket;
 import org.json.JSONArray;
 
@@ -33,16 +34,15 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      */
     private List<HracImp> hraci = new ArrayList<>();
     private boolean zahajena = false;
-            //FIX: neco lepsiho nes seznam
     private final Stack<cz.honza.bang.sdk.Postava>  balicekPostav;
     private KomunikatorHryImp komunikator;
-    private BalicekImp<Karta> balicek = new BalicekImp<Karta>();
-    private BalicekImp<Karta> odhazovaciBalicek = new BalicekImp();
+    private BalicekImp<Karta> balicek;
+    private BalicekImp<Karta> odhazovaciBalicek;
     private SpravceTahuImp spravceTahu;
     private HerniPravidla herniPravidla;
-    private String obrazekZadniStrany;
-    
+    private String vrchniObrazekZadniStrany;
 
+    
     @Override
     public BalicekImp<Karta> getOdhazovaciBalicek() {
         return odhazovaciBalicek;
@@ -54,11 +54,36 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     }
       
     
-    private HraImp(KomunikatorHryImp komunikator){
+    private HraImp(KomunikatorHryImp komunikator) {
         this.komunikator = komunikator;
-        balicekPostav = new Stack<>();
+        this.balicekPostav = new Stack<>();
+
+        this.balicek = new BalicekImp<>();
+        this.odhazovaciBalicek = new BalicekImp<>();
         
+        // Akce pro balíčky
+        Consumer<BalicekImp<Karta>> kontrolaZadniStrany = (zmeneny) -> {
+            if (zmeneny == balicek) {
+                Karta vrchniKarta = balicek.nahledni();
+
+                if (vrchniKarta != null) {
+                    String vrchniObrazek = vrchniKarta.getZadniObrazek();
+
+                    if (!vrchniObrazek.equals(vrchniObrazekZadniStrany)) {
+                        vrchniObrazekZadniStrany = vrchniObrazek;
+                        komunikator.posliZadniObrazekLizacihoBalicku(vrchniObrazek);
+                    }
+                } else {
+                    // TODO: Balíček ja prázdný, možná to nějak znázornit
+                }
+            }
+        };
+
+        balicek.setPoUprave(kontrolaZadniStrany);
+        odhazovaciBalicek.setPoUprave(kontrolaZadniStrany);
     }
+        
+        
     
     /**
      * Vytvoří a vrátí novou instanci hry
@@ -95,13 +120,11 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     public void hracVytvoren(Hrac hrac){
         //metoda co se spouští po vytvoření hráče a zařazení ho do komunikátoru
 
-        
         if(balicekPostav.size() < 2){//pokud už nezbyde postava, tak to tam nejakou soupne. nemelo by se to stat kvuli maximalnimu poctu hracu, ten ale nemusí být dodren.
             balicekPostav.add(PostavaImp.TESTOVACI);
             balicekPostav.add(PostavaImp.TESTOVACI);
         }
         hrac.vyberZPostav(balicekPostav.pop(),balicekPostav.pop());//nechá hráče vybrat ze dvou postav
-        
     }
 
     /**

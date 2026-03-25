@@ -373,6 +373,12 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         posliVsem("konecHry");
     }
     
+    @Override
+    public void posliZadniObrazekLizacihoBalicku(String obrazek){
+        posliVsem("obrazekDobiracihoBalicku:"+obrazek);
+    }
+
+    
     
     @Override
     public void posliKoloStesti(int vybranaMoznost, String nadpis, List<MoznostKolaStesti> moznosti) {

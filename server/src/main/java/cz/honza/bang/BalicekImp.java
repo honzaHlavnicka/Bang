@@ -12,11 +12,14 @@ package cz.honza.bang;
  */
 
 import java.util.*;
+import java.util.function.Consumer;
+
 
 
 public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
     private Deque<T> karty = new ArrayDeque<>();
     private boolean jeOtoceny = false;
+    private Consumer<BalicekImp<T>> poUprave;
 
     /**
      * Vytvoří balíček a naplní ho kartami.
@@ -43,6 +46,18 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
         Collections.shuffle(list);
         karty.clear();
         karty.addAll(list);
+        probehlaUprava();
+    }
+    
+    /**
+     * Privátní pomocná metoda pro vytažení jedné karty. Nevolá probehlaUprava().
+     */
+    private T lizniTajne() {
+        if (jeOtoceny) {
+            return karty.pollLast(); // vrátí null, pokud je prázdný
+        } else {
+            return karty.pollFirst(); // vrátí null, pokud je prázdný
+        }
     }
 
     /**
@@ -50,12 +65,9 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
      * @return líznutá karta
      */
     public T lizni() {
-        if(jeOtoceny){
-            return karty.pollLast(); // vrátí null, pokud je prázdný
-        }else{
-            return karty.pollFirst(); // vrátí null, pokud je prázdný
-        }
-        
+        T liznuta = lizniTajne();
+        probehlaUprava();
+        return liznuta;
     }
 
     // líznutí N karet
@@ -68,8 +80,9 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
     public List<T> lizni(int n) {
         List<T> tah = new ArrayList<>(n);
         for (int i = 0; i < n && !karty.isEmpty(); i++) {
-            tah.add(lizni());
+            tah.add(lizniTajne());
         }
+        probehlaUprava();
         return tah;
     }
 
@@ -90,7 +103,7 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
     }
     
     /**
-     * Vrátí, ale nesmaže horní kartu z balíčku.
+     * Vrátí, ale nesmaže horní kartu z balíčku. Pokud je prázdný, vrátí null
      * @return 
      */
     public T nahledni(){
@@ -113,6 +126,7 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
         } else {
             karty.addLast(karta);
         }
+        probehlaUprava();
     }
 
     /**
@@ -126,6 +140,7 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
         }else{
             karty.addFirst(karta);
         }
+        probehlaUprava();
         
     }
 
@@ -151,18 +166,26 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
      */
     public void otoc(){
         jeOtoceny = !jeOtoceny;
+        probehlaUprava();
     }
     
     /**
-     * Vrací balíček jako Deque. Není to jeho kopie, ale přímí odkaz, tudíž jeho změna přepisuje balíček.
-     * <b>Pozor!</b> Balíček může být otočený.
-     * @return
-     * @deprecated 
+     * Natsaví událost, která se volá v případě změny balíčku, například změny vrchní karty.
+     * @param akce
      */
-    @Deprecated
-    public Deque<T> toDeque(){
-        return karty;
+    public void setPoUprave(Consumer<BalicekImp<T>> akce){
+        poUprave = akce;
     }
+    
+    private void probehlaUprava(){
+        if(poUprave != null){
+            poUprave.accept(this);
+        }
+    }
+    
+    
+    
+    
     
 }
 

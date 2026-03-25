@@ -41,6 +41,7 @@ export type GameStateType = {
     turnOrder: string[];
     deckCount: number;
     discardPile: Array<string>;
+    talonTopCard?: string;
 
     allowedUIElements: string[];
     customUIButtons: Array<CustomUIButton>;

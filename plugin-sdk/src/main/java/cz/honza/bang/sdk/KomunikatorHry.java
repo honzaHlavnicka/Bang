@@ -210,6 +210,12 @@ public interface KomunikatorHry {
     public void posliVysledky(Hrac[][] vysledky);
     
     /**
+     * Pošle jaký je obrázek vrchní karty lízacího balíčku zezadu.
+     * @param obrazek
+     */
+    public void posliZadniObrazekLizacihoBalicku(String obrazek);
+    
+    /**
      * Pošle jednomu hráči otázku a možnosti odpovědí. Vrátí odpověď hráče jako CompletableFuture, které se splní, až hráč odpoví.
      * @param odKoho Hráč, kterému se otázka klade
      * @param moznosti Seznam možných odpovědí (Pořadí je důležité, protože odpověď bude indexem do tohoto seznamu)
