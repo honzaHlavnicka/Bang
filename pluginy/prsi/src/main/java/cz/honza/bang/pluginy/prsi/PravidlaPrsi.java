@@ -176,6 +176,13 @@ public class PravidlaPrsi implements HerniPravidla{
         hra.getKomunikator().posliVysledky(vysledky);
         hra.getKomunikator().posliKonecHry();
     }
+
+    @Override
+    public String getVychoziZadniObrazek() {
+        return "marias/zezadu";
+    }
+    
+    
     
 }
 

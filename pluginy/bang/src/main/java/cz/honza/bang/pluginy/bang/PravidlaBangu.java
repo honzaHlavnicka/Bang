@@ -385,7 +385,7 @@ public class PravidlaBangu implements HerniPravidla{
     
     @Override
     public String getVychoziZadniObrazek() {
-        return "bang";
+        return "zezadu";
     }
     
     public int vzdalenost(Hrac od, Hrac k){
