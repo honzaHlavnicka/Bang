@@ -65,10 +65,8 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         Consumer<BalicekImp<Karta>> kontrolaZadniStrany = (zmeneny) -> {
             if (zmeneny == balicek) {
                 Karta vrchniKarta = balicek.nahledni();
-
                 if (vrchniKarta != null) {
                     String vrchniObrazek = vrchniKarta.getZadniObrazek();
-
                     if (!vrchniObrazek.equals(vrchniObrazekZadniStrany)) {
                         vrchniObrazekZadniStrany = vrchniObrazek;
                         komunikator.posliZadniObrazekLizacihoBalicku(vrchniObrazek);
@@ -197,6 +195,8 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
             for (HracImp hrac : hraci) {
                 hrac.poZahajeniHry();
             }
+            
+            komunikator.posliZadniObrazekLizacihoBalicku(vrchniObrazekZadniStrany);
                         
             
         }

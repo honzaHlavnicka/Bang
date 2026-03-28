@@ -13,6 +13,8 @@ export default function CentralPanel() {
 
     //const imagesForDeck = deckImages.length ? deckImages : gameState.discardPile;
     const imagesForDeck = gameState.discardPile;
+
+    const talonTopCardUrl = gameState.talonTopCard ? "/img/karty/" + gameState.talonTopCard + ".png" : "/img/karty/zezadu.png";
     return (<>
 
         <h2 className={globalCSS.darkmodeReverseColor} style={{textAlign:"center", zIndex:4}}>
@@ -44,7 +46,7 @@ export default function CentralPanel() {
                 <Deck images={imagesForDeck} />
             : null}
             {gameState.allowedUIElements.includes("DOBIRACI_BALICEK") ?
-                <Card image={ "/img/karty/" + gameState.talonTopCard + ".png" || "/img/karty/zezadu.png"} name="dobírací balíček" onClick={()=>drawCard()} id={-2}/>
+                <Card image={ talonTopCardUrl} name="dobírací balíček" onClick={()=>drawCard()} id={-2}/>
             : null}
 
 

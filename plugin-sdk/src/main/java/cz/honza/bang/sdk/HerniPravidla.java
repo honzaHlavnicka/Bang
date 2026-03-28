@@ -125,7 +125,7 @@ public interface HerniPravidla {
      * @return 
      */
     default public String getVychoziZadniObrazek(){
-        return "zezaduy";
+        return "zezadu";
     }
 
     /**
