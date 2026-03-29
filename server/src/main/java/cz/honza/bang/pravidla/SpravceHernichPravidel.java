@@ -22,7 +22,7 @@ public class SpravceHernichPravidel {
     private static final List<HerniPlugin> pluginy = new ArrayList<>();
 
     static {
-        pregeneruj();
+        //pregeneruj();
     }
 
     public static String getJSONVytvoritelneHry() {

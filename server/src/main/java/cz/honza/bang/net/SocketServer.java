@@ -35,6 +35,7 @@ public class SocketServer extends WebSocketServer {
     private String adminPassword;
     private Set<WebSocket> overeniAdmini = ConcurrentHashMap.newKeySet();
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private boolean overujeSeHeslo;
     
     public SocketServer(InetSocketAddress address) {
         super(address);
@@ -51,6 +52,8 @@ public class SocketServer extends WebSocketServer {
         // Načti pluginy už při startu
         System.out.println("Načítám pluginy...");
         SpravceHernichPravidel.pregeneruj();
+        
+        overujeSeHeslo = false;
     }
 
 
@@ -312,9 +315,16 @@ public class SocketServer extends WebSocketServer {
             future.complete(adminPassword.equals(zadaneHeslo));
             return future;
         }
-
+        
+        if(overujeSeHeslo){ // Už probíhá 4s pauza před kontrolou hesla.
+            future.complete(false);
+            return future;
+        }
+        
         // Spojení není ověřené.
+        overujeSeHeslo = true;
         scheduler.schedule(() -> {
+            overujeSeHeslo = false;
             if (adminPassword.equals(zadaneHeslo)) {
                 overeniAdmini.add(conn);
                 future.complete(true);

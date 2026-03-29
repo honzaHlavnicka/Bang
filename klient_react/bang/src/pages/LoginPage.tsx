@@ -8,6 +8,7 @@ import globalCSS from "../styles/global.module.css";
 export default function LoginPage() {
     const [gameCode, setGameCode] = useState('');
     const [jmeno, setJmeno] = useState('');
+    const [zobrazenaPaticka, setZobrazenaPaticka] = useState(true);
     const [idTypuHry, setIdTypuHry] = useState<number>(0);
     const { connectToGame, createGame, gameState, returnToGame } = useGame();
     const [openCard , setOpenCard] = useState<string>("pripojeni");
@@ -84,7 +85,6 @@ export default function LoginPage() {
     }
 
     return (
-        <>
         <div className={css.kontent}>
             <DarkModeSwitch  style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
 
@@ -194,25 +194,35 @@ export default function LoginPage() {
                 : null}               
             </main >
             {/*<ContextMenu x={menu.x} y={menu.y} options={[{text:"odhodit"},{text:"spalit"}]} />*/}
+            {zobrazenaPaticka &&
+            <footer className={css.footer}>
+                <div className={css.footerContent}>
+
+                    <p>
+                        &copy; 2026 Jan Hlavnička. 
+                    </p>
+                    <nav>
+                        <a href="/apidocs" target="_blank" rel="noopener noreferrer">Dokumentace SDK</a> | <a href="https://honzaa.cz" target='_blank' >honzaa.cz</a> | <a href="https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md" target='_blank' >vytvoření pluginu</a> | <a href="https://github.com/honzaHlavnicka/Bang" target="_blank">GitHub</a>
+                    </nav>
+                    <small>
+                        <p>
+                            <strong>Upozornění:</strong> Tento web je nekomerční studentský a osobní projekt. Není nijak spojen s původními vydavateli her a neklade si žádné nároky na vlastnictví jejich duševního vlastnictví.
+                            BANG!® je registrovaná ochranná známka společnosti daVinci Editrice S.r.l. (dV Giochi). V České republice hru vydává ALBI Česká republika a.s. Veškerá autorská práva k ilustracím karet, názvům a herním mechanismům patří jejich příslušným majitelům.
+                            UNO® je registrovaná ochranná známka společnosti Mattel, Inc.
+                            Použité ikony třetích stran: <a href="https://www.flaticon.com/free-icons/fire" title="fire icons" target="_blank" rel="noopener noreferrer">Fire icon created by Freepik - Flaticon</a>.
+                            Na zbytek herního obsahu, webu, serveru, jednotlivých pluginů a veškerého kódu souvisejícího s tímto projektem, včetně tohoto webu, se vztahuje licence uvedená v souboru <a href="https://github.com/honzaHlavnicka/Bang/blob/master/LICENSE" target="_blank">LICENSE</a>. Veškerý kód a obsah vytvořený pro tento projekt je původní tvorbou autora, pokud není výslovně uvedeno jinak.
+                            Zavřením patičky i zůstáním na stránce stvrzujete, že nebudete stahovat žádné obrázky ani jakýkoliv jiný obsah z tohoto webu pro libovolné účely, včetně osobního použití, bez výslovného písemného souhlasu držitele autorských práv. Pro právní záležitosti využijte e-mail prava@honzaa.cz.
+                            Projekt byl z velké části vytvořen jakožto ročníkový projekt (IOČ) pro předmět programování na Gymnáziu, Praha 6, Arabská 14.
+                            Web nepoužívá soubory cookies ani nijak neukládá osobní údaje. Všechna data jsou uložena pouze v době připojení hráčů ke hře, popřípadě až 30 minut poté. Používáním webu souhlasíte s dodžování zásad slušného chování, zákonů České republiky v době připojení k veřejné hře.
+                        </p>
+                    </small>
+                    <button onClick={() => {setZobrazenaPaticka(false);localStorage.setItem("souhlas", "true");}} className={globalCSS.button} style={{marginTop:"16px"}}>
+                        souhlasím
+                    </button>
+                </div>
+            </footer>
+            }
         </div >
-        {/*<footer className={css.footer}>
-            <div className={css.footerContent}>
-                <p>
-                    &copy; 2026 Jan Hlavnička. Zdrojový kód samotného herního enginu je dostupný na <a href="https://github.com/honzaHlavnicka/Bang/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">GitHubu</a>.
-                </p>
-                <p>
-                    <strong>Upozornění:</strong> Tento web je nekomerční studentský a osobní projekt. Není nijak spojen s původními vydavateli her a neklade si žádné nároky na vlastnictví jejich duševního vlastnictví.
-                </p>
-                <p>
-                    BANG!® je registrovaná ochranná známka společnosti daVinci Editrice S.r.l. (dV Giochi). V České republice hru vydává ALBI Česká republika a.s. Veškerá autorská práva k ilustracím karet, názvům a herním mechanismům patří jejich příslušným majitelům.
-                    <br />
-                    UNO® je registrovaná ochranná známka společnosti Mattel, Inc.
-                </p>
-                <p>
-                    Použité ikony třetích stran: <a href="https://www.flaticon.com/free-icons/fire" title="fire icons" target="_blank" rel="noopener noreferrer">Fire icon created by Freepik - Flaticon</a>.
-                </p>
-            </div>
-        </footer>*/}
-        </>
+
     );
 }
