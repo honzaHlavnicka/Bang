@@ -57,6 +57,12 @@ export default function LoginPage() {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [gameToken]);
     
+    useEffect(() => {
+        const souhlas = localStorage.getItem("souhlas");
+        if (souhlas === "true") {
+            setZobrazenaPaticka(false);
+        }
+    }, []);
 
 
     function zkontroluj(isToConnect: boolean = false) {
