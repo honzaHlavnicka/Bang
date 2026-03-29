@@ -197,7 +197,11 @@ public static List<HerniPlugin> nactiPluginyZJARu(Path cesta) throws Exception{
 
 Hra neřeší ani logiku konkrétní hry, karet, balíčku a akcí hráčů, které řeší Herní pravidla nebo specifické třídy. Hra zařizuje zapnutí hry (\texttt{setZahajena(true)}), výhru a konec hry (\texttt{skoncil Hrac kdo}, \texttt{vyhral(Hrac kdo)}), přidávání hráčů a gettery pro ostatní obslužné třídy.
 
-//todo: dopsat
+Tím, že hra slouží spíše jako lepidlo jednotlivých částí, tak její vlastní funkce jsou přidávání hráče, na
+čítání hry, hlídání změny obrázku balíčku a jednoduché utility. Mezi ty patří otáčení balíčků, které jeden balíček otočí a pak prohodí odhazovací a dobírací balíček, nebo sejmutí karty.
+
+Hlídání změny obrázku balíčku se provádí nasazením události na balíček -- která byla pro tento účel vytvořena -- a nastavením proměnné \texttt{vrchniObrazekZadniStrany}, která se pak posílá klientovi, aby věděl, jak balíček zobrazit.
+
 
 \subsection{Správce tahu}
 \texttt{SpravceTahu} je třída, která se stará o správu tahů ve hře. Přestože se to zdá jako jednoduchý úkol o posouvání ukazatele, tak je třída poměrně složitá, protože musí podporovat změnu směru, vynechání tahu, dočasné či trvalé přidání hráče, násobič tahu a podobně.
@@ -255,6 +259,10 @@ Samotná metoda \texttt{dalsiHrac()} musí zkontrolovat všechny příznaky a po
 \subsection{\texttt{Hrac} a \texttt{HracImp}}
 \texttt{HracImp} je třída implementující interface \texttt{Hrac}, která reprezentuje jednoho hráče ve hře. Obsahuje informace o hráči, jako je jeho jméno, role, postava, počet životů, karty v ruce, karty na stole a podobně. Dále obsahuje metody pro manipulaci s těmito daty.
 
+Tato třída obsahuje nejvíce metod pro pluginy. Mezi ty patří například \texttt{lizniKontrolovane}, \texttt{pridejEfekt} a \texttt{jeZivy}.
+
+
+
 \subsubsection{\texttt{boolean odeberZivot()} a \texttt{boolean pridejZivot()}}
 Odeber život je metoda, kterou by měl plugin volat, když hráč přijde o život. Metoda zkontroluje, zda ještě před odebráním života nemá zavolat nějaký efekt a potom zkontroluje, jestli se hráč nezabije. Pokud se zabije, tak se nepůjde do mínusu v počtu životů, ale vrátí se false a zavolá se \texttt{HerniPravidla.dosliZivoty(Hrac kdo)}, aby plugin mohl zareagovat a například zařídit smrt hráče. Pokud hráč ještě nezemřel, tak se odebere život, zavolají efekty a metoda vrátí true.
 
@@ -265,9 +273,67 @@ Tyto metody volá komunikátor hry, když se hráč rozhodne zahrát, vyložit n
 
 Metoda \texttt{odehranaKarta(String id)} si převede id do \emph{int}u, ověří, že je hráč na tahu a pokusí se kartu najít mezi kartami v ruce porovnáváním id. Poté zkontroluje, zda je karta hratelná (instance \texttt{HratelnaKarta}), přetypuje ji a zavolá její metodu \texttt{odehrat(Hrac kdo)}. Pokud se karta zahrála, přesune ji na odhazovací balíček a upozorní komunikátor hry.
 
+U této  metody bylo potřeba být  obvzlášť opatrný ohledně validace, protože bere číslo z klienta a musí zkontrolovat zda to je vůbec číslo, zda taková kart aexistuje a podbně.
+
 Metody \texttt{vylozitKartu(String id, String idHrace)} a \texttt{spalitKartu(String id)} fungují podobným způsobem, ale s příslušnou logikou pro vyložení a spálení karet.
+
+\subsubsection{\texttt{vzdalenostPod(int max, boolean zpetne)}}
+Tato metoda má několik obdob, které například vrací pouze vzdálenost k jednomu hráči, nebo vzdálenost bez efektů, ale tato verze vrací všechny hráče, kteří jsou v dané vzdálenosti, nebo blíž. Vzdálenost se počítá jako počet hráčů mezi dvěma hráči ve směru hodinových ručiček. Pokud je zpetne true, tak se počítá vzdálenost proti směru hodinových ručiček. 
+
+
+\begin{lstlisting}[language=java,caption={Počítání vzdálenosti hráčů}, label={lst:pocitani_vzdalenosti},firstnumber=566]
+        @Override
+        public List<Hrac> vzdalenostPod(int max, boolean iZpetne) {
+            List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
+            List<Hrac> vysledniHraci = new ArrayList<>();
+
+            int velikost = hraci.size();
+            int i1 = hraci.indexOf(this);
+
+            if (i1 == -1) {
+                throw new IllegalArgumentException("Hráč nebyl nalezen v seznamu");
+            }
+
+            int mujDosah = this.getCelkovyBonusDosahu();
+
+            for (int i = 0; i < hraci.size(); i++) {
+                // Nezahrne sebe
+                if (i == i1) {
+                    continue;
+                }
+
+                Hrac cil = hraci.get(i);
+                int rozdil = Math.abs(i1 - i);
+                int fyzickaVzdalenost;
+                
+                if (iZpetne) {
+                    // Bere menci vzdalenost (Budto zleva, nebo zprava)
+                    int zpetnaVzdalenost = velikost - rozdil;
+                    fyzickaVzdalenost = Math.min(rozdil, zpetnaVzdalenost);
+                } else {
+                    fyzickaVzdalenost = rozdil;
+                }
+
+                // Spocitani efektu
+                int odstupCile = cil.getCelkovyBonusOdstupu();
+                int efektivniVzdalenost = fyzickaVzdalenost + odstupCile - mujDosah;
+
+                // Osentreni maximální vzdalenosti
+                efektivniVzdalenost = Math.max(1, efektivniVzdalenost);
+
+                // Pridani do seznamu, pokud je na dostrel
+                if (efektivniVzdalenost <= max) {
+                    vysledniHraci.add(cil);
+                }
+            }
+
+            return vysledniHraci;
+        }
+\end{lstlisting}
+
 \section{Implementace pluginů}
 K enginu bylo vyrobeno několik pluginů -- Bang!, Prší a UNO. Pluginy jsou v repozitáři ve složce \texttt{/pluginy/}.
+
 \subsection{Bang!}
 Tento plugin je pro projekt klíčový, jelikož je engine přizpůsobený hlavně jemu. V původní fázi byl dokonce do enginu hardcodován. Teď už je většina jeho prvků přesunuta do jeho herních pravidel.
 
@@ -380,7 +446,7 @@ Třetí fáze už je samotná hra. Klient posílá akce hráče, zatímco server
 
 \section{Implementace klienta}
 \subsection{O aplikaci}
-Jak již bylo zmíněno, tak klient je napsán pro framework \emph{React} pro web. Obsahuje hlavní soubor \texttt{main.tsx}, který obsahuje různé providery a celoaplikační komponenty. (zde bude odkaz na moduly) Hlavní komponentou celé aplikace je \texttt{App}, která přepíná mezi stránkami a řeší lazyloading. Jednotlivé stránky se nacházejí v \texttt{/src/pages/}.
+Jak již bylo zmíněno, tak klient je napsán pro framework \emph{React} pro web. Obsahuje hlavní soubor \texttt{main.tsx}, který obsahuje různé providery a celoaplikační komponenty. Hlavní komponentou celé aplikace je \texttt{App}, která přepíná mezi stránkami a řeší lazyloading. Jednotlivé stránky se nacházejí v \texttt{/src/pages/}.
 
 Hlavní kontext, který obsahuje jak funkce pro celou aplikaci a všechna data, je \texttt{GameKontext}. Ten obsahuje jednotlivé funkce pro posílání dat na server, úpravu dat, akce hráče a podobně. Jeho provider se jmenuje \texttt{GameProvider}. V něm nejsou implementovány tyto funkce, ty jsou spolu s logikou příchozích zpráv přemístěny do \texttt{gameActions}. Provider ovšem obsahuje efekt, pomocí kterého se připojí k websocket serveru.
 
@@ -465,6 +531,12 @@ Během vývoje se vyskytlo spoustu problémů, které se musely řešit, v této
 Největším problémem byla migrace SDK, které původně neexistovalo a jakmile se ukázalo, že je potřeba, tak bylo potřeba vytvořit nové rozhraní, rozhodnout, co je pro pluginy důležité, přetypovat spoustu metod v rámci serveru, přepsat v té době rozpracované pluginy, aby přešly na nový, lepší systém a provést refactoring názvů tříd serveru, aby se neshodovaly s názvy rozhraní v SDK. Názvy se nakonec vyřešily přidáním přípony \texttt{Impl} pro implementace a ponecháním názvů pro rozhraní.
 
 Dalším problémem bylo vytvoření asynchronní logiky dialogů, která umožní hráčům vybírat karty, hráče a podobně. Tento problém se řešil pomocí \texttt{CompletableFuture}, které umožňují vytvořit asynchronní logiku, která se dá jednoduše použít v rámci enginu a pluginů.
+
+Plugin Bang! pro svoji funkčnost potřebuje často znát vzdálenost mezi dvěma hráči. Je to sice logika specifická pro bang, ale protože se jedná o logiku, která se může hodit i jiným pluginům, tak byli do třídy \texttt{Hrac} přidány metody na počítání těchto vzdáleností. Problém který nastal byl, jak vyřešit karty \emph{Mustang} a \emph{Hledí}, ktré tyto vzdálenosti mění. Nakonec by problém vyřešen tak, že efekty dostaly možnost jak posunout vzdálenost o určitý počet míst. Tyto metody musí býýt dvě, podle směru, protože \emph{Hledí} posouvá pouze vzdálenost na kterou vidí ostatní hráče, zatímco \emph{Mustang} mění pouze tu na kterou je viděn ostatními. Při počítání vzdáleností se potom tyto posuny sečtou ze všech efektůa zohlední. Při počítání vzdáleností také bylo potřeba vzít ohled na to, že \texttt{List} hráčů není uložen jako hruh, ale jako řada. Tato problematika byla vyřešena pomocí funkcí min a max.
+
+Při programování některých funkcí bylo využito funkcionálního programování pomocí \texttt{stream()} metody, která umožňuje pracovat s kolekcemi dat pomocí funkcionálních operací jako jsou map, filter, reduce a podobně. Toto řešení pomohlo zjednodušit kód a udělat ho přehlednější, protože se místo psaní složitých smyček a podmínek použily jednoduché funkcionální operace. Problém u tohoto řešení bylo, že se někdy chovalo neočekávaně a hůře se opravovalo. Funkcionální programování také bylo využito u různých metod,  kterých se hodilo mít možnost předat další funkci jako parametr. Nejprve bylo složité se v tom vyznat, protože narozdíl od Javascriptu, má Java více druhů funkcí podle počtu parametrů a toho co vrací. Nakonec se ale podařilo vytvořit systém, který umožňuje předávat funkce jako parametry a využívat tak výhod funkcionálního programování.
+
+U třídy \texttt{HraImp} byl problém v tom, že při vytváření musela provést některé akce, které ale v konstruktoru být nemohly, protože se ještě nedokončila inicializace objektu. Tento problém se řešil pomocí statické tovární metody \texttt{vytvor()}, která hru vytvořeí a dané akce poté provede.
 
 Také se kvůli pár příkazům, které jsou ověřeny administrátorským heslem, musela vytvořit ochrana proti brute-force útokům. Ochrana se řeší čtyřsekundovým globálním zámkem, který je aktivovaný během zadávání hesla. Pokud je zámek aktivní, tak se žádný další pokus o zadání hesla neprovede, dokud zámek nevyprší. Toto řešení sice neodolá \emph{ddos} útokům, což ale nevadí, protože ověření hesla není kritickou funkcí, u které by vadila její nedostupnost.
 
