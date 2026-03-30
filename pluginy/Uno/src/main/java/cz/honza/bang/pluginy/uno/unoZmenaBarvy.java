@@ -51,8 +51,7 @@ public class unoZmenaBarvy extends UnoKarta {
             }
             hra.getKomunikator().posliRychleOznameniVsem(podleniBarva, kym);
             
-        });//toto nmůže blokovat thred!
-        //TODO: udelat, aby neslo hrat, nez se slib splní
+        });
         return true;
     }
     

@@ -6,7 +6,7 @@ export default function InPlayCards({vylozeneKarty}: {vylozeneKarty: CardType[]}
     const { setNodeRef, isOver } = useDroppable({ id: "InPlayCards" });
 
     return (
-        <div style={{ position: "relative", border: isOver ? "1px solid yellow" : "none", minHeight: "100px", minWidth: "100px" }} >
+        <div style={{ position: "relative", border: "none", minHeight: "100px", minWidth: "100px" }} >
             <Cards isAnimated={false} isRotated={false} onClickCard={alert} cards={vylozeneKarty}/>
             <div
                 ref={setNodeRef}

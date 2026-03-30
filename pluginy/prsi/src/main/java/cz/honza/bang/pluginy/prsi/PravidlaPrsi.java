@@ -150,7 +150,7 @@ public class PravidlaPrsi implements HerniPravidla{
     
     /**
      * Ukončí hru a pošle výsledky hráčům.
-     * Vytvoří 2D pole kde každá řada je jedno umístění a obsahuje hráče na tom místě.  //TODO: zkontrolovat
+     * Vytvoří 2D pole kde každá řada je jedno umístění a obsahuje hráče na tom místě. 
      */
     private void ukoncitHru(){
         List<Hrac> zbyvajici = new ArrayList<>();

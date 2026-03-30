@@ -55,7 +55,7 @@ public class Hokynarstvi extends Karta implements HratelnaKarta{
      * @param uKohoZacit u jaké položky v seznamu začít
      */
     private void nechatVybrat(List<Karta> karty, List<Hrac> hrajiciHraci, int uKohoZacit){
-        // TODO: je tu potřeba ontrola uKohoZacit a .size() ?
+        // TODO: je tu potřeba kontrola uKohoZacit a .size() ?
         Hrac hrac = hrajiciHraci.get(uKohoZacit);
         hra.getKomunikator().posliStavovuZpravu(hrac.getJmeno() + " vybírá kartu od hokynářství");
         

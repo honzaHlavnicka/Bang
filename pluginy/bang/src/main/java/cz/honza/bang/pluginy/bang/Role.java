@@ -18,7 +18,7 @@ public enum Role implements cz.honza.bang.sdk.Role {
     private static Role[] poradiZiskavaniRoli = new Role[]{Role.SERIF,Role.BANDITA,Role.ODPADLIK,Role.BANDITA,Role.POMOCNIK,Role.BANDITA,Role.POMOCNIK};
     
     /**
-     * Vytvoří pole obsahující role pro určitý počet hráčů v bangu //TODO:přesunout do pravidel bangu
+     * Vytvoří pole obsahující role pro určitý počet hráčů v bangu 
      * @param kolik hráčů hraje = kolik rolí je potřeba
      * @return pole rolí.
      */
