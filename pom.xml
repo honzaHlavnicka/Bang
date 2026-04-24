@@ -18,6 +18,7 @@
         <module>pluginy/bang</module>
         <module>pluginy/Uno</module>
         <module>pluginy/prsi</module>
+        <module>pluginy/milostny-dopis</module>
     </modules>
     
 

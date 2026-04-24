@@ -1,18 +1,29 @@
 #!/bin/bash
 
 # ! upozornění !
-# tento script byl vygenerován AI a není přímou součástí projektu
+# tento script byl částečně vygenerován AI
 # --------------------------------------------------------
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BUILD_DIR="$SCRIPT_DIR/build"
+PLUGINS_DIR="$BUILD_DIR/pluginy"
+
 # Zjisti, zda chceme spustit server po buildu
+if [ "$1" = "s" ]; then
+    # spustí server bez buildu
+    echo "⚠️  Spouštím server bez buildu (použije se poslední zkompilovaná verze)"
+    cd "$BUILD_DIR"
+    bash start.sh
+
+else
+
+
 RUN_SERVER=false
 if [ "$1" = "r" ]; then
     RUN_SERVER=true
 fi
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BUILD_DIR="$SCRIPT_DIR/build"
-PLUGINS_DIR="$BUILD_DIR/pluginy"
+
 
 echo "🔨 Zahajuji build..."
 if [ "$RUN_SERVER" = true ]; then
@@ -64,6 +75,10 @@ fi
 
 if [ -f "pluginy/Uno/target/Uno-1.0-SNAPSHOT.jar" ]; then
     cp pluginy/Uno/target/Uno-1.0-SNAPSHOT.jar "$PLUGINS_DIR/Uno.jar"
+fi
+
+if [ -f "pluginy/milostny-dopis/target/milostny-dopis-1.0-SNAPSHOT.jar" ]; then
+    cp pluginy/milostny-dopis/target/milostny-dopis-1.0-SNAPSHOT.jar "$PLUGINS_DIR/milostny-dopis.jar"
 fi
 
 # Vytvoření startovacího scriptu
@@ -127,4 +142,5 @@ if [ "$RUN_SERVER" = true ]; then
     echo ""
     cd "$BUILD_DIR"
     bash start.sh
+fi
 fi
