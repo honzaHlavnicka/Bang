@@ -19,6 +19,18 @@ export default function LoginPage() {
     
 
     useEffect(() => {
+
+        const autoconnect = sessionStorage.getItem("autoconnect");
+        if (autoconnect !== "" && autoconnect !== null && autoconnect !== undefined && autoconnect.indexOf(",") == 6) {
+            const [code,name] = autoconnect.split(",", 2);
+            setJmeno(name);
+            setGameCode(code);
+            setOpenCard("pripojeni");
+            connectToGame(code, name);
+            sessionStorage.removeItem("autoconnetct");
+            return;
+        }
+
         const params = location.search
             .substring(1)
             .split("&")
