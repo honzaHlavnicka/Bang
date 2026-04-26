@@ -2,10 +2,11 @@ import { useEffect } from "react";
 import { Wheel } from "react-custom-roulette";
 import globalCSS from "../styles/global.module.css";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const LuckyWheel = ({ options, chosedOptionId, onOk } : { options: {id: number;name: string;color: string;size?: number;}[], chosedOptionId: number, onOk: () => void }) => {
     const [mustSpin, setMustSpin] = useState(false);
-
+    const { t } = useTranslation();
     const [hasStopped, setHasStopped] = useState(false);
 
     useEffect(() => {
@@ -32,7 +33,7 @@ const LuckyWheel = ({ options, chosedOptionId, onOk } : { options: {id: number;n
             />
            
                 <button className={globalCSS.button} onClick={onOk}>
-                    {!hasStopped ? "zavřít" : "OK"}
+                    {!hasStopped ? t("dialog.zavrit") : t("OK")}
                 </button>
             
         </div>

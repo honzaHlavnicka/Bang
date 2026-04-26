@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import { useGame } from "../modules/GameContext";
 import { useEffect } from "react";
 
 export default function PlayersWaitingGame() {
     const {gameState ,startGame} = useGame();
     const isAdmin = gameState.isAdmin ?? false;
+    const {t} = useTranslation();
     
     // Obsluha Enter klávesy pro spuštění hry
     useEffect(() => {
@@ -31,7 +33,7 @@ export default function PlayersWaitingGame() {
     
     return (
         <div >
-            <h3 style={{marginBottom:"0px"}}>Připojení hráči:</h3>
+            <h3 style={{marginBottom:"0px"}}>{t("Připojení hráči:")}</h3>
             <ul style={{marginTop:"3px"}}>
             {gameState.players?.map(player => {return(
                 <li key={player.id}>
@@ -58,9 +60,9 @@ export default function PlayersWaitingGame() {
                     }
                 }}
                 tabIndex={0}
-                aria-label="Spustit hru"
+                aria-label={t("Spustit hru")}
             >
-                Spustit hru
+                {t("Spustit hru")}
             </button>: null}
         </div>
     );

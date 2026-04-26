@@ -4,8 +4,10 @@ import Card from "../Card";
 import Cards from "../Cards";
 import InPlayCards from "./InPlayCards";
 import NameTag from "./NameTag";
+import { useTranslation } from 'react-i18next';
 
- export default function MyThings() {
+export default function MyThings() {
+    const {t} = useTranslation();
     const {gameState,playCard} = useGame();
     const role = gameState.role;
     const jmeno = gameState.name;
@@ -26,7 +28,7 @@ import NameTag from "./NameTag";
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "flex-end", flex: "0 0 auto", }}>
             <div style={{ marginRight: "32px", width: "fit-content" }}>
-                <NameTag jmeno={jmeno || "nepojmenovaný hráč"} isDead={isDead} showDeadIndicator={gameState.allowedUIElements.includes("ZIVOTY")} style={{backgroundColor:(gameState.playerId === gameState.turnPlayerId)?"yellow":"white"}} />
+                <NameTag jmeno={jmeno || t("nepojmenovaný hráč")} isDead={isDead} showDeadIndicator={gameState.allowedUIElements.includes("ZIVOTY")} style={{backgroundColor:(gameState.playerId === gameState.turnPlayerId)?"yellow":"white"}} />
                 <div style={{display:"flex",justifyContent:"center"}}>
                     {gameState.allowedUIElements.includes("ROLE") ?    <Card image={`/img/karty/role/${role}.png`} />: null}
                     {gameState.allowedUIElements.includes("POSTAVA") ? <Card image={`/img/karty/postavy/${postava}.png`} />: null}

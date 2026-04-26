@@ -2,10 +2,12 @@ import { createPortal } from "react-dom";
 import { useZoom } from "../modules/ZoomContext";
 import css from "../styles/zoomDialog.module.css";
 import DarkModeSwitch from "./DarkModeSwitch";
+import { useTranslation } from "react-i18next";
 
 export default function ZoomDialog() {
     const { zoomedCard, setZoomedCard , toggleZoomMode} = useZoom();
     const isOpen = zoomedCard !== null;
+    const {t} = useTranslation();
 
     return createPortal(
         <div
@@ -17,7 +19,7 @@ export default function ZoomDialog() {
                 <DarkModeSwitch style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
 
                 <div className={css.header}>
-                    Přiblížená karta (kliknutím mimo kartu zavřít, kliknutím na kartu vypnou lupu)
+                    {t("Přiblížená karta (kliknutím mimo kartu zavřít, kliknutím na kartu vypnou lupu)")}   
                 </div>
                 {zoomedCard && (
                     <img

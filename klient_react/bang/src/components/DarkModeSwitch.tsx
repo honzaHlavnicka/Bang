@@ -1,17 +1,8 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-export default function DarkModeSwitch({style}: {style?: React.CSSProperties}) {
-    const btnStyle: React.CSSProperties = {
-        borderRadius: "50%",
-        height: "2em",
-        width: "2em",
-        border: "1px solid black",
-        backgroundColor: "white",
-        padding: "5px",
-        cursor: "pointer",
-        fontSize: "1.7em",
-        transition: "background-color 0.3s, color 0.3s",
-    };
+export default function DarkModeSwitch({ style }: { style?: React.CSSProperties }) {
+    const { i18n } = useTranslation();
 
     const [isDark, setIsDark] = useState(
         document.documentElement.classList.contains("darkMode")
@@ -35,24 +26,81 @@ export default function DarkModeSwitch({style}: {style?: React.CSSProperties}) {
 
     const menu = (e: React.MouseEvent) => {
         e.preventDefault();
-        //Zatím nic
+        // Zatím nic
     };
 
+    // 1. Styl celého "pilulkového" obalu
+    const pillStyle: React.CSSProperties = {
+        display: "flex",
+        alignItems: "center",
+        backgroundColor: isDark ? "rgba(40, 40, 40, 0.9)" : "rgba(255, 255, 255, 0.9)",
+        border: isDark ? "1px solid #555" : "1px solid #ccc",
+        borderRadius: "50px", // Udělá z obdélníku pilulku
+        padding: "4px", // Vnitřní mezera, aby kolečko nebylo úplně nalepené na hraně
+        gap: "12px", // Mezera mezi kolečkem a vlajkami
+        backdropFilter: "blur(5px)", // Pěkný efekt, když okno plave nad hrou
+        boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+        ...style, // Zde se aplikuje tvé position: fixed z Dialog.tsx
+    };
+
+    // 2. Styl samotného kolečka (vyplňuje výšku podle velikosti písma)
+    const btnStyle: React.CSSProperties = {
+        borderRadius: "50%",
+        height: "1.5em", // Velikost se odvíjí od font-size v props
+        width: "1.5em",
+        border: isDark ? "1px solid #fff" : "1px solid #000",
+        backgroundColor: isDark ? "white" : "black",
+        color: isDark ? "black" : "white",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        fontSize: "1em",
+        transition: "background-color 0.3s, color 0.3s",
+        padding: 0, // Důležité, aby z toho nebyla šiška
+    };
+
+    // 3. Dynamický styl pro vlaječky (neaktivní jsou šedé a poloprůhledné)
+    const flagStyle = (isActive: boolean): React.CSSProperties => ({
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        fontSize: "1.1em",
+        padding: "0 2px",
+        filter: isActive ? "none" : "grayscale(100%) opacity(40%)",
+        transition: "all 0.3s",
+        userSelect: "none"
+    });
+
     return (
-        <div>
-            {!isDark ? (
-                <button
-                    style={{ ...btnStyle, background: "black", ...style }}
-                    onClick={toggle}
-                    onContextMenu={e => {menu(e);}}
+        <div style={pillStyle}>
+            {/* Tlačítko pro tmavý/světlý režim */}
+            <button
+                style={btnStyle}
+                onClick={toggle}
+                onContextMenu={menu}
+                title={isDark ? "Přepnout na světlý režim" : "Přepnout na tmavý režim"}
+            >
+                {isDark ? "☀️" : "🌙"}
+            </button>
+
+            {/* Přepínač jazyků */}
+            <div style={{ display: "flex", gap: "6px", paddingRight: "6px" }}>
+                <button 
+                    style={flagStyle(i18n.resolvedLanguage === "cs")} 
+                    onClick={() => i18n.changeLanguage("cs")}
+                    title="Čeština"
                 >
-                    🌙
+                    🇨🇿
                 </button>
-            ) : (
-                <button style={{ ...btnStyle, background: "white",...style }} onClick={toggle} onContextMenu={e => {menu(e);}}>
-                    ☀️
+                <button 
+                    style={flagStyle(i18n.resolvedLanguage === "en")} 
+                    onClick={() => i18n.changeLanguage("en")}
+                    title="English"
+                >
+                    🇬🇧
                 </button>
-            )}
+            </div>
         </div>
     );
 }

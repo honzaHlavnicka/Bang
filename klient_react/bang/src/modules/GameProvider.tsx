@@ -5,6 +5,7 @@ import { handleGameMessage, connectToGame, changePlayerName,chooseCharacter, cre
 import toast from "react-hot-toast";
 import { useDialog } from "./DialogContext";
 import { notify } from "./notify";
+import { useTranslation } from "react-i18next";
 
 
 
@@ -12,6 +13,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const [gameState, setGameState] = useState<GameStateType>(gameStateDefault);
     const [ws, setWs] = useState<WebSocket | null>(null);
     const { openDialog } = useDialog();
+    const { t } = useTranslation();
+
 
     // drž aktuální stav ve ref, aby ho onmessage vždy četl aktuální
     const stateRef = useRef<GameStateType>(gameState);
@@ -36,7 +39,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         console.log("pokus o připojení k ws serveru na adrese " + socketAddress);
         socket.onopen = () => {
             setWs(socket);
-            toast.success("Připojeno k serveru");
+            toast.success(t("Připojeno k serveru"));
             if (import.meta.env.VITE_DEBUG) {
                 console.log("Debug mode is ON. Socket address: " + socketUrl);
                 (window as unknown as { ws: WebSocket }).ws = socket; //Přiřadí se pouze v debug módu, v produkci ochráněn před self-XSS
@@ -47,8 +50,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         socket.onclose = () => {
             console.log("WebSocket disconnected");
             setWs(null);
-            toast.error("Byl jsi odpojen od serveru");
-            openDialog({type:"INFO", data:{header:"Byl jsi odpojen od serveru",message:"Zkus znovu načíst stránku a kliknout na znovu se připojit ke hře."},dialogHeader:"Odpojení"}); 
+            toast.error(t("Byl jsi odpojen od serveru"));
+            openDialog({type:"INFO", data:{header:t("Byl jsi odpojen od serveru"),message:t("Zkus znovu načíst stránku a kliknout na znovu se připojit ke hře.")},dialogHeader:t("Odpojení")}); 
         };
         return () => socket.close();
     }, []);

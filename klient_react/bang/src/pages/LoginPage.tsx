@@ -4,8 +4,10 @@ import { useGame } from '../modules/GameContext';
 import toast from 'react-hot-toast';
 import DarkModeSwitch from '../components/DarkModeSwitch';
 import globalCSS from "../styles/global.module.css";
+import { useTranslation } from 'react-i18next';
 
 export default function LoginPage() {
+    const { t } = useTranslation();
     const [gameCode, setGameCode] = useState('');
     const [jmeno, setJmeno] = useState('');
     const [zobrazenaPaticka, setZobrazenaPaticka] = useState(true);
@@ -67,23 +69,23 @@ export default function LoginPage() {
 
     function zkontroluj(isToConnect: boolean = false) {
         if (jmeno.trim().length < 3) {
-            toast.error("Udělej to jméno delší, prosím");
+            toast.error(t("Udělej to jméno delší, prosím"));
             return false;
         }
         if (jmeno.trim().length > 15) {
-            toast.error("Udělej to jméno kratší, prosím");
+            toast.error(t("Udělej to jméno kratší, prosím"));
             return false;
         }
         if (gameCode.trim().length != 6 && isToConnect) {
-            toast.error("Kód hry musí mít 6 číslic");
-        
-            if (!window.confirm("Kód hry musí mít 6 číslic. Pokud si nejsi jistý, zkontroluj ho prosím ještě jednou. Pokračovat?")) {
+            toast.error(t("Kód hry musí mít 6 číslic"));
+
+            if (!window.confirm(t("Kód hry musí mít 6 číslic. Pokud si nejsi jistý, zkontroluj ho prosím ještě jednou. Pokračovat?"))) {
                 return false;
             }
         }
 
         if(!isToConnect && idTypuHry === -1){
-            toast.error("Vyber typ hry, prosím");
+            toast.error(t("Vyber typ hry, prosím"));
             return false;
         }
         return true;
@@ -96,9 +98,9 @@ export default function LoginPage() {
 
             <main  className={css.paddingBottom} >
                     <div className={`${css.sectionCard} ${css.sectionHero} ${css.box}`} >
-                <h1>Bang!</h1>
+                <h1>{t("NAZEV_STRÁNKY")}</h1>
                 <p>
-                   Vítej v online multiplayer karetním enginu! Připoj se do hry níže. Pokud umíš programovat, tak si vyrob vlastní <a href='https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md' target='_blank'>plugin</a>.
+                   {t("LOGIN_POPIS_BEZ_ODKAZU")} <a href='https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md' target='_blank'>{t("plugin")}</a>.
                 </p>
                 <div className={css.radioButtonsParent} >
                     {gameToken &&
@@ -106,43 +108,43 @@ export default function LoginPage() {
                         className={globalCSS.button + " " + (openCard == "pripojeni" ? globalCSS.buttonActive : "") + " " + css.radioButton}
                         onClick={() => setOpenCard("pripojeni")}
                     >
-                        <span>Vrátit se</span><span>zpět</span>
+                        <span>{t("VRÁTIT_SE_DLOUHÉ")}</span><span>{t("VRÁTIT_SE_KRÁTKÉ")}</span>
                     </button>}
                     <button 
                         className={globalCSS.button + " " + (openCard == "kod" ? globalCSS.buttonActive : "")+ " " + css.radioButton}
                         onClick={() => setOpenCard("kod")}
                     >
-                        <span>Připojit se ke hře</span><span>připojit</span>
+                        <span>{t("PŘIPOJIT_SE_KE_HŘE_DLOUHÉ")}</span><span>{t("PŘIPOJIT_KRÁTKÉ")}</span>
                     </button>
                     <button 
                         className={globalCSS.button + " " + (openCard == "vytvoreni" ? globalCSS.buttonActive : "")+ " " + css.radioButton}
                         onClick={() => setOpenCard("vytvoreni")}
                     >
-                        <span>Vytvořit novou hru</span><span>vytvořit</span>
+                        <span>{t("VYTVOŘIT_HRU_DLOUHÉ")}</span><span>{t("VYTVOŘIT_HRU_KRÁTKÉ")}</span>
                     </button>   
                     </div>
                 </div>
                 {gameToken && !gameState.inGame && !gameState.playerId && openCard == "pripojeni" ?  (
                     
                     <div className={css.box + " " + css.sectionCard} >
-                        <h2>Vrátit se k rozehrané hře</h2>
+                        <h2>{t("Vrátit se k rozehrané hře")}</h2>
                         <button 
                             className={globalCSS.button + " " + css.btnRight} 
                             onClick={() => returnToGame()}
-                        >Vrátit se</button>
+                        >{t("vrátit se")}</button>
                     </div>
                     
                 ): null}
                 {openCard == "kod" ?
                 <div className={css.box + " " + css.sectionCard} >
-                    <h2>Připojit se ke hře</h2>
+                    <h2>{t("Připojit se ke hře")}</h2>
                     <form
                         onSubmit={(e) => {
                             e.preventDefault();
                             if (zkontroluj(true)) connectToGame(gameCode, jmeno);
                         }}
                     >
-                        <h4>Kód hry, kam se chceš přihlásit:</h4>
+                        <h4>{t("Kód hry, kam se chceš přihlásit:")}</h4>
                         <input 
                             type="text" 
                             inputMode="numeric" 
@@ -152,10 +154,10 @@ export default function LoginPage() {
                                 setGameCode(e.target.value.replace(/[^0-9]/g, ''));
                             }}
                         />
-                        <h4>Tvoje jméno:</h4>
+                        <h4>{t("Tvoje jméno:")}</h4>
                         <input value={jmeno} onChange={e => setJmeno(e.target.value)}/><br />
                         <button type="submit" className={globalCSS.button}>
-                            Připojit se ke hře
+                            {t("Připojit se ke hře")}
                         </button>
                     </form>
                 </div>
@@ -164,35 +166,35 @@ export default function LoginPage() {
 
                 {openCard == "vytvoreni" ?                 
                 <div className={css.box} >
-                    <h2>Vytvořit novou hru</h2>
+                    <h2>{t("Vytvořit novou hru")}</h2>
                     <form
                         onSubmit={(e) => {
                             e.preventDefault();
                             if (zkontroluj(false)) createGame(idTypuHry, jmeno);
                         }}
                     >
-                        <h4>Typ hry</h4>
+                        <h4>{t("Typ hry")}</h4>
                         <select 
                             value={idTypuHry === -1 ? "" : String(idTypuHry)}
                             onChange={(e)=>{ setIdTypuHry(parseInt((e.target as HTMLSelectElement).value)); }}
                         >
                             {gameState.gameTypesAvailable ? gameState.gameTypesAvailable.map((val)=>(
                                 <option key={val.id} value={val.id} title={val.description}>{val.name}</option>
-                            )) : <option disabled>Načítám...</option>}
-                            <option onClick={() =>location.href = "https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md"} value={-1} >Vytvoř si vlastní! [⇗]</option>
+                            )) : <option disabled>{t("Načítám...")}</option>}
+                            <option onClick={() =>location.href = "https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md"} value={-1} >{t("Vytvoř si vlastní! [⇗]")}</option>
                         </select>
                         <p>
                             {gameState.gameTypesAvailable && idTypuHry !== -1
                                 ? gameState.gameTypesAvailable.find(gt => gt.id === idTypuHry)?.description ?? ""
                                 : ""}
                         </p>
-                        <h4>Tvoje jméno:</h4>
+                        <h4>{t("Tvoje jméno:")}</h4>
                         <input
                             value={jmeno}
                             onChange={e => setJmeno(e.target.value)}
                         /><br />
                         <button type="submit" className={globalCSS.button}>
-                            vytvořit hru
+                            {t("Vytvořit hru")}
                         </button>
                     </form>
                     
@@ -208,11 +210,11 @@ export default function LoginPage() {
                         &copy; 2026 Jan Hlavnička. 
                     </p>
                     <nav>
-                        <a href="/apidocs" target="_blank" rel="noopener noreferrer">Dokumentace SDK</a> | <a href="https://honzaa.cz" target='_blank' >honzaa.cz</a> | <a href="https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md" target='_blank' >vytvoření pluginu</a> | <a href="https://github.com/honzaHlavnicka/Bang" target="_blank">GitHub</a>
+                        <a href="/apidocs" target="_blank" rel="noopener noreferrer">{t("Dokumentace SDK")}</a> | <a href="https://honzaa.cz" target='_blank' >{t("honzaa.cz")}</a> | <a href="https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md" target='_blank' >{t("vytvoření pluginu")}</a> | <a href="https://github.com/honzaHlavnicka/Bang" target="_blank">{t("GitHub")}</a>
                     </nav>
                     <small>
                         <p>
-                            <strong>Upozornění:</strong> Tento web je nekomerční studentský a osobní projekt. Není nijak spojen s původními vydavateli her a neklade si žádné nároky na vlastnictví jejich duševního vlastnictví.
+                            <strong>{t("Upozornění:")}</strong> Tento web je nekomerční studentský a osobní projekt. Není nijak spojen s původními vydavateli her a neklade si žádné nároky na vlastnictví jejich duševního vlastnictví.
                             BANG!® je registrovaná ochranná známka společnosti daVinci Editrice S.r.l. (dV Giochi). V České republice hru vydává ALBI Česká republika a.s. Veškerá autorská práva k ilustracím karet, názvům a herním mechanismům patří jejich příslušným majitelům.
                             UNO® je registrovaná ochranná známka společnosti Mattel, Inc.
                             Použité ikony třetích stran: <a href="https://www.flaticon.com/free-icons/fire" title="fire icons" target="_blank" rel="noopener noreferrer">Fire icon created by Freepik - Flaticon</a>.
@@ -223,7 +225,7 @@ export default function LoginPage() {
                         </p>
                     </small>
                     <button onClick={() => {setZobrazenaPaticka(false);localStorage.setItem("souhlas", "true");}} className={globalCSS.button} style={{marginTop:"16px"}}>
-                        souhlasím
+                        {t("Souhlasím")}
                     </button>
                 </div>
             </footer>

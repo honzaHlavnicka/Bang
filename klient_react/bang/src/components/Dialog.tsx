@@ -9,11 +9,13 @@ import toast from "react-hot-toast";
 import DarkModeSwitch from "./DarkModeSwitch";
 import globalCSS from "../styles/global.module.css";
 import LuckyWheel from "./LuckyWheel";
+import { useTranslation } from "react-i18next";
 
 export default function Dialog() {
     const { closeDialog, dialog} = useDialog();
     const [selected, setSelected] = useState<Array<number>>([]);
     const [text, setText] = useState("");
+    const { t } = useTranslation();
 
     // Resetování stavů při změně dialogu
     useEffect(() => {
@@ -126,7 +128,7 @@ export default function Dialog() {
                             </div>
                         ))}
                     </div>
-                    <div>Vybráno {selected.length} z {dialog.data.max}.<br/>min {dialog.data.min}, max {dialog.data.max}</div>
+                    <div>{t("dialog.vybrano_z_max", { count: selected.length, max: dialog.data.max })}<br/>{t("dialog.min_max", { min: dialog.data.min, max: dialog.data.max })}</div>
                     <ZoomToggleButton style={{filter:"grayscale(70%)",scale:0.8}}/>
                     {(selected.length >= dialog.data.min) ? 
                         <button className={globalCSS.button} onClick={() => {
@@ -135,8 +137,8 @@ export default function Dialog() {
                                 dialog.callback(selected);
                             }
                             setSelected([]);
-                        }}>Potvrdit výběr</button> 
-                    : <div>Vyber ještě {dialog.data.min - selected.length} karty.</div>}
+                        }}>{t("Potvrdit výběr")}</button>
+                    : <div>{t("dialog.vyber_karty", { count: dialog.data.min - selected.length })}</div>}
                 </div>
             );
             break;
@@ -165,8 +167,8 @@ export default function Dialog() {
                             closeDialog();
                             dialog.callback(selected);
                             setSelected([]);
-                        }} className={globalCSS.button}>Potvrdit</button> 
-                    : <div>Vyberte ještě {dialog.data.min - selected.length} {dialog.data.min - selected.length === 1 ? "hráče" : "hráčů"}.</div>}
+                        }} className={globalCSS.button}>{t("dialog.Potvrdit")}</button> 
+                    : <div>{t("dialog.vyber_hracu", { count: dialog.data.min - selected.length })}</div>}
                 </div>
             );
             break;
@@ -194,24 +196,24 @@ export default function Dialog() {
                     {dialog.data.image ? <img src={dialog.data.image} alt={dialog.data.header} style={{width:"100%"}}/>: null}
                     {dialog.data.header ? <h2>{dialog.data.header}</h2> : null}
                     <p>{dialog.data.message}</p>
-                    <button className={globalCSS.button} onClick={() => closeDialog()}>OK</button>
+                    <button className={globalCSS.button} onClick={() => closeDialog()}>{t("dialog.OK")}</button>
                 </div>
             );
             break;
         case "CONFIRM":
             content = (
                 <div style={{display:"flex", flexDirection:"column", alignItems:"center", gap: 10}} >
-                    <h2>{dialog.data.title || "Potvrzení"}</h2>
+                    <h2>{dialog.data.title || t("dialog.Potvrzení")}</h2>
                     <p>{dialog.data.message}</p>
                     <div style={{display:"flex", flexDirection:"row", gap: 10}}>
                         <button className={globalCSS.button} onClick={() => {
                             closeDialog();
                             if(dialog.callback) dialog.callback(true);
-                        }}>Ano</button>
+                        }}>{t("dialog.Ano")}</button>
                         <button className={globalCSS.button} onClick={() => {
                             closeDialog();
                             if(dialog.callback) dialog.callback(false);
-                        }}>Ne</button>
+                        }}>{t("dialog.Ne")}</button>
                     </div>
                 </div>
             );
@@ -219,7 +221,7 @@ export default function Dialog() {
         case "TEXT":
             content = (
                 <div style={{display:"flex",flexDirection:"column", alignItems:"center", gap: 10}} >
-                    <h2>{dialog.data.title || "Zadejte text"}</h2>
+                    <h2>{dialog.data.title || t("dialog.Zadejte text")}</h2>
                     <input 
                         type="text" 
                         value={text} 
@@ -237,7 +239,7 @@ export default function Dialog() {
                     <button className={globalCSS.button} onClick={() => {
                         closeDialog();
                         if (dialog.callback) dialog.callback(text);
-                    }}>{dialog.data.buttonText || "Potvrdit"}</button>
+                    }}>{dialog.data.buttonText || t("dialog.Potvrdit")}</button>
                 </div>
             );
             break;
@@ -256,7 +258,7 @@ export default function Dialog() {
     return createPortal((
         <>
         <DarkModeSwitch style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
-        <div className={css.dialogBackground} style={{cursor:(dialog.notClosable ? "not-allowed" : "auto"),display:(dialog.type == null ? "none" : "flex")}} onClick={()=>{if(dialog.notClosable){toast.error("Musíš si něco vybrat.")}else{closeDialog()}}}>
+        <div className={css.dialogBackground} style={{cursor:(dialog.notClosable ? "not-allowed" : "auto"),display:(dialog.type == null ? "none" : "flex")}} onClick={()=>{if(dialog.notClosable){toast.error(t("dialog.Musíš si něco vybrat." ))}else{closeDialog()}}}>
             <div className={css.dialogBox} onClick={e => e.stopPropagation()} style={{cursor:"auto"}}>
                 <div className={css.dialogHeader}>
                     {header}

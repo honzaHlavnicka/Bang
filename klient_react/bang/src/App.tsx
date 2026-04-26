@@ -2,14 +2,19 @@ import React, { Suspense, useEffect } from "react";
 import { useGame } from './modules/GameContext';
 import WaitingRoom from "./pages/WaitingRoom";
 import AfterGamePage from "./pages/AfterGamePage";
+import { useTranslation } from "react-i18next";
 
 // Lazy importy těžkých stránek
 const GamePage = React.lazy(() => import('./pages/GamePage'));
 const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 const BeforeGameWaiting = React.lazy(() => import('./pages/BeforeGameWaiting'));
 
+
 function App() {
   const { gameState } = useGame();
+  const { t } = useTranslation();
+
+
 
   // Přednačítání dalších stránek
   useEffect(() => {
@@ -23,7 +28,7 @@ function App() {
   }, [gameState.inGame, gameState.gameStarted]);
 
   return (
-    <Suspense fallback={<WaitingRoom>Náčítání...</WaitingRoom>}>
+    <Suspense fallback={<WaitingRoom>{t("Načítání...")}</WaitingRoom>}>
       {gameState.inGame ? (
         gameState.gameStarted ? (
           gameState.gameEnded ? (
@@ -42,11 +47,12 @@ function App() {
 }
 
 function SafeLoginPage({ startedConection }: { startedConection: boolean }) {
+  const { t } = useTranslation();
   if (!startedConection) {
     return <WaitingRoom>
-      <h1>Probíhá připojování k serveru...</h1>
+      <h1>{t("Probíhá připojování k serveru...")}</h1>
       <hr />
-      Pokud se tato obrazovka nezmění během několika sekund, zkontroluj prosím připojení k internetu a zda není server vypnutý.
+      {t("Pokud se tato obrazovka nezmění během několika sekund, zkontroluj prosím připojení k internetu a zda není server vypnutý.")}
       </WaitingRoom>;
   } else {
     return <LoginPage />;

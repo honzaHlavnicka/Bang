@@ -6,10 +6,12 @@ import globalCSS from "../../styles/global.module.css";
 
 import Fire from "./Fire";
 import { useDialog } from "../../modules/DialogContext";
+import { useTranslation } from "react-i18next";
 export default function CentralPanel() {
     //const [deckImages, setDeckImages] =  React.useState<string[]>([]);
     const {gameState, drawCard, endTurn, clickUIButton} = useGame();
     const {openDialog} = useDialog();
+    const {t} = useTranslation();
 
     //const imagesForDeck = deckImages.length ? deckImages : gameState.discardPile;
     const imagesForDeck = gameState.discardPile;
@@ -25,7 +27,7 @@ export default function CentralPanel() {
         <div style={{flex:1, minHeight:0, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", }}>
             <div style={{display:"flex", flexDirection:"column", alignItems:"flex-start", flexWrap:"wrap", marginRight: "2em"}}>
                 {gameState.allowedUIElements.includes("UKONCENI_TAHU") ? 
-                <button className={globalCSS.button}  onClick={()=>{endTurn();}} style={{marginRight:20}}>Ukončit tah</button>
+                <button className={globalCSS.button}  onClick={()=>{endTurn();}} style={{marginRight:20}}>{t("Ukončit tah")}</button>
                 : null}
                 <ZoomToggleButton />
                 {gameState.customUIButtons.length > 0 && 
