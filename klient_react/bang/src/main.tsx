@@ -9,6 +9,9 @@ import Dialog from './components/Dialog.tsx'
 import { ZoomProvider } from './modules/ZoomContext.tsx'
 import ZoomDialog from './components/zoomDialog.tsx'
 
+import '../i18n.ts';
+
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <DialogProvider>

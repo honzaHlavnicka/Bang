@@ -1,9 +1,11 @@
 import { useGame } from "../modules/GameContext";
 import Card from "./Card";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function CharacterPicker() {
     const {gameState, chooseCharacter} = useGame();
+    const {t} = useTranslation();
 
     // Obsluha klávesových zkratek pro výběr postav (1 a 2)
     useEffect(() => {
@@ -35,7 +37,7 @@ export default function CharacterPicker() {
     }, [gameState.characters, chooseCharacter]);
 
     if(!gameState.characters){
-        return <div>Načítání postav...</div>
+        return <div>{t("Načítání postav...")}</div>
     }
     if(gameState.characters.length === 0){
         return;
@@ -48,7 +50,7 @@ export default function CharacterPicker() {
     return (
         <div style={{textAlign:"center",padding:"10px",backgroundColor:"rgba(0,0,0,0.5)",borderRadius:"10px",color:"white"}}>
 
-        <h3>vyber si jednu z těchto postav</h3>
+        <h3>{t("vyber si jednu z těchto postav")}</h3>
         <div style={{display:"flex",gap:"10px",justifyContent:"center",flexWrap:"wrap"}}>
             {gameState.characters!.map((character, idx) => (
             <div key={character.obrazek + "_" + idx} style={{position:"relative"}}>
