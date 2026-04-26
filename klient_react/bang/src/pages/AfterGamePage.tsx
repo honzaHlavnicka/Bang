@@ -26,6 +26,14 @@ export default function AfterGamePage(){
                     <a className={globalCSS.button} href="/">Zpět na úvodní stránku</a>
                 </div>
             </div>
+            <div className={css.content}>
+                <h2><img src="https://world-quiz.com/newlogo.webp" alt="World quiz!" width={50} height={50} style={{ verticalAlign: "middle", marginRight: "8px" }} /> World quiz</h2>
+                <a href="https://world-quiz.com/cs/game/flags/europe" target="_blank" >
+                    <img src="/img/world-quiz-obrazovka.png" alt="World quiz screenshot" style={{width:"100%",borderRadius:"8px"}} />
+                </a>
+                <p>Pokud už ostatní nechtějí hrát a stále se nudíš, tak si protrénuj své zeměpisné znalosti na webu <a target="_blank" href="https://world-quiz.com">world-quiz.com</a></p>
+
+            </div>
             <DarkModeSwitch style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
         </div>
     );
