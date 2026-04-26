@@ -14,6 +14,7 @@ import cz.honza.bang.sdk.Karta;
 import cz.honza.bang.sdk.Efekt;
 import cz.honza.bang.sdk.HratelnaKarta;
 import cz.honza.bang.sdk.VylozitelnaKarta;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -42,6 +43,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     private int pocetPripojenychHracu = 0;
     private Map<HracImp, Map<Integer, CustomUIButton>> customUIByPlayer = new ConcurrentHashMap<>();
     private int nextUIButtonId = 1000;
+    private VoiceChatManager voiceChatManager;
     
     // Timeout pro smazání neaktivní hry
     private Timer hraCleupTimer = null;
@@ -67,6 +69,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     public KomunikatorHryImp(SocketServer socket,int id) {
         this.socket = socket;
         idHry = id;
+        this.voiceChatManager = new VoiceChatManager(this);
     }
     public static KomunikatorHryImp vytvor(SocketServer socket,int id,int typHry){
         KomunikatorHryImp komunikator = new KomunikatorHryImp(socket, id);
@@ -170,6 +173,12 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
                 posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
             }
         }
+        if(message.startsWith("voicechat:pripojeni:")){
+            String peerId = message.replace("voicechat:pripojeni:", "");
+            voiceChatManager.pripojiHrace(hrac, peerId);
+        }
+        
+        
     }
     
     /**
@@ -254,6 +263,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         HracImp hrac = hraciPodleWebsocketu.get(conn);
         hraciPodleWebsocketu.remove(conn);
         websocketPodleHracu.remove(hrac);
+        voiceChatManager.odpojHrace(hrac);
         if(hraciPodleWebsocketu.isEmpty()){
             // Zrušit starý timeout pokud existuje
             zrusitTimeoutSmezaniHry();
@@ -810,6 +820,16 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         });
         
         json.put("cekajiciOdpovedi", cekajiciOdpovediJson);
+        
+        // Voice Chat info
+        JSONObject voiceChatInfo = new JSONObject();
+        voiceChatInfo.put("pocetPripojenychHracu", voiceChatManager.getPocetPripojenychHracu());
+        JSONObject hraciVoiceChat = new JSONObject();
+        voiceChatManager.getDebugInfo().forEach((jmeno, peerId) -> {
+            hraciVoiceChat.put(jmeno, peerId);
+        });
+        voiceChatInfo.put("hraci", hraciVoiceChat);
+        json.put("voiceChat", voiceChatInfo);
         
         return json.toString();
     }

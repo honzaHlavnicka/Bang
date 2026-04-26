@@ -176,11 +176,13 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         if(!this.zahajena && zahajena){
             this.zahajena = zahajena;
             //zahájení hry:
-
+            
+            spravceTahu = new SpravceTahuImp(hraci);
+            
             herniPravidla.poSpusteniHry();
             
             komunikator.posliZahajeniHry();
-            spravceTahu = new SpravceTahuImp(hraci);
+            
             
             for (Hrac hrac : hraci) {
                 herniPravidla.pripravitHrace(hrac);

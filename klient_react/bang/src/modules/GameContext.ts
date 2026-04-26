@@ -86,6 +86,9 @@ export const GameContext = createContext<{
     putCardInPlay: (cardId:number) => void;
     putCardInPlayOnPlayer: (cardId:number, playerId:number) => void;
     clickUIButton: (buttonId:number) => void;
+    voiceInit: (userId: string, onVoiceUpdate: () => void, sendMessage: (msg: string) => void) => Promise<void>;
+    voiceToggleMute: (isMuted: boolean) => void;
+    voiceDisconnect: () => void;
 
 } | null>(null);
 

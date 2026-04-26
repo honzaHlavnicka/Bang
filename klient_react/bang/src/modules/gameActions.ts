@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import type { CardType, GameStateType } from "./GameContext";
 import { type DialogState } from "./DialogContext";
 import type { RefObject } from "react";
+import { voiceManager } from "../voice/voiceManager";
 
 
 // Helper types for server payloads
@@ -552,6 +553,11 @@ export function handleGameMessage(
 
         case "obrazekDobiracihoBalicku": {
             setGameState(prev => ({ ...prev, talonTopCard: payload }));
+            break;
+        }
+        case "voicechat": {
+            // Předáme zprávu voiceManager, který si ji zpracuje
+            voiceManager.handleMessage(payload);
             break;
         }
         default: {

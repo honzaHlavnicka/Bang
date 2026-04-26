@@ -3,6 +3,7 @@ import MyThings from "../components/game/MyThings";
 import Players from "../components/game/Players";
 import CentralPanel from "../components/game/CentralPanel";
 import GlobalNotifications from "../components/GlobalNotifications";
+import VoiceChatWidget from "../components/VoiceChatWidget";
 import { DndContext, type DragEndEvent } from "@dnd-kit/core";
 import { useGame } from "../modules/GameContext";
 
@@ -37,6 +38,7 @@ export default function GamePage() {
                     <Players />
                     <CentralPanel />
                     <MyThings />
+                    <VoiceChatWidget />
                 </div>
             </DndContext>
     );

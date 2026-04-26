@@ -72,6 +72,7 @@ public class SocketServer extends WebSocketServer {
         
         if(komunikator != null){           //Pokud byl uživatel připojen ke hře.
             komunikator.hracOdpojen(conn);
+            // TODO: odpojení peerJS
         }
     }
 
@@ -121,7 +122,7 @@ public class SocketServer extends WebSocketServer {
             return;
         }
         if(message.startsWith("infoHer")){
-            StringBuilder sb = new StringBuilder("infoHer:{\"verze\":\"0.0.7\",\"hry\":");
+            StringBuilder sb = new StringBuilder("infoHer:{\"verze\":\"1.0.0\",\"hry\":");
             sb.append(SpravceHernichPravidel.getJSONVytvoritelneHry());
             //tady jsou přidávat další data o serveru.
             sb.append("}");
@@ -177,12 +178,12 @@ public class SocketServer extends WebSocketServer {
         
         if(message.startsWith("vraceniSe:")){
             if(message.length() < 16 + 8){
-                conn.send("error:{\"error\":\"neplatný token\"}");
+                conn.send("error:{\"error\":\"Neplatný token\"}");
                 return;
             }
             KomunikatorHryImp komunikator = hryPodleId.get(message.substring(10, 16));
             if(komunikator == null){
-                conn.send("error:{\"error\":\"hra do které se snažíš připojit neexistuje\"}");
+                conn.send("error:{\"error\":\"Hra, do které se snažíš připojit neexistuje\"}");
                 return;
             }
             if(komunikator.vraciSeHrac( conn,message.substring(16))){
