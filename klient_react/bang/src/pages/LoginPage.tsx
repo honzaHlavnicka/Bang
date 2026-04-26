@@ -85,7 +85,7 @@ export default function LoginPage() {
         }
 
         if(!isToConnect && idTypuHry === -1){
-            toast.error(t("Vyber typ hry, prosím"));
+            toast.error(t("vyber typ hry, prosím"));
             return false;
         }
         return true;

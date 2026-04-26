@@ -37,7 +37,7 @@
     "Hra skončila":"Hra skončila",
     "Výsledková tabulka":"Výsledková tabulka",
     "Zpět na úvodní stránku":"Zpět na úvodní stránku",
-    "na {{index}}. místě:":"na {{index}}. místě:",
+    "na {{index}}. místě":"na {{index}}. místě:",
     "Čekání na další hráče":"Čekání na další hráče",
     "Nasdílej jim kód:":"Nasdílej jim kód:",
 
@@ -87,5 +87,6 @@
     "Probíhá připojování k serveru...": "Probíhá připojování k serveru...",
     "Pokud se tato obrazovka nezmění během několika sekund, zkontroluj prosím připojení k internetu a zda není server vypnutý.": "Pokud se tato obrazovka nezmění během několika sekund, zkontroluj prosím připojení k internetu a zda není server vypnutý.",
 
-    "Ukončit tah": "Ukončit tah"
+    "Ukončit tah": "Ukončit tah",
+    "Načítání...": "Načítání..."
 }

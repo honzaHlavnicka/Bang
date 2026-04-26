@@ -34,7 +34,7 @@
     "Hra skončila": "Game over",
     "Výsledková tabulka": "Scoreboard",
     "Zpět na úvodní stránku": "Back to home page",
-    "na {{index}}. místě:": "in {{index}} place:",
+    "na {{index}}. místě": "in {{index}} place:",
     "Čekání na další hráče": "Waiting for other players",
     "Nasdílej jim kód:": "Share this code with them:",
     "Udělej to jméno delší, prosím": "Please make the name longer",
@@ -43,7 +43,7 @@
     "Kód hry musí mít 6 číslic. Pokud si nejsi jistý, zkontroluj ho prosím ještě jednou. Pokračovat?": "Game code must be 6 digits. If you're not sure, please check it again. Continue?",
     "vyber typ hry, prosím": "please select a game type",
     "NAZEV_STRÁNKY": "Bang!",
-    "LOGIN_POPIS_BEZ_ODKAZU": "Welcome to the online multiplayer card engine! Join a game below. If you know how to program, create your own ",
+    "LOGIN_POPIS_BEZ_ODKAZU": "Welcome to the online multiplayer card engine! Join a game below. If you know how to code, create your own ",
     "plugin": "plugin",
     "VRÁTIT_SE_DLOUHÉ": "Go back",
     "VRÁTIT_SE_KRÁTKÉ": "back",
@@ -74,5 +74,6 @@
     "Kód hry, kam se chceš přihlásit:": "Game code to join:",
     "Tvoje jméno:": "Your name:",
     "vyber si jednu z těchto postav": "select one of these characters",
-    "Ukončit tah": "End turn"
+    "Ukončit tah": "End turn",
+    "Načítání...": "Loading..."
 }

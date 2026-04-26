@@ -29,6 +29,26 @@ export default function DarkModeSwitch({ style }: { style?: React.CSSProperties 
         // Zatím nic
     };
 
+    const zmenJazyk = (novyJazyk: string) => {
+        // 1. Změníme jazyk v i18n
+        i18n.changeLanguage(novyJazyk);
+
+        // 2. Přepíšeme URL adresu v prohlížeči (bez obnovení stránky!)
+        const aktualniCesta = window.location.pathname; // např. "/cs/hra/123456"
+        const cesty = aktualniCesta.split('/').filter(Boolean); // rozseká na ["cs", "hra", "123456"]
+
+        // Pokud už tam nějaký jazyk je (cs/en), nahradíme ho. Pokud není, přidáme ho.
+        if (cesty.length > 0 && (cesty[0] === 'cs' || cesty[0] === 'en')) {
+            cesty[0] = novyJazyk;
+        } else {
+            cesty.unshift(novyJazyk);
+        }
+
+        // Poskládáme novou URL a podstrčíme ji prohlížeči
+        const novaUrl = '/' + cesty.join('/') + window.location.search;
+        window.history.pushState({}, '', novaUrl);
+    };
+
     // 1. Styl celého "pilulkového" obalu
     const pillStyle: React.CSSProperties = {
         display: "flex",
@@ -88,14 +108,14 @@ export default function DarkModeSwitch({ style }: { style?: React.CSSProperties 
             <div style={{ display: "flex", gap: "6px", paddingRight: "6px" }}>
                 <button 
                     style={flagStyle(i18n.resolvedLanguage === "cs")} 
-                    onClick={() => i18n.changeLanguage("cs")}
+                    onClick={() => zmenJazyk("cs")}
                     title="Čeština"
                 >
                     🇨🇿
                 </button>
                 <button 
                     style={flagStyle(i18n.resolvedLanguage === "en")} 
-                    onClick={() => i18n.changeLanguage("en")}
+                    onClick={() => zmenJazyk("en")}
                     title="English"
                 >
                     🇬🇧
