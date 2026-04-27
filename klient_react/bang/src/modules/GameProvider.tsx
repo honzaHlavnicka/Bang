@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { GameContext, gameStateDefault } from "./GameContext";
 import type { GameStateType } from "./GameContext";
-import { handleGameMessage, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard, drawCard, returnToGame, endTurn, fireCard, putCardInPlay, putCardInPlayOnPlayer, clickUIButton } from "./gameActions";
+import { handleGameMessage, connectToGame, changePlayerName,chooseCharacter, createGame, startGame, playCard, drawCard, returnToGame, endTurn, fireCard, putCardInPlay, putCardInPlayOnPlayer, clickUIButton, startNewGameAndDeleteThisOne } from "./gameActions";
 import toast from "react-hot-toast";
 import { useDialog } from "./DialogContext";
 import { notify } from "./notify";
@@ -72,6 +72,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             putCardInPlay: (cardId) => putCardInPlay(ws, cardId),
             putCardInPlayOnPlayer: (cardId, playerId) => putCardInPlayOnPlayer(ws, cardId, playerId),
             clickUIButton: (buttonId) => clickUIButton(ws, buttonId),
+            startNewGameAndDeleteThisOne: () => startNewGameAndDeleteThisOne(ws, openDialog, gameState),
+
         }}>
             {children}
         </GameContext.Provider>

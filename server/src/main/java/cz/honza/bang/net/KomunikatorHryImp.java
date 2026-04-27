@@ -158,14 +158,24 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         if(message.startsWith("spaleni:")){
             hrac.spalitKartu(message.replace("spaleni:", ""));
         }
-        if(message.startsWith("novaHraSHracema:")){
+        if(message.startsWith("nahradHru:")){
             if(!hrac.equals(admin)){
                 posliChybu(hrac, Chyba.NEJSI_ADMIN_HRY);
                 return;
             }
             try {
-                int id = Integer.parseInt(message.replace("novaHraSHracema:", ""));
-                smazatHruAVyrobytNovou(id);
+                int id = Integer.parseInt(message.replace("nahradHru:", ""));
+                
+                int noveId = socket.novaHra(id).getIdHry();
+                conn.send("nahradHruBezPtani:" + noveId + "," + hrac.getJmeno());
+                
+                
+                for (Map.Entry<HracImp, WebSocket> entry : websocketPodleHracu.entrySet()) {
+                    if(entry.getKey() != hrac){
+                        entry.getValue().send("nahradHru:" + noveId + "," + entry.getKey().getJmeno());
+                    }
+                }
+                
             } catch (NumberFormatException ex) {
                 posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
             }
@@ -570,7 +580,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         this.admin = (HracImp) admin;
     }
 
-    
+    @Deprecated
     private void smazatHruAVyrobytNovou(int id){
         hra = HraImp.vytvor(this,id);
         Map<WebSocket, HracImp> novyHraciPodleWebsocketu = new ConcurrentHashMap<>();

@@ -7,9 +7,11 @@ import globalCSS from "../../styles/global.module.css";
 import Fire from "./Fire";
 import { useDialog } from "../../modules/DialogContext";
 import { useTranslation } from "react-i18next";
+
+
 export default function CentralPanel() {
     //const [deckImages, setDeckImages] =  React.useState<string[]>([]);
-    const {gameState, drawCard, endTurn, clickUIButton} = useGame();
+    const {gameState, drawCard, endTurn, clickUIButton, startNewGameAndDeleteThisOne} = useGame();
     const {openDialog} = useDialog();
     const {t} = useTranslation();
 
@@ -28,6 +30,9 @@ export default function CentralPanel() {
             <div style={{display:"flex", flexDirection:"column", alignItems:"flex-start", flexWrap:"wrap", marginRight: "2em"}}>
                 {gameState.allowedUIElements.includes("UKONCENI_TAHU") ? 
                 <button className={globalCSS.button}  onClick={()=>{endTurn();}} style={{marginRight:20}}>{t("Ukončit tah")}</button>
+                : null}
+                {gameState.isAdmin ?
+                    <button className={globalCSS.button} onClick={() => {startNewGameAndDeleteThisOne()}}>{t("Smazat hru a začít jinou")}</button>
                 : null}
                 <ZoomToggleButton />
                 {gameState.customUIButtons.length > 0 && 

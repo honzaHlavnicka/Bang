@@ -135,6 +135,7 @@ public class SocketServer extends WebSocketServer {
                 posliChybu(conn, Chyba.UZ_PRIPOJEN);
                 return;
             }
+            
             int typHry;
             try{
                 typHry = Integer.parseInt(message.replace("novaHra:", ""));
@@ -142,12 +143,8 @@ public class SocketServer extends WebSocketServer {
                 typHry = 0;
             }
             
-            int kodKry = nahodneIdHry();
-            KomunikatorHryImp komunikator = KomunikatorHryImp.vytvor(this, kodKry, typHry);
-            hryPodleId.put(Integer.toString(kodKry), komunikator);
-            pouziteKody.add(Integer.valueOf(kodKry));
-            System.out.println("novaHra:" + kodKry);
-            conn.send("novaHra:" + kodKry);
+            KomunikatorHryImp komunikator = novaHra(typHry);
+            conn.send("novaHra:" + komunikator.getIdHry());
             komunikator.novyHrac(conn);
             komunikatoryHracu.put(conn, komunikator);
             komunikator.nactiHru(conn);
@@ -228,6 +225,16 @@ public class SocketServer extends WebSocketServer {
         hryPodleId.remove(String.valueOf(kod));
         pouziteKody.remove(Integer.valueOf(kod));
         
+    }
+    
+    public KomunikatorHryImp novaHra(int typHry){
+        int kodKry = nahodneIdHry();
+        KomunikatorHryImp komunikator = KomunikatorHryImp.vytvor(this, kodKry, typHry);
+        hryPodleId.put(Integer.toString(kodKry), komunikator);
+        pouziteKody.add(Integer.valueOf(kodKry));
+        System.out.println("novaHra:" + kodKry);
+       
+        return komunikator;
     }
     
     private String serverDataHTML(){

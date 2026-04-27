@@ -19,18 +19,6 @@ export default function LoginPage() {
     
 
     useEffect(() => {
-
-        const autoconnect = sessionStorage.getItem("autoconnect");
-        if (autoconnect !== "" && autoconnect !== null && autoconnect !== undefined && autoconnect.indexOf(",") == 6) {
-            const [code,name] = autoconnect.split(",", 2);
-            setJmeno(name);
-            setGameCode(code);
-            setOpenCard("pripojeni");
-            connectToGame(code, name);
-            sessionStorage.removeItem("autoconnetct");
-            return;
-        }
-
         const params = location.search
             .substring(1)
             .split("&")
@@ -47,6 +35,19 @@ export default function LoginPage() {
             setOpenCard("kod");
         }
     }, []);
+
+    useEffect(() => {
+        const autoconnect = sessionStorage.getItem("autoconnect");
+        if (autoconnect !== "" && autoconnect !== null && autoconnect !== undefined && autoconnect.indexOf(",") == 6) {
+            const [code,name] = autoconnect.split(",", 2);
+            setJmeno(name);
+            setGameCode(code);
+            setOpenCard("pripojeni");
+            connectToGame(code, name);
+            sessionStorage.removeItem("autoconnect");
+            return;
+        }
+    }, [connectToGame]);
 
     // Klávesové zkratky pro přepínání karet (Z, P, V)
     useEffect(() => {

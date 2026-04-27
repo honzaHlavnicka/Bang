@@ -86,6 +86,7 @@ export const GameContext = createContext<{
     putCardInPlay: (cardId:number) => void;
     putCardInPlayOnPlayer: (cardId:number, playerId:number) => void;
     clickUIButton: (buttonId:number) => void;
+    startNewGameAndDeleteThisOne: () => void;
 
 } | null>(null);
 
