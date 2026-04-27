@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jak hrát Bang!, Prší a UNO online zdarma s přáteli | Honzaa.cz</title>
+    <meta name="description" content="Zahrajte si populární karetní hry jako Bang! nebo Prší online. Vytvořil jsem vlastní webový engine, kde můžete hrát s přáteli bez instalace, přímo v prohlížeči.">
+    <meta name="keywords" content="Bang online, karetní hry online, Prší online, hrát UNO s kamarády, multiplayer hry v prohlížeči, deskovky online">
+    <link rel="stylesheet" href="/clanky.css"> </head>
+<body>
+    <nav>
+        <a href="/cs/">🎮 Do herního lobby</a>
+        <a href="/cs/clanky/jak-hrat-bang-a-prsi-online-zdarma.html">O hře</a>
+        <a href="/cs/clanky/vyvoj-multiplayer-karetni-hry-react-java-websockets.html">Jak jsem to naprogramoval</a>
+        <a href="/cs/clanky/tvorba-vlastni-karetni-hry-v-jave-pomoci-pluginu.html">Tvorba vlastní hry</a>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>Jak hrát Bang!, Prší a UNO online (a proč jsem si hru musel naprogramovat sám)</h1>
+            <span class="author-note">Napsal Honza | Tvůrce herního enginu</span>
+        </header>
+        <main>
+            <p>Společné hraní karetních a deskových her je podle mě ten nejlepší způsob, jak trávit čas s přáteli. Jenže o prázdninách před pár lety jsme měli problém – byli jsme každý jinde, ale chuť zastřílet si v Bangu! nás neopouštěla. Hledal jsem nějakou rozumnou online alternativu, ale nic mi nevyhovovalo. A tak jsem si řekl: <em>„Jsem přece programátor, ne? Napíšu si to sám.“</em></p>
+
+            <p>A tak vznikl můj vlastní multiplayerový engine. Od té doby se dost rozrostl a dnes na něm běží hned několik her, které si můžete s kamarády zahrát zdarma, přímo ve svém prohlížeči.</p>
+
+            <h2>Bang! – Divoký západ u vás doma (bez hádání o pravidla)</h2>
+            <p>Znáte to. Někdo zahraje <em>Kulomet</em>, další tvrdí, že ho kryje <em>Barel</em>, třetí se dohaduje, jestli na něj vůbec dostřelíte přes <em>Mustanga</em>... Hra Bang! je úžasná, ale občas je těžké uhlídat všechna pravidla. </p>
+            <p>V mojí online verzi tohle odpadá. Server přesně počítá vzdálenosti, ví, na koho můžete vystřelit, a plynule vás provede tahy. Stačí si hlídat svou roli – jste nekompromisní Šerif, zákeřný Bandita, nebo Odpadlík, co čeká na svou příležitost? Všechno, co k tomu potřebujete, je myš nebo prst na displeji, protože hra plně podporuje přetahování karet (Drag & Drop).</p>
+
+            <h2>Prší a UNO na pár kliknutí</h2>
+            <p>Někdy člověk nemá náladu na složité strategie a chce si prostě jen na pět minut vyčistit hlavu. Proto jsem do enginu přidal i českou klasiku <strong>Prší</strong> a její americkou obdobu <strong>UNO</strong>. Nemusíte nic instalovat. Stačí vytvořit místnost, poslat unikátní kód hry na Discord nebo do Messengeru kamarádům a můžete začít měnit barvy a rozdávat sedmičky.</p>
+
+            <h2>Co vás při hraní (ne)vytočí</h2>
+            <p>Jako hráče mě hrozně štvalo, když mi v půlce partie u jiné hry spadl internet a všechno bylo ztracené. Proto jsem si dal záležet na pár detailech:</p>
+            <ul>
+                <li><strong>Systém záchrany (Znovupřipojení):</strong> Omylem jste zavřeli panel? Spadla vám Wi-Fi? Nezoufejte. Můj engine si váš stav pamatuje. Když se vrátíte, nabídne vám to připojit se zpět přesně do momentu, kde jste přestali.</li>
+                <li><strong>Vícejazyčnost (i18n):</strong> Pokud hrajete s lidmi, kteří neumí česky, jednoduše si prostředí hry přepnou do angličtiny.</li>
+                <li><strong>Tmavý režim:</strong> Většinu her hrajeme po večerech. Oči máme jen jedny, takže na webu stačí přepnout na <em>Dark Mode</em> a pozadí ztmavne do příjemných tónů.</li>
+            </ul>
+
+            <div style="text-align: center;">
+                <a href="/" class="cta-btn">Vytvořit hru a pozvat přátele</a>
+            </div>
+
+            <hr style="margin: 40px 0; border: none; border-top: 1px solid #ccc;">
+
+            <h3>Zajímá vás víc?</h3>
+            <p>Pokud jste taky tak trochu geek a zajímá vás, jak je možné tohle všechno utáhnout z prohlížeče bez lagů, mrkněte na můj článek <a href="/cs/clanky/vyvoj-multiplayer-karetni-hry-react-java-websockets.html">Jak jsem engine naprogramoval v Reactu a Javě</a>. A jestli umíte programovat a chcete si do enginu přidat třeba Výbušná koťátka, sepsal jsem pro vás návod na <a href="/cs/clanky/tvorba-vlastni-karetni-hry-v-jave-pomoci-pluginu.html">Tvorbu vlastní hry pomocí pluginů</a>.</p>
+        </main>
+    </div>
+</body>
+</html>

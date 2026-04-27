@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vývoj multiplayer karetní hry: React, Java a WebSockets | Honzaa.cz</title>
+    <meta name="description" content="Nahlédněte pod pokličku mého herního enginu. Detailně popisuji vývoj multiplayerové karetní hry, architekturu klient-server a obousměrnou komunikaci přes WebSockets.">
+    <meta name="keywords" content="vývoj multiplayer hry, React drag and drop, Java WebSocket server, architektura klient-server, jak naprogramovat online hru, HonzaHlavnicka">
+    <link rel="stylesheet" href="/clanky.css">
+</head>
+<body>
+    <nav>
+        <a href="/cs/">🎮 Do herního lobby</a>
+        <a href="/cs/clanky/jak-hrat-bang-a-prsi-online-zdarma.html">O hře</a>
+        <a href="/cs/clanky/vyvoj-multiplayer-karetni-hry-react-java-websockets.html">Jak jsem to naprogramoval</a>
+        <a href="/cs/clanky/tvorba-vlastni-karetni-hry-v-jave-pomoci-pluginu.html">Tvorba vlastní hry</a>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>Jak jsem naprogramoval online karetní engine (a nezbláznil se u toho)</h1>
+            <span class="author-note">Napsal Honza | Vývojář & Autor</span>
+        </header>
+        <main>
+            <p>Vytvořit online tahovou karetní hru zní na papíře docela jednoduše. Hráč A zahraje kartu, hráč B ztratí život. Pohoda, že? Jenže ve chvíli, kdy se do toho pustíte, zjistíte, že musíte řešit odpojování hráčů, asynchronní dialogy, tahy napříč složitým polem (topologie Bangu!) a synchronizaci stavu mezi serverem a klienty. V tomto článku vás provedu technologiemi, které jsem pro svůj engine zvolil.</p>
+
+            <h2>Architektura: Striktní Klient-Server</h2>
+            <p>Už od prvního řádku kódu jsem věděl, že klient (webový prohlížeč) nesmí nic rozhodovat. Nikdy nevěřte klientovi. Pokud bych nechal prohlížeč počítat životy nebo míchat karty, okamžitě by to svádělo k podvádění. Můj prohlížeč slouží čistě jako "hloupý" prezentační terminál. Pošle na server požadavek <em>„Hráč Honza chce zahrát kartu Bang! na hráče Adama“</em> a čeká, co mu server milostivě dovolí vykreslit.</p>
+
+            <h2>Backend: Proč zrovna Java 11 a WebSockets?</h2>
+            <p>Serverovou část jsem napsal v <strong>Javě 11</strong>. Důvod byl pragmatický – potřeboval jsem, aby to běželo na našem školním serveru (Gymnázium Arabská), který novější verzi tehdy nepodporoval. A upřímně, silně typovaný jazyk je pro složitou herní logiku záchrana.</p>
+            
+            <p>Pro komunikaci jsem zavrhl běžné HTTP dotazy (polling). Neustále se ptát serveru <em>„Už hraju? Už hraju?“</em> je neefektivní. Místo toho jsem použil knihovnu <code>Java-WebSocket</code>. Díky WebSocketům mám trvalé obousměrné spojení. Server může okamžitě říct klientovi <em>„Hele, přišel jsi o život, začni krvácet!“</em> bez jakékoliv latence.</p>
+            
+            <blockquote>
+                Můj komunikační protokol je naprosto primitivní, ale funkční textový formát. Vypadá to nějak takto: <code>&lt;typZpravy&gt;:&lt;data&gt;</code>. Když se podíváte do konzole prohlížeče při hraní, uvidíte přesně, co se děje. Formát se sice postupem času trochu zvrhl, ale pro debugování ručním psaním zpráv je to k nezaplacení.
+            </blockquote>
+
+            <h2>Vzkříšení mrtvých spojení (Reconnect logic)</h2>
+            <p>Největší oříšek, který jsem musel rozlousknout, byly výpadky spojení. Když hrajete Bang! už hodinu a najednou vám spadne Wi-Fi, máte chuť prohodit počítač oknem. Můj <code>KomunikatorHry</code> na serveru to naštěstí řeší. Každému hráči při připojení vygeneruje unikátní token, který si klient uloží do <code>localStorage</code>. Když hráč vypadne, server jeho postavu nezabije, ale podrží ji "v limbu" až 5 minut. Jakmile se hráč vrátí s platným tokenem, server mu obratem pošle masivní JSON se vším, co propásl, a hra plynule pokračuje dál.</p>
+
+            <h2>Frontend: záchrana jménem React a TypeScript</h2>
+            <p>Úplně první verze klienta byla ve Vanilla JavaScriptu. Byla to obrovská špageta kódu. Velmi rychle jsem přešel na <strong>React, Vite a TypeScript</strong>.</p>
+            <p>TypeScript mi zachránil spoustu nervů při parsování dat ze serveru. Reactí Context API (v mém případě <code>GameContext</code>) funguje jako dokonalé centrální úložiště herního stavu. A co se týče vizuálu? Pro plynulé přetahování karet myší nebo prstem po displeji jsem sáhl po knihovně <code>react-dnd</code>. Nastavit Drag & Drop tak, aby fungoval logicky (kartu z ruky jde hodit na odhazovací balíček, nebo vyložit k sobě, nebo s ní zacílit hráče), byla docela výzva, ale výsledek za to stojí.</p>
+
+            <div style="text-align: center;">
+                <a href="https://github.com/honzahlavnicka/bang" target="_blank" class="cta-btn" style="background-color: #333;">Mrknout na zdrojáky na GitHubu</a>
+            </div>
+
+            <hr style="margin: 40px 0; border: none; border-top: 1px solid #ccc;">
+
+            <h3>Co číst dál?</h3>
+            <p>Jestli už máte kódu plné zuby, běžte si <a href="/cs/clanky/jak-hrat-bang-a-prsi-online-zdarma.html">přečíst něco o hrách a rovnou si zahrajte</a>. A pokud si říkáte, že byste si do mého enginu rádi naprogramovali vlastní karetní hru, sepsal jsem článek přesně o tom: <a href="/cs/clanky/tvorba-vlastni-karetni-hry-v-jave-pomoci-pluginu.html">Jak fungují moje dynamické pluginy</a>.</p>
+        </main>
+    </div>
+</body>
+</html>

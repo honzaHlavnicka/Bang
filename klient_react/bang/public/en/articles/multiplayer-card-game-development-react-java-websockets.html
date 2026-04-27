@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a Multiplayer Card Game: React, Java & WebSockets | Honzaa.cz</title>
+    <meta name="description" content="Take a look under the hood of my game engine. A detailed dive into multiplayer card game development, client-server architecture, and WebSocket communication.">
+    <meta name="keywords" content="multiplayer game development, React drag and drop, Java WebSocket server, client-server architecture, how to code an online game">
+    <link rel="stylesheet" href="/clanky.css">
+</head>
+<body>
+    <nav>
+        <a href="/en/">🎮 To Game Lobby</a>
+        <a href="/en/articles/how-to-play-bang-and-uno-online-free.html">About the Game</a>
+        <a href="/en/articles/multiplayer-card-game-development-react-java-websockets.html">How I Built It</a>
+        <a href="/en/articles/creating-custom-card-games-java-plugins-sdk.html">Create Your Own Game</a>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>How I Built an Online Card Game Engine (Without Losing My Mind)</h1>
+            <span class="author-note">Written by Honza | Developer & Creator</span>
+        </header>
+        <main>
+            <p>Creating a turn-based online card game sounds pretty simple on paper. Player A plays a card, Player B loses a life. Easy, right? But the moment you start coding, you realize you have to deal with player disconnects, asynchronous dialogs, turn queues, topological distance calculations (looking at you, Bang!), and state synchronization. In this article, I’ll walk you through the tech stack I chose for my engine.</p>
+
+            <h2>Architecture: Strict Client-Server</h2>
+            <p>From line one, I knew the client (the web browser) couldn't be trusted with any decisions. Never trust the client. If I let the browser calculate health or shuffle decks, it would immediately invite cheating. My frontend serves purely as a "dumb" presentation terminal. It sends a request to the server saying, <em>"Player Honza wants to play a Bang! card on Player Adam,"</em> and waits to see what the server graciously allows it to render.</p>
+
+            <h2>The Backend: Why Java 11 and WebSockets?</h2>
+            <p>I wrote the server in <strong>Java 11</strong>. The reason was highly pragmatic—I needed it to run on my high school's server, which didn't support newer versions at the time. Honestly, a strongly typed language is an absolute lifesaver for complex game logic.</p>
+            
+            <p>For communication, I scrapped standard HTTP polling. Constantly asking the server <em>"Is it my turn yet?"</em> is terribly inefficient. Instead, I used the <code>Java-WebSocket</code> library. Thanks to WebSockets, I have a persistent, bidirectional connection. The server can instantly tell the client, <em>"Hey, you just lost a life, start bleeding!"</em> with near-zero latency.</p>
+            
+            <blockquote>
+                My communication protocol is a primitive but effective text format. It looks something like this: <code>&lt;messageType&gt;:&lt;data&gt;</code>. If you look at the browser console while playing, you'll see exactly what's happening. The format got a bit chaotic over time, but for debugging by manually typing payloads, it’s priceless.
+            </blockquote>
+
+            <h2>Resurrecting Dead Connections (Reconnect Logic)</h2>
+            <p>The hardest nut to crack was handling dropped connections. When you've been playing Bang! for an hour and your Wi-Fi suddenly dies, you want to throw your PC out the window. Fortunately, my server's <code>KomunikatorHry</code> (Game Communicator) handles this. When a player connects, they are assigned a unique token stored in <code>localStorage</code>. If they drop, the server doesn't kill their character—it holds them "in limbo" for up to 5 minutes. Once the player returns with a valid token, the server immediately shoots them a massive JSON with everything they missed, and the game continues seamlessly.</p>
+
+            <h2>The Frontend: Falling in Love with React and TypeScript</h2>
+            <p>The very first version of the client was written in Vanilla JavaScript. It was a massive plate of spaghetti code. I quickly migrated to <strong>React, Vite, and TypeScript</strong>.</p>
+            <p>TypeScript saved my sanity when parsing server data. React’s Context API (my <code>GameContext</code>) acts as a perfect central repository for the game state. And for the visuals? For smooth card dragging with a mouse or finger, I used <code>react-dnd</code>. Configuring Drag & Drop to feel logical (throwing a card to the discard pile, equipping it to your board, or targeting another player) was quite the challenge, but the result is incredibly satisfying.</p>
+
+            <div style="text-align: center;">
+                <a href="https://github.com/honzahlavnicka/bang" target="_blank" class="cta-btn" style="background-color: #333;">Check out the Source Code on GitHub</a>
+            </div>
+
+            <hr style="margin: 40px 0; border: none; border-top: 1px solid #ccc;">
+
+            <h3>What to Read Next?</h3>
+            <p>If you've had enough of code for today, go <a href="/en/articles/how-to-play-bang-and-uno-online-free.html">read about the games and play a match</a>. If you're thinking you'd like to code your own card game into my engine, I wrote an article exactly about that: <a href="/en/articles/creating-custom-card-games-java-plugins-sdk.html">How My Dynamic Plugins Work</a>.</p>
+        </main>
+    </div>
+</body>
+</html>

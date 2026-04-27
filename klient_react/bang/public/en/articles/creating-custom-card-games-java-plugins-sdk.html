@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creating Custom Card Games in Java via Plugins | Honzaa.cz</title>
+    <meta name="description" content="I built my game engine so it wouldn't be limited to just one game. Learn how to use my Java SDK and ClassLoaders to add your own card games as plugins.">
+    <meta name="keywords" content="card game creation, Java game programming, game engine, Java ClassLoader, build an online card game">
+    <link rel="stylesheet" href="/clanky.css">
+</head>
+<body>
+    <nav>
+        <a href="/en/">🎮 To Game Lobby</a>
+        <a href="/en/articles/how-to-play-bang-and-uno-online-free.html">About the Game</a>
+        <a href="/en/articles/multiplayer-card-game-development-react-java-websockets.html">How I Built It</a>
+        <a href="/en/articles/creating-custom-card-games-java-plugins-sdk.html">Create Your Own Game</a>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>How I Refactored My Engine for Plugins (And How You Can Add Your Own Game)</h1>
+            <span class="author-note">Written by Honza | SDK Author</span>
+        </header>
+        <main>
+            <p>In the very beginning, my engine was completely hardcoded for Bang!. But as I added more and more logic, I realized a fundamental truth: I am way too lazy to write a new WebSocket handler, turn queue manager, and frontend UI for every single new game (like UNO). It was time to completely decouple the games from the engine.</p>
+
+            <p>I decided to build a system of <strong>dynamic plugins</strong>. Today, my core server has no idea how Bang! or UNO is actually played. It serves merely as a massive sandbox into which you drop your rules in the form of a packaged JAR file.</p>
+
+            <h2>ClassLoader Magic</h2>
+            <p>So, how does it work? In the server directory, there's a folder called <code>/plugins/</code>. When the server boots up, the <code>PluginLoader</code> class scans this directory. Using Java's built-in <code>URLClassLoader</code>, it peers into all the JAR files looking for compiled classes that implement my <code>HerniPlugin</code> (GamePlugin) interface.</p>
+            <p>When it finds a match, it instantiates it. Thanks to this, deploying a new game to production is trivial—just toss the new JAR into the folder, and the server picks it up. No complex core refactoring needed.</p>
+
+            <h2>Your First Game: Meet the SDK</h2>
+            <p>If you want to code your own game, I've prepared a full <strong>SDK (Software Development Kit)</strong>, complete with JavaDocs. The core of your game will be a class that implements <code>HerniPravidla</code> (GameRules). This is where the engine "asks" what it should do.</p>
+
+            <p>Here are a few key methods you'll override as a game developer:</p>
+            <ul>
+                <li><code>pripravBalicek()</code> <em>(Prepare Deck)</em>: This is where you instantiate your cards and shove them into the engine's main draw pile.</li>
+                <li><code>getViditelnePrvky()</code> <em>(Get Visible UI Elements)</em>: Not every game needs a health bar. Here, you tell the client which UI panels to activate (e.g., discard pile, player's board).</li>
+                <li><code>hracChceUkoncitTah()</code> <em>(Player Wants to End Turn)</em>: This is where your logic runs. If you're playing UNO and the player hasn't drawn or played a card, this method returns <code>false</code>, and the engine refuses to end their turn.</li>
+            </ul>
+
+            <h2>Object-Oriented Cards: Playable vs. Deployable</h2>
+            <p>Every card in the system is a full object with its own ID. If you're programming a card that a player throws straight from their hand to the pile (like a +2 in UNO), you implement the <code>HratelnaKarta</code> (PlayableCard) interface. The main <code>odehrat()</code> (Play) method triggers the moment a user drags and drops the card in their browser. Inside this method, you evaluate if the card can be played, and immediately apply its effects.</p>
+            
+            <p>If it's an item that stays on the board (like a weapon or a barrel), you implement <code>VylozitelnaKarta</code> (DeployableCard). The engine automatically handles moving the card to the correct visual slot on the client's screen.</p>
+
+            <blockquote>
+                The hardest part of Bang! was handling the <em>Mustang</em> and <em>Scope</em> cards, because they dynamically alter circle distances. I solved this by giving my <code>Player</code> class the ability to calculate modulo distances, while card effects simply apply modifiers (+1 or -1) to those calculations.
+            </blockquote>
+
+            <div style="text-align: center;">
+                <a href="https://bang.honzaa.cz/apidocs/" target="_blank" class="cta-btn">Explore the full JavaDoc SDK Documentation</a>
+            </div>
+
+            <hr style="margin: 40px 0; border: none; border-top: 1px solid #ccc;">
+
+            <h3>Where to next?</h3>
+            <p>Curious how this WebSocket magic runs asynchronously under the hood? Jump over to my article on the <a href="/en/articles/multiplayer-card-game-development-react-java-websockets.html">Server Architecture and React Client</a>. Or if you've had enough of technical deep dives, just <a href="/en/articles/how-to-play-bang-and-uno-online-free.html">go play a game!</a></p>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,13 @@
+User-agent: *
+
+# Povolení procházení celého webu (SPA, články, dokumentace)
+Allow: /
+
+# Zákaz indexace technických a administrátorských stránek
+Disallow: /serverInfo.html
+Disallow: /gameInfo.html
+Disallow: /ws
+Disallow: /api/
+
+# Odkaz na sitemapu pro snazší nalezení všech článků a jazykových verzí
+Sitemap: https://bang.honzaa.cz/sitemap.xml

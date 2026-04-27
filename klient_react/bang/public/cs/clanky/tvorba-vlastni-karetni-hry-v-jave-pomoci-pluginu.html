@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tvorba vlastní karetní hry v Javě přes dynamické pluginy | Honzaa.cz</title>
+    <meta name="description" content="Napsal jsem herní engine tak, abych nebyl omezený jen na jednu hru. Zjistěte, jak pomocí mého Java SDK a ClassLoaderu přidávat vlastní hry jako pluginy.">
+    <meta name="keywords" content="tvorba karetní hry, programování hry v javě, herní engine, HerniPlugin, Java ClassLoader, vytvořit online hru, HonzaHlavnicka">
+    <link rel="stylesheet" href="/clanky.css">
+</head>
+<body>
+    <nav>
+        <a href="/cs/">🎮 Do herního lobby</a>
+        <a href="/cs/clanky/jak-hrat-bang-a-prsi-online-zdarma.html">O hře</a>
+        <a href="/cs/clanky/vyvoj-multiplayer-karetni-hry-react-java-websockets.html">Jak jsem to naprogramoval</a>
+        <a href="/cs/clanky/tvorba-vlastni-karetni-hry-v-jave-pomoci-pluginu.html">Tvorba vlastní hry</a>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>Jak jsem engine předělal na systém pluginů (a jak si můžete přidat vlastní hru)</h1>
+            <span class="author-note">Napsal Honza | Autor SDK</span>
+        </header>
+        <main>
+            <p>Úplně na začátku byl můj engine "zadrátovaný" (hardcoded) čistě pro Bang!. Jenže jak jsem přidával další a další logiku, uvědomil jsem si zásadní věc: Jsem moc línej na to, abych pro každou další hru (třeba Prší) psal znovu obsluhu WebSocketů, frontu hráčů na tahu a frontendové panely. Bylo na čase hru od enginu úplně oddělit.</p>
+
+            <p>Rozhodl jsem se vytvořit systém <strong>dynamických pluginů</strong>. Dnes můj server vůbec neví, jak se hraje Bang! nebo UNO. Slouží jen jako obrovské pískoviště, do kterého nasypete pravidla ve formě zabaleného JAR souboru.</p>
+
+            <h2>Kouzla s ClassLoaderem</h2>
+            <p>Jak to vlastně funguje? Ve složce serveru existuje složka <code>/pluginy/</code>. Když server nastartuje, třída <code>NacitacPluginu</code> tuto složku prohledá. Pomocí zabudovaného <code>URLClassLoader</code>u se podívá do všech JAR souborů a hledá zkompilované třídy, které implementují moje rozhraní <code>HerniPlugin</code>.</p>
+            <p>Když najde shodu, instanciuje ji. Díky tomu je přidání nové hry do produkce naprosto triviální – stačí přihodit nový JAR soubor a server si ho najde. Žádné složité přepisování hlavního jádra.</p>
+
+            <h2>Vaše první hra: Seznamte se se SDK</h2>
+            <p>Pokud byste si chtěli naprogramovat vlastní hru, připravil jsem plnohodnotné <strong>SDK (Software Development Kit)</strong>. Základem vaší hry bude třída rozšiřující <code>HerniPravidla</code>. Právě do ní se engine "chodí ptát", co má dělat.</p>
+
+            <p>Několik klíčových metod, které budete jako autoři her přepisovat:</p>
+            <ul>
+                <li><code>pripravBalicek()</code>: Zde na instancujete svoje karty a nacpete je enginu do hlavního balíčku.</li>
+                <li><code>getViditelnePrvky()</code>: Ne každá hra potřebuje ukazatel životů. Tady klientovi řeknete, jaké UI panely má zapnout (např. odhazovací balíček, stůl hráče).</li>
+                <li><code>hracChceUkoncitTah(Hrac kdo)</code>: Zde běží vaše logika. Pokud hrajete Prší a hráč si nelízl ani nehodil kartu, tahle metoda vrátí <code>false</code> a engine hráči nepovolí tah ukončit.</li>
+            </ul>
+
+            <h2>Objektové karty: Hratelné vs. Vyložitelné</h2>
+            <p>Každá karta v systému je plnohodnotný objekt se svým ID. Pokud programujete kartu, kterou hráč z ruky rovnou hodí na hromádku (například +2 v UNO nebo Bang!), implementujete rozhraní <code>HratelnaKarta</code>. Hlavní metoda <code>odehrat()</code> se spustí ve chvíli, kdy uživatel přetáhne kartu v prohlížeči myší. Uvnitř metody vyhodnotíte, jestli se karta dá zahrát, a rovnou aplikujete její efekty (např. ubere cizímu hráči život).</p>
+            
+            <p>Pokud jde o předmět, který zůstává na stole (zbraň, barel), implementujete <code>VylozitelnaKarta</code>. Engine už se sám postará o přesun karty do správného vizuálního boxu u klienta.</p>
+
+            <blockquote>
+                Nejtěžší věcí na Bangu! byly karty <em>Mustang</em> a <em>Hledí</em>, protože dynamicky mění vzdálenosti v kruhu. Vyřešil jsem to tak, že moje třída <code>Hrac</code> umí počítat vzdálenosti v modulu počtu hráčů, a efekty karet tuto vzdálenost pouze modifikují (+1 nebo -1).
+            </blockquote>
+
+            <div style="text-align: center;">
+                <a href="https://bang.honzaa.cz/apidocs/" target="_blank" class="cta-btn">Prozkoumat plnou JavaDoc dokumentaci SDK</a>
+            </div>
+
+            <hr style="margin: 40px 0; border: none; border-top: 1px solid #ccc;">
+
+            <h3>Kudy dál?</h3>
+            <p>Zajímá vás, jak tahle kouzla s WebSockety běží asynchronně pod kapotou? Skočte si přečíst můj článek o <a href="/cs/clanky/vyvoj-multiplayer-karetni-hry-react-java-websockets.html">architektuře serveru a React klienta</a>. Nebo toho máte po krk a chcete si radši odpočinout? <a href="/cs/clanky/jak-hrat-bang-a-prsi-online-zdarma.html">Běžte si zahrát!</a></p>
+        </main>
+    </div>
+</body>
+</html>

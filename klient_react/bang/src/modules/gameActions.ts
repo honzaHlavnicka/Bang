@@ -773,7 +773,7 @@ export function startNewGameAndDeleteThisOne(ws: WebSocket | null, openDialog: (
         type: "CONFIRM_ACTION",
         data: {actions: [{id:0,name:"zrušit"},...games]},
         dialogHeader: t("Jakou hru začít? Ostatní hráči budou pozváni."),
-        notClosable: true,
+        notClosable: false,
         callback: (confirmed) => {
             if (confirmed && ws !== null) {
                 ws.send(`nahradHru:${confirmed - 1}`);
