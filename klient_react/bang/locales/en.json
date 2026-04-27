@@ -34,7 +34,7 @@
     "Hra skončila": "Game over",
     "Výsledková tabulka": "Scoreboard",
     "Zpět na úvodní stránku": "Back to home page",
-    "na {{index}}. místě": "in {{index}} place:",
+    "na {{index}}. místě": "in {{index}} place.",
     "Čekání na další hráče": "Waiting for other players",
     "Nasdílej jim kód:": "Share this code with them:",
     "Udělej to jméno delší, prosím": "Please make the name longer",
@@ -75,5 +75,32 @@
     "Tvoje jméno:": "Your name:",
     "vyber si jednu z těchto postav": "select one of these characters",
     "Ukončit tah": "End turn",
-    "Načítání...": "Loading..."
+    "Načítání...": "Loading...",
+    "Pokud už ostatní nechtějí hrát a stále se nudíš, tak si protrénuj své zeměpisné znalosti na webu": "If others don't want to play anymore and you're still bored, practice your geography skills on the web",
+    "Největší online databáze vlajek:": "The largest online database of flags:",
+    "Smazat hru a začít jinou": "Delete and start a new game",
+    "Jakou hru začít? Ostatní hráči budou pozváni.": "Which game to start? Other players will be invited.",
+
+
+
+    "Chybná odpověď serveru.": "Invalid server response.",
+    "Nelze se vrátit do hry, protože není uložen token": "Cannot return to game because no token is saved",
+    "Nelze provést akci, protože není navázáno spojení se serverem": "Cannot perform action because no connection to server is established.",
+    "Nelze provést akci, protože není znám tvůj hráčský ID": "Cannot perform action because your player ID is not known",
+    "chyba při parsování": "parsing error",
+    "zadej text": "enter text",
+    "Byl jsi pozván do jiné hry. Chceš se tam připojit?": "You have been invited to another game. Do you want to join it?",
+    "Potvrzení": "Confirmation",
+    "máš nyní životů": "you now have {{count}} health",
+    "Konec hry": "Game over",
+    "Hru vyhrál hráč . Gratuluji!": "Player {{winner}} has won the game. Congratulations!",
+    "Někdo vyhrál, neví se kdo.": "Someone has won, it's not known who.",
+    "Vyber kartu": "Select a card",
+    "Vyber hráče": "Select a player",
+    "vybraná akce": "selected action",
+    "vyber si kartu": "select a card",
+    "Vyber akci kterou chceš provést.": "Select the action you want to perform.",
+    "Tvůj tah začal!": "It's your turn!",
+    "Hra zahájena!": "Game started!",
+    "Připojil se hráč {{name}}!": "Player {{name}} has joined the game!"
 }

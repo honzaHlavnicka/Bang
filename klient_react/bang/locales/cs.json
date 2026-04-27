@@ -37,7 +37,7 @@
     "Hra skončila":"Hra skončila",
     "Výsledková tabulka":"Výsledková tabulka",
     "Zpět na úvodní stránku":"Zpět na úvodní stránku",
-    "na {{index}}. místě":"na {{index}}. místě:",
+    "na {{index}}. místě":"na {{index}}. místě.",
     "Čekání na další hráče":"Čekání na další hráče",
     "Nasdílej jim kód:":"Nasdílej jim kód:",
 
@@ -88,5 +88,35 @@
     "Pokud se tato obrazovka nezmění během několika sekund, zkontroluj prosím připojení k internetu a zda není server vypnutý.": "Pokud se tato obrazovka nezmění během několika sekund, zkontroluj prosím připojení k internetu a zda není server vypnutý.",
 
     "Ukončit tah": "Ukončit tah",
-    "Načítání...": "Načítání..."
+    "Načítání...": "Načítání...",
+
+    "Pokud už ostatní nechtějí hrát a stále se nudíš, tak si protrénuj své zeměpisné znalosti na webu": "Pokud už ostatní nechtějí hrát a stále se nudíš, tak si protrénuj své zeměpisné znalosti na webu",
+    "Největší online databáze vlajek:": "Největší online databáze vlajek:",
+    "Smazat hru a začít jinou": "Smazat hru a začít jinou",
+    "Jakou hru začít? Ostatní hráči budou pozváni.": "Jakou hru začít? Ostatní hráči budou pozváni.",
+
+
+
+    "Chybná odpověď serveru.": "Chybná odpověď serveru.",
+    "Nelze se vrátit do hry, protože není uložen token": "Nelze se vrátit do hry, protože není uložen token",
+    "Nelze provést akci, protože není navázáno spojení se serverem": "Nelze provést akci, protože není navázáno spojení se serverem.",
+    "Nelze provést akci, protože není znám tvůj hráčský ID": "Nelze provést akci, protože není znám tvůj hráčský ID",
+    "Zadej text": "Zadej text",
+    "Byl jsi pozván do jiné hry. Chceš se tam připojit?": "Byl jsi pozván do jiné hry. Chceš se tam připojit?",
+    "Potvrzení": "Potvrzení",
+    "Máš nyní životů_one": "Máš nyní jeden život.",
+    "Máš nyní životů_few": "Máš nyní {{count}} životy.",
+    "Máš nyní životů_other": "Máš nyní {{count}} životů.",
+    "Konec hry": "Konec hry",
+    "Hru vyhrál hráč . Gratuluji!": "Hru vyhrál hráč {{winner}}. Gratuluji!",
+    "Někdo vyhrál, neví se kdo.": "Někdo vyhrál, neví se kdo.",
+    "Vyber kartu": "Vyber kartu",
+    "Vyber hráče": "Vyber hráče",
+    "vybraná akce": "vybraná akce",
+    "vyber si kartu": "vyber si kartu",
+    "Vyber akci kterou chceš provést.": "Vyber akci kterou chceš provést.",
+    "Tvůj tah začal!": "Tvůj tah začal!",
+    "Hra zahájena!": "Hra zahájena!",
+    "Připojil se hráč {{name}}!": "Připojil se hráč {{name}}!"
+
 }

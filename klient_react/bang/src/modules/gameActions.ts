@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import type { CardType, GameStateType } from "./GameContext";
 import { type DialogState } from "./DialogContext";
 import type { RefObject } from "react";
+import {t} from "i18next";
 
 
 // Helper types for server payloads
@@ -51,7 +52,7 @@ export function handleGameMessage(
                 const json = JSON.parse(payload) as { error: string, kod?: number };
                 toast.error(json.error);
 
-                if(json.kod === 5 || json.error.includes("Hra neexistuje")){
+                if(json.kod === 5 || json.error.includes("Hra neexistuje") || json.error.includes("hra už byla zahájena")){ // opraveno
                     //Hra neexistuje
                     setGameState(prev => ({ ...prev, inGame: false, gameCode: null }) );
                 }
@@ -76,6 +77,7 @@ export function handleGameMessage(
                 console.log(json);
             } catch (error) {
                 console.error("chyba při parsování", error, payload);
+                toast.error(t('Chybná odpověď serveru.'));
             }
             break;
         }
@@ -97,7 +99,8 @@ export function handleGameMessage(
                 setGameState(prev => ({ ...prev, players: mappedPlayers }));
                 console.log(json);
             } catch (error) {
-                console.error("chyba při parsování", error, payload);
+                console.error("Chyba při parsování.", error, payload);
+                toast.error(t('Chybná odpověď serveru.'));  
             }
             break;
         }
@@ -120,9 +123,9 @@ export function handleGameMessage(
                     players: prev.players ? [...prev.players, newPlayer] : [newPlayer],
                 }));
                 console.log("nový hráč", json);
-                toast.success(`Připojil se hráč ${json.jmeno}!`);
+                toast.success(t(`Připojil se hráč {{name}}!`, {name: json.jmeno}));
             } catch (error) {
-                console.error("chyba při parsování", error, payload);
+                console.error(t("Chybná odpověď serveru."), error, payload);
             }
             break;
         }
@@ -178,7 +181,7 @@ export function handleGameMessage(
                     handCards: prev.handCards ? [...prev.handCards, card] : [card]
                 }));
             } catch (error) {
-                console.error("chyba při parsování", error, payload);
+                console.error(t("Chybná odpověď serveru."), error, payload);
             }
             break;
         }
@@ -195,7 +198,7 @@ export function handleGameMessage(
         }
         case "hraZacala": {
             setGameState(prev => ({ ...prev, gameStarted: true }));
-            toast.success('Hra zahájena!')
+            toast.success(t('Hra zahájena!'));
             break;
         }
         case "novyPocetKaret": {
@@ -252,8 +255,8 @@ export function handleGameMessage(
         }
         case "tvujTahZacal": {
             setGameState(prev => ({ ...prev, turnPlayerId: prev.playerId ?? null }));
-            toast.success('Tvůj tah začal!')
-            notify('Tvůj tah začal!');
+            toast.success(t('Tvůj tah začal!'));
+            notify(t('Tvůj tah začal!'));
             break;
         }
         case "tahZacal": {
@@ -283,14 +286,14 @@ export function handleGameMessage(
                 const json = JSON.parse(payload) as {id:number,akce:{ id: number; nazev: string }[], notClosable?: boolean}; 
                 const actions = json.akce.map(a=>({id:a.id,name:a.nazev}));
                 const notClosable = json.notClosable ?? true;
-                openDialog({type:"CONFIRM_ACTION", data:{actions},dialogHeader:"Vyber akci kterou chceš provést.",notClosable,callback:(selectedAction:number)=>{
-                    console.log("vybraná akce",selectedAction);
+                openDialog({type:"CONFIRM_ACTION", data:{actions},dialogHeader:t("Vyber akci kterou chceš provést."),notClosable,callback:(selectedAction:number)=>{
+                    console.log(t("vybraná akce"),selectedAction);
                     if(stateRef.current?.playerId == null){
-                        toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
+                        toast.error(t("Nelze provést akci, protože není znám tvůj hráčský ID"));
                         return;
                     }
                     if(socket == null){
-                        toast.error("Nelze provést akci, protože není navázáno spojení se serverem");
+                        toast.error(t("Nelze provést akci, protože není navázáno spojení se serverem"));
                         return;
                     }
                     socket.send(`dialog:${json.id},${selectedAction}`);
@@ -298,14 +301,14 @@ export function handleGameMessage(
                 }});
             }catch (error) {
                 console.error("chyba při parsování", error, payload);
-                toast.error('Chybná odpověď serveru')
+                toast.error(t('Chybná odpověď serveru.'));
             }
             break;
         }
         case "vyberHrace": {
             try {
                 const json = JSON.parse(payload) as {id:number,hraci:number[], nadpis?:string, min?:number, max?:number, notClosable?: boolean}; 
-                const heading = json.nadpis ?? "Vyber hráče";
+                const heading = json.nadpis ?? t("Vyber hráče");
                 const min = json.min ?? 1;
                 const max = json.max ?? 1;
                 const notClosable = json.notClosable ?? true;
@@ -313,11 +316,11 @@ export function handleGameMessage(
                 openDialog({type:"SELECT_PLAYER", data:{players,min,max},dialogHeader:heading,notClosable,callback:(selectedPlayers:number[])=>{
                     console.log("vybraní hráči:",selectedPlayers);
                     if(stateRef.current?.playerId == null){
-                        toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
+                        toast.error(t("Nelze provést akci, protože není znám tvůj hráčský ID"));
                         return;
                     }
                     if(socket == null){
-                        toast.error("Nelze provést akci, protože není navázáno spojení se serverem");
+                        toast.error(t("Nelze provést akci, protože není navázáno spojení se serverem"));
                         return;
                     }
                     socket.send(`dialog:${json.id},${selectedPlayers.join(",")}`);
@@ -325,14 +328,14 @@ export function handleGameMessage(
                 }});
             }catch (error) {
                 console.error("chyba při parsování", error, payload);
-                toast.error('Chybná odpověď serveru')
+                toast.error(t('Chybná odpověď serveru.'));
             }
             break;
         }
         case "vyberKartu": {
             try {
                 const json = JSON.parse(payload) as {id:(string | number),karty:{obrazek:string,id:number,jmeno:string}[], nadpis?:string, min?:number, max?:number, notClosable?: boolean}; 
-                const heading = json.nadpis ?? "Vyber kartu";
+                const heading = json.nadpis ?? t("Vyber kartu");
                 const min = json.min ?? 1;
                 const max = json.max ?? 1;
                 const notClosable = json.notClosable ?? true;
@@ -340,18 +343,18 @@ export function handleGameMessage(
                 openDialog({type:"SELECT_CARD", data:{cards,min,max},dialogHeader:heading,notClosable,callback:(selectedCards:number[])=>{ 
                     console.log("vybrané karty:",selectedCards);
                     if(stateRef.current?.playerId == null){
-                        toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
+                        toast.error(t("Nelze provést akci, protože není znám tvůj hráčský ID"));
                         return;
                     }
                     if(socket == null){
-                        toast.error("Nelze provést akci, protože není navázáno spojení se serverem");
+                        toast.error(t("Nelze provést akci, protože není navázáno spojení se serverem"));
                         return;
                     }
                     socket.send(`dialog:${json.id},${selectedCards.join(",")}`);
                 }});
             }catch (error) {
                 console.error("chyba při parsování", error, payload);
-                toast.error('Chybná odpověď serveru')
+                toast.error(t('Chybná odpověď serveru.'));
             }
             break;
         }
@@ -359,15 +362,15 @@ export function handleGameMessage(
             const winnerId = payload;
             const state = stateRef.current;
             if(state == null){
-                toast.error("Někdo vyhrál, nevím kdo.");
+                toast.error(t("Někdo vyhrál, neví se kdo."));
                 return;
             }
             const winner = state.players?.find((p)=>String(p.id) === String(winnerId));
             if(winner == null){
-                toast.error("Někdo vyhrál, nevím kho.");
+                toast.error(t("Někdo vyhrál, neví se kdo."));
                 return;
             }
-            openDialog({type:"INFO", data:{header:"Konec hry",message:`Hru vyhrál hráč ${winner.name}. Gratuluji!`},dialogHeader:"Konec hry",notClosable:false});
+            openDialog({type:"INFO", data:{header:t("Konec hry"),message:t(`Hru vyhrál hráč . Gratuluji!`, {winner:winner.name})}, dialogHeader:t("Konec hry"),notClosable:false });
             break;
         }
         case "welcome": {
@@ -384,7 +387,7 @@ export function handleGameMessage(
                 setGameState(prev=>({...prev, gameTypesAvailable: json.hry.map(h=>({id:h.id,name:h.jmeno,description:h.popis,url:h.url}))}));
             }catch (error) {
                 console.error("chyba při parsování", error, payload);
-                toast.error('Chybná odpověď serveru')
+                toast.error(t('Chybná odpověď serveru.'));
             }
             break;
         }
@@ -394,7 +397,7 @@ export function handleGameMessage(
             const newHealth = parseInt(parts[1] ?? "0");
             if(parseInt(playerId) === stateRef.current?.playerId){
                 setGameState(prev=>({...prev, health:newHealth}));
-                toast(`Máš nyní ${newHealth} životů`,{icon:"❤️"});
+                toast(t(`Máš nyní životů`, {count:newHealth}),{icon:"❤️"});
             }else{
                 updatePlayerProperty(setGameState, playerId, "health", newHealth);
             }
@@ -407,7 +410,7 @@ export function handleGameMessage(
 
             if (firstComma === -1 || secondComma === -1) {
                 console.error("vylozeni: neplatný formát payloadu", payload);
-                toast.error("Chybná odpověď serveru");
+                toast.error(t("Chybná odpověď serveru."));
                 break;
             }
 
@@ -420,7 +423,7 @@ export function handleGameMessage(
                 co = JSON.parse(jsonStr);
             } catch (e) {
                 console.error("vylozeni: nelze parsovat JSON části", jsonStr, e);
-                toast.error("Chybná odpověď serveru");
+                toast.error(t("Chybná odpověď serveru."));
                 break;
             }
 
@@ -460,7 +463,7 @@ export function handleGameMessage(
                 setGameState(prev=>({...prev, allowedUIElements: json}));
             }catch (error) {
                 console.error("chyba při parsování", error, payload);
-                toast.error('Chybná odpověď serveru')
+                toast.error(t('Chybná odpověď serveru.'));
             }
             break;
         }
@@ -473,8 +476,8 @@ export function handleGameMessage(
                 const json = JSON.parse(payload) as number[][];
                 setGameState(prev=>({...prev, winningPlaces: json}));
             }catch(error){
-                console.error("chyba při parsování vysledkyHry", error, payload);
-                toast.error('Chybná odpověď serveru')
+                console.error("Chyba při parsování vysledkyHry", error, payload);
+                toast.error(t('Chybná odpověď serveru.'));
             }
             break;
         }
@@ -499,7 +502,7 @@ export function handleGameMessage(
                 });
             } catch (error) {
                 console.error("chyba při parsování noveUI", error, payload);
-                toast.error('Chybná odpověď serveru');
+                toast.error(t('Chybná odpověď serveru.'));
             }
             break;
         }
@@ -512,7 +515,7 @@ export function handleGameMessage(
                 }));
             } catch (error) {
                 console.error("chyba při parsování odebratUI", error, payload);
-                toast.error('Chybná odpověď serveru');
+                toast.error(t('Chybná odpověď serveru.'));
             }
             break;
         }
@@ -520,21 +523,21 @@ export function handleGameMessage(
             try {
                 const json = JSON.parse(payload) as {id:number, title?:string, placeholder?:string, buttonText?:string, notClosable?: boolean};
                 const notClosable = json.notClosable ?? false;
-                openDialog({type:"TEXT", data:{title:json.title, placeholder:json.placeholder, buttonText:json.buttonText},dialogHeader:json.title ?? "Zadej text",notClosable,callback:(text:string)=>{
+                openDialog({type:"TEXT", data:{title:json.title, placeholder:json.placeholder, buttonText:json.buttonText},dialogHeader:json.title ?? t("Zadej text"),notClosable,callback:(text:string)=>{
                     console.log("zadaný text:",text);
                     if(stateRef.current?.playerId == null){
-                        toast.error("Nelze provést akci, protože není znám tvůj hráčský ID");
+                        toast.error(t("Nelze provést akci, protože není znám tvůj hráčský ID"));
                         return;
                     }
                     if(socket == null){
-                        toast.error("Nelze provést akci, protože není navázáno spojení se serverem");
+                        toast.error(t("Nelze provést akci, protože není navázáno spojení se serverem"));
                         return;
                     }
                     socket.send(`dialog:${json.id},${text}`);
                 }});
             }catch (error) {
                 console.error("chyba při parsování", error, payload);
-                toast.error('Chybná odpověď serveru')
+                toast.error(t('Chybná odpověď serveru.'));
             }
             break;
         }
@@ -545,7 +548,7 @@ export function handleGameMessage(
                
             } catch (error) {
                 console.error("chyba při parsování", error, payload);
-                toast.error('Chybná odpověď serveru');
+                toast.error(t('Chybná odpověď serveru.'));
             }
             break;
         }
@@ -554,6 +557,21 @@ export function handleGameMessage(
             setGameState(prev => ({ ...prev, talonTopCard: payload }));
             break;
         }
+        case "nahradHru": {
+            openDialog({type:"CONFIRM", data:{title:t("Byl jsi pozván do jiné hry. Chceš se tam připojit?")}, dialogHeader:t("Potvrzení"), notClosable:false, callback:(confirmed)=>{
+                if(confirmed){
+                    sessionStorage.setItem("autoconnect", payload);
+                    window.location.reload();
+                }
+            }});
+            break;
+        }
+        case "nahradHruBezPtani": {
+            sessionStorage.setItem("autoconnect", payload);
+            window.location.reload();
+            break;
+        }
+
         default: {
             console.log("=> klient nezná");
             break;
@@ -638,8 +656,8 @@ export function returnToGame(ws: WebSocket | null) {
     if (ws !== null) {
         const token = localStorage.getItem("gameToken");
         if (!token) {
-            console.error("Nelze se vrátit do hry, protože není uložen token");
-            toast.error("Nelze se vrátit do hry, protože není uložen token");
+            console.error(t("Nelze se vrátit do hry, protože není uložen token"));
+            toast.error(t("Nelze se vrátit do hry, protože není uložen token"));
             return;
         }
         
@@ -720,8 +738,8 @@ function zbaveniSeKarty(
             }
         });
     } catch (error) {
-        console.error("chyba při parsování", error, payload);
-        toast.error('Chybná odpověď serveru');
+        console.error("Chyba při parsování.", error, payload);
+        toast.error(t('Chybná odpověď serveru.'));
     }
 }
 
@@ -743,4 +761,25 @@ export function clickUIButton(ws: WebSocket | null, buttonId: number) {
     if (ws !== null) {
         ws.send(`uiClick:${buttonId}`);
     }
+}
+
+export function startNewGameAndDeleteThisOne(ws: WebSocket | null, openDialog: (dialog: DialogState) => void, gameState: GameStateType) {
+    let games: { id: number; name: string }[] = [];
+    if(gameState.gameTypesAvailable){
+        games = gameState.gameTypesAvailable!.map(g => ({ id: g.id + 1, name: g.name }));
+    }
+
+    const dialog: DialogState = {
+        type: "CONFIRM_ACTION",
+        data: {actions: [{id:0,name:"zrušit"},...games]},
+        dialogHeader: t("Jakou hru začít? Ostatní hráči budou pozváni."),
+        notClosable: true,
+        callback: (confirmed) => {
+            if (confirmed && ws !== null) {
+                ws.send(`nahradHru:${confirmed - 1}`);
+            }
+        }
+    };
+
+    openDialog(dialog);
 }
