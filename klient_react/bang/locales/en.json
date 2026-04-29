@@ -109,5 +109,9 @@
     "Vyber akci kterou chceš provést.": "Select the action you want to perform.",
     "Tvůj tah začal!": "It's your turn!",
     "Hra zahájena!": "Game started!",
-    "Připojil se hráč {{name}}!": "Player {{name}} has joined the game!"
+    "Připojil se hráč {{name}}!": "Player {{name}} has joined the game!",
+
+    "World Quiz": "World Quiz",
+    "Just Enough Flags": "Just Enough Flags",
+    "Chceš hrát sám zeměpisný kvíz, nebo navštívit největší databázi vlajek?": "Do you want to play the geography quiz, or visit the largest database of flags?"
 }

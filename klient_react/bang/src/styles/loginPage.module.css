@@ -266,4 +266,10 @@ height: 100svh;
 }
 
 
-
+.btnSecondary {
+    background: var(--bg);
+    color: var(--fg);
+    border-color: var(--border);
+    font-size:1em;
+    padding:8px;
+}

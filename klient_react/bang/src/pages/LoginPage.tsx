@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import DarkModeSwitch from '../components/DarkModeSwitch';
 import globalCSS from "../styles/global.module.css";
 import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
 
 export default function LoginPage() {
     const { t } = useTranslation();
@@ -15,6 +16,7 @@ export default function LoginPage() {
     const { connectToGame, createGame, gameState, returnToGame } = useGame();
     const [openCard , setOpenCard] = useState<string>("pripojeni");
     const gameToken = localStorage.getItem("gameToken");
+    const [worldQuizVisible, setWorldQuizVisible] = useState(true);
     //const [menu, setMenu] = useState({x:0,y:0,visible:false})
     
 
@@ -119,24 +121,36 @@ export default function LoginPage() {
                     {gameToken &&
                     <button 
                         className={globalCSS.button + " " + (openCard == "pripojeni" ? globalCSS.buttonActive : "") + " " + css.radioButton}
-                        onClick={() => setOpenCard("pripojeni")}
+                        onClick={() => {setOpenCard("pripojeni");setWorldQuizVisible(false)}}
                     >
                         <span>{t("VRÁTIT_SE_DLOUHÉ")}</span><span>{t("VRÁTIT_SE_KRÁTKÉ")}</span>
                     </button>}
                     <button 
                         className={globalCSS.button + " " + (openCard == "kod" ? globalCSS.buttonActive : "")+ " " + css.radioButton}
-                        onClick={() => setOpenCard("kod")}
+                        onClick={() => {setOpenCard("kod");setWorldQuizVisible(false)}}
                     >
                         <span>{t("PŘIPOJIT_SE_KE_HŘE_DLOUHÉ")}</span><span>{t("PŘIPOJIT_KRÁTKÉ")}</span>
                     </button>
                     <button 
                         className={globalCSS.button + " " + (openCard == "vytvoreni" ? globalCSS.buttonActive : "")+ " " + css.radioButton}
-                        onClick={() => setOpenCard("vytvoreni")}
+                        onClick={() => {setOpenCard("vytvoreni");setWorldQuizVisible(false)}}
                     >
                         <span>{t("VYTVOŘIT_HRU_DLOUHÉ")}</span><span>{t("VYTVOŘIT_HRU_KRÁTKÉ")}</span>
                     </button>   
                     </div>
-                </div>
+                    </div>
+                    {worldQuizVisible ?
+                    <div className={css.box} >
+                        <div style={{textAlign:"center",fontSize:".8em"}}>
+                            {t("Chceš hrát sám zeměpisný kvíz, nebo navštívit největší databázi vlajek?")}<br />
+                            <a className={globalCSS.button + " " + css.btnSecondary} href={"https://world-quiz.com/" + i18n.language + "?utm_source=bang.honzaa.cz&utm_medium=referral&utm_campaign=bang&utm_campaign=na_titulni:strance"} target="_blank" rel="noopener noreferrer">
+                                {t("World Quiz")}
+                            </a>
+                            <a className={globalCSS.button + " " + css.btnSecondary} href={"https://jef.world-quiz.com/" + i18n.language + "?utm_source=bang.honzaa.cz&utm_medium=referral&utm_campaign=bang&utm_campaign=na_titulni:strance"} target="_blank" rel="noopener noreferrer">
+                                {t("Just Enough Flags")}
+                            </a>
+                        </div>
+                    </div> : null}
                 {gameToken && !gameState.inGame && !gameState.playerId && openCard == "pripojeni" ?  (
                     
                     <div className={css.box + " " + css.sectionCard} >
