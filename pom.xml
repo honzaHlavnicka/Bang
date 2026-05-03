@@ -18,6 +18,8 @@
         <module>pluginy/bang</module>
         <module>pluginy/Uno</module>
         <module>pluginy/prsi</module>
+        <module>pluginy/kvarteto</module>
+        <module>pluginy/vybusnaKotatka</module>
         <module>pluginy/milostny-dopis</module>
     </modules>
     

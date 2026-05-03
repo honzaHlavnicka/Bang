@@ -77,6 +77,10 @@ if [ -f "pluginy/Uno/target/Uno-1.0-SNAPSHOT.jar" ]; then
     cp pluginy/Uno/target/Uno-1.0-SNAPSHOT.jar "$PLUGINS_DIR/Uno.jar"
 fi
 
+if [ -f "pluginy/kvarteto/target/kvarteto-1.0-SNAPSHOT.jar" ]; then
+    cp pluginy/kvarteto/target/kvarteto-1.0-SNAPSHOT.jar "$PLUGINS_DIR/kvarteto.jar"
+fi
+
 if [ -f "pluginy/milostny-dopis/target/milostny-dopis-1.0-SNAPSHOT.jar" ]; then
     cp pluginy/milostny-dopis/target/milostny-dopis-1.0-SNAPSHOT.jar "$PLUGINS_DIR/milostny-dopis.jar"
 fi
