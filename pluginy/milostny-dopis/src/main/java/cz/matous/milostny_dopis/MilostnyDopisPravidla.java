@@ -55,6 +55,8 @@ public class MilostnyDopisPravidla implements HerniPravidla {
     public void poSpusteniHry() {
         for (Hrac h : hra.getHraci()) {
             zetony.put(h.getId(), 0);
+            h.setZivoty(0);
+            hra.getKomunikator().posliZmenuPoctuZivotu(h);
         }
     }
 
@@ -195,6 +197,7 @@ public class MilostnyDopisPravidla implements HerniPravidla {
         List<Karta> karty = new ArrayList<>(hrac.getKarty());
         hrac.getKarty().clear();
         for (Karta k : karty) {
+            if (k instanceof Spionka) zaznacitSpionku(hrac.getId());
             hra.getOdhazovaciBalicek().vratNahoru(k);
             hra.getKomunikator().posliSpaleniKarty(hrac, k);
         }

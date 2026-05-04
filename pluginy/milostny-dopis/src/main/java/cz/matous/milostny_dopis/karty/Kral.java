@@ -35,6 +35,8 @@ public class Kral extends Karta implements HratelnaKarta {
                        Karta kC = cil.getKarty().get(0);
                        kym.getKarty().remove(kA);
                        cil.getKarty().remove(kC);
+                       hra.getKomunikator().posliOdebraniKarty(kym, kA);
+                       hra.getKomunikator().posliOdebraniKarty(cil, kC);
                        kym.getKarty().add(kC);
                        cil.getKarty().add(kA);
                        hra.getKomunikator().posliNovouKartu(kym, kC);

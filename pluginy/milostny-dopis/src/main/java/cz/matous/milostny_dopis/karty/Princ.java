@@ -47,6 +47,7 @@ public class Princ extends Karta implements HratelnaKarta {
                                cil.getJmeno() + " zahodil/a Princeznu a vypadá!", null);
                            p.vyraditHrace(cil);
                        } else {
+                           if (zahozena instanceof Spionka) p.zaznacitSpionku(cil.getId());
                            // Dobrat novou kartu
                            Karta nova = hra.getBalicek().jePrazdny()
                                ? p.getOdlozenou()
