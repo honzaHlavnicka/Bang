@@ -26,12 +26,21 @@
         "vyber_hracu_one": "Select {{count}} more player.",
         "vyber_hracu_other": "Select {{count}} more players.",
         "vybrano_z_max": "Selected {{count}} of {{max}}.",
-        "min_max": "min {{min}}, max {{max}}."
+        "min_max": "min {{min}}, max {{max}}.",
+        "Default": "Dialog",
+        "SELECT_CARD": "Select card",
+        "SELECT_PLAYER": "Select player",
+        "CONFIRM_ACTION": "Confirm action",
+        "INFO": "Information",
+        "CONFIRM": "Confirmation",
+        "TEXT": "Enter text",
+        "LUCKY_WHEEL": "Lucky wheel"
     },
     "Lupa je zapnutá, kliknutím vypnete": "Magnifier is on, click to turn off",
     "Zapnout lupu, kliknutím vypnete": "Turn on magnifier, click to turn off",
     "lupa zapnuta": "magnifier on",
     "Zapnout lupu": "Turn on magnifier",
+    "zoomed_card_alt": "Zoomed card",
     "Přiblížená karta (kliknutím mimo kartu zavřít, kliknutím na kartu vypnou lupu)": "Zoomed card (click outside to close, click on card to turn off magnifier)",
     "Připojeno k serveru": "Connected to server",
     "Byl jsi odpojen od serveru": "You have been disconnected from the server",
@@ -76,9 +85,33 @@
     "GitHub": "GitHub",
     "Souhlasím": "I agree",
     "Upozornění:": "Warning:",
+    "footer": {
+        "copyright": "&copy; 2026 Jan Hlavnička.",
+        "legal_text": "This website is a non-commercial student and personal project. It is not affiliated with the original game publishers and makes no claims to ownership of their intellectual property. BANG!® is a registered trademark of daVinci Editrice S.r.l. (dV Giochi). In the Czech Republic, the game is published by ALBI Česká republika a.s. All copyrights to the card illustrations, names, and game mechanics belong to their respective owners. UNO® is a registered trademark of Mattel, Inc. Third-party icons used: <a href=\"https://www.flaticon.com/free-icons/fire\" title=\"fire icons\" target=\"_blank\" rel=\"noopener noreferrer\">Fire icon created by Freepik - Flaticon</a>. The rest of the game content, website, server, individual plugins, and all code related to this project, including this website, is subject to the license specified in the <a href=\"https://github.com/honzaHlavnicka/Bang/blob/master/LICENSE\" target=\"_blank\">LICENSE</a> file. All code and content created for this project is the original work of the author unless expressly stated otherwise. By closing the footer or remaining on the page, you confirm that you will not download any images or any other content from this website for any purpose, including personal use, without the express written consent of the copyright holder. For legal matters, use the email prava@honzaa.cz. The project was largely created as a year-long project (IOČ) for the programming subject at Gymnasium, Prague 6, Arabská 14. The website does not use cookies or store personal data in any way. All data is stored only during the time players are connected to the game, or up to 30 minutes thereafter. By using the website, you agree to comply with the principles of decent behavior and the laws of the Czech Republic while connected to a public game."
+    },
+
+
     "Probíhá připojování k serveru...": "Connecting to server...",
     "Pokud se tato obrazovka nezmění během několika sekund, zkontroluj prosím připojení k internetu a zda není server vypnutý.": "If this screen doesn't change in a few seconds, please check your internet connection and make sure the server is running.",
+
+    "central_panel": {
+        "game_state_header": "Your game status.",
+        "draw_pile": "draw pile",
+        "game_running": "Game is running..."
+    },
+
+    "player": {
+        "character_label": "character: {{name}}",
+        "health_label_one": "1 life.",
+        "health_label_other": "{{count}} lives."
+    },
+
+    "flipping_card": {
+        "front": "Front side",
+        "back": "Back side"
+    },
     "Kód hry, kam se chceš přihlásit:": "Game code to join:",
+
     "Tvoje jméno:": "Your name:",
     "vyber si jednu z těchto postav": "select one of these characters",
     "Ukončit tah": "End turn",

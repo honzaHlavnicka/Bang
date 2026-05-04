@@ -92,7 +92,7 @@ export default function Dialog() {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [dialog, selected, text, closeDialog]);
 
-    const header = dialog?.dialogHeader || dialog?.type || "Dialog";
+    const header = dialog?.dialogHeader || (dialog?.type ? t(`dialog.${dialog.type}`) : t("dialog.Default"));
 
     const select = (id: number, max: number) => {
         if (selected.includes(id)){

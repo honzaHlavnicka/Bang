@@ -30,13 +30,22 @@
         "vyber_hracu_few": "Vyber ještě {{count}} hráče.",
         "vyber_hracu_other": "Vyber ještě {{count}} hráčů.",
         "vybrano_z_max": "Vybráno {{count}} z {{max}}.",
-        "min_max": "min {{min}}, max {{max}}."
+        "min_max": "min {{min}}, max {{max}}.",
+        "Default": "Dialog",
+        "SELECT_CARD": "Výběr karty",
+        "SELECT_PLAYER": "Výběr hráče",
+        "CONFIRM_ACTION": "Potvrzení akce",
+        "INFO": "Informace",
+        "CONFIRM": "Potvrzení",
+        "TEXT": "Zadání textu",
+        "LUCKY_WHEEL": "Kolo štěstí"
     },
 
     "Lupa je zapnutá, kliknutím vypnete":"Lupa je zapnutá, kliknutím vypnete",
     "Zapnout lupu, kliknutím vypnete":"Zapnout lupu, kliknutím vypnete",
     "lupa zapnuta":"lupa zapnuta",
     "Zapnout lupu":"Zapnout lupu",
+    "zoomed_card_alt": "Přiblížená karta",
     "Přiblížená karta (kliknutím mimo kartu zavřít, kliknutím na kartu vypnou lupu)":"Přiblížená karta (kliknutím mimo kartu zavřít, kliknutím na kartu vypnou lupu)",
     "Připojeno k serveru":"Připojeno k serveru",
     "Byl jsi odpojen od serveru":"Byl jsi odpojen od serveru",
@@ -91,6 +100,10 @@
     "GitHub": "GitHub",
     "Souhlasím": "Souhlasím",
     "Upozornění:": "Upozornění:",
+    "footer": {
+        "copyright": "&copy; 2026 Jan Hlavnička.",
+        "legal_text": "Tento web je nekomerční studentský a osobní projekt. Není nijak spojen s původními vydavateli her a neklade si žádné nároky na vlastnictví jejich duševního vlastnictví. BANG!® je registrovaná ochranná známka společnosti daVinci Editrice S.r.l. (dV Giochi). V České republice hru vydává ALBI Česká republika a.s. Veškerá autorská práva k ilustracím karet, názvům a herním mechanismům patří jejich příslušným majitelům. UNO® je registrovaná ochranná známka společnosti Mattel, Inc. Použité ikony třetích stran: <a href=\"https://www.flaticon.com/free-icons/fire\" title=\"fire icons\" target=\"_blank\" rel=\"noopener noreferrer\">Fire icon created by Freepik - Flaticon</a>. Na zbytek herního obsahu, webu, serveru, jednotlivých pluginů a veškerého kódu souvisejícího s tímto projektem, včetně tohoto webu, se vztahuje licence uvedená v souboru <a href=\"https://github.com/honzaHlavnicka/Bang/blob/master/LICENSE\" target=\"_blank\">LICENSE</a>. Veškerý kód a obsah vytvořený pro tento projekt je původní tvorbou autora, pokud není výslovně uvedeno jinak. Zavřením patičky i zůstáním na stránce stvrzujete, že nebudete stahovat žádné obrázky ani jakýkoliv jiný obsah z tohoto webu pro libovolné účely, včetně osobního použití, bez výslovného písemného souhlasu držitele autorských práv. Pro právní záležitosti využijte e-mail prava@honzaa.cz. Projekt byl z velké části vytvořen jakožto ročníkový projekt (IOČ) pro předmět programování na Gymnáziu, Praha 6, Arabská 14. Web nepoužívá soubory cookies ani nijak neukládá osobní údaje. Všechna data jsou uložena pouze v době připojení hráčů ke hře, popřípadě až 30 minut poté. Používáním webu souhlasíte s dodžování zásad slušného chování, zákonů České republiky v době připojení k veřejné hře."
+    },
 
 
     "Probíhá připojování k serveru...": "Probíhá připojování k serveru...",
@@ -99,6 +112,23 @@
     "Ukončit tah": "Ukončit tah",
     "Načítání...": "Načítání...",
 
+    "central_panel": {
+        "game_state_header": "Tvůj stav hry.",
+        "draw_pile": "dobírací balíček",
+        "game_running": "Hra běží..."
+    },
+
+    "player": {
+        "character_label": "postava: {{name}}",
+        "health_label_one": "1 život.",
+        "health_label_few": "{{count}} životy.",
+        "health_label_other": "{{count}} životů."
+    },
+
+    "flipping_card": {
+        "front": "Přední strana",
+        "back": "Zadní strana"
+    },
     "Pokud už ostatní nechtějí hrát a stále se nudíš, tak si protrénuj své zeměpisné znalosti na webu": "Pokud už ostatní nechtějí hrát a stále se nudíš, tak si protrénuj své zeměpisné znalosti na webu",
     "Největší online databáze vlajek:": "Největší online databáze vlajek:",
     "Smazat hru a začít jinou": "Smazat hru a začít jinou",

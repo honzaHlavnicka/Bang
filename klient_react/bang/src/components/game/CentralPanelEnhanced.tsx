@@ -9,10 +9,12 @@ import gameStateCSS from "../../styles/gameStateMessage.module.css";
 
 import Fire from "./Fire";
 import { useDialog } from "../../modules/DialogContext";
+import { useTranslation } from "react-i18next";
 
 export default function CentralPanelEnhanced() {
     const { gameState, drawCard, endTurn } = useGame();
     const { openDialog } = useDialog();
+    const { t } = useTranslation();
     
     const imagesForDeck = gameState.discardPile;
 
@@ -30,7 +32,7 @@ export default function CentralPanelEnhanced() {
                             )}
                         </>
                     ) : (
-                        "Hra běží..."
+                        t("central_panel.game_running")
                     )}
                 </span>
 
@@ -40,7 +42,7 @@ export default function CentralPanelEnhanced() {
                         onClick={() =>
                             openDialog({
                                 type: "INFO",
-                                dialogHeader: "Tvůj stav hry.",
+                                dialogHeader: t("central_panel.game_state_header"),
                                 data: {
                                     message: gameState.gameStateMessegeFull || "",
                                     header: gameState.gameStateMessege,
@@ -73,7 +75,7 @@ export default function CentralPanelEnhanced() {
                         }}
                         style={{ marginRight: 20 }}
                     >
-                        Ukončit tah
+                        {t("Ukončit tah")}
                     </button>
                 ) : null}
 
@@ -88,7 +90,7 @@ export default function CentralPanelEnhanced() {
                 {gameState.allowedUIElements.includes("DOBIRACI_BALICEK") ? (
                     <Card
                         image={"/img/karty/zezadu.png"}
-                        name="dobírací balíček"
+                        name={t("central_panel.draw_pile")}
                         onClick={() => drawCard()}
                         id={-2}
                     />

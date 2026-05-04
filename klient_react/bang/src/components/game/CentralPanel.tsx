@@ -23,7 +23,7 @@ export default function CentralPanel() {
 
         <h2 className={globalCSS.darkmodeReverseColor} style={{textAlign:"center", zIndex:4}}>
               {gameState.gameStateMessege ? gameState.gameStateMessege : ""}
-             {gameState.gameStateMessegeFull ?  <button onClick={()=>openDialog({type:"INFO",dialogHeader:"Tvůj stav hry.",data:{message:gameState.gameStateMessegeFull || "", header:gameState.gameStateMessege}})} className={globalCSS.button}>?</button> : null}
+             {gameState.gameStateMessegeFull ?  <button onClick={()=>openDialog({type:"INFO",dialogHeader:t("central_panel.game_state_header"),data:{message:gameState.gameStateMessegeFull || "", header:gameState.gameStateMessege}})} className={globalCSS.button}>?</button> : null}
              </h2>
 
         <div style={{flex:1, minHeight:0, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", }}>
@@ -53,7 +53,7 @@ export default function CentralPanel() {
                 <Deck images={imagesForDeck} />
             : null}
             {gameState.allowedUIElements.includes("DOBIRACI_BALICEK") ?
-                <Card image={ talonTopCardUrl} name="dobírací balíček" onClick={()=>drawCard()} id={-2}/>
+                <Card image={ talonTopCardUrl} name={t("central_panel.draw_pile")} onClick={()=>drawCard()} id={-2}/>
             : null}
 
 

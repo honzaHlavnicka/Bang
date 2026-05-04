@@ -26,7 +26,7 @@ export default function ZoomDialog() {
                         style={{cursor:"zoom-out"}}
                         onClick={toggleZoomMode}
                         src={zoomedCard}
-                        alt="Zoomed Card"
+                        alt={t("zoomed_card_alt")}
                         className={css.image}
                     />
                 )}
