@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import posthog from "../modules/posthog";
 
 export default function DarkModeSwitch({ style }: { style?: React.CSSProperties }) {
     const { i18n } = useTranslation();
@@ -22,6 +23,7 @@ export default function DarkModeSwitch({ style }: { style?: React.CSSProperties 
         const next = !isDark;
         document.documentElement.classList.toggle("darkMode", next);
         setIsDark(next);
+        posthog.capture('theme_changed', { is_dark: next });
     };
 
     const menu = (e: React.MouseEvent) => {
@@ -32,6 +34,7 @@ export default function DarkModeSwitch({ style }: { style?: React.CSSProperties 
     const zmenJazyk = (novyJazyk: string) => {
         // 1. Změníme jazyk v i18n
         i18n.changeLanguage(novyJazyk);
+        posthog.capture('language_changed', { language: novyJazyk });
 
         // 2. Přepíšeme URL adresu v prohlížeči (bez obnovení stránky!)
         const aktualniCesta = window.location.pathname; // např. "/cs/hra/123456"

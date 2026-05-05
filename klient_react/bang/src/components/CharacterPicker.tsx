@@ -2,10 +2,12 @@ import { useGame } from "../modules/GameContext";
 import Card from "./Card";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { usePostHog } from "@posthog/react";
 
 export default function CharacterPicker() {
     const {gameState, chooseCharacter} = useGame();
     const {t} = useTranslation();
+    const posthog = usePostHog();
 
     // Obsluha klávesových zkratek pro výběr postav (1 a 2)
     useEffect(() => {
@@ -44,6 +46,7 @@ export default function CharacterPicker() {
     }
 
     function vybrano(character:string){
+        posthog?.capture('character_chosen', { character });
         chooseCharacter(character);
     }
     

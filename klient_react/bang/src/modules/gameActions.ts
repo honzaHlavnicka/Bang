@@ -3,6 +3,7 @@ import type { CardType, GameStateType } from "./GameContext";
 import { type DialogState } from "./DialogContext";
 import type { RefObject } from "react";
 import {t} from "i18next";
+import posthog from "./posthog";
 
 
 // Helper types for server payloads
@@ -51,6 +52,7 @@ export function handleGameMessage(
             try {
                 const json = JSON.parse(payload) as { error: string, kod?: number };
                 toast.error(json.error);
+                posthog.capture('server_error_received', { error_message: json.error, error_code: json.kod });
 
                 if(json.kod === 5 || json.error.includes("Hra neexistuje") || json.error.includes("hra už byla zahájena")){ // opraveno
                     //Hra neexistuje
@@ -59,18 +61,22 @@ export function handleGameMessage(
 
             } catch {
                 toast.error("Chyba ze serveru: " + payload);
+                posthog.capture('server_error_received', { error_message: payload });
             }
             break;
         }
         case "novaHra": {
+            posthog.capture('game_created_success', { game_code: payload });
             setGameState(prev => ({ ...prev, inGame: true, gameCode: payload }));
             break;
         }
         case "pripojenKeHre": {
+            posthog.capture('game_joined_success');
             setGameState(prev => ({ ...prev, inGame: true }));
             break;
         }
         case "vyberPostavu": {
+            posthog.capture('character_selection_started');
             try {
                 const json = JSON.parse(payload) as GameStateType["characters"];
                 setGameState(prev => ({ ...prev, characters: json }));
@@ -162,12 +168,12 @@ export function handleGameMessage(
             const myId = parseInt(payload);
             setGameState(prev => {
                 // Najdi si svoje info v seznamu hráčů a zjisti isAdmin
-                const myInfo = prev.players?.find(p => p.id === myId);
+                const myInfoInState = prev.players?.find(p => p.id === myId);
                 
                 return { 
                     ...prev, 
                     playerId: myId,
-                    isAdmin: myInfo?.isAdmin ?? false
+                    isAdmin: myInfoInState?.isAdmin ?? false
                 };
             });
             break;
@@ -360,6 +366,7 @@ export function handleGameMessage(
         }
         case "vyhral":{  // Jeden ze 2 způsobů jak to oznámit
             const winnerId = payload;
+            posthog.capture('game_won', { winner_id: winnerId });
             const state = stateRef.current;
             if(state == null){
                 toast.error(t("Někdo vyhrál, neví se kdo."));
@@ -482,6 +489,7 @@ export function handleGameMessage(
             break;
         }
         case "konecHry":{
+            posthog.capture('game_ended');
             setGameState(prev=>({...prev, gameEnded:true}));
             break;
         }
@@ -558,15 +566,20 @@ export function handleGameMessage(
             break;
         }
         case "nahradHru": {
+            posthog.capture('game_replacement_offered');
             openDialog({type:"CONFIRM", data:{title:t("Byl jsi pozván do jiné hry. Chceš se tam připojit?")}, dialogHeader:t("Potvrzení"), notClosable:false, callback:(confirmed)=>{
                 if(confirmed){
+                    posthog.capture('game_replacement_accepted');
                     sessionStorage.setItem("autoconnect", payload);
                     window.location.reload();
+                } else {
+                    posthog.capture('game_replacement_declined');
                 }
             }});
             break;
         }
         case "nahradHruBezPtani": {
+            posthog.capture('game_replacement_forced');
             sessionStorage.setItem("autoconnect", payload);
             window.location.reload();
             break;
@@ -605,6 +618,7 @@ export function connectToGame(
     name: string
 ) {
     if (ws !== null) {
+        posthog.capture('game_join_attempt', { game_code: gameCode });
         setGameState(prevState => ({ ...prevState, gameCode: gameCode, inGame: true }));
         ws.send("pripojeniKeHre:" + gameCode);
         ws.send("noveJmeno:" + name);
@@ -613,6 +627,7 @@ export function connectToGame(
 
 export function createGame(ws: WebSocket | null,gameTypeId:number, name: string) {
     if (ws !== null) {
+        posthog.capture('game_create_attempt', { game_type_id: gameTypeId });
         ws.send("novaHra:"+gameTypeId);
         ws.send("noveJmeno:" + name);
     }
@@ -620,6 +635,7 @@ export function createGame(ws: WebSocket | null,gameTypeId:number, name: string)
 
 export function changePlayerName(ws: WebSocket | null, newName: string) {
     if (ws !== null) {
+        posthog.capture('player_name_change_attempt', { new_name: newName });
         ws.send("noveJmeno:" + newName);
     }
 }
@@ -629,6 +645,7 @@ export function chooseCharacter(
     changeGameState: (updater: (prev: GameStateType) => GameStateType) => void,
     character: string
 ) {
+    posthog.capture('character_selected', { character: character });
     changeGameState((prev) => ({ ...prev, character: character, characters: [] }));
     if (ws !== null) {
         ws.send("setPostava:" + character);
@@ -636,17 +653,20 @@ export function chooseCharacter(
 }
 export function startGame(ws: WebSocket | null) {
     if (ws !== null) {
+        posthog.capture('game_start_attempt');
         ws.send("zahajeniHry");
     }
 }
 export function playCard(ws: WebSocket | null, cardId: number) {
     if (ws !== null) {
+        posthog.capture('card_played', { card_id: cardId });
         ws.send("odehrani:" + cardId);
     }
 }
 
 export function drawCard(ws: WebSocket | null) {
     if (ws !== null) {
+        posthog.capture('card_drawn');
         ws.send("linuti");
     }
 }
@@ -654,6 +674,7 @@ export function drawCard(ws: WebSocket | null) {
 export function returnToGame(ws: WebSocket | null) {
     console.log("pokouším se vrátit do hry");
     if (ws !== null) {
+        posthog.capture('return_to_game_attempt');
         const token = localStorage.getItem("gameToken");
         if (!token) {
             console.error(t("Nelze se vrátit do hry, protože není uložen token"));
@@ -668,12 +689,14 @@ export function returnToGame(ws: WebSocket | null) {
 
 export function endTurn(ws: WebSocket | null) {
     if (ws !== null) {
+        posthog.capture('turn_ended');
         ws.send("konecTahu");
     }
 }
 
 export function fireCard(ws: WebSocket | null, cardId: number) {
     if (ws !== null) {
+        posthog.capture('card_fired', { card_id: cardId });
         ws.send("spaleni:" + cardId);
     }
 }
@@ -745,6 +768,7 @@ function zbaveniSeKarty(
 
 export function putCardInPlay(ws: WebSocket | null, cardId: number) {
     if (ws !== null) {
+        posthog.capture('card_put_in_play', { card_id: cardId });
         console.log("putCardInPlay - vykládám kartu do hry:", cardId);
         ws.send("vylozeni:" + cardId);
     }
@@ -752,6 +776,7 @@ export function putCardInPlay(ws: WebSocket | null, cardId: number) {
 
 export function putCardInPlayOnPlayer(ws: WebSocket | null, cardId: number, playerId: number) {
     if (ws !== null) {
+        posthog.capture('card_put_in_play_on_player', { card_id: cardId, target_player_id: playerId });
         console.log("putCardInPlayOnPlayer - vykládám kartu na hráče:", cardId, "na hráče:", playerId);
         ws.send("vylozeni:" + cardId + "," + playerId);
     }
@@ -759,6 +784,7 @@ export function putCardInPlayOnPlayer(ws: WebSocket | null, cardId: number, play
 
 export function clickUIButton(ws: WebSocket | null, buttonId: number) {
     if (ws !== null) {
+        posthog.capture('ui_button_clicked', { button_id: buttonId });
         ws.send(`uiClick:${buttonId}`);
     }
 }
@@ -776,7 +802,10 @@ export function startNewGameAndDeleteThisOne(ws: WebSocket | null, openDialog: (
         notClosable: false,
         callback: (confirmed) => {
             if (confirmed && ws !== null) {
+                posthog.capture('game_replace_confirmed', { game_type_id: confirmed - 1 });
                 ws.send(`nahradHru:${confirmed - 1}`);
+            } else {
+                posthog.capture('game_replace_cancelled');
             }
         }
     };

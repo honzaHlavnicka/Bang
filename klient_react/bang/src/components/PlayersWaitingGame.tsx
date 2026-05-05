@@ -1,11 +1,13 @@
 import { useTranslation } from "react-i18next";
 import { useGame } from "../modules/GameContext";
 import { useEffect } from "react";
+import { usePostHog } from "@posthog/react";
 
 export default function PlayersWaitingGame() {
     const {gameState ,startGame} = useGame();
     const isAdmin = gameState.isAdmin ?? false;
     const {t} = useTranslation();
+    const posthog = usePostHog();
     
     // Obsluha Enter klávesy pro spuštění hry
     useEffect(() => {
@@ -52,10 +54,11 @@ export default function PlayersWaitingGame() {
                     fontSize: "1.3em",
                     border: 0
                 }}
-                onClick={() => startGame()}
+                onClick={() => { posthog?.capture('game_started', { player_count: gameState.players?.length }); startGame(); }}
                 onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
+                        posthog?.capture('game_started', { player_count: gameState.players?.length });
                         startGame();
                     }
                 }}

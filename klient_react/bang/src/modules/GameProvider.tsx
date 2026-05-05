@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useDialog } from "./DialogContext";
 import { notify } from "./notify";
 import { useTranslation } from "react-i18next";
+import posthog from "./posthog";
 
 
 
@@ -39,6 +40,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         console.log("pokus o připojení k ws serveru na adrese " + socketAddress);
         socket.onopen = () => {
             setWs(socket);
+            posthog.capture('socket_connected', { url: socketUrl });
             toast.success(t("Připojeno k serveru"));
             if (import.meta.env.VITE_DEBUG) {
                 console.log("Debug mode is ON. Socket address: " + socketUrl);
@@ -49,6 +51,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         socket.onmessage = (event) => { handleGameMessage(event, setGameState, stateRef,openDialog,socket,notify); };
         socket.onclose = () => {
             console.log("WebSocket disconnected");
+            posthog.capture('socket_disconnected');
             setWs(null);
             toast.error(t("Byl jsi odpojen od serveru"));
             openDialog({type:"INFO", data:{header:t("Byl jsi odpojen od serveru"),message:t("Zkus znovu načíst stránku a kliknout na znovu se připojit ke hře.")},dialogHeader:t("Odpojení")}); 

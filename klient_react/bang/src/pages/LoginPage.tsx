@@ -6,9 +6,11 @@ import DarkModeSwitch from '../components/DarkModeSwitch';
 import globalCSS from "../styles/global.module.css";
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
+import { usePostHog } from '@posthog/react';
 
 export default function LoginPage() {
     const { t } = useTranslation();
+    const posthog = usePostHog();
     const [gameCode, setGameCode] = useState('');
     const [jmeno, setJmeno] = useState('');
     const [zobrazenaPaticka, setZobrazenaPaticka] = useState(true);
@@ -155,9 +157,9 @@ export default function LoginPage() {
                     
                     <div className={css.box + " " + css.sectionCard} >
                         <h2>{t("Vrátit se k rozehrané hře")}</h2>
-                        <button 
-                            className={globalCSS.button + " " + css.btnRight} 
-                            onClick={() => returnToGame()}
+                        <button
+                            className={globalCSS.button + " " + css.btnRight}
+                            onClick={() => { posthog?.capture('game_returned_to'); returnToGame(); }}
                         >{t("vrátit se")}</button>
                     </div>
                     
@@ -168,7 +170,10 @@ export default function LoginPage() {
                     <form
                         onSubmit={(e) => {
                             e.preventDefault();
-                            if (zkontroluj(true)) connectToGame(gameCode, jmeno);
+                            if (zkontroluj(true)) {
+                                posthog?.capture('game_joined', { game_code: gameCode, player_name: jmeno });
+                                connectToGame(gameCode, jmeno);
+                            }
                         }}
                     >
                         <h4>{t("Kód hry, kam se chceš přihlásit:")}</h4>
@@ -197,7 +202,11 @@ export default function LoginPage() {
                     <form
                         onSubmit={(e) => {
                             e.preventDefault();
-                            if (zkontroluj(false)) createGame(idTypuHry, jmeno);
+                            if (zkontroluj(false)) {
+                                const gameTypeName = gameState.gameTypesAvailable?.find(gt => gt.id === idTypuHry)?.name;
+                                posthog?.capture('game_created', { game_type_id: idTypuHry, game_type_name: gameTypeName, player_name: jmeno });
+                                createGame(idTypuHry, jmeno);
+                            }
                         }}
                     >
                         <h4>{t("Typ hry")}</h4>
@@ -242,9 +251,19 @@ export default function LoginPage() {
                             <strong>{t("Upozornění:")}</strong> <span dangerouslySetInnerHTML={{ __html: t("footer.legal_text") }} />
                         </p>
                     </small>
-                    <button onClick={() => {setZobrazenaPaticka(false);localStorage.setItem("souhlas", "true");}} className={globalCSS.button} style={{marginTop:"16px"}}>
-                        {t("Souhlasím")}
-                    </button>
+                    <div style={{display: "flex", gap: "10px", marginTop: "16px", justifyContent: "center"}}>
+                        <button onClick={() => { 
+                            localStorage.setItem("souhlas", "true"); 
+                            posthog?.set_config({ persistence: 'localStorage+cookie', disable_cookies: false });
+                            posthog?.capture('consent_accepted'); 
+                            setZobrazenaPaticka(false);
+                        }} className={globalCSS.button}>
+                            {t("Souhlasím")}
+                        </button>
+                        <button onClick={() => { setZobrazenaPaticka(false); localStorage.setItem("souhlas", "false"); posthog?.capture('consent_declined'); }} className={globalCSS.button} style={{backgroundColor: "rgba(100, 100, 100, 0.5)"}}>
+                            {t("Nesouhlasím")}
+                        </button>
+                    </div>
                 </div>
             </footer>
             }
