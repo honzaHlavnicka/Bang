@@ -7,13 +7,14 @@ import globalCSS from "../styles/global.module.css";
 import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import { usePostHog } from '@posthog/react';
+import config from '../config';
 
 export default function LoginPage() {
     const { t } = useTranslation();
     const posthog = usePostHog();
     const [gameCode, setGameCode] = useState('');
     const [jmeno, setJmeno] = useState('');
-    const [zobrazenaPaticka, setZobrazenaPaticka] = useState(true);
+    const [zobrazenaPaticka, setZobrazenaPaticka] = useState(config.showCookies);
     const [idTypuHry, setIdTypuHry] = useState<number>(0);
     const { connectToGame, createGame, gameState, returnToGame } = useGame();
     const [openCard , setOpenCard] = useState<string>("pripojeni");
