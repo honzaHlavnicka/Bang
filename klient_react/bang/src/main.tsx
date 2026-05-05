@@ -25,10 +25,9 @@ if (!isDebug && posthogToken) {
     api_host: posthogHost,
     capture_pageview: false, // Budeme zachytávat manuálně pro sjednocení cest
     persistence: consent ? 'localStorage+cookie' : 'memory',
-    disable_cookies: !consent,
-    save_referrer: true,
-    store_google_advertiser_ids: true,
-  });
+    disable_cookie: !consent,
+    save_referrer: true
+    });
 
   posthog.register({
     is_iframe: config.isIframe
