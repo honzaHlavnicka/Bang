@@ -146,10 +146,20 @@ export default function LoginPage() {
                     <div className={css.box} >
                         <div style={{textAlign:"center",fontSize:".8em"}}>
                             {t("Chceš hrát sám zeměpisný kvíz, nebo navštívit největší databázi vlajek?")}<br />
-                            <a className={globalCSS.button + " " + css.btnSecondary} href={"https://world-quiz.com/" + i18n.language + "?utm_source=bang.honzaa.cz&utm_medium=referral&utm_campaign=bang&utm_campaign=na_titulni:strance"} target="_blank" rel="noopener noreferrer">
+                            <a 
+                                className={globalCSS.button + " " + css.btnSecondary} 
+                                href={"https://world-quiz.com/" + i18n.language + "?utm_source=bang.honzaa.cz&utm_medium=referral&utm_campaign=bang&utm_campaign=na_titulni_strance"} 
+                                target="_blank" 
+                                onClick={() => posthog?.capture('external_link_clicked', { destination: 'world-quiz', location: 'login_page' })}
+                            >
                                 {t("World Quiz")}
                             </a>
-                            <a className={globalCSS.button + " " + css.btnSecondary} href={"https://jef.world-quiz.com/" + i18n.language + "?utm_source=bang.honzaa.cz&utm_medium=referral&utm_campaign=bang&utm_campaign=na_titulni:strance"} target="_blank" rel="noopener noreferrer">
+                            <a 
+                                className={globalCSS.button + " " + css.btnSecondary} 
+                                href={"https://jef.world-quiz.com/" + i18n.language + "?utm_source=bang.honzaa.cz&utm_medium=referral&utm_campaign=bang&utm_campaign=na_titulni_strance"} 
+                                target="_blank" 
+                                onClick={() => posthog?.capture('external_link_clicked', { destination: 'just-enough-flags', location: 'login_page' })}
+                            >
                                 {t("Just Enough Flags")}
                             </a>
                         </div>
@@ -255,7 +265,7 @@ export default function LoginPage() {
                     <div style={{display: "flex", gap: "10px", marginTop: "16px", justifyContent: "center"}}>
                         <button onClick={() => { 
                             localStorage.setItem("souhlas", "true"); 
-                            posthog?.set_config({ persistence: 'localStorage+cookie', disable_cookies: false });
+                            posthog?.set_config({ persistence: 'localStorage+cookie', disable_cookie: false });
                             posthog?.capture('consent_accepted'); 
                             setZobrazenaPaticka(false);
                         }} className={globalCSS.button}>

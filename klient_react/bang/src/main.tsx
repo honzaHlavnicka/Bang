@@ -10,6 +10,7 @@ import { ZoomProvider } from './modules/ZoomContext.tsx'
 import ZoomDialog from './components/zoomDialog.tsx'
 import posthog from 'posthog-js'
 import { PostHogProvider } from '@posthog/react'
+import config from './config';
 
 import '../i18n.ts';
 
@@ -24,8 +25,13 @@ if (!isDebug && posthogToken) {
     api_host: posthogHost,
     capture_pageview: false, // Budeme zachytávat manuálně pro sjednocení cest
     persistence: consent ? 'localStorage+cookie' : 'memory',
-    disable_cookie: !consent,
+    disable_cookies: !consent,
     save_referrer: true,
+    store_google_advertiser_ids: true,
+  });
+
+  posthog.register({
+    is_iframe: config.isIframe
   });
 
   const captureUnifiedPageview = () => {

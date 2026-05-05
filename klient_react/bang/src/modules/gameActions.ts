@@ -168,12 +168,12 @@ export function handleGameMessage(
             const myId = parseInt(payload);
             setGameState(prev => {
                 // Najdi si svoje info v seznamu hráčů a zjisti isAdmin
-                const myInfoInState = prev.players?.find(p => p.id === myId);
+                const myInfo = prev.players?.find(p => p.id === myId);
                 
                 return { 
                     ...prev, 
                     playerId: myId,
-                    isAdmin: myInfoInState?.isAdmin ?? false
+                    isAdmin: myInfo?.isAdmin ?? false
                 };
             });
             break;
@@ -618,7 +618,6 @@ export function connectToGame(
     name: string
 ) {
     if (ws !== null) {
-        posthog.capture('game_join_attempt', { game_code: gameCode });
         setGameState(prevState => ({ ...prevState, gameCode: gameCode, inGame: true }));
         ws.send("pripojeniKeHre:" + gameCode);
         ws.send("noveJmeno:" + name);
@@ -627,7 +626,6 @@ export function connectToGame(
 
 export function createGame(ws: WebSocket | null,gameTypeId:number, name: string) {
     if (ws !== null) {
-        posthog.capture('game_create_attempt', { game_type_id: gameTypeId });
         ws.send("novaHra:"+gameTypeId);
         ws.send("noveJmeno:" + name);
     }
@@ -635,7 +633,6 @@ export function createGame(ws: WebSocket | null,gameTypeId:number, name: string)
 
 export function changePlayerName(ws: WebSocket | null, newName: string) {
     if (ws !== null) {
-        posthog.capture('player_name_change_attempt', { new_name: newName });
         ws.send("noveJmeno:" + newName);
     }
 }
@@ -674,7 +671,6 @@ export function drawCard(ws: WebSocket | null) {
 export function returnToGame(ws: WebSocket | null) {
     console.log("pokouším se vrátit do hry");
     if (ws !== null) {
-        posthog.capture('return_to_game_attempt');
         const token = localStorage.getItem("gameToken");
         if (!token) {
             console.error(t("Nelze se vrátit do hry, protože není uložen token"));
