@@ -25,9 +25,20 @@ if (!isDebug && posthogToken) {
     api_host: posthogHost,
     capture_pageview: false, // Budeme zachytávat manuálně pro sjednocení cest
     persistence: consent ? 'localStorage+cookie' : 'memory',
-    disable_cookie: !consent,
-    save_referrer: true
+    disable_persistence: !consent,
+    save_referrer: true,
+    // Pokud není souhlas, vypneme nahrávání a automatický sběr
+    disable_session_recording: !consent,
+    autocapture: consent,
+    capture_performance: consent
     });
+
+  if (consent) {
+    posthog.opt_in_capturing();
+  } else {
+    // Explicitně vypneme nahrávání pro jistotu i přes opt_out (v závislosti na nastavení projektu v PH)
+    posthog.opt_out_capturing();
+  }
 
   posthog.register({
     is_iframe: config.isIframe

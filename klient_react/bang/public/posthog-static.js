@@ -9,7 +9,9 @@ if (!isDebug && posthogToken) {
         api_host: posthogHost,
         capture_pageview: false,
         persistence: 'memory',
-        disable_cookies: true
+        disable_persistence: true,
+        disable_session_recording: true,
+        autocapture: false
     });
 
     const currentPath = window.location.pathname;

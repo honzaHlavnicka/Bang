@@ -265,19 +265,82 @@ export default function LoginPage() {
                     <div style={{display: "flex", gap: "10px", marginTop: "16px", justifyContent: "center"}}>
                         <button onClick={() => { 
                             localStorage.setItem("souhlas", "true"); 
-                            posthog?.set_config({ persistence: 'localStorage+cookie', disable_cookie: false });
+                            posthog?.set_config({ 
+                                persistence: 'localStorage+cookie', 
+                                disable_persistence: false,
+                                disable_session_recording: false,
+                                autocapture: true,
+                                capture_performance: true
+                            });
+                            posthog?.startSessionRecording();
+                            posthog?.opt_in_capturing();
                             posthog?.capture('consent_accepted'); 
                             setZobrazenaPaticka(false);
                         }} className={globalCSS.button}>
                             {t("Souhlasím")}
                         </button>
-                        <button onClick={() => { setZobrazenaPaticka(false); localStorage.setItem("souhlas", "false"); posthog?.capture('consent_declined'); }} className={globalCSS.button} style={{backgroundColor: "rgba(100, 100, 100, 0.5)"}}>
+                        <button onClick={() => { 
+                            setZobrazenaPaticka(false); 
+                            localStorage.setItem("souhlas", "false"); 
+                            posthog?.set_config({ 
+                                persistence: 'memory', 
+                                disable_persistence: true,
+                                disable_session_recording: true,
+                                autocapture: false,
+                                capture_performance: false
+                            });
+                            posthog?.stopSessionRecording();
+                            posthog?.opt_out_capturing();
+                            posthog?.capture('consent_declined'); 
+                        }} className={globalCSS.button} style={{backgroundColor: "rgba(100, 100, 100, 0.5)"}}>
                             {t("Nesouhlasím")}
                         </button>
                     </div>
                 </div>
             </footer>
             }
+
+            {config.showCookies && !zobrazenaPaticka && (
+                <button 
+                    onClick={() => setZobrazenaPaticka(true)}
+                    title={t("Nastavení soukromí")}
+                    style={{
+                        position: "fixed",
+                        bottom: "15px",
+                        left: "15px",
+                        zIndex: 1000,
+                        width: "40px",
+                        height: "40px",
+                        borderRadius: "50%",
+                        background: "rgba(0, 0, 0, 0.5)",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: "0",
+                        transition: "transform 0.2s, background 0.2s",
+                        boxShadow: "0 2px 10px rgba(0,0,0,0.3)"
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "rgba(0, 0, 0, 0.7)";
+                        e.currentTarget.style.transform = "scale(1.1)";
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "rgba(0, 0, 0, 0.5)";
+                        e.currentTarget.style.transform = "scale(1)";
+                    }}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style={{color: "#fff"}}>
+                        <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/>
+                        <path d="M8.5 8.5v.01"/>
+                        <path d="M16 15.5v.01"/>
+                        <path d="M12 12v.01"/>
+                        <path d="M11 17v.01"/>
+                        <path d="M7 14v.01"/>
+                    </svg>
+                </button>
+            )}
         </div >
 
     );
