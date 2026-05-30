@@ -25,7 +25,7 @@ public class PolyglotHratelnaKarta extends PolyglotKarta implements HratelnaKart
     @Override
     public boolean odehrat(Hrac kym) {
         if (jsObjektKarty.hasMember("odehrat")) {
-            return jsObjektKarty.getMember("odehrat").execute(hra, kym).asBoolean();
+            return jsObjektKarty.invokeMember("odehrat", hra, kym).asBoolean();
         }
         return false;
     }

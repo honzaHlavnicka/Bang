@@ -30,7 +30,7 @@ public class PolyglotVylozitelnaKarta extends PolyglotKarta implements Vylozitel
     @Override
     public boolean vylozit(Hrac predKoho, Hrac kym) {
         if (jsObjektKarty.hasMember("vylozit")) {
-            return jsObjektKarty.getMember("vylozit").execute(predKoho, kym).asBoolean();
+            return jsObjektKarty.invokeMember("vylozit", predKoho, kym).asBoolean();
         }
         return true;
     }
@@ -43,7 +43,7 @@ public class PolyglotVylozitelnaKarta extends PolyglotKarta implements Vylozitel
     @Override
     public void spalitVylozenou() {
         if (jsObjektKarty.hasMember("spalitVylozenou")) {
-            jsObjektKarty.getMember("spalitVylozenou").execute();
+            jsObjektKarty.invokeMember("spalitVylozenou");
         }
     }
 }

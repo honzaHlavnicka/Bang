@@ -64,7 +64,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
     @Override
     public boolean hracChceUkoncitTah(Hrac kdo) {
         if (jsFunkce.hasMember("hracChceUkoncitTah")) {
-            Value vysledek = jsFunkce.getMember("hracChceUkoncitTah").execute(hra, kdo);
+            Value vysledek = jsFunkce.invokeMember("hracChceUkoncitTah", hra, kdo);
             if (vysledek.isBoolean()) {
                 return vysledek.asBoolean();
             }
@@ -76,7 +76,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
     @Override
     public boolean hracChceLiznout(Hrac kdo) {
         if (jsFunkce.hasMember("hracChceLiznout")) {
-            Value vysledek = jsFunkce.getMember("hracChceLiznout").execute(hra, kdo);
+            Value vysledek = jsFunkce.invokeMember("hracChceLiznout", hra, kdo);
             if (vysledek.isBoolean()) {
                 return vysledek.asBoolean();
             }
@@ -88,7 +88,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
     public void pripravBalicek(Balicek<Karta> balicek) {
         if (jsFunkce.hasMember("ziskejKartyDoBalicku")) {
             
-            Value poleJsKaret = jsFunkce.getMember("kartyDoBalicku").execute();
+            Value poleJsKaret = jsFunkce.invokeMember("kartyDoBalicku");
             
             if (poleJsKaret.hasArrayElements()) {
 
@@ -110,7 +110,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
     @Override
     public void pripravBalicekPostav(Stack<Postava> balicekPostav) {
         if (jsFunkce.hasMember("pripravBalicekPostav")) {
-            jsFunkce.getMember("pripravBalicekPostav").execute(hra, balicekPostav);
+            jsFunkce.invokeMember("pripravBalicekPostav", hra, balicekPostav);
         } else {
             HerniPravidla.super.pripravBalicekPostav(balicekPostav);
         }
@@ -119,7 +119,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
     @Override
     public void zacalTah(Hrac komu) {
         if (jsFunkce.hasMember("zacalTah")) {
-            jsFunkce.getMember("zacalTah").execute(hra, komu);
+            jsFunkce.invokeMember("zacalTah", hra, komu);
         } else {
             HerniPravidla.super.zacalTah(komu);
         }
@@ -128,7 +128,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
     @Override
     public void skoncilTah(Hrac komu) {
         if (jsFunkce.hasMember("skoncilTah")) {
-            jsFunkce.getMember("skoncilTah").execute(hra, komu);
+            jsFunkce.invokeMember("skoncilTah", hra, komu);
         } else {
             HerniPravidla.super.skoncilTah(komu);
         }
@@ -137,7 +137,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
     @Override
     public boolean muzeSpalit(Karta co) {
         if (jsFunkce.hasMember("muzeSpalit")) {
-            Value vysledek = jsFunkce.getMember("muzeSpalit").execute(hra, co);
+            Value vysledek = jsFunkce.invokeMember("muzeSpalit", hra, co);
             if (vysledek.isBoolean()) {
                 return vysledek.asBoolean();
             }
@@ -150,7 +150,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
         if (jsFunkce.hasMember("getViditelnePrvky")) {
             // Tohle může být v budoucnu trochu složitější na konverzi z JS pole 
             // do Java UIPrvek[], proto tu zkusíme rovnou použít asHostObject()
-            Value vysledek = jsFunkce.getMember("getViditelnePrvky").execute(hra);
+            Value vysledek = jsFunkce.invokeMember("getViditelnePrvky", hra);
             if (vysledek.hasArrayElements()) {
                 return vysledek.as(UIPrvek[].class);
             }
@@ -161,7 +161,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
     @Override
     public boolean muzeZahrat(Karta co, Hrac kdo) {
         if (jsFunkce.hasMember("muzeZahrat")) {
-            Value vysledek = jsFunkce.getMember("muzeZahrat").execute(hra, co, kdo);
+            Value vysledek = jsFunkce.invokeMember("muzeZahrat", hra, co, kdo);
             if (vysledek.isBoolean()) {
                 return vysledek.asBoolean();
             }
@@ -172,7 +172,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
     @Override
     public String getVychoziZadniObrazek() {
         if (jsFunkce.hasMember("getVychoziZadniObrazek")) {
-            Value vysledek = jsFunkce.getMember("getVychoziZadniObrazek").execute(hra);
+            Value vysledek = jsFunkce.invokeMember("getVychoziZadniObrazek", hra);
             if (vysledek.isString()) {
                 return vysledek.asString();
             }
@@ -183,7 +183,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
     @Override
     public boolean muzeVylozit(Hrac kdo, VylozitelnaKarta co) {
         if (jsFunkce.hasMember("muzeVylozit")) {
-            Value vysledek = jsFunkce.getMember("muzeVylozit").execute(hra, kdo, co);
+            Value vysledek = jsFunkce.invokeMember("muzeVylozit", hra, kdo, co);
             if (vysledek.isBoolean()) {
                 return vysledek.asBoolean();
             }
@@ -194,7 +194,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
     @Override
     public void spustitPrvniTah(SpravceTahu spravceTahu) {
         if (jsFunkce.hasMember("spustitPrvniTah")) {
-            jsFunkce.getMember("spustitPrvniTah").execute(hra, spravceTahu);
+            jsFunkce.invokeMember("spustitPrvniTah", hra, spravceTahu);
         } else {
             HerniPravidla.super.spustitPrvniTah(spravceTahu);
         }
@@ -203,7 +203,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
     @Override
     public void uiButtonClicked(Hrac hrac, int uiId) {
         if (jsFunkce.hasMember("uiButtonClicked")) {
-            jsFunkce.getMember("uiButtonClicked").execute(hra, hrac, uiId);
+            jsFunkce.invokeMember("uiButtonClicked", hra, hrac, uiId);
         } else {
             HerniPravidla.super.uiButtonClicked(hrac, uiId);
         }

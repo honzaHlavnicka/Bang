@@ -27,7 +27,7 @@ public class PolyglotKarta extends Karta {
     @Override
     public String getJmeno() {
         if (jsObjektKarty.hasMember("getJmeno")) {
-            return jsObjektKarty.getMember("getJmeno").execute().asString();
+            return jsObjektKarty.invokeMember("getJmeno").asString();
         }
         return "Neznámá karta";
     }
@@ -35,7 +35,7 @@ public class PolyglotKarta extends Karta {
     @Override
     public String getObrazek() {
         if (jsObjektKarty.hasMember("getObrazek")) {
-            return jsObjektKarty.getMember("getObrazek").execute().asString();
+            return jsObjektKarty.invokeMember("getObrazek").asString();
         }
         return "vychozi";
     }
@@ -43,7 +43,7 @@ public class PolyglotKarta extends Karta {
     @Override
     public String getZadniObrazek() {
         if (jsObjektKarty.hasMember("getZadniObrazek")) {
-            return jsObjektKarty.getMember("getZadniObrazek").execute().asString();
+            return jsObjektKarty.invokeMember("getZadniObrazek").asString();
         }
         return super.getZadniObrazek();
     }
@@ -51,7 +51,7 @@ public class PolyglotKarta extends Karta {
     @Override
     public void predSpalenim() {
         if (jsObjektKarty.hasMember("predSpalenim")) {
-            jsObjektKarty.getMember("predSpalenim").execute().asString();
+            jsObjektKarty.invokeMember("predSpalenim").asString();
         }
         super.predSpalenim(); // Nic nedělá, ale pro budoucí čistý kod, co kdyby.
     }

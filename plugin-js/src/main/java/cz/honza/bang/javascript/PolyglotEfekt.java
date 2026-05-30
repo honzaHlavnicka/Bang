@@ -28,7 +28,7 @@ public class PolyglotEfekt implements Efekt {
     @Override
     public int getBonusDosahu() {
         if (jsObjekt.hasMember("getBonusDosahu")) {
-            return jsObjekt.getMember("getBonusDosahu").execute().asInt();
+            return jsObjekt.invokeMember("getBonusDosahu").asInt();
         }
         return Efekt.super.getBonusDosahu(); // Vrátí 0
     }
@@ -36,7 +36,7 @@ public class PolyglotEfekt implements Efekt {
     @Override
     public int getBonusOdstupu() {
         if (jsObjekt.hasMember("getBonusOdstupu")) {
-            return jsObjekt.getMember("getBonusOdstupu").execute().asInt();
+            return jsObjekt.invokeMember("getBonusOdstupu").asInt();
         }
         return Efekt.super.getBonusOdstupu(); // Vrátí 0
     }
@@ -44,7 +44,7 @@ public class PolyglotEfekt implements Efekt {
     @Override
     public void naZacatekTahu(Hra hra, Hrac hrac) {
         if (jsObjekt.hasMember("naZacatekTahu")) {
-            jsObjekt.getMember("naZacatekTahu").execute(hra, hrac);
+            jsObjekt.invokeMember("naZacatekTahu", hra, hrac);
         } else {
             Efekt.super.naZacatekTahu(hra, hrac);
         }
