@@ -694,6 +694,11 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     public int getCelkovyBonusDosahu() {
         return this.getEfekty().stream().mapToInt(Efekt::getBonusDosahu).sum();
     }
+
+    @Override
+    public String getIdentifikatorMista() {
+        return "Hráč" + id;
+    }
 }
 
 

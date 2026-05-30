@@ -216,6 +216,18 @@ public interface KomunikatorHry {
     public void posliZadniObrazekLizacihoBalicku(String obrazek);
     
     /**
+     * Nechá klienta provést animaci, kdy se přesouvá karta od jednoho
+     * hráče k druhému. Místo nemusí být hráč, tudíž se animace může
+     * provést například z odhazovacího balíčku na hráče, z lízacího
+     * balíčku na odhazovací apod. 
+     * @param karta, která se přenáší
+     * @param odkrytou, uvidí hráči přední, nebo zadní stranu?
+     * @param odkud Místo, kde animace začne
+     * @param kam Místo kde animace skončí.
+     */
+    public void posliAnimaciKarty(Karta karta, boolean odkrytou, Misto odkud, Misto kam);
+    
+    /**
      * Pošle jednomu hráči otázku a možnosti odpovědí. Vrátí odpověď hráče jako CompletableFuture, které se splní, až hráč odpoví.
      * @param odKoho Hráč, kterému se otázka klade
      * @param moznosti Seznam možných odpovědí (Pořadí je důležité, protože odpověď bude indexem do tohoto seznamu)

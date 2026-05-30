@@ -16,7 +16,7 @@ import java.util.List;
  * <p><b>NEočekává se implementace od autora pluginu</b>, ale měl by používat její dostupné metody.
  * @author honza
  */
-public interface Hrac {
+public interface Hrac extends Misto{
      
     /**
      * Mělo by se spustit před začátkem hry. Přiřadí hráči roli a připravý ho ke hře.

@@ -387,6 +387,13 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     public void posliZadniObrazekLizacihoBalicku(String obrazek){
         posliVsem("obrazekDobiracihoBalicku:"+obrazek);
     }
+    
+    @Override
+    public void posliAnimaciKarty(Karta karta, boolean odkrytou, Hrac odkud, Hrac kam){
+        String obrazek = odkrytou ? karta.getObrazek() : karta.getZadniObrazek();
+        posliVsem("animaceKarty:" + obrazek);
+    }
+
 
     
     
