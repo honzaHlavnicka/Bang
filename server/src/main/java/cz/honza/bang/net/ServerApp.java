@@ -15,8 +15,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.InetSocketAddress;
 import java.net.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServerApp {
+    private static final Logger logger = LoggerFactory.getLogger(ServerApp.class);
 
     public static void main(String[] args) {
         int port = 8080; // Výchozí port
@@ -25,11 +28,11 @@ public class ServerApp {
             try {
                 port = Integer.parseInt(portEnv);
             } catch (NumberFormatException e) {
-                System.err.println("[!] SERVER_PORT má neplatnou hodnotu: " + portEnv + ", používám port 8080");
+                logger.warn("SERVER_PORT má neplatnou hodnotu: {}, používám port 8080", portEnv);
             }
         }
         
-        System.out.println("Spouštím server na portu: " + port);
+        logger.info("Spouštím server na portu: {}", port);
         
         WebSocketServer server = new SocketServer(new InetSocketAddress("0.0.0.0", port));
         server.setReuseAddr(true);

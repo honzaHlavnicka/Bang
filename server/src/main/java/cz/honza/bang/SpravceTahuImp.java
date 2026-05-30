@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.function.Predicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Spravuje pořadí hráčů a jejich tahy.
@@ -22,6 +24,7 @@ import java.util.function.Predicate;
  * @author honza
  */
 public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
+    private static final Logger logger = LoggerFactory.getLogger(SpravceTahuImp.class);
     private HracImp naTahu;
     private final Deque<Tah> frontaTahu;
 
@@ -106,7 +109,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
             if (!tah.docasneZruseny) {
                 naTahu = (HracImp) tah.hrac;
                 kolikatyTah = 1;
-                System.out.println("Začíná tah: " + tah.hrac);
+                logger.info("Začíná tah hráče: {}", naTahu.getJmeno());
                 return naTahu;
             } else {
                 // přeskočí vyřazeného hráče

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -18,6 +20,7 @@ import java.util.stream.IntStream;
 
 
 public class SpravceHernichPravidel {
+    private static final Logger logger = LoggerFactory.getLogger(SpravceHernichPravidel.class);
 
     private static final List<HerniPlugin> pluginy = new ArrayList<>();
 
@@ -59,21 +62,19 @@ public class SpravceHernichPravidel {
             for (Path cesta : cesty) {
                 if (java.nio.file.Files.exists(cesta)) {
                     pluginy.addAll(NacitacPluginu.nactiPluginy(cesta));
-                    System.out.println("Pluginy načteny z: " + cesta.toAbsolutePath());
-                    System.out.println("   Počet pluginů: " + pluginy.size());
+                    logger.info("Pluginy načteny z: {}, počet: {}", cesta.toAbsolutePath(), pluginy.size());
                     break;
                 }
             }
             
             if (pluginy.isEmpty()) {
-                System.out.println("VAROVÁNÍ: Žádné pluginy nenalezeny!");
-                System.out.println("Hledal jsem v:");
+                logger.warn("Žádné pluginy nenalezeny! Prohledávané cesty:");
                 for (Path cesta : cesty) {
-                    System.out.println("  - " + cesta.toAbsolutePath());
+                    logger.warn("  - {}", cesta.toAbsolutePath());
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Chyba při přegenerování pluginů", e);
         }
     }
 }

@@ -17,12 +17,15 @@ import cz.honza.bang.sdk.KomunikatorHry;
 import cz.honza.bang.sdk.Postava;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Třída reprezentující jednoho hráče.
  * @author honza
  */
 public class HracImp implements cz.honza.bang.sdk.Hrac{
+    private static final Logger logger = LoggerFactory.getLogger(HracImp.class);
     private int zivoty;
     private int  maximumZivotu;
     private cz.honza.bang.sdk.Postava postava = null;
@@ -255,7 +258,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      */
     @Override
     public void zahajitTah() {
-        System.out.println("zahájen tah v tah");
+        logger.info("Zahájen tah pro hráče: {}", getJmeno());
         hra.getKomunikator().posli(this, "tvujTahZacal");
         hra.getKomunikator().posliZahajeniTahu(this);
         // Spuštění efektů na začátku tahu
@@ -468,7 +471,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
             }
         }
         karty.add(karta);
-        System.out.println("lizani si");
+        logger.debug("Hráč {} si lízl kartu: {}", getJmeno(), karta.getJmeno());
         hra.getKomunikator().posliNovouKartu(this,karta);
 
     }

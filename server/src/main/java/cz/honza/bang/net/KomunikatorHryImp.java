@@ -23,6 +23,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.java_websocket.WebSocket;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -46,6 +48,9 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     // Timeout pro smazání neaktivní hry
     private Timer hraCleupTimer = null;
     private TimerTask hraCleupTask = null;
+    
+    
+    private static final Logger logger = LoggerFactory.getLogger(KomunikatorHryImp.class);
 
 
     
@@ -69,6 +74,8 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         idHry = id;
     }
     public static KomunikatorHryImp vytvor(SocketServer socket,int id,int typHry){
+        logger.info("Nový komunikátor se vytváří. ID:" + id + ", typHry:" + typHry);
+        
         KomunikatorHryImp komunikator = new KomunikatorHryImp(socket, id);
         komunikator.hra = HraImp.vytvor(komunikator,typHry);
         return komunikator;
@@ -116,6 +123,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
             try{
                 zpracujPozadanouOdpoved(Integer.valueOf(data[0]), data[1]);
             }catch(Exception ex){
+                logger.error("Chyba při zpracování dialogu: {}", message, ex);
                 posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
             }
         }
@@ -142,6 +150,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
                 }
 
             } catch (NumberFormatException ex) {
+                logger.error("Chyba při zpracování uiClick (neplatné ID): {}", message, ex);
                 posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
             }
         }
@@ -177,6 +186,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
                 }
                 
             } catch (NumberFormatException ex) {
+                logger.error("Chyba při zpracování nahradHru (neplatné ID): {}", message, ex);
                 posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
             }
         }
@@ -216,9 +226,9 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         WebSocket ws = websocketPodleHracu.get(komu);
         if (ws != null && ws.isOpen()) {
             ws.send(co);
-            System.out.println("posilani zpravy: " + co + ", ::: " + ws);
+            logger.trace("Posílání zprávy hráči {}: {}", komu.getJmeno(), co);
         } else {
-            System.out.println("Hráč " + komu.getJmeno() + " je odpojen. Zpráva zahozena: " + co);
+            logger.debug("Hráč {} je odpojen. Zpráva zahozena: {}", komu.getJmeno(), co);
         }
     }
     
@@ -383,7 +393,6 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         posliVsem("konecHry");
     }
     
-    @Override
     public void posliZadniObrazekLizacihoBalicku(String obrazek){
         posliVsem("obrazekDobiracihoBalicku:"+obrazek);
     }
@@ -555,7 +564,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         if (future != null) {
             future.complete(odpoved);
         } else {
-            System.err.println("Nepodařilo se najít čekající odpověď pro id: " + id);
+            logger.warn("Nepodařilo se najít čekající odpověď pro id: {} (Hra: {})", id, idHry);
         }
     }
 

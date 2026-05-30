@@ -1,9 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
-
-Toto je domácí verze souborů z programování.
- */
 package cz.honza.bang.pravidla;
 
 import cz.honza.bang.sdk.HerniPlugin;
@@ -18,12 +12,15 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.lang.reflect.Modifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author honza
  */
 public class NacitacPluginu {
+    private static final Logger logger = LoggerFactory.getLogger(NacitacPluginu.class);
 
     /**
      * Vrátí všechny pluginy nacházející se v dané složce. Prohledá složku a najde všechny <code>HerniPlugin</code> v každěm JARu.
@@ -36,10 +33,10 @@ public class NacitacPluginu {
         
         //Nemůžeme prohledávat neexistující složku, naštěstí v ní nic být ani nemůže.
         if (!Files.exists(cestaKeSlozce)) {
-            System.out.println("NEnalezena složka pro pluginy " + cestaKeSlozce.toString());
+            logger.warn("Nenalezena složka pro pluginy: {}", cestaKeSlozce.toAbsolutePath());
             return pluginy;
         }
-        System.out.println("Nalezena složka pro pluginy " + cestaKeSlozce.toString());
+        logger.info("Nalezena složka pro pluginy: {}", cestaKeSlozce.toAbsolutePath());
 
         
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(cestaKeSlozce, "*.jar")) {

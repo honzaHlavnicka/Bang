@@ -21,6 +21,8 @@ import java.util.Stack;
 import java.util.function.Consumer;
 import org.java_websocket.WebSocket;
 import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -29,6 +31,7 @@ import org.json.JSONArray;
  * 
  */
 public class HraImp implements cz.honza.bang.sdk.Hra{
+    private static final Logger logger = LoggerFactory.getLogger(HraImp.class);
     /**
      * Hráči ve hře. Pořadí určuje pořadí hráčů. Nemělo by se měnit po zahájení hry respektive vytvoření správce tahu.
      */
@@ -186,7 +189,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
                 herniPravidla.pripravitHrace(hrac);
             }
             
-            System.out.println("zahájen tah v setzahajena");
+            logger.info("Zahájen tah v setZahajena.");
             
 
             

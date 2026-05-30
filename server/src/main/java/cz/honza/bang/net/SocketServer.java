@@ -26,8 +26,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SocketServer extends WebSocketServer {
+    private static final Logger logger = LoggerFactory.getLogger(SocketServer.class);
     private Map<WebSocket, KomunikatorHryImp> komunikatoryHracu = new  ConcurrentHashMap<>();
     private Map<String, KomunikatorHryImp> hryPodleId = new ConcurrentHashMap<>();
     private Set<Integer> pouziteKody = new HashSet<>();
@@ -39,18 +42,17 @@ public class SocketServer extends WebSocketServer {
     
     public SocketServer(InetSocketAddress address) {
         super(address);
-        System.out.println("Adresa serveru je: " + address.toString());
-        System.out.println("Port je: " + address.getPort());
+        logger.info("Server startuje na adrese: {}, port: {}", address.getHostString(), address.getPort());
         
         // Načti heslo z proměnné prostředí
         this.adminPassword = System.getenv("ADMIN_PASSWORD");
         if (this.adminPassword == null || this.adminPassword.isEmpty()) {
             this.adminPassword = "heslo123"; // Výchozí heslo
-            System.out.println("[!] ADMIN_PASSWORD není nastaveno, použije se výchozí heslo. Nastavte ADMIN_PASSWORD pro produkci!");
+            logger.warn("ADMIN_PASSWORD není nastaveno, používá se výchozí heslo. Nastavte ADMIN_PASSWORD pro produkci!");
         }
         
         // Načti pluginy už při startu
-        System.out.println("Načítám pluginy...");
+        logger.info("Načítám pluginy...");
         SpravceHernichPravidel.pregeneruj();
         
         overujeSeHeslo = false;
@@ -59,13 +61,13 @@ public class SocketServer extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        System.out.println("New connection from " + conn.getRemoteSocketAddress());
+        logger.debug("Nové připojení z: {}", conn.getRemoteSocketAddress());
         conn.send("welcome");
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        System.out.println("Closed connection: " + reason);
+        logger.debug("Uzavřeno připojení z: {}, důvod: {}", conn.getRemoteSocketAddress(), reason);
        
         KomunikatorHryImp komunikator = komunikatoryHracu.remove(conn);
         overeniAdmini.remove(conn);
@@ -77,7 +79,7 @@ public class SocketServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        System.out.println("zpráva: " + message);
+        logger.trace("Přišla zpráva od {}: {}", conn.getRemoteSocketAddress(), message);
 
         if (message.startsWith("serverInfo:")) {
             String zadaneHeslo = message.replace("serverInfo:", "");
@@ -204,13 +206,12 @@ public class SocketServer extends WebSocketServer {
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-        ex.printStackTrace();
-        System.out.println("errrrrrrror");
+        logger.error("Chyba na websocketu (klient: {}): {}", conn != null ? conn.getRemoteSocketAddress() : "neznámý", ex.getMessage(), ex);
     }
 
     @Override
     public void onStart() {
-        System.out.println("Server started!");
+        logger.info("Server úspěšně spuštěn.");
     }
    
     private int nahodneIdHry(){
@@ -232,7 +233,7 @@ public class SocketServer extends WebSocketServer {
         KomunikatorHryImp komunikator = KomunikatorHryImp.vytvor(this, kodKry, typHry);
         hryPodleId.put(Integer.toString(kodKry), komunikator);
         pouziteKody.add(Integer.valueOf(kodKry));
-        System.out.println("novaHra:" + kodKry);
+        logger.info("Vytvořena nová hra s kódem: {}", kodKry);
        
         return komunikator;
     }
@@ -336,7 +337,7 @@ public class SocketServer extends WebSocketServer {
                 overeniAdmini.add(conn);
                 future.complete(true);
             } else {
-                System.out.println("[SECURITY] Odmítnut admin přístup z " + conn.getRemoteSocketAddress());
+                logger.warn("Odmítnut admin přístup z {}", conn.getRemoteSocketAddress());
                 posliChybu(conn, Chyba.SPATNE_HESLO);
                 future.complete(false);
             }
