@@ -14,6 +14,7 @@
     <modules>
         <module>plugin-sdk</module>
         <module>server</module>
+        <module>plugin-js</module>
         <module>pluginy/VychoziHry</module>
         <module>pluginy/bang</module>
         <module>pluginy/Uno</module>

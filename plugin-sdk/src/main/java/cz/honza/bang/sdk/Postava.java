@@ -27,7 +27,7 @@ public interface Postava {
     /**
      * Akce, která se spustí při přiřazení postavy. Hodí se, ay postava mohlo něco reálně dělat,
      * třeba přidat efekt hráčovi. Vše co se v této metodě změní, se musí vrátit v {@link #odebraniPostavy(cz.honza.bang.sdk.Hrac)}.
-     * Může také udělat nějakou akci, kterrá se umísně nebude rušit, pokud je její vlastností ne například "Nemůže prohrát", ale například "Při dostání postavy hráč dostane život".
+     * Může také udělat nějakou akci, která se umísně nebude rušit, pokud je její vlastností není například "Nemůže prohrát", ale například "Při dostání postavy hráč dostane život".
      * @param komu 
      */
     default void pridaniPostavy(Hrac komu){};

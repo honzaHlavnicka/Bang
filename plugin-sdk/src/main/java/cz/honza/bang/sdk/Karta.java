@@ -65,7 +65,7 @@ public abstract class Karta{
      *
      * @return json ve formátu: {"jmeno":jmeno,"obrazek":obrazek,"id":id}
      */
-    public String toJSON() {
+    public final String toJSON() {
         StringBuilder sb = new StringBuilder("{\"jmeno\":\"");
         sb.append(this.getJmeno());
         sb.append("\",\"obrazek\":\"");
