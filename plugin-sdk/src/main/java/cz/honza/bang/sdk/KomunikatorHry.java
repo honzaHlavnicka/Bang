@@ -51,6 +51,7 @@ public interface KomunikatorHry {
      * Pošle všem hráčům informaci o změně postavy hráče. 
      * @param hrac Hráč, jehož postava se změnila
      */
+    @PovolenePluginu
     public void posliZmenuPostavy(Hrac hrac);
 
     
@@ -59,12 +60,14 @@ public interface KomunikatorHry {
      * @param komu komu se má chyba doručit.
      * @param chyba chyba, která se posílá.
      */
+    @PovolenePluginu
     public void posliChybu(Hrac komu,Chyba chyba);
     
     /**
      * Pošle stavovou zprávu všem hráčům. Zpráva se zobrazí v centru obrazovky.
      * @param zprava Text zprávy, která se bude zobrazovat (např. "Hráč vybírá barvu...")
      */
+    @PovolenePluginu
     public void posliStavovuZpravu(String zprava);
     
     
@@ -72,12 +75,14 @@ public interface KomunikatorHry {
      * Pošle všem hráčům informaci o změně počtu karet v ruce.
      * @param hrac Hráč, kterého se změna týká
      */
+    @PovolenePluginu
     public void posliZmenuPoctuKaret(Hrac hrac);
     
     /**
      * Pošle všem hráčům informaci o změně počtu životů.
      * @param hrac Hráč, kterého se změna týká
      */
+    @PovolenePluginu
     public void posliZmenuPoctuZivotu(Hrac hrac);
     
     /**
@@ -90,6 +95,7 @@ public interface KomunikatorHry {
      * Pošle všem hráčům informaci o změně jména hráče.
      * @param hrac Hráč, kterého se změna týká
      */
+    @PovolenePluginu
     public void posliZmenuJmena(Hrac hrac);
     
     /**
@@ -111,6 +117,7 @@ public interface KomunikatorHry {
      * @param hrac Hráč, který skončil
      * @see #posliVitezstvi(cz.honza.bang.sdk.Hrac) 
      */
+    @PovolenePluginu
     public void posliSkonceniHrace(Hrac hrac);
     
     /**
@@ -122,6 +129,7 @@ public interface KomunikatorHry {
      * @see #posliVysledky(cz.honza.bang.sdk.Hrac[][]) 
      * @see #posliKonecHry() 
      */
+    @PovolenePluginu
     public void posliVitezstvi(Hrac hrac);
     
     
@@ -130,6 +138,7 @@ public interface KomunikatorHry {
      * @param hrac Hráč, který kartu odehral
      * @param karta Odehraná karta
      */
+    @PovolenePluginu
     public void posliOdebraniKarty(Hrac hrac, Karta karta);
     
     /**
@@ -138,6 +147,7 @@ public interface KomunikatorHry {
      * @param karta Spálená karta
      * @see #posliSpaleniVylozenéKarty(cz.honza.bang.sdk.Karta, cz.honza.bang.sdk.Hrac) 
      */
+    @PovolenePluginu
     public void posliSpaleniKarty(Hrac hrac, Karta karta);
     
     /**
@@ -148,6 +158,7 @@ public interface KomunikatorHry {
      * @param karta Spálená karta
      * @see #posliZmenuPoctuKaret(cz.honza.bang.sdk.Hrac) 
      */
+    @PovolenePluginu
     public void posliNovouKartu(Hrac hrac,Karta karta);
     
     /**
@@ -155,6 +166,7 @@ public interface KomunikatorHry {
      * @param karta Spálená karta
      * @param odkud Hráč, od kterého byla karta spálena
      */
+    @PovolenePluginu
     public void posliSpaleniVylozenéKarty(Karta karta, Hrac odkud);
     
     /**
@@ -163,6 +175,7 @@ public interface KomunikatorHry {
      * @param predKoho Hráč, kterému se karta vykladá 
      * @param karta Vyložená karta
      */
+    @PovolenePluginu
     public void posliVylozeniKarty(Hrac hrac, Hrac predKoho, Karta karta);
     
     /**
@@ -172,6 +185,7 @@ public interface KomunikatorHry {
      * @param oznameni Obsah oznámení (např. název barvy)
      * @param vyjimka Hráč, který zprávu neobdrží (obvykle ten, co ji vyvolal), může být null
      */
+    @PovolenePluginu
     public void posliRychleOznameniVsem(String oznameni, Hrac vyjimka);
     
     /**
@@ -182,6 +196,7 @@ public interface KomunikatorHry {
      * @param oznameni Obsah oznámení (např. název barvy)
      * @param komu Komu se zobrazí
      */
+    @PovolenePluginu
     public void posliRychleOznameni(String oznameni, Hrac komu);
     
     /**
@@ -192,6 +207,7 @@ public interface KomunikatorHry {
      * @see #posliVysledky(cz.honza.bang.sdk.Hrac[][]) 
      * @see #posliVitezstvi(cz.honza.bang.sdk.Hrac) 
      */
+    @PovolenePluginu
     public void posliKonecHry();
 
     /**
@@ -207,12 +223,14 @@ public interface KomunikatorHry {
      * @see #posliKonecHry() 
      * @see #posliVitezstvi(cz.honza.bang.sdk.Hrac) 
      */
+    @PovolenePluginu
     public void posliVysledky(Hrac[][] vysledky);
     
     /**
      * Pošle jaký je obrázek vrchní karty lízacího balíčku zezadu.
      * @param obrazek
      */
+    @PovolenePluginu
     public void posliZadniObrazekLizacihoBalicku(String obrazek);
     
     /**
@@ -223,6 +241,7 @@ public interface KomunikatorHry {
      * @param closable Zda lze dialog zavřít bez odpovědi (výchozí: false - nelze zavřít)
      * @return CompletableFuture, které se splní, až hráč odpoví (Ve formátu indexu do seznamu možností)
      */
+    @PovolenePluginu
     public CompletableFuture<String> pozadejOVyberMoznosti(Hrac odKoho, List<String> moznosti, String nadpis, boolean closable);
 
 
@@ -236,6 +255,7 @@ public interface KomunikatorHry {
      * @param closable Zda lze dialog zavřít bez odpovědi (výchozí: false - nelze zavřít)
      * @return CompletableFuture, které se splní, až hráč odpoví (Ve formátu "id1,id2,..." s id vybraných karet)
      */
+    @PovolenePluginu
     public CompletableFuture<String> pozadejOKarty(Hrac odKoho, List<Karta> karty, String nadpis, int min, int max, boolean closable);
 
 
@@ -249,6 +269,7 @@ public interface KomunikatorHry {
      * @param closable Zda lze dialog zavřít bez odpovědi (výchozí: false - nelze zavřít)
      * @return CompletableFuture, které se splní, až hráč odpoví (Ve formátu "id1,id2,..." s id vybraných hráčů)
      */
+    @PovolenePluginu
     public CompletableFuture<String> pozadejOHrace(Hrac odKoho, List<Hrac> hraci,String nadpis,int min, int max, boolean closable);
 
 
@@ -263,6 +284,7 @@ public interface KomunikatorHry {
      * @see #pozadejOKarty(cz.honza.bang.sdk.Hrac, java.util.List, java.lang.String, int, int, boolean) pro výběr karet
      * @see #pozadejOText(cz.honza.bang.sdk.Hrac, java.lang.String, java.lang.String, java.lang.String, boolean) 
      */
+    @PovolenePluginu
     public CompletableFuture<String> pozadejOdpoved(String otazka,Hrac komu);
 
     /**
@@ -274,6 +296,7 @@ public interface KomunikatorHry {
      * @param closable Zda lze dialog zavřít bez odpovědi (výchozí: true - lze zavřít)
      * @return CompletableFuture, které se splní, až hráč odpoví (s textem, který hráč zadal)
      */
+    @PovolenePluginu
     public CompletableFuture<String> pozadejOText(Hrac odKoho, String nadpis, String placeholder, String buttonText, boolean closable);
 
     /**
@@ -288,6 +311,7 @@ public interface KomunikatorHry {
      * @see #smazatUI(cz.honza.bang.sdk.Hrac, int) 
      * @see HerniPravidla#uiButtonClicked(cz.honza.bang.sdk.Hrac, int)
      */
+    @PovolenePluginu
     public int pridejUIButton(Hrac komu, int buttonId, String text, boolean disabled, Runnable akce);
 
     /**
@@ -296,6 +320,7 @@ public interface KomunikatorHry {
      * @param uiId ID prvku k odstranění
      * @see #pridejUIButton(cz.honza.bang.sdk.Hrac, int, java.lang.String, boolean, java.lang.Runnable) 
      */
+    @PovolenePluginu
     public void smazatUI(Hrac komu, int uiId);
     
     /**
@@ -304,6 +329,7 @@ public interface KomunikatorHry {
      * @see #smazatUI(cz.honza.bang.sdk.Hrac, int) 
      * @see #pridejUIButton(cz.honza.bang.sdk.Hrac, int, java.lang.String, boolean, java.lang.Runnable) 
      */
+    @PovolenePluginu
     public void posliVsechnaUITlacitka(Hrac komu);
     
     
@@ -339,23 +365,27 @@ public interface KomunikatorHry {
      * @param nadpis Nadpis dialogiu
      * @param moznosti Výřezy kola
      */
+    @PovolenePluginu
     void posliKoloStesti (int vybranaMoznost, String nadpis, List<MoznostKolaStesti> moznosti);
 
     /**
      * Vrátí kod hry, který hráči na začátku zadávali
      * @return šestimístné číslo
      */
+    @PovolenePluginu
     public int getIdHry();
     
     /**
      * Počet hráčů ve hře, kteří jsou zrovna živě připojjeni k serveru.
      */
+    @PovolenePluginu
     public int pocetHracu();
 
     /**
      * Vrátí admina, většinou ten kdo hru založil, ale může být změněn.
      * @see #setAdmin(cz.honza.bang.sdk.Hrac) 
      */
+    @PovolenePluginu
     public Hrac getAdmin();
 
     /**
@@ -363,6 +393,7 @@ public interface KomunikatorHry {
      * @param admin 
      * @see #getAdmin() 
      */
+    @PovolenePluginu
     public void setAdmin(Hrac admin);
 
 }

@@ -9,34 +9,55 @@ package cz.honza.bang.javascript;
 import cz.honza.bang.sdk.Balicek;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Karta;
+import cz.honza.bang.sdk.PovolenePluginu;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Engine;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.ResourceLimits;
 import org.graalvm.polyglot.Value;
 
+
+
 /**
  *
  * @author honza
  */
 
+import cz.honza.bang.sdk.PovolenePluginu;
+import org.graalvm.polyglot.Context;
+import org.graalvm.polyglot.Engine;
+import org.graalvm.polyglot.HostAccess;
+import org.graalvm.polyglot.ResourceLimits;
+
+/**
+ * @author honza
+ */
 public class Tovarna {
-    
+
     private static final Engine SDILENY_ENGINE = Engine.newBuilder()
             // Zde můžeme přidat optimalizace pro Engine
             .build();
 
+    private static final HostAccess MOJE_PRAVIDLA = HostAccess.newBuilder()
+            .allowAccessAnnotatedBy(PovolenePluginu.class)
+            .build();
+
     /**
-     * Vytvoří a vrátí zcela izolovaný JS kontext.
+     * Vytvoří a vrátí zcela izolovaný kontext.
+     *
+     * @param jazyky Jazyky, které má kontext podporovat (např. "js", "python").
      */
-    public static Context vytvorBezpecnyKontext() {
-        return Context.newBuilder("js")
+    public static Context vytvorBezpecnyKontext(String... jazyky) {
+
+        // 2. Místo "js" vložíme pole povolených jazyků
+        return Context.newBuilder(jazyky)
                 .engine(SDILENY_ENGINE)
-                .allowAllAccess(false)   // Základní zákaz (sit, disk apod.)
-                .allowHostAccess(HostAccess.EXPLICIT)    // JS volá pouze explicitně povolené metody
-                .resourceLimits(ResourceLimits.newBuilder()  //ochrana proti nekonečným cyklům a podobným potncyálním  problémům
+                .allowAllAccess(false) // Základní zákaz (síť, disk apod.)
+                .allowHostAccess(MOJE_PRAVIDLA) // 3. Vložíme naši vybudovanou politiku
+                .resourceLimits(ResourceLimits.newBuilder() // ochrana proti nekonečným cyklům
                         .statementLimit(10000, null)
                         .build())
+                // Nastavení pro JS. GraalVM ho chytře ignoruje, pokud jazyk není načtený.
                 .option("js.ecmascript-version", "2022")
                 .build();
     }

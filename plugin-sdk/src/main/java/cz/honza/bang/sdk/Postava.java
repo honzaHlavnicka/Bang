@@ -7,22 +7,28 @@ package cz.honza.bang.sdk;
  * @author honza
  */
 public interface Postava {
+    
+    @PovolenePluginu
     String getJmeno();
     
     /**
      * Jedinečný identifikátor, zároven název obrázku
      * @return 
      */
+    
+    @PovolenePluginu
     String name();
     /**
      * Vrátí popis postavy
      * @return 
      */
+    @PovolenePluginu
     String getPopis();
     /**
      * Vrátí maximální počt životů které postava může mít. Tuto hodnotu engine nikde nepoužívá.
      * @return 
      */
+    @PovolenePluginu
     int getMaximumZivotu();
     /**
      * Akce, která se spustí při přiřazení postavy. Hodí se, ay postava mohlo něco reálně dělat,
@@ -30,6 +36,7 @@ public interface Postava {
      * Může také udělat nějakou akci, která se umísně nebude rušit, pokud je její vlastností není například "Nemůže prohrát", ale například "Při dostání postavy hráč dostane život".
      * @param komu 
      */
+    @PovolenePluginu
     default void pridaniPostavy(Hrac komu){};
     
     /**
@@ -37,6 +44,7 @@ public interface Postava {
      * může také udělat nějakou jednorázovou akci.
      * @param komu
      */
+    @PovolenePluginu
     default void odebraniPostavy(Hrac komu){};
 
 }

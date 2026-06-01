@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang;
 
+import cz.honza.bang.sdk.PovolenePluginu;
 import cz.honza.bang.pravidla.SpravceHernichPravidel;
 import cz.honza.bang.sdk.HerniPravidla;
 
@@ -47,11 +48,13 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
 
     
     @Override
+    @PovolenePluginu
     public BalicekImp<Karta> getOdhazovaciBalicek() {
         return odhazovaciBalicek;
     }
     
     @Override
+    @PovolenePluginu
     public SpravceTahu getSpravceTahu() {
         return spravceTahu;
     }
@@ -133,6 +136,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      * @return Kopii seznamu všech hráčů
      */
     @Override
+    @PovolenePluginu
     public List<cz.honza.bang.sdk.Hrac> getHraci() {
         List<cz.honza.bang.sdk.Hrac> l = new ArrayList<>(hraci);
         return l;
@@ -144,6 +148,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      * @return Hrac nebo null
      */
     @Override
+    @PovolenePluginu
     public HracImp getHrac(int id){
         for (cz.honza.bang.sdk.Hrac hrac : hraci) {
             if(hrac.getId() == id){
@@ -154,16 +159,19 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     }
     
     @Override
+    @PovolenePluginu
     public KomunikatorHryImp getKomunikator() {
         return komunikator;
     }
 
     @Override
+    @PovolenePluginu
     public boolean isZahajena() {
         return zahajena;
     }
 
     @Override
+    @PovolenePluginu
     public HerniPravidla getHerniPravidla() {
         return herniPravidla;
     }
@@ -174,6 +182,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      * @param zahajena pokud true, tak zahájí hru.
      */
     @Override
+    @PovolenePluginu
     public void setZahajena(boolean zahajena) {
         
         if(!this.zahajena && zahajena){
@@ -205,6 +214,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         }
     }
     @Override
+    @PovolenePluginu
     public BalicekImp<Karta> getBalicek() {
         return balicek;
     }
@@ -284,6 +294,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      * @param kdo
      */
     @Override
+    @PovolenePluginu
     public void skoncil(Hrac kdo){
         spravceTahu.vyraditHrace(kdo);
         komunikator.posliSkonceniHrace(kdo);
@@ -295,6 +306,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      * @param kdo
      */
     @Override
+    @PovolenePluginu
     public void vyhral(Hrac kdo){
         komunikator.posliVitezstvi(kdo);
     }
@@ -303,6 +315,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
      * Prohodí odhazovací a lízací balíčky. Novým lízacím balíčkem bude odhazovací balíček v opačném pořadí.
      */
     @Override
+    @PovolenePluginu
     public void prohodBalicky(){
         odhazovaciBalicek.otoc();
         BalicekImp<Karta> novyOdhazovaciBalicek = balicek;
@@ -313,6 +326,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
 
     
     @Override 
+    @PovolenePluginu
     public Karta otocVrchniKartu(){
         Karta karta = balicek.lizni();
         odhazovaciBalicek.vratNahoru(karta);
@@ -322,6 +336,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     }
 
     @Override
+    @PovolenePluginu
     public List<Hrac> getHrajiciHraci() {
         return spravceTahu.getHrajiciHraci();
     }

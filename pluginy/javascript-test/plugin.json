@@ -1,0 +1,8 @@
+{
+  "nazev": "Testovací balíček karet a pravidel",
+  "popis":"Hra, která slouží k testování, jestli funguje multijazyková podpora. Celý napsaný v JavaScriptu, běžící v Java serveru.",
+  "autor": "Honza",
+  "verze": "1.0.0",
+  "jazyk": "js",
+  "spousteciSoubor": "main.js"
+}

@@ -42,6 +42,7 @@ public interface Hra {
      * @return seznam hráčů
      * @see #getHrajiciHraci() 
      */
+    @PovolenePluginu
     public List<Hrac> getHraci();
     
     /**
@@ -50,6 +51,7 @@ public interface Hra {
      * @return kolekce hráčů seřazená podle pořadí hraní.
      * @see Hrac.getHrajicHraci()
      */
+    @PovolenePluginu
     public List<Hrac> getHrajiciHraci();
 
     /**
@@ -58,12 +60,16 @@ public interface Hra {
      * @param id id hráče
      * @return Hrac nebo null
      */
+    @PovolenePluginu
     public Hrac getHrac(int id);
 
+    @PovolenePluginu
     public KomunikatorHry getKomunikator();
 
+    @PovolenePluginu
     public boolean isZahajena();
 
+    @PovolenePluginu
     public HerniPravidla getHerniPravidla();
     
 
@@ -73,11 +79,13 @@ public interface Hra {
      *
      * @param zahajena pokud true, tak zahájí hru.
      */
+    @PovolenePluginu
     public void setZahajena(boolean zahajena);
     
     /**
      * Vrátí originál balíčku
      */
+    @PovolenePluginu
     public Balicek<Karta> getBalicek();
 
 
@@ -87,6 +95,7 @@ public interface Hra {
      *
      * @param kdo
      */
+    @PovolenePluginu
     public void skoncil(Hrac kdo);
 
     /**
@@ -94,19 +103,23 @@ public interface Hra {
      *
      * @param kdo
      */
+    @PovolenePluginu
     public void vyhral(Hrac kdo);
 
     /**
      * Prohodí odhazovací a lízací balíčky. Novým lízacím balíčkem bude
      * odhazovací balíček v opačném pořadí.
      */
+    @PovolenePluginu
     public void prohodBalicky();
     
+    @PovolenePluginu
     public SpravceTahu getSpravceTahu();
     
     /**
      * Vrátí originál odhazovacího balíčku
      */
+    @PovolenePluginu
     public Balicek<Karta> getOdhazovaciBalicek();
 
     /**
@@ -114,6 +127,7 @@ public interface Hra {
      * Může se hodit například při zahájení prší nebo una.
      * @return karta, která byla otočena.
      */
+    @PovolenePluginu
     public Karta otocVrchniKartu();
 
 }

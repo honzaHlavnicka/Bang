@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.net;
 
+import cz.honza.bang.sdk.PovolenePluginu;
 import cz.honza.bang.sdk.Chyba;
 import cz.honza.bang.HraImp;
 import cz.honza.bang.HracImp;
@@ -314,85 +315,103 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     // ===== IMPLEMENTACE METOD AKCÍ =====
 
     @Override
+    @PovolenePluginu
     public void posliZmenuPostavy(Hrac hrac) {
         posliVsem("setPostava:" + hrac.getId() + "," + hrac.getPostava().name());
     }
     @Override
+    @PovolenePluginu
     public void posliZmenuPoctuKaret(Hrac hrac) {
         posliVsem("zmenaPoctuKaret:" + hrac.getId() + "," + hrac.getKarty().size(), hrac);
     }
     
     @Override
+    @PovolenePluginu
     public void posliZmenuPoctuZivotu(Hrac hrac) {
         posliVsem("pocetZivotu:" + hrac.getId() + "," + hrac.getZivoty());
     }
     
     @Override
+    @PovolenePluginu
     public void posliZahajeniTahu(Hrac hrac) {
         posliVsem("tahZacal:" + hrac.getId(), hrac);
     }
     
     @Override
+    @PovolenePluginu
     public void posliZmenuJmena(Hrac hrac) {
         posliVsem("noveJmeno:" + hrac.getId() + "," + hrac.getJmeno());
     }
     
     @Override
+    @PovolenePluginu
     public void posliNovehoHrace(Hrac hrac) {
         posliVsem("novyHrac:" + hrac.toJSON());
     }
     
     @Override
+    @PovolenePluginu
     public void posliZahajeniHry() {
         posliVsem("hraZacala");
     }
     
     @Override
+    @PovolenePluginu
     public void posliSkonceniHrace(Hrac hrac) {
         posliVsem("hracSkoncil:" + hrac.getId());
     }
     
     @Override
+    @PovolenePluginu
     public void posliVitezstvi(Hrac hrac) {
         posliVsem("vyhral:" + hrac.getId());
     }
     
     @Override
+    @PovolenePluginu
     public void posliOdebraniKarty(Hrac hrac, cz.honza.bang.sdk.Karta karta) {
         posliVsem("odehrat:" + hrac.getId() + "|" + karta.toJSON());
     }
     
     @Override
+    @PovolenePluginu
     public void posliSpaleniKarty(Hrac hrac, cz.honza.bang.sdk.Karta karta) {
         posliVsem("spalit:" + hrac.getId() + "|" + karta.toJSON());
     }
     
     @Override
+    @PovolenePluginu
     public void posliSpaleniVylozenéKarty(cz.honza.bang.sdk.Karta karta, Hrac odkud) {
         posliVsem("spalenaVylozena:" + karta.getId() + "," + odkud.getId());
     }
     
     @Override
+    @PovolenePluginu
     public void posliVylozeniKarty(Hrac hrac, Hrac predKoho, Karta karta) {
         String predKohoId = (predKoho != null) ? String.valueOf(predKoho.getId()) : String.valueOf(hrac.getId());
         posliVsem("vylozeni:" + hrac.getId() + "," + predKohoId + "," + karta.toJSON());
     }
     
     @Override
+    @PovolenePluginu
     public void posliRychleOznameniVsem(String oznameni, Hrac vyjimka) {
         posliVsem("rychleOznameni:" + oznameni, vyjimka);
     }
     
     @Override
+    @PovolenePluginu
     public void posliRychleOznameni(String oznameni, Hrac komu) {
         posli(komu,"rychleOznameni:" + oznameni);
     }
 
     @Override
+    @PovolenePluginu
     public void posliKonecHry() {
         posliVsem("konecHry");
     }
     
+    @Override
+    @PovolenePluginu
     public void posliZadniObrazekLizacihoBalicku(String obrazek){
         posliVsem("obrazekDobiracihoBalicku:"+obrazek);
     }
@@ -400,6 +419,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     
     
     @Override
+    @PovolenePluginu
     public void posliKoloStesti(int vybranaMoznost, String nadpis, List<MoznostKolaStesti> moznosti) {
 
         JSONArray jsonMoznosti = new JSONArray();
@@ -421,6 +441,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
 
     @Override
+    @PovolenePluginu
     public CompletableFuture<String> pozadejOHrace(Hrac odKoho, List<Hrac> hraci,String nadpis,int min, int max, boolean closable){
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
@@ -440,6 +461,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
 
     
     @Override
+    @PovolenePluginu
     public CompletableFuture<String> pozadejOKarty(Hrac odKoho, List<Karta> karty, String nadpis, int min, int max, boolean closable){
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
@@ -462,6 +484,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
     
     @Override
+    @PovolenePluginu
     public CompletableFuture<String> pozadejOVyberMoznosti(Hrac odKoho, List<String> moznosti, String nadpis, boolean closable){
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
@@ -479,6 +502,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
 
     @Override
+    @PovolenePluginu
     public CompletableFuture<String> pozadejOText(Hrac odKoho, String nadpis, String placeholder, String buttonText, boolean closable){
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
@@ -491,6 +515,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
 
     @Override
+    @PovolenePluginu
     public void posliVysledky(Hrac[][] vysledky) {
         int radky = vysledky.length;
         int[][] idPole = new int[radky][];
@@ -544,6 +569,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
     
     @Override
+    @PovolenePluginu
     public CompletableFuture<String> pozadejOdpoved(String otazka,cz.honza.bang.sdk.Hrac komu) {
         //připravý si id:
         posledniIdCekaciOdpovedi++;
@@ -571,20 +597,24 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     
 
     @Override
+    @PovolenePluginu
     public int getIdHry() {
         return idHry;
     }
     @Override
+    @PovolenePluginu
     public int pocetHracu(){
         return hraciPodlIdentifikatoru.size();
     }
 
     @Override
+    @PovolenePluginu
     public HracImp getAdmin() {
         return admin;
     }
 
     @Override
+    @PovolenePluginu
     public void setAdmin(cz.honza.bang.sdk.Hrac admin) {
         this.admin = (HracImp) admin;
     }
@@ -633,12 +663,14 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
 
     @Override
+    @PovolenePluginu
     public void posliNovouKartu(Hrac hrac, Karta karta) {
         posli(hrac,"novaKarta:"+karta.toJSON());
         posliZmenuPoctuKaret(hrac);
     }
 
     @Override
+    @PovolenePluginu
     public int pridejUIButton(Hrac komu, int buttonId, String text, boolean disabled, Runnable akce) {
         HracImp hracImp = (HracImp) komu;
         customUIByPlayer.computeIfAbsent(hracImp, k -> new ConcurrentHashMap<>());

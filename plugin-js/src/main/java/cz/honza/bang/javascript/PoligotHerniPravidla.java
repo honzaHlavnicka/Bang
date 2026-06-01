@@ -86,9 +86,9 @@ public class PoligotHerniPravidla implements HerniPravidla {
 
     @Override
     public void pripravBalicek(Balicek<Karta> balicek) {
-        if (jsFunkce.hasMember("ziskejKartyDoBalicku")) {
+        if (jsFunkce.hasMember("getKartyDoBalicku")) {
             
-            Value poleJsKaret = jsFunkce.invokeMember("kartyDoBalicku");
+            Value poleJsKaret = jsFunkce.invokeMember("getKartyDoBalicku");
             
             if (poleJsKaret.hasArrayElements()) {
 
@@ -106,13 +106,22 @@ public class PoligotHerniPravidla implements HerniPravidla {
         }
     }
 
-    // --- Metody S defaultní implementací (použijeme HerniPravidla.super) ---
     @Override
-    public void pripravBalicekPostav(Stack<Postava> balicekPostav) {
-        if (jsFunkce.hasMember("pripravBalicekPostav")) {
-            jsFunkce.invokeMember("pripravBalicekPostav", hra, balicekPostav);
+    public void pripravBalicekPostav(Stack<Postava> balicek) {
+        if (jsFunkce.hasMember("getPostavy")) {
+
+            Value postavy = jsFunkce.invokeMember("kartyDoBalicku");
+
+            if (postavy.hasArrayElements()) {
+                for (int i = 0; i < postavy.getArraySize(); i++) {
+
+                    Value jsObject = postavy.getArrayElement(i);
+                    Postava postava = new PolyglotPostava(jsObject);
+                    balicek.add(postava);
+                }
+            }
         } else {
-            HerniPravidla.super.pripravBalicekPostav(balicekPostav);
+            HerniPravidla.super.pripravBalicekPostav(balicek);
         }
     }
 

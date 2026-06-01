@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang;
 
+import cz.honza.bang.sdk.PovolenePluginu;
 import cz.honza.bang.sdk.Efekt;
 import cz.honza.bang.sdk.VylozitelnaKarta;
 import cz.honza.bang.sdk.Chyba;
@@ -109,6 +110,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @return odebral se život úspěšně
      */
     @Override
+    @PovolenePluginu
     public boolean odeberZivot() {
         // Nejdřív kontrolujeme, jestli hráč už je mrtvý
         if (zivoty <= 0) {
@@ -148,6 +150,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @return přidal se život úspěšně.
      */
     @Override
+    @PovolenePluginu
     public boolean pridejZivot() {
         if (zivoty >= maximumZivotu) {
             return false; 
@@ -160,64 +163,76 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     }
     
     @Override
+    @PovolenePluginu
     public int getZivoty() {
         return zivoty;
     }
     
     @Override
+    @PovolenePluginu
     public void setZivoty(int zivoty){
         this.zivoty = zivoty;
         hra.getKomunikator().posliZmenuPoctuZivotu(this);
     }
 
     @Override
+    @PovolenePluginu
     public int getMaximumZivotu() {
         return maximumZivotu;
     }
 
     @Override
+    @PovolenePluginu
     public cz.honza.bang.sdk.Role getRole() {
         return role;
     }
 
     @Override
+    @PovolenePluginu
     public cz.honza.bang.sdk.Postava getPostava() {
         return postava;
     }    
 
     @Override
+    @PovolenePluginu
     public List<Karta> getKarty() {
         return karty;
     }
 
     @Override
+    @PovolenePluginu
     public int getId() {
         return id;
     }
 
     @Override
+    @PovolenePluginu
     public String getJmeno() {
         return jmeno;
     }
 
     @Override
+    @PovolenePluginu
     public void setJmeno(String jmeno) {
         this.jmeno = jmeno;
         hra.getKomunikator().posliZmenuJmena(this);
     }
     
     @Override
+    @PovolenePluginu
     public boolean jeNaTahu(){
         Hrac naTahu = hra.getSpravceTahu().getNaTahu();
         return naTahu != null && naTahu.equals(this);
     }
     
     @Override
+    @PovolenePluginu
     public void setMaximumZivotu(int maximumZivotu) {
         this.maximumZivotu = maximumZivotu;
     }
 
     @Override
+    @PovolenePluginu
     public Postava setPostava(cz.honza.bang.sdk.Postava postava) {
         Postava stara = this.postava;
         if(postava != null){
@@ -230,11 +245,15 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         return stara;
     }
 
+    @Override
+    @PovolenePluginu
     public void setRole(cz.honza.bang.sdk.Role role) {
         this.role = role;
         hra.getKomunikator().posli(this, "role:" + role.name());
     }
 
+    @Override
+    @PovolenePluginu
     public Hra getHra() {
         return hra;
     }
@@ -454,6 +473,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * Přidá hráči karu z balíčku hry. Pošle o tom upozornění všem hráčům, nekontroluje zda hráč může lízat.
      */
     @Override
+    @PovolenePluginu
     public void lizni(){
         Karta karta = hra.getBalicek().lizni();
         if(karta == null){
@@ -481,6 +501,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * Mělo by se volat pokud hráč zažádá o líznutí.
      */
     @Override
+    @PovolenePluginu
     public void lizniKontrolovane(){
         if(!hra.getHerniPravidla().hracChceLiznout(this)){
             Hrac naTahu = hra.getSpravceTahu().getNaTahu();
@@ -493,6 +514,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     }
     
     @Override
+    @PovolenePluginu
     public void pridejEfekt(Efekt efekt){
         if (efekt != null) {
             efekt.prirazeni(this);
@@ -501,6 +523,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     }
     
     @Override
+    @PovolenePluginu
     public void odeberVylozenouKartu(VylozitelnaKarta karta){
         Efekt efekt = karta.getEfekt();
         efekty.remove(efekt);
@@ -511,6 +534,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     }
     
     @Override
+    @PovolenePluginu
     public void pridejVylozenouKartu(VylozitelnaKarta karta, Hrac kym){
         hra.getKomunikator().posliVylozeniKarty(this, kym, (Karta) karta);
         pridejEfekt(karta.getEfekt());
@@ -527,6 +551,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @see #vzdalenostKCista(cz.honza.bang.Hrac) 
      */
     @Override
+    @PovolenePluginu
     public int fyzickaVzdalenostK(Hrac komu)throws IllegalArgumentException{
         List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
         
@@ -546,6 +571,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     }
     
     @Override
+    @PovolenePluginu
     public int vzdalenostK(Hrac komu) {
         int fyzickaVzdalenost = fyzickaVzdalenostK(komu);
 
@@ -567,6 +593,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @see #fyzickaVzdalenostK(cz.honza.bang.Hrac) 
      */
     @Override
+    @PovolenePluginu
     public List<Hrac> vzdalenostPod(int max, boolean iZpetne) {
         List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
         List<Hrac> vysledniHraci = new ArrayList<>();
@@ -623,6 +650,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @see #fyzickaVzdalenostK(cz.honza.bang.Hrac)
      */
     @Override
+    @PovolenePluginu
     public List<Hrac> vzdalenostPod(int max){
         return vzdalenostPod(max,true);
     }
@@ -645,11 +673,13 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     }
 
     @Override
+    @PovolenePluginu
     public List<Karta> getVylozeneKarty() {
         return vylozeneKarty;
     }
 
     @Override
+    @PovolenePluginu
     public List<Efekt> getEfekty() {
         return efekty;
     }
@@ -660,6 +690,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
      * @return json ve formátu: {"jmeno":jmeno,"zivoty",pocetZivotu,"pocetKaret":pocetKaret,"postava":postava.name(),"maximumZivotu",maximumZivotu}
      */
     @Override
+    @PovolenePluginu
     public String toJSON(){
         StringBuilder sb = new StringBuilder("{\"id\":");
         sb.append(id);
@@ -684,16 +715,19 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     }
 
     @Override
+    @PovolenePluginu
     public boolean jeZivy() {
         return zivoty > 0;
     }
 
     @Override
+    @PovolenePluginu
     public int getCelkovyBonusOdstupu() {
         return this.getEfekty().stream().mapToInt(Efekt::getBonusOdstupu).sum();
     }
 
     @Override
+    @PovolenePluginu
     public int getCelkovyBonusDosahu() {
         return this.getEfekty().stream().mapToInt(Efekt::getBonusDosahu).sum();
     }

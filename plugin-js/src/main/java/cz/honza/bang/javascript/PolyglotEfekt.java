@@ -14,6 +14,7 @@ package cz.honza.bang.javascript;
 import cz.honza.bang.sdk.Efekt;
 import cz.honza.bang.sdk.Hra;
 import cz.honza.bang.sdk.Hrac;
+import cz.honza.bang.sdk.Karta;
 
 import org.graalvm.polyglot.Value;
 
@@ -52,4 +53,67 @@ public class PolyglotEfekt implements Efekt {
     
     // TODO: musi implementovat vše.
     // ... a tak dále pro zbytek metod z rozhraní Efekt
+
+    @Override
+    public void naKonecTahu(Hra hra, Hrac hrac) {
+        if (jsObjekt.hasMember("naKonecTahu")) {
+            jsObjekt.invokeMember("naKonecTahu", hra, hrac);
+        } else {
+            Efekt.super.naKonecTahu(hra, hrac);
+        }
+    }
+
+    @Override
+    public void poZtrateZivota(Hra hra, Hrac hrac) {
+        if (jsObjekt.hasMember("poZtrateZivota")) {
+            jsObjekt.invokeMember("poZtrateZivota", hra, hrac);
+        } else {
+            Efekt.super.poZtrateZivota(hra, hrac);
+        }
+    }
+
+    @Override
+    public void poOdehraniKarty(Hra hra, Hrac hrac, Hrac kym, Karta karta) {
+        if (jsObjekt.hasMember("poOdehraniKarty")) {
+            jsObjekt.invokeMember("poOdehraniKarty", hra, hrac, kym, karta);
+        } else {
+            Efekt.super.poOdehraniKarty(hra, hrac, kym, karta);
+        }
+    }
+
+    @Override
+    public void kdyzNemaKarty(Hra hra, Hrac hrac) {
+        if (jsObjekt.hasMember("kdyzNemaKarty")) {
+            jsObjekt.invokeMember("kdyzNemaKarty", hra, hrac);
+        } else {
+            Efekt.super.kdyzNemaKarty(hra, hrac);
+        }
+    }
+
+    @Override
+    public void poZabitiKohokoliv(Hrac ja, Hrac zabity) {
+        if (jsObjekt.hasMember("poZabitiKohokoliv")) {
+            jsObjekt.invokeMember("poZabitiKohokoliv", ja, zabity);
+        } else {
+            Efekt.super.poZabitiKohokoliv(ja, zabity);
+        }
+    }
+
+    @Override
+    public void odebrani(Hrac odKoho) {
+        if (jsObjekt.hasMember("odebrani")) {
+            jsObjekt.invokeMember("odebrani", odKoho);
+        } else {
+            Efekt.super.odebrani(odKoho);
+        }
+    }
+
+    @Override
+    public void prirazeni(Hrac komu) {
+        if (jsObjekt.hasMember("prirazeni")) {
+            jsObjekt.invokeMember("prirazeni", komu);
+        } else {
+            Efekt.super.prirazeni(komu);
+        }
+    }
 }

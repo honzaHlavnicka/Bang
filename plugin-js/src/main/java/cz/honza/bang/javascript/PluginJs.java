@@ -8,7 +8,7 @@ public class PluginJs {
         System.out.println("Startuji JS Sandbox...");
 
         // Vytvoříme naši krabičku
-        try (Context context = Tovarna.vytvorBezpecnyKontext()) {
+        try (Context context = Tovarna.vytvorBezpecnyKontext("js")) {
             
             // Jednoduchý JS kód, který nadefinuje funkci a hned ji zavolá
             String jsKod = "function pozdrav(jmeno) { return 'Ahoj ' + jmeno + ', hlásí se JS plugin!'; }";
