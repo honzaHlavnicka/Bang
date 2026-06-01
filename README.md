@@ -43,7 +43,7 @@ Bang! engine vznikl jako ročníková práce (IOČ) na Gymnáziu Arabská v Praz
 Architektura je navržena tak, aby **konkrétní hra nebyla součástí enginu**, ale načítala se jako nezávislý plugin. Díky tomu lze přidávat nové hry bez úpravy serverového kódu.
 
 **Technologie:**
-- **Server:** Java 11, Java WebSocket, org.json
+- **Server:** Java 21, Java WebSocket, org.json
 - **Klient:** React, TypeScript, Vite, react-dnd, react-hot-toast
 - **Komunikace:** WebSocket s vlastním textovým protokolem
 - **Hosting:**  Školní server Avava (Gymnázium Arabská)
@@ -112,7 +112,7 @@ Pokud se odpojíš, stránka ti při návratu nabídne **Vrátit se do hry**.
 ## Spuštění vývojového prostředí
 
 ### Požadavky
-- Java 11+
+- Java 21+
 - Node.js 18+
 - Maven
 
