@@ -26,6 +26,7 @@ public interface KomunikatorHry {
      * @param co Zpráva, která se pošle všem hráčům, ve formátu protokolu, viz <a href="https://github.com/honzaHlavnicka/Bang/tree/master/docs/protocol" >jeho dokumentace</a>
      * @see #posliVsem(java.lang.String, cz.honza.bang.sdk.Hrac) 
      */
+    @PovolenePluginu
     public void posliVsem(String co);
     
     
@@ -37,6 +38,7 @@ public interface KomunikatorHry {
      * @param komuNe Hráč, který zprávu neobdrží
      * @see #posliVsem(java.lang.String) 
      */
+    @PovolenePluginu
     public void posliVsem(String co,Hrac komuNe);
     
     /**
@@ -44,6 +46,7 @@ public interface KomunikatorHry {
      * @param komu kdo zprávu obdrží
      * @param co Zpráva co se mu pošle, ve formátu protokolu, viz <a href="https://github.com/honzaHlavnicka/Bang/tree/master/docs/protocol" >jeho dokumentace</a>
      */
+    @PovolenePluginu
     public void posli(Hrac komu, String co);
 
     // ===== METODY AKCÍ =====
@@ -68,7 +71,7 @@ public interface KomunikatorHry {
      * @param zprava Text zprávy, která se bude zobrazovat (např. "Hráč vybírá barvu...")
      */
     @PovolenePluginu
-    public void posliStavovuZpravu(String zprava);
+    public void posliStavovouZpravu(String zprava);
     
     
     /**
@@ -89,6 +92,7 @@ public interface KomunikatorHry {
      * Pošle všem hráčům informaci o zahájení tahu.
      * @param hrac Hráč, jehož tah začal
      */
+    @PovolenePluginu
     public void posliZahajeniTahu(Hrac hrac);
     
     /**
@@ -102,6 +106,7 @@ public interface KomunikatorHry {
      * Pošle všem hráčům informaci o připojení nového hráče.
      * @param hrac Nově připojený hráč
      */
+    @PovolenePluginu
     public void posliNovehoHrace(Hrac hrac);
     
     
@@ -109,6 +114,7 @@ public interface KomunikatorHry {
      * Pošle všem hráčům informaci o zahájení hry.
      * Plugin nemusí volat, server si to vyřeší sám.
      */
+    @PovolenePluginu
     public void posliZahajeniHry();
     
     /**

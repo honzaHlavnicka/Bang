@@ -198,6 +198,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
      * @param co Zpráva, která se pošle všem hráčům
      */
     @Override
+    @PovolenePluginu
     public void posliVsem(String co){
         for (WebSocket conn : hraciPodleWebsocketu.keySet()) {
             conn.send(co);
@@ -212,6 +213,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
      * @param komuNe Hráč, který zprávu neobdrží
      */
     @Override
+    @PovolenePluginu
     public void posliVsem(String co, cz.honza.bang.sdk.Hrac komuNe) {
         for (WebSocket conn : hraciPodleWebsocketu.keySet()) {
             if (conn != null && conn.isOpen()) {
@@ -223,6 +225,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
 
     @Override
+    @PovolenePluginu
     public void posli(cz.honza.bang.sdk.Hrac komu, String co) {
         WebSocket ws = websocketPodleHracu.get(komu);
         if (ws != null && ws.isOpen()) {
@@ -297,6 +300,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
      * @param chyba chyba, která se posílá.
      */
     @Override
+    @PovolenePluginu
     public void posliChybu(cz.honza.bang.sdk.Hrac komu,Chyba chyba){
         WebSocket conn = websocketPodleHracu.get(komu);
         conn.send("error:{\"error\":\"" + chyba.getZprava() + "\",\"kod\":" + chyba.getKod() + ",\"skupina\":" + chyba.getSkupina()+ "}");
@@ -308,7 +312,8 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
      * @param zprava Text zprávy, která se bude zobrazovat (např. "Hráč vybírá barvu...")
      */
     @Override
-    public void posliStavovuZpravu(String zprava) {
+    @PovolenePluginu
+    public void posliStavovouZpravu(String zprava) {
         posliVsem("stavHry:" + zprava);
     }
     
@@ -696,6 +701,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
 
     @Override
+    @PovolenePluginu
     public void smazatUI(Hrac komu, int uiId) {
         HracImp hracImp = (HracImp) komu;
         Map<Integer, CustomUIButton> playerUI = customUIByPlayer.get(hracImp);

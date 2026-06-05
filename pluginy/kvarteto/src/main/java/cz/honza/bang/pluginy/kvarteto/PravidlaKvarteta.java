@@ -94,7 +94,7 @@ public class PravidlaKvarteta implements HerniPravidla{
         hra.getKomunikator().pozadejOText(kym, "Jakou kartu? Formát \"<cislo sady>:<cislo karty>\"", "5:1", "Má ji?", true)
                 .thenAccept(textCoZadal -> {
                     String[] data = textCoZadal.trim().toLowerCase().split(textCoZadal, 2);
-                    hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " chce " + textCoZadal + " od hráče " + odKoho.getJmeno());
+                    hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " chce " + textCoZadal + " od hráče " + odKoho.getJmeno());
                     if(data.length == 2){
                         try{
                             int hodnota = Integer.parseInt(data[0]);

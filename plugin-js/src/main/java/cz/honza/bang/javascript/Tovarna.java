@@ -1,9 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
-
-Toto je domácí verze souborů z programování.
- */
 package cz.honza.bang.javascript;
 
 import cz.honza.bang.sdk.Balicek;
@@ -16,20 +10,9 @@ import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.ResourceLimits;
 import org.graalvm.polyglot.Value;
 
-
-
 /**
+ * Továrna pro vytváření bezpečných JavaScriptových kontextů.
  *
- * @author honza
- */
-
-import cz.honza.bang.sdk.PovolenePluginu;
-import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Engine;
-import org.graalvm.polyglot.HostAccess;
-import org.graalvm.polyglot.ResourceLimits;
-
-/**
  * @author honza
  */
 public class Tovarna {
@@ -38,9 +21,53 @@ public class Tovarna {
             // Zde můžeme přidat optimalizace pro Engine
             .build();
 
-    private static final HostAccess MOJE_PRAVIDLA = HostAccess.newBuilder()
-            .allowAccessAnnotatedBy(PovolenePluginu.class)
-            .build();
+    private static final HostAccess MOJE_PRAVIDLA = vytvorPravidla();
+
+    private static HostAccess vytvorPravidla() {
+        HostAccess.Builder b = HostAccess.newBuilder()
+                .allowAccessAnnotatedBy(PovolenePluginu.class)
+                .allowAllImplementations(true);
+        
+        // Povolíme bezpečné metody pro asynchronní programování a kolekce
+        try {
+            // Asynchronní operace
+            pridejMetodyTridy(b, java.util.concurrent.CompletableFuture.class);
+            pridejMetodyTridy(b, java.util.concurrent.CompletionStage.class);
+            
+            // Kolekce a iterace (Rozhraní i základní implementace)
+            pridejMetodyTridy(b, java.util.Collection.class);
+            pridejMetodyTridy(b, java.util.List.class);
+            pridejMetodyTridy(b, java.util.ArrayList.class);
+            pridejMetodyTridy(b, java.util.Map.class);
+            pridejMetodyTridy(b, java.util.HashMap.class);
+            pridejMetodyTridy(b, java.lang.Iterable.class);
+            pridejMetodyTridy(b, java.util.Iterator.class);
+            
+            // Funkcionální rozhraní (pro callbacky)
+            pridejMetodyTridy(b, java.util.function.Consumer.class);
+            pridejMetodyTridy(b, java.util.function.Function.class);
+            pridejMetodyTridy(b, java.util.function.BiConsumer.class);
+            pridejMetodyTridy(b, java.util.function.BiFunction.class);
+            
+            // Základní metody objektu
+            b.allowAccess(Object.class.getMethod("toString"));
+            b.allowAccess(Object.class.getMethod("equals", Object.class));
+            
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Kritická chyba při nastavování bezpečnosti JS: Metoda nenalezena", e);
+        }
+        
+        return b.build();
+    }
+
+    /**
+     * Pomocná metoda, která povolí všechny veřejné metody dané třídy/rozhraní.
+     */
+    private static void pridejMetodyTridy(HostAccess.Builder builder, Class<?> clazz) {
+        for (java.lang.reflect.Method m : clazz.getMethods()) {
+            builder.allowAccess(m);
+        }
+    }
 
     /**
      * Vytvoří a vrátí zcela izolovaný kontext.
@@ -49,35 +76,25 @@ public class Tovarna {
      */
     public static Context vytvorBezpecnyKontext(String... jazyky) {
 
-        // 2. Místo "js" vložíme pole povolených jazyků
         return Context.newBuilder(jazyky)
                 .engine(SDILENY_ENGINE)
                 .allowAllAccess(false) // Základní zákaz (síť, disk apod.)
-                .allowHostAccess(MOJE_PRAVIDLA) // 3. Vložíme naši vybudovanou politiku
+                .allowHostAccess(MOJE_PRAVIDLA)
                 .resourceLimits(ResourceLimits.newBuilder() // ochrana proti nekonečným cyklům
                         .statementLimit(10000, null)
                         .build())
-                // Nastavení pro JS. GraalVM ho chytře ignoruje, pokud jazyk není načtený.
                 .option("js.ecmascript-version", "2022")
                 .build();
     }
     
     /**
      * Vrátí třídu dědící z Karta, která bude obsahovat logyku z js objektu. 
-     * Metoda zajistí, že karta bude mít správně přiřazeené rozhraní HratelnaKarta
-     * a VylozitelnaKarta.
-     * 
-     * @param hra hra do které karta patří
-     * @param balicek balíček, do kterého karta patří. K ničemu se pravděpodobně nepoužívá, ale Karta ho potřebuje.
-     * @param jsObjekt JS objekt reprezentující kartu, obsahující její funkce.
-     * @return 
      */
     public static Karta vytvorKartuZJs(Hra hra, Balicek<Karta> balicek, Value jsObjekt) {
 
         boolean maOdehrat = jsObjekt.hasMember("odehrat");
         boolean maVylozit = jsObjekt.hasMember("vylozit");
 
-        // Zde záleží na pořadí! První musíme zkontrolovat, zda neumí obojí.
         if (maOdehrat && maVylozit) {
             return new PolyglotHybridniKarta(hra, balicek, jsObjekt);
         } else if (maOdehrat) {

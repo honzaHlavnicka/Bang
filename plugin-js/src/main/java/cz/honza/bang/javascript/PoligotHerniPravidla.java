@@ -111,7 +111,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
     public void pripravBalicekPostav(Stack<Postava> balicek) {
         if (jsFunkce.hasMember("getPostavy")) {
 
-            Value postavy = jsFunkce.invokeMember("kartyDoBalicku");
+            Value postavy = jsFunkce.invokeMember("getPostavy");
 
             if (postavy.hasArrayElements()) {
                 for (int i = 0; i < postavy.getArraySize(); i++) {
@@ -158,11 +158,19 @@ public class PoligotHerniPravidla implements HerniPravidla {
     @Override
     public UIPrvek[] getViditelnePrvky() {
         if (jsFunkce.hasMember("getViditelnePrvky")) {
-            // Tohle může být v budoucnu trochu složitější na konverzi z JS pole 
-            // do Java UIPrvek[], proto tu zkusíme rovnou použít asHostObject()
             Value vysledek = jsFunkce.invokeMember("getViditelnePrvky", hra);
             if (vysledek.hasArrayElements()) {
-                return vysledek.as(UIPrvek[].class);
+                int size = (int) vysledek.getArraySize();
+                UIPrvek[] prvky = new UIPrvek[size];
+                for (int i = 0; i < size; i++) {
+                    Value element = vysledek.getArrayElement(i);
+                    if (element.isString()) {
+                        prvky[i] = UIPrvek.valueOf(element.asString());
+                    } else {
+                        prvky[i] = element.as(UIPrvek.class);
+                    }
+                }
+                return prvky;
             }
         }
         return HerniPravidla.super.getViditelnePrvky();

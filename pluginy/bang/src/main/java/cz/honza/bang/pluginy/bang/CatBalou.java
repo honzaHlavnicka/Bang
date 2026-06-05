@@ -45,7 +45,7 @@ public class CatBalou extends Karta implements HratelnaKarta{
     @Override
     public boolean odehrat(Hrac kym) {
         // Zobrazit stavovou zprávu že hráč vybírá cíl
-        hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá cíl útoku...");
+        hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " vybírá cíl útoku...");
         
         hra.getKomunikator().pozadejOHrace(kym, hra.getHrajiciHraci(), "Vyber komu kartu spálíš", 1, 1, false) 
             .thenAccept(odpoved -> {
@@ -59,7 +59,7 @@ public class CatBalou extends Karta implements HratelnaKarta{
                     return; // Nemá cenu pokračovat bez vůle hráče
                 }
                 
-                hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá kartu od " + naKoho.getJmeno() + "...");
+                hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " vybírá kartu od " + naKoho.getJmeno() + "...");
                 
                 List<Karta> kartyNaVyber = new ArrayList<>();
                 kartyNaVyber.addAll(naKoho.getVylozeneKarty());
