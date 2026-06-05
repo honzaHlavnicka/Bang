@@ -19,7 +19,7 @@ import org.graalvm.polyglot.Value;
  * @author honza
  */
 public class PoligotHerniPravidla implements HerniPravidla {
-
+    
     private final Hra hra;
     private final Value jsFunkce;
     private final Context graalContext;
@@ -86,6 +86,7 @@ public class PoligotHerniPravidla implements HerniPravidla {
 
     @Override
     public void pripravBalicek(Balicek<Karta> balicek) {
+        
         if (jsFunkce.hasMember("getKartyDoBalicku")) {
             
             Value poleJsKaret = jsFunkce.invokeMember("getKartyDoBalicku");

@@ -1,0 +1,8 @@
+{
+  "nazev": "Prší JS",
+  "popis":"Tradiční česká karetní hra Prší implementovaná v JavaScriptu.",
+  "autor": "Gemini CLI",
+  "verze": "1.0.0",
+  "jazyk": "js",
+  "spousteciSoubor": "main.js"
+}

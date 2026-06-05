@@ -14,13 +14,14 @@ function vytvorZakladKarty(jmeno, obrazek) {
 const PravidlaPluginu = {
 
     // 1. GENEROVÁNÍ KARET DO BALÍČKU
-    ziskejKartyDoBalicku: function() {
+    getKartyDoBalicku: function() {
         let balicek = [];
 
         // Přidáme 5x Obecnou kartu (Hnědá - má pouze odehrat)
         for (let i = 0; i < 5; i++) {
             let karta = vytvorZakladKarty("Testovací Třesk", "bang");
             karta.odehrat = function(hra, kym) {
+                hra.getKomunikator().posliRychleOznameniVsem("BUM!",null);
                 return true; 
             };
             balicek.push(karta);
@@ -57,14 +58,19 @@ const PravidlaPluginu = {
         // Tuto metodu (a další na hráči) nezapomeň v Javě označit @HostAccess.Export
         hrac.lizni(); 
     },
+    
+    
 
     // Povolí hráči líznout si kartu, když chce
     hracChceLiznout: function(hra, kdo) {
+        kdo.lizni(); 
         return true;
     },
 
     // Povolí hráči ukončit tah, když chce
     hracChceUkoncitTah: function(hra, kdo) {
+    
+        hra.getSpravceTahu().dalsiHracSUpozornenim();
         return true;
     },
 
