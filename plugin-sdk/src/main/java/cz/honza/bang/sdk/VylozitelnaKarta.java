@@ -16,6 +16,7 @@ public interface VylozitelnaKarta{
      * @param kym kdo ji vyložil
      * @return má být vyložena?
      */
+    @PovolenePluginu
     public boolean vylozit(Hrac predKoho,Hrac kym);
     
     /**
@@ -24,10 +25,12 @@ public interface VylozitelnaKarta{
      * Často se hodí, aby vyložitelná karta zároven implementovala Efekt, pak tato metoda může vracet this;
      * @return efekt, který se přiřadí hráči, před kterým je vyložena
      */
+    @PovolenePluginu
     public Efekt getEfekt();
     
     /**
      * Nemusí dělat nic. Volá se před spálením
      */
+    @PovolenePluginu
     public void spalitVylozenou();
 }

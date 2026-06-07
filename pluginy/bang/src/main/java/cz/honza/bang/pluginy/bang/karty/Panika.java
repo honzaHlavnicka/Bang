@@ -43,7 +43,7 @@ public class Panika extends Karta implements HratelnaKarta{
     @Override
     public boolean odehrat(Hrac kym) {
         // Zobrazit stavovou zprávu že hráč vybírá cíl
-        hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá cíl útoku...");
+        hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " vybírá cíl útoku...");
         
         List<Hrac> povoleniHraci = kym.vzdalenostPod(1); // Neplatí na ní zbraně, ale efekty platí. (Vzdálenost max 1, ale s hledím to je 2 apod.)
         
@@ -60,7 +60,7 @@ public class Panika extends Karta implements HratelnaKarta{
                     }
 
                     // Zobrazit stavovou zprávu že hráč vybírá kartu
-                    hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá kartu od " + naKoho.getJmeno() + "...");
+                    hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " vybírá kartu od " + naKoho.getJmeno() + "...");
                     
                     List<Karta> kartyNaVyber = new ArrayList<>();
                     kartyNaVyber.addAll(naKoho.getVylozeneKarty());

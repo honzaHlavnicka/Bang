@@ -22,6 +22,7 @@ public interface SpravceTahu {
 
      * @return kolekce hráčů seřazená podle pořadí hraní.
      */
+    @PovolenePluginu
     public List<Hrac> getHrajiciHraci();
 
      /**
@@ -32,6 +33,7 @@ public interface SpravceTahu {
      *
      * @return hráč, který je na tahu. 
      */
+    @PovolenePluginu
     public Hrac dalsiHrac();
     /**
      * Najde dalšího hráče se zadanou rolí a nechá ho hrát.
@@ -44,6 +46,7 @@ public interface SpravceTahu {
      * @return Hráč co bude na tahu
      * @see #dalsiHracPodlePodminky(java.util.function.Predicate)
      */
+    @PovolenePluginu
     public Hrac dalsiHracPodleRole(Role role);
     
     /**
@@ -58,24 +61,28 @@ public interface SpravceTahu {
      * ten hledaný.
      * @return Hráč co bude na tahu
      */
+    @PovolenePluginu
     public Hrac dalsiHracPodlePodminky(Predicate<Hrac> podminka);
  
     /**
      * Ideální způsob jak ukončit tah. Vše zařídí. Ekvivalent k volání .ukoncitTah() na právě hrajícím hráči.
      * Pokud nikdo není na tahu, tak další tah sice udělá, ale nepošle to klientovi.
      */
+    @PovolenePluginu
     public void dalsiHracSUpozornenim();
 
     /**
      * Další hráč bude přeskočen. Stávající hráč hraje dál, neukončí to jeho tah.
      * @return hráč, který byl přeskočen.
      */
+    @PovolenePluginu
     public Hrac eso();
 
     /**
      * Mění vlastnost násobení tahu. Hráč bude mít místo jednoho tahu k dispozici <code>kolik</code> tahů.
      * @param kolik kolikrát za sebou bude hrát stejný hráč
      */
+    @PovolenePluginu
     public void setNasobicTahu(int kolik);
     
     
@@ -83,6 +90,7 @@ public interface SpravceTahu {
      * Vrátí hráče, který zrovna hraje.
      * @return 
      */
+    @PovolenePluginu
     public Hrac getNaTahu();
     
     /**
@@ -90,6 +98,7 @@ public interface SpravceTahu {
      * Jeho pořadí ve kterém byl se nezapomene, nic ze nezmění kromě toho, že se jeho tah bude pokaždé přeskakovat.
      * @param koho
      */
+    @PovolenePluginu
     public void vyraditHrace(Hrac koho);
     
     /**
@@ -99,6 +108,7 @@ public interface SpravceTahu {
      * @param koho
      * @see pridatHrace
      */
+    @PovolenePluginu
     public void vratitHrace(Hrac koho);
 
     /**
@@ -112,6 +122,7 @@ public interface SpravceTahu {
     /**
      * Změní směr hraní, pořadí jinak zanechá.
      */
+    @PovolenePluginu
     public void zmenaSmeru();
 }
 

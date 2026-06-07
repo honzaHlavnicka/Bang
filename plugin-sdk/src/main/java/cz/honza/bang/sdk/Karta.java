@@ -39,6 +39,7 @@ public abstract class Karta{
      * Vrátí unikátní id karty.
      * @return 
      */
+    @PovolenePluginu
     public final int getId(){
         return id;
     }
@@ -65,7 +66,8 @@ public abstract class Karta{
      *
      * @return json ve formátu: {"jmeno":jmeno,"obrazek":obrazek,"id":id}
      */
-    public String toJSON() {
+    @PovolenePluginu
+    public final String toJSON() {
         StringBuilder sb = new StringBuilder("{\"jmeno\":\"");
         sb.append(this.getJmeno());
         sb.append("\",\"obrazek\":\"");
@@ -79,18 +81,21 @@ public abstract class Karta{
     /**
      *  Akce, které by se měli provést před spálením.
      */
+    @PovolenePluginu
     public void predSpalenim(){}
     
     /**
      * Metoda by měla vráti pojmenování obrázku nez přípony. Cesta začíná od všech karet.
      * @return 
      */
+    @PovolenePluginu
     public abstract String getObrazek();
     
     /**
      * Mělo by vrátit pro lidi čitelné jméno.
      * @return 
      */
+    @PovolenePluginu
     public abstract String getJmeno();
     
     /**
@@ -98,6 +103,7 @@ public abstract class Karta{
      * Pokud není překryta, tak obrázek vezme z {@link HerniPravidla#getVychoziZadniObrazek() pravidel hry}
      * @return 
      */
+    @PovolenePluginu
     public String getZadniObrazek(){
         return hra.getHerniPravidla().getVychoziZadniObrazek();
     }

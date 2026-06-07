@@ -38,7 +38,7 @@ public class Duel extends Karta implements HratelnaKarta{
 
     @Override
     public boolean odehrat(Hrac kym) {
-        hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " právě vybírá hráče do duelu.");
+        hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " právě vybírá hráče do duelu.");
         hra.getKomunikator().pozadejOHrace(kym, hra.getHrajiciHraci().stream().filter(h->!h.equals(kym)).collect(java.util.stream.Collectors.toList()), "Vyber koho chceš vyzvat na duel", 1, 1, true)
                 .thenAccept(id->{
                     try{
@@ -54,7 +54,7 @@ public class Duel extends Karta implements HratelnaKarta{
     }
     
     private void duelNa(Hrac naKoho, Hrac odKoho){
-        hra.getKomunikator().posliStavovuZpravu(naKoho.getJmeno() + " bud ztratí život v duelu, nebo ho předá na " + odKoho.getJmeno());
+        hra.getKomunikator().posliStavovouZpravu(naKoho.getJmeno() + " bud ztratí život v duelu, nebo ho předá na " + odKoho.getJmeno());
 
         List<Karta> karty = new ArrayList<>(2);
         karty.add(ZastupnaKarta.getZivot());
@@ -75,7 +75,7 @@ public class Duel extends Karta implements HratelnaKarta{
             if (idKarty == ZastupnaKarta.getZivot().getId()) {
                 naKoho.odeberZivot();
                 hra.getKomunikator().posliRychleOznameniVsem("Duel vyhrál " + odKoho.getJmeno(),naKoho);
-                hra.getKomunikator().posliStavovuZpravu("");
+                hra.getKomunikator().posliStavovouZpravu("");
                 // Duel tímto skončil
             } else {
                 for (Karta karta : naKoho.getKarty()) {

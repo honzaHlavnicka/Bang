@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang.karty;
 
+import cz.honza.bang.sdk.PovolenePluginu;
 import cz.honza.bang.BalicekImp;
 import cz.honza.bang.HraImp;
 import cz.honza.bang.sdk.Karta;
@@ -47,11 +48,13 @@ public class ZastupnaKarta extends Karta {
             
             
     @Override
+    @PovolenePluginu
     public String getObrazek() {
         return obrazek;
     }
 
     @Override
+    @PovolenePluginu
     public String getJmeno() {
         return jmeno;
     }

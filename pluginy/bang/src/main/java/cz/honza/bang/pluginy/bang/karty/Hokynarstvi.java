@@ -57,7 +57,7 @@ public class Hokynarstvi extends Karta implements HratelnaKarta{
     private void nechatVybrat(List<Karta> karty, List<Hrac> hrajiciHraci, int uKohoZacit){
         // TODO: je tu potřeba kontrola uKohoZacit a .size() ?
         Hrac hrac = hrajiciHraci.get(uKohoZacit);
-        hra.getKomunikator().posliStavovuZpravu(hrac.getJmeno() + " vybírá kartu od hokynářství");
+        hra.getKomunikator().posliStavovouZpravu(hrac.getJmeno() + " vybírá kartu od hokynářství");
         
         hra.getKomunikator().pozadejOKarty(hrac, karty, "Jakou kartu si chceš nechat?", 1, 1, false)
                 .thenAccept(id->{
@@ -101,7 +101,7 @@ public class Hokynarstvi extends Karta implements HratelnaKarta{
                         nechatVybrat(karty, hrajiciHraci, pointer);
                     } else {
                         // Všichni si vybrali.
-                        hra.getKomunikator().posliStavovuZpravu("");
+                        hra.getKomunikator().posliStavovouZpravu("");
                     }
                     
                     

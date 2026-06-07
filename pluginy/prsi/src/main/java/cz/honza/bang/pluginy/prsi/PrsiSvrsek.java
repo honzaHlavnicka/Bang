@@ -27,7 +27,7 @@ public class PrsiSvrsek extends PrsiKarta{
     public boolean odehrat(Hrac kym) {
         poslendniBarva = null;
             // Zobrazit stavovou zprávu že hráč vybírá barvu
-            hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " vybírá barvu...");
+            hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " vybírá barvu...");
             
             
             ArrayList moznosti = new ArrayList(4);
@@ -55,7 +55,7 @@ public class PrsiSvrsek extends PrsiKarta{
                         break;
                 }
                 // Zobrazit informaci o vybrané barvě
-                hra.getKomunikator().posliStavovuZpravu(kym.getJmeno() + " si vybral barvu: " + poslendniBarva.getNazev());
+                hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " si vybral barvu: " + poslendniBarva.getNazev());
                 // Dodatečná zpráva pro plugin - zvláštní oznámení
                 hra.getKomunikator().posliRychleOznameniVsem(String.valueOf(poslendniBarva.getNazev()), kym);
 

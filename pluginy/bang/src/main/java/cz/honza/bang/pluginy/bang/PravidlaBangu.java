@@ -437,7 +437,7 @@ public class PravidlaBangu implements HerniPravidla{
 
             if (!vedleNaKoho.isEmpty()) {
                 vedleNaKoho.add(ZastupnaKarta.getZivot());
-                hra.getKomunikator().posliStavovuZpravu(naKoho.getJmeno() + " může ještě použít vedle na odražení útoku!");
+                hra.getKomunikator().posliStavovouZpravu(naKoho.getJmeno() + " může ještě použít vedle na odražení útoku!");
                 
                 hra.getKomunikator().pozadejOKarty(naKoho, vedleNaKoho, "Vyber o co přijdeš. (Může za to " + kym.getJmeno() + " )", 1, 1, false)
                         .thenAccept(id -> {

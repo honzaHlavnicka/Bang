@@ -21,12 +21,14 @@ public interface Balicek<T> {
     /**
      * Zamíchá balíček.
      */
+    @PovolenePluginu
     public void zamichej();
 
     /**
      * Lízne jednu kartu, odstraní ji z balíčku. Pokud je balíček prázdný, tak vrátí null.
      * @return líznutá karta
      */
+    @PovolenePluginu
     public T lizni();
 
     /**
@@ -34,6 +36,7 @@ public interface Balicek<T> {
      * @param n počet karet k líznutí
      * @return kolekce líznutých karet seřazená tak, že karta, která se vytáhla jako první je první v kolekci
      */
+    @PovolenePluginu
     public List<T> lizni(int n);
 
 
@@ -43,12 +46,14 @@ public interface Balicek<T> {
      * @return Kolekce. Karta, která je v balíčku nahoře, je v kolekci 1., karta která je pod ní je druhá apod.
      */
     
+    @PovolenePluginu
     public List<T> nahledni(int n);
     
     /**
      * Vrátí, ale nesmaže horní kartu z balíčku.
      * @return 
      */
+    @PovolenePluginu
     public T nahledni();
 
     // 
@@ -57,6 +62,7 @@ public interface Balicek<T> {
      * vrácení karty na spodek balíčku
      * @param karta (nebo objekt), který se má vrátit dolů.
      */
+    @PovolenePluginu
     public void vratNaSpodek(T karta);
 
     /**
@@ -64,24 +70,28 @@ public interface Balicek<T> {
      *
      * @param karta (nebo objekt), který se má vrátit nahoru.
      */
+    @PovolenePluginu
     public void vratNahoru(T karta);
 
     /**
      * Kontrola, zda balíček obsahuje nějaký prvek. <code>true</code> = prázdný.
      * @return zda je prázdný
      */
+    @PovolenePluginu
     public boolean jePrazdny();
 
     /**
      * Vrací počet prvků v balíčku.
      * @return velikost balíčku
      */
+    @PovolenePluginu
     public int pocet();
     
     /**
      *  Otočí balíček tak, že karta, která byla doposud nahoře bude dole a karta, ktrá byla dole bude nahoře.
      *  Není problém používat často, protože se v paměti neprohazuje, jenom se bere z druhé strany.
      */
+    @PovolenePluginu
     public void otoc();
 
     
