@@ -37,6 +37,7 @@ public interface Hrac {
      *
      * @return odebral se život úspěšně
      */
+    @PovolenePluginu
     public boolean odeberZivot();
 
     /**
@@ -45,54 +46,66 @@ public interface Hrac {
      *
      * @return přidal se život úspěšně.
      */
+    @PovolenePluginu
     public boolean pridejZivot();
     
     /**
      * Vrátí počet životů
      */
+    @PovolenePluginu
     public int getZivoty();
     
     /**
      * Ntvrdo nastaví počet životů. Pošle oznámení hráčům, ale nekontroluje žádné podmínky (smrt nebo přebytek)
      * @param zivoty
      */
+    @PovolenePluginu
     public void setZivoty(int zivoty);
 
     /**
      * Kolik nejvíce může hráč získat životů
      * @see #setMaximumZivotu(int) 
      */
+    @PovolenePluginu
     public int getMaximumZivotu();
 
+    @PovolenePluginu
     public Role getRole();
 
+    @PovolenePluginu
     public Postava getPostava();
     
     /**
      * Vrátí upravitelný seznam karet
      */
+    @PovolenePluginu
     public List<Karta> getKarty();
     
     /**
      * Jedinečné id hráče
      * @return Jedinečné id hráče
      */
+    @PovolenePluginu
     public int getId();
     
     /**
      * Jméno, které si hráč zvolil
      * @return 
      */
+    @PovolenePluginu
     public String getJmeno();
     
     /**
      * Přenastaví jméno a pošle ho hráčům
      * @param jmeno 
      */
+    @PovolenePluginu
     public void setJmeno(String jmeno);
     
+    @PovolenePluginu
     public boolean jeNaTahu();
     
+    @PovolenePluginu
     public void setMaximumZivotu(int maximumZivotu);
     
     /**
@@ -100,20 +113,24 @@ public interface Hrac {
      * @param postava novvá postava
      * @return stará postava
      */
+    @PovolenePluginu
     public Postava setPostava(Postava postava);
     
     /**
      * Nastaví roly, řekne to hráči.
      * @param role 
      */
+    @PovolenePluginu
     public void setRole(Role role);
 
+    @PovolenePluginu
     public Hra getHra();
     
     /**
      * Jeho počet životů je >0
      * @return je živý
      */
+    @PovolenePluginu
     public boolean jeZivy();
     
     /**
@@ -150,18 +167,21 @@ public interface Hrac {
      * Přidá hráči karu z balíčku hry. Pošle o tom upozornění všem hráčům,
      * nekontroluje zda hráč může lízat.
      */
+    @PovolenePluginu
     public void lizni();
     
     /**
      * Lízne si kartu, ale pouze pokud hráč má právo na to si líznout.
      * Mělo by se volat pokud hráč zažádá o líznutí.
      */
+    @PovolenePluginu
     public void lizniKontrolovane();
     
     /**
      * Přidá efekt. Zařídí i jeho inicializaci.
      * @param efekt 
      */
+    @PovolenePluginu
     public void pridejEfekt(Efekt efekt);
     
     /**
@@ -173,6 +193,7 @@ public interface Hrac {
      * @see #vzdalenostPod(int)
      * @see #vzdalenostK(cz.honza.bang.Hrac) 
      */
+    @PovolenePluginu
     public int fyzickaVzdalenostK(Hrac komu)throws IllegalArgumentException;
     
     /**
@@ -183,6 +204,7 @@ public interface Hrac {
      * @see #vzdalenostPod(int) 
      * @see #vzdalenostPod(int, boolean) 
      */
+    @PovolenePluginu
     public int vzdalenostK(Hrac komu);
     
     /**
@@ -193,6 +215,7 @@ public interface Hrac {
      * @return List hráčů, kteří spn
      * @see #fyzickaVzdalenostK(cz.honza.bang.Hrac) 
      */
+    @PovolenePluginu
     public List<Hrac> vzdalenostPod(int max, boolean iZpetne);
     
     /**
@@ -203,6 +226,7 @@ public interface Hrac {
      * @return List hráčů, kteří spn
      * @see #fyzickaVzdalenostK(cz.honza.bang.Hrac)
      */
+    @PovolenePluginu
     public List<Hrac> vzdalenostPod(int max);
 
     
@@ -217,12 +241,14 @@ public interface Hrac {
      * Vrátí originál seznamu vyložených karet
      * @return 
      */
+    @PovolenePluginu
     public List<Karta> getVylozeneKarty() ;
     
     /**
      * Vrátí originál seznamu efektů.
      * @return 
      */
+    @PovolenePluginu
     public List<Efekt> getEfekty();
     
     
@@ -230,6 +256,7 @@ public interface Hrac {
      * Vrátí všechny veřejné informace o hráči ve formátu JSON
      * @return json ve formátu: {"jmeno":jmeno,"zivoty",pocetZivotu,"pocetKaret":pocetKaret,"postava":postava.name(),"maximumZivotu",maximumZivotu}
      */
+    @PovolenePluginu
     public String toJSON();
 
     /**
@@ -243,6 +270,7 @@ public interface Hrac {
      * @return kolik se bude přřičítat
      * @see Efekt#getBonusOdstupu()
      */
+    @PovolenePluginu
     int getCelkovyBonusOdstupu();
     
     /**
@@ -251,6 +279,7 @@ public interface Hrac {
      * @return kolik se bude přřičítat
      * @see Efekt#getBonusOdstupu()
      */
+    @PovolenePluginu
     int getCelkovyBonusDosahu();
     
     
@@ -258,6 +287,7 @@ public interface Hrac {
      * Odebere bez kontrol s upozorněním kartu, která je mezi vyloženými. Obstará i efekty.
      * @param karta, která se má odebrat
      */
+    @PovolenePluginu
     public void odeberVylozenouKartu(VylozitelnaKarta karta);
 
     /**
@@ -265,5 +295,6 @@ public interface Hrac {
      * @param karta na přidání
      * @param kym pro klienta
      */
+    @PovolenePluginu
     public void pridejVylozenouKartu(VylozitelnaKarta karta, Hrac kym);
 }

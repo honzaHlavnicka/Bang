@@ -48,8 +48,8 @@ mkdir -p "$PLUGINS_DIR"
 echo "📋 Kopíruji server..."
 cp server/target/server-1.0-SNAPSHOT.jar "$BUILD_DIR/server.jar"
 
-# Kopírování pluginů
-echo "📋 Kopíruji pluginy..."
+# Kopírování Java (JAR) pluginů
+echo "📋 Kopíruji Java pluginy..."
 if [ -f "pluginy/bang/target/bang-1.0-SNAPSHOT.jar" ]; then
     cp pluginy/bang/target/bang-1.0-SNAPSHOT.jar "$PLUGINS_DIR/bang.jar"
 fi
@@ -70,11 +70,24 @@ if [ -f "pluginy/kvarteto/target/kvarteto-1.0-SNAPSHOT.jar" ]; then
     cp pluginy/kvarteto/target/kvarteto-1.0-SNAPSHOT.jar "$PLUGINS_DIR/kvarteto.jar"
 fi
 
+# --- NOVÉ: Kopírování skriptovaných (JS/Python) pluginů ---
+echo "📋 Kopíruji skriptované pluginy..."
+# Projde všechny podsložky ve složce pluginy/
+for d in pluginy/*/; do
+    # Pokud složka obsahuje plugin.json, považujeme ji za platný skriptovaný plugin
+    if [ -f "${d}plugin.json" ]; then
+        PLUGIN_NAME=$(basename "$d")
+        echo "   -> Nalezen skriptovaný plugin: $PLUGIN_NAME"
+        # Zkopíruje celou složku i se všemi .js soubory
+        cp -r "$d" "$PLUGINS_DIR/$PLUGIN_NAME"
+    fi
+done
+
 # Vytvoření startovacího scriptu
 echo "📋 Vytvářím startovací script..."
 cat > "$BUILD_DIR/start.sh" << 'EOF'
 #!/bin/bash
-# Startovací script pro server Bang
+# Startovací script pro server
 # Načte konfiguraci z .env souboru pokud existuje
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -100,7 +113,9 @@ echo "   Heslo: (nastaveno)"
 echo ""
 
 cd "$SCRIPT_DIR"
-java -jar server.jar
+
+# --- OPRAVENO: Přidán flag --enable-native-access pro funkčnost GraalVM ---
+java --enable-native-access=ALL-UNNAMED -jar server.jar
 EOF
 chmod +x "$BUILD_DIR/start.sh"
 
@@ -120,7 +135,7 @@ echo ""
 echo "🚀 Spuštění serveru:"
 echo "   cd $BUILD_DIR && bash start.sh"
 echo "   nebo"
-echo "   cd $BUILD_DIR && java -jar server.jar"
+echo "   cd $BUILD_DIR && java --enable-native-access=ALL-UNNAMED -jar server.jar"
 echo ""
 
 # Pokud je zadán parametr 'r', spusť server

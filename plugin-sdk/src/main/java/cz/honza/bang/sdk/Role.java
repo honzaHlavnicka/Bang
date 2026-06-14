@@ -14,5 +14,7 @@ public interface Role {
      * Identifikátor role, zároven jmno souboru s obázkem.
      * @return 
      */
+    
+    @PovolenePluginu
     String name();    
 }

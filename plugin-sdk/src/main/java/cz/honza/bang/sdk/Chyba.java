@@ -5,6 +5,7 @@ package cz.honza.bang.sdk;
  * Chyba ve hře a její kody, které jsou společné pro všechny strany komunikace.
  * @author honza
  */
+@PovolenePluginu
 public enum Chyba {
     NEPRIPOJEN_KE_HRE("Nejsi připojen ke hře.",1,2),
     KARTA_NEEXISTUJE("Tato karta neexistuje",2,2),

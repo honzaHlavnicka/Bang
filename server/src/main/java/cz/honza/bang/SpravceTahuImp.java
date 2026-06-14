@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang;
 
+import cz.honza.bang.sdk.PovolenePluginu;
 import cz.honza.bang.sdk.Hrac;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * @return kolekce hráčů seřazená podle pořadí hraní.
      */
     @Override
+    @PovolenePluginu
     public List<Hrac> getHrajiciHraci() {
         if (!poradiAktualni) {
             hrajiciHraciCache = new ArrayList<>();
@@ -83,6 +85,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * @return hráč, který je na tahu. 
      */
     @Override
+    @PovolenePluginu
     public HracImp dalsiHrac() {
         if(getHrajiciHraci().isEmpty()){
             return naTahu;
@@ -126,6 +129,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * @param role
      */
     @Override
+    @PovolenePluginu
     public HracImp dalsiHracPodleRole(cz.honza.bang.sdk.Role role) {
         return dalsiHracPodlePodminky(hrac -> hrac.getRole().equals(role));
     }
@@ -141,6 +145,8 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * ten hledaný.
      * @return Hráč co bude na tahu
      */
+    @Override
+    @PovolenePluginu
     public HracImp dalsiHracPodlePodminky(Predicate<Hrac> podminka) {
         Tah hledanyTah = null;
         for (Tah t : frontaTahu) {
@@ -185,6 +191,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
  
     
     @Override
+    @PovolenePluginu
     public void dalsiHracSUpozornenim() {
         if (naTahu != null) {
             naTahu.konecTahu();
@@ -198,6 +205,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * @return hráč, který byl přeskočen.
      */
     @Override
+    @PovolenePluginu
     public Hrac eso(){
         Tah tah = frontaTahu.pollFirst();
         if (tah != null) {
@@ -213,11 +221,13 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * @param kolik kolikrát za sebou bude hrát stejný hráč
      */
     @Override
+    @PovolenePluginu
     public void setNasobicTahu(int kolik){
         nasobicTahu = kolik;
     }
     
     @Override
+    @PovolenePluginu
     public HracImp getNaTahu(){
         return naTahu;
     }
@@ -228,6 +238,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * @param koho
      */
     @Override
+    @PovolenePluginu
     public void vyraditHrace(Hrac koho){
         for (Tah tah : frontaTahu) {
             if(tah.hrac.equals(koho)){
@@ -244,6 +255,8 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * @param koho
      * @see pridatHrace
      */
+    @Override
+    @PovolenePluginu
     public void vratitHrace(Hrac koho){
         for (Tah tah : frontaTahu) {
             if (tah.hrac.equals(koho)) {
@@ -269,6 +282,7 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
      * Změní směr hraní
      */
     @Override
+    @PovolenePluginu
     public void zmenaSmeru(){
         zmenenSmer = !zmenenSmer;
         poradiAktualni = false;

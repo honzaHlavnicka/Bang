@@ -6,6 +6,7 @@ Toto je domácí verze souborů z programování.
  */
 package cz.honza.bang;
 
+import cz.honza.bang.sdk.PovolenePluginu;
 import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Postava;
 
@@ -28,25 +29,30 @@ public enum PostavaImp implements Postava{
     }
     
     @Override
+    @PovolenePluginu
     public String getJmeno() {
         return jmeno;
         }
 
     @Override
+    @PovolenePluginu
     public String getPopis() {
         return popis;
     }
 
     @Override
+    @PovolenePluginu
     public int getMaximumZivotu() {
         return maximumZivotu;
     }
 
     @Override
+    @PovolenePluginu
     public void pridaniPostavy(Hrac komu) {
     }
 
     @Override
+    @PovolenePluginu
     public void odebraniPostavy(Hrac komu) {
     }
 

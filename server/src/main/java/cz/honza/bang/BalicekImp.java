@@ -11,6 +11,7 @@ package cz.honza.bang;
  * @author honza
  */
 
+import cz.honza.bang.sdk.PovolenePluginu;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -41,6 +42,8 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
     /**
      * Zamíchá balíček.
      */
+    @Override
+    @PovolenePluginu
     public void zamichej() {
         List<T> list = new ArrayList<>(karty);
         Collections.shuffle(list);
@@ -64,6 +67,8 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
      * Lízne jednu kartu, odstraní ji z balíčku. Pokud je balíček prázdný, tak vrátí null.
      * @return líznutá karta
      */
+    @Override
+    @PovolenePluginu
     public T lizni() {
         T liznuta = lizniTajne();
         probehlaUprava();
@@ -77,6 +82,8 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
      * @param n počet karet k líznutí
      * @return kolekce líznutých karet seřazená tak, že karta, která se vytáhla jako první je první v kolekci
      */
+    @Override
+    @PovolenePluginu
     public List<T> lizni(int n) {
         List<T> tah = new ArrayList<>(n);
         for (int i = 0; i < n && !karty.isEmpty(); i++) {
@@ -93,6 +100,8 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
      * @return Kolekce. Karta, která je v balíčku nahoře, je v kolekci 1., karta která je pod ní je druhá apod.
      */
     
+    @Override
+    @PovolenePluginu
     public List<T> nahledni(int n) {
         List<T> nahled = new ArrayList<>();
         Iterator<T> it = jeOtoceny ? karty.descendingIterator() : karty.iterator();
@@ -106,6 +115,8 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
      * Vrátí, ale nesmaže horní kartu z balíčku. Pokud je prázdný, vrátí null
      * @return 
      */
+    @Override
+    @PovolenePluginu
     public T nahledni(){
         if(jeOtoceny){
             return karty.peekLast();
@@ -120,6 +131,8 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
      * vrácení karty na spodek balíčku
      * @param karta (nebo objekt), který se má vrátit dolů.
      */
+    @Override
+    @PovolenePluginu
     public void vratNaSpodek(T karta) {
         if (jeOtoceny) {
             karty.addFirst(karta);
@@ -134,6 +147,8 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
      *
      * @param karta (nebo objekt), který se má vrátit nahoru.
      */
+    @Override
+    @PovolenePluginu
     public void vratNahoru(T karta) {
         if(jeOtoceny){
             karty.addLast(karta);
@@ -148,6 +163,8 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
      * Kontrola, zda balíček obsahuje nějaký prvek. <code>true</code> = prázdný.
      * @return zda je prázdný
      */
+    @Override
+    @PovolenePluginu
     public boolean jePrazdny() {
         return karty.isEmpty();
     }
@@ -156,6 +173,8 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
      * Vrací počet prvků v balíčku.
      * @return velikost balíčku
      */
+    @Override
+    @PovolenePluginu
     public int pocet() {
         return karty.size();
     }
@@ -164,6 +183,8 @@ public class BalicekImp<T> implements cz.honza.bang.sdk.Balicek<T>{
      *  Otočí balíček tak, že karta, která byla doposud nahoře bude dole a karta, ktrá byla dole bude nahoře.
      *  Není problém používat často, protože se v paměti neprohazuje, jenom se bere z druhé strany.
      */
+    @Override
+    @PovolenePluginu
     public void otoc(){
         jeOtoceny = !jeOtoceny;
         probehlaUprava();

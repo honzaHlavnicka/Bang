@@ -24,24 +24,28 @@ public interface HerniPravidla {
      * Spustí se po spuštění hry. Může například vyložit kartu..
      * @see #pripravitHrace(cz.honza.bang.Hrac)
      */
+    @PovolenePluginu
     public void poSpusteniHry();
     
     /**
      * Připravý hráče ke hře, například mu rozdá karty. Volá se na po zahájení hry, po volání metody {@link #poSpusteniHry() }, před zahájením prvního tahu.
      * Postupně se zavolá na každého hráče.
      */
+    @PovolenePluginu
     public void pripravitHrace(Hrac hrac);
 
     /**
      * Volá se poté, co hráč odehraje kartu. Nemůž enic změnit, ale může nějak reagovat.
      * @param kym
      */
+    @PovolenePluginu
     public void poOdehrani(Hrac kym);
     
     /**
      * Volá se, když má někdo 0 životů. Hodí se například k vyřazení hráče ze hry, nebo ukončení hry.
      * @param komu
      */
+    @PovolenePluginu
     public void dosliZivoty(Hrac komu);
 
     /**
@@ -52,6 +56,7 @@ public interface HerniPravidla {
      * @param kdo chce ukončit tah
      * @return
      */
+    @PovolenePluginu
     public boolean hracChceUkoncitTah(Hrac kdo);
 
     /**
@@ -64,6 +69,7 @@ public interface HerniPravidla {
      * @return true - bylo mu líznuto.
      * @return false - nebylo mu líznuto
      */
+    @PovolenePluginu
     public boolean hracChceLiznout(Hrac kdo);
     
     /**
@@ -74,6 +80,7 @@ public interface HerniPravidla {
      * {@link Karta}, {@link HratelnaKarta} a {@link VylozitelnaKarta}
      * @param balicek balíček, do kterého se vše vloží pomocí .vratitNahoru()
      */
+    @PovolenePluginu
     public void pripravBalicek(Balicek<Karta> balicek);
     /**
      * Naplní balíček postavami, které se mohou rozdávat. Objekt postavy nemusí být unikátní, pokud postava v sobě nic nedělá. Pokud například přidává efekt, tak musí být na každou
@@ -81,6 +88,7 @@ public interface HerniPravidla {
      * Mělo by je zamíchat, protože se rozdávají od vrchu.
      * @param balicekPostav Balíček co se má naplnit.
      */
+    @PovolenePluginu
     default public void pripravBalicekPostav(Stack<Postava> balicekPostav){
 
     };
@@ -88,22 +96,26 @@ public interface HerniPravidla {
      * Volá se když hráč začíná svůj tah.
      * @param komu
      */
+    @PovolenePluginu
     default public void zacalTah(Hrac komu){};
     /**
      * Volá se když hráč končí svůj tah.
      * @param komu
      */
+    @PovolenePluginu
     default public void skoncilTah(Hrac komu){};
     /**
      * Může hráč spálit danou kartu?
      * Nemělo by to kartu spalovat, to řeší engine.
      * @param co
      */
+    @PovolenePluginu
     default public boolean muzeSpalit(Karta co){return false;}
     /**
      * Mělo by vrátit Array UIPrvky, které by měly být viditelné pro hráče.
      * @return viditelné prvky
      */
+    @PovolenePluginu
     default public UIPrvek[] getViditelnePrvky()  {
         return UIPrvek.values();
     };
@@ -115,6 +127,7 @@ public interface HerniPravidla {
      * @param kdo
      * @return může zahrát
      */
+    @PovolenePluginu
     default public boolean muzeZahrat(Karta co,Hrac kdo){
         return true;
     }
@@ -124,6 +137,7 @@ public interface HerniPravidla {
      * Poze označení bez přípony souboru a absolutní cesty.
      * @return 
      */
+    @PovolenePluginu
     default public String getVychoziZadniObrazek(){
         return "zezadu";
     }
@@ -136,6 +150,7 @@ public interface HerniPravidla {
      * @see #muzeSpalit(cz.honza.bang.sdk.Karta) 
      * @see #muzeZahrat(cz.honza.bang.sdk.Karta, cz.honza.bang.sdk.Hrac) 
      */
+    @PovolenePluginu
     default public  boolean muzeVylozit(Hrac kdo, VylozitelnaKarta co){
         return true;
     }
@@ -147,6 +162,7 @@ public interface HerniPravidla {
      * Ve výchozím chování to je hráč, který založil hru.
      * @param spravceTahu 
      */
+    @PovolenePluginu
     default public  void spustitPrvniTah(SpravceTahu spravceTahu){
         // Výchozí chování: získej prvního hráče a zahaj jeho tah
         Hrac prvniHrac = spravceTahu.dalsiHrac();
@@ -161,6 +177,7 @@ public interface HerniPravidla {
      * @param uiId ID prvku, na který hráč klikl
      * @see cz.honza.bang.sdk.KomunikatorHry#pridejUIButton(cz.honza.bang.sdk.Hrac, int, java.lang.String, boolean, java.lang.Runnable)
      */
+    @PovolenePluginu
     default public void uiButtonClicked(Hrac hrac, int uiId){
         // Výchozí chování - nic se neděje
     }

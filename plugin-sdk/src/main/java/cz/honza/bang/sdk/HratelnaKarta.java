@@ -22,5 +22,7 @@ public interface HratelnaKarta {
      * @param kym Kdo kartu zahrál
      * @return byla karta odehrána?
      */
+    
+    @PovolenePluginu
     public boolean odehrat(Hrac kym);
 }
