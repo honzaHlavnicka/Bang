@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { GameProvider } from './modules/GameProvider.tsx'
-import { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 import { DialogProvider } from './modules/DialogProvider.tsx'
 import Dialog from './components/Dialog.tsx'
 import { ZoomProvider } from './modules/ZoomContext.tsx'
@@ -18,9 +18,14 @@ const isDebug: boolean = String(import.meta.env.VITE_DEBUG).trim().toLowerCase()
 const posthogToken: string = String(import.meta.env.VITE_PUBLIC_POSTHOG_TOKEN);
 const posthogHost: string = String(import.meta.env.VITE_PUBLIC_POSTHOG_HOST);
 
+const isHonza = localStorage.getItem("jsemhonzaa") === "ano";
+if (isHonza) {
+  setTimeout(() => toast("jsem honzaa"), 1000);
+}
+
 const consent = localStorage.getItem("souhlas") === "true";
 
-if (!isDebug && posthogToken) {
+if (!isDebug && posthogToken && !isHonza) {
   posthog.init(posthogToken, {
     api_host: posthogHost,
     capture_pageview: false, // Budeme zachytávat manuálně pro sjednocení cest

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play UNO Online | Colorful Card Party Game</title>
+    <meta name="description" content="A colorful storm, action twists, and uncompromising stopwatches for your opponents. Play UNO online in your browser for free.">
+    <meta property="og:title" content="Play UNO Online">
+    <meta property="og:description" content="Action card game UNO online. Challenge your friends in this colorful storm!">
+    <meta property="og:image" content="https://bang.honzaa.cz/img/karty/bang.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/png" href="https://bang.honzaa.cz/img/karty/bang.png">
+    <link rel="alternate" hreflang="cs" href="https://bang.honzaa.cz/uno">
+    <link rel="alternate" hreflang="en" href="https://bang.honzaa.cz/en/uno">
+    <link rel="alternate" hreflang="x-default" href="https://bang.honzaa.cz/uno">
+    <link rel="canonical" href="https://bang.honzaa.cz/en/uno">
+    <link rel="stylesheet" href="../common.css">
+    <script>
+        !function (t, e) { var o, n, p, r; e.__SV || (window.posthog && window.posthog.__loaded) || (window.posthog = e, e._i = [], e.init = function (i, s, a) { function g(t, e) { var o = e.split("."); 2 == o.length && (t = t[o[0]], e = o[1]), t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))) } } (p = t.createElement("script")).type = "text/javascript", p.crossOrigin = "anonymous", p.async = !0, p.src = s.api_host.replace(".i.posthog.com", "-assets.i.posthog.com") + "/static/array.js", (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(p, r); var u = e; for (void 0 !== a ? u = e[a] = [] : a = "posthog", u.people = u.people || [], u.toString = function (t) { var e = "posthog"; return "posthog" !== a && (e += "." + a), t || (e += " (stub)"), e }, u.people.toString = function () { return u.toString(1) + ".people (stub)" }, o = "rn sn init kn Qr wn Cn yn capture calculateEventProperties Rn register register_once register_for_session unregister unregister_for_session An getFeatureFlag getFeatureFlagPayload getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync Fn identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset setIdentity clearIdentity get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException addExceptionStep captureLog startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty On En createPersonProfile setInternalOrTestUser Ln gn $n opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing In debug Kr Pn getPageViewId captureTraceFeedback captureTraceMetric vn".split(" "), n = 0; n < o.length; n++)g(u, o[n]); e._i.push([i, s, a]) }, e.__SV = 1) }(document, window.posthog || []);
+        if (localStorage.getItem('jsemhonzaa') !== 'ano') posthog.init('phc_AcGQ8b8Kg6GpuhFauLiqKpN3wjD8msdjiHKbMQ6YDpmu', {
+            api_host: 'https://szn.bang.honzaa.cz', 
+            ui_host: 'https://eu.posthog.com', 
+            defaults: '2026-05-30',
+            person_profiles: 'identified_only', 
+        })
+    </script>
+    <style>
+        /* Specific colors for UNO - Brighter and modern */
+        body { background-color: #fff1f2; }
+        .hero-container { background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); border-bottom: 6px double #fbbf24; }
+        .hero-title { color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .hero-subtitle { color: #ffe4e6; }
+        .badge { background: #fbbf24; border: 1px solid #f59e0b; color: #78350f; }
+        .intro-box, .rules-section { border: 2px solid #fda4af; }
+        h2, .highlight, .info-column h4 { color: #e11d48; }
+        .rules-step h3 { color: #0f172a; }
+        .teaser-box { background-color: #fef3c7; border: 1px solid #fde68a; color: #92400e; }
+        .btn-play { background-color: #e11d48; border: 2px solid #9f1239; }
+        .btn-play:hover { background-color: #f43f5e; }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <a href="https://bang.honzaa.cz" class="header-brand">
+            <img src="https://bang.honzaa.cz/img/karty/bang.png" alt="Logo">
+            Bang! engine
+        </a>
+        <nav>
+            <a href="/en/about-games">Home</a>
+            <a href="/en/bang">BANG!</a>
+            <a href="/en/prsi">Prší</a>
+            <a href="/en/uno">UNO</a>
+            <a href="/uno" style="margin-left: 20px; color: #fbbf24;">CZ</a>
+        </nav>
+    </header>
+
+    <a href="/en/prsi" class="nav-arrow left">&#8249;</a>
+    <a href="/en/about-games" class="nav-arrow right">&#8250;</a>
+
+    <div class="hero-container">
+        <div class="hero-title">Play UNO Online</div>
+        <div class="hero-subtitle">A colorful storm, action twists, and uncompromising stopwatches for your opponents!</div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="badge-container">
+            <span class="badge">2 to 10 Players</span>
+            <span class="badge">Dynamic Game (15 min)</span>
+            <span class="badge">Crazy Effects</span>
+        </div>
+
+        <div class="intro-box">
+            <h2>What is the game about?</h2>
+            <p>UNO is the worldwide king of family and party games. Forget classic cards – here, 108 special cards shining in four colors rule. The rules are similar to Prší, but thanks to action cards like "Draw 4" or "Reverse," a calm game can turn into total chaos in a second. The most important rule? <span class="highlight">Don't forget to shout UNO!</span></p>
+        </div>
+
+        <div class="cta-section">
+            <a href="https://bang.honzaa.cz/en?game=uno" class="btn-play">Start UNO Party</a>
+        </div>
+
+        <div class="image-section">
+            <img src="../img/bang.jpg" alt="UNO Game Illustration" style="filter: hue-rotate(90deg);">
+        </div>
+
+        <div class="rules-section">
+            <h2>How to play? (Brief rules)</h2>
+            <div class="rules-step">
+                <h3>1. Starting position</h3>
+                <p>Each player starts with <span class="highlight">7 cards</span>. One card is placed in the center, and the rest forms the draw pile.</p>
+            </div>
+            <div class="rules-step">
+                <h3>2. Color on color, number on number</h3>
+                <p>The player on turn must discard a card that matches either the <span class="highlight">color</span> or the <span class="highlight">number/symbol</span> of the top card on the table. If you don't have one, you draw a card.</p>
+            </div>
+            <div class="rules-step">
+                <h3>3. Reporting the last card</h3>
+                <p>At the moment you discard your second-to-last card and only <span class="highlight">one single card</span> remains in your hand, you must shout <strong>"UNO!"</strong> out loud. If you forget and your opponents catch you, you get penalty cards!</p>
+            </div>
+        </div>
+
+        <div class="info-table">
+            <div class="info-column">
+                <h4>Action Wildness</h4>
+                <ul>
+                    <li><strong>Draw 2 (+2):</strong> The next player immediately draws two cards and skips their turn.</li>
+                    <li><strong>Skip (Stop):</strong> The next player in order is completely skipped for this round.</li>
+                    <li><strong>Reverse:</strong> The game immediately changes direction (e.g., from clockwise to counter-clockwise).</li>
+                </ul>
+            </div>
+            <div class="info-column">
+                <h4>Wild Trumps</h4>
+                <ul>
+                    <li><strong>Choose Color:</strong> This black card can be played on anything to choose a new game color.</li>
+                    <li><strong>Wild Card (+4):</strong> Not only do you choose the color, but the next unlucky soul <span class="highlight">draws 4 cards</span>!</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="teaser-box">
+            <strong>Want something more traditional?</strong> Switch with the left arrow to the classic <strong>Prší</strong> or transport yourself to the Wild West in the tactical game <strong>BANG!</strong>.
+        </div>
+
+        <div class="cta-section">
+            <a href="https://bang.honzaa.cz/en?game=uno" class="btn-play">Start UNO Party</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') window.location.href = '/en/prsi';
+            if (e.key === 'ArrowRight') window.location.href = '/en/about-games';
+        });
+    </script>
+</body>
+</html>

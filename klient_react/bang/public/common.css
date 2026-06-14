@@ -1,0 +1,329 @@
+/* HEADER NAVIGATION */
+.main-header {
+    background-color: #1e293b;
+    padding: 8px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #f8fafc;
+    font-weight: bold;
+    font-size: 14px;
+    transition: opacity 0.2s;
+}
+
+.header-brand:hover {
+    opacity: 0.8;
+}
+
+.header-brand img {
+    height: 24px;
+    margin-right: 10px;
+}
+
+.main-header nav a {
+    color: #cbd5e1;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+}
+
+.main-header nav a:hover {
+    color: #ffffff;
+}
+
+/* IMAGE SECTION */
+.image-section {
+    background-color: #ffffff;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.image-section img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+/* INDEX PAGE CARDS */
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.game-card {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+}
+
+.game-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+.game-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.game-card-body {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.game-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+    color: #1e293b;
+}
+
+.game-card p {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.game-card .btn-mini {
+    align-self: flex-start;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+/* RESPONSIBILITY */
+@media (max-width: 768px) {
+    .info-table {
+        flex-direction: column;
+    }
+    
+    .hero-title {
+        font-size: 28px;
+    }
+
+    .content-wrapper {
+        margin: 20px auto;
+    }
+
+    .nav-arrow {
+        display: none !important;
+    }
+}
+
+/* GLOBALNI RESET A TYPOGRAFIE */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    color: #1e293b;
+    line-height: 1.6;
+}
+
+/* BANNER & OBSAH */
+.hero-container {
+    width: 100%;
+    padding: 40px 20px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.hero-title {
+    font-size: 36px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin: 0 0 10px 0;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero-subtitle {
+    font-size: 16px;
+    font-style: italic;
+}
+
+.content-wrapper {
+    max-width: 850px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+/* KOMPONENTY STRÁNKY */
+.badge-container {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 16px;
+    margin: 0 6px;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-radius: 4px;
+}
+
+.intro-box, .rules-section {
+    background-color: #ffffff;
+    border-radius: 6px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    position: relative;
+}
+
+.intro-box::before {
+    content: '';
+    position: absolute;
+    top: 4px; left: 4px; right: 4px; bottom: 4px;
+    border: 1px dashed rgba(0, 0, 0, 0.15);
+    pointer-events: none;
+}
+
+h2 {
+    text-transform: uppercase;
+    font-size: 22px;
+    margin-top: 0;
+    padding-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+.rules-step {
+    margin-bottom: 20px;
+}
+
+.rules-step h3 {
+    margin: 0 0 6px 0;
+    font-size: 16px;
+}
+
+.info-table {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+
+.info-column {
+    flex: 1;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    padding: 20px;
+    border-radius: 6px;
+}
+
+.info-column h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+
+.info-column ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.info-column li {
+    margin-bottom: 8px;
+}
+
+.teaser-box {
+    border-radius: 6px;
+    padding: 15px;
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 35px;
+}
+
+.cta-section {
+    text-align: center;
+    margin-top: 35px;
+    margin-bottom: 50px;
+}
+
+.btn-play {
+    display: inline-block;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 16px 45px;
+    border-radius: 6px;
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: background-color 0.2s ease;
+}
+
+/* BOČNÍ NAVIGAČNÍ ŠIPKY (POUZE PRO DESKTOP) */
+.nav-arrow {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    height: 60px;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #ffffff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: bold;
+    border-radius: 50%;
+    transition: background-color 0.2s, transform 0.2s;
+    z-index: 1000;
+}
+
+.nav-arrow:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.nav-arrow.left {
+    left: 30px;
+}
+
+.nav-arrow.right {
+    right: 30px;
+}
+
+/* SKRÝT ŠIPKY NA MOBILECH A TABLETECH */
+@media (max-width: 1024px) {
+    .nav-arrow {
+        display: none !important;
+    }
+}

@@ -17,8 +17,8 @@
   --accent: #2563eb;
   --accent-foreground: #ffffff;
   --focus: #93c5fd;
-      --bgMuted: #ffffffa2;
-height: 100svh;
+  --bgMuted: #ffffffa2;
+  height: 100svh;
   width: 100%;
   display: flex;
   flex-direction: column;

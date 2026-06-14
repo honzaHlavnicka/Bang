@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zahraj si BANG! Online | Karetní hra z divokého západu</title>
+    <meta name="description" content="Vyzvi své kamarády na souboj v divokém salonu přímo v prohlížeči. Online verze legendární hry BANG! zdarma.">
+    <meta property="og:title" content="Zahraj si BANG! Online">
+    <meta property="og:description" content="Prach, přestřelky a boj o přežití. Legendární BANG! v prohlížeči.">
+    <meta property="og:image" content="https://bang.honzaa.cz/img/karty/bang.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="icon" type="image/png" href="https://bang.honzaa.cz/img/karty/bang.png">
+    <link rel="alternate" hreflang="cs" href="https://bang.honzaa.cz/bang">
+    <link rel="alternate" hreflang="en" href="https://bang.honzaa.cz/en/bang">
+    <link rel="alternate" hreflang="x-default" href="https://bang.honzaa.cz/bang">
+    <link rel="canonical" href="https://bang.honzaa.cz/bang">
+    <link rel="stylesheet" href="common.css">
+    <style>
+        /* Specifické barvy pro BANG! */
+        body { background-color: #f5eedf; }
+        .hero-container { background-color: #3e2723; border-bottom: 6px double #a11d1d; }
+        .hero-title { color: #f5eedf; }
+        .hero-subtitle { color: #d7ccc8; }
+        .badge { background: #d7ccc8; border: 1px solid #bcaaa4; color: #3e2723; }
+        .intro-box, .rules-section { border: 2px solid #bcaaa4; }
+        h2, .highlight, .info-column h4 { color: #a11d1d; }
+        .rules-step h3 { color: #5d4037; }
+        .teaser-box { background-color: #e0f2f1; border: 1px solid #b2dfdb; color: #004d40; }
+        .btn-play { background-color: #a11d1d; border: 2px solid #7f1616; }
+        .btn-play:hover { background-color: #bd2424; }
+    </style>
+                <script>
+        !function (t, e) { var o, n, p, r; e.__SV || (window.posthog && window.posthog.__loaded) || (window.posthog = e, e._i = [], e.init = function (i, s, a) { function g(t, e) { var o = e.split("."); 2 == o.length && (t = t[o[0]], e = o[1]), t[e] = function () { t.push([e].concat(Array.prototype.slice.call(arguments, 0))) } } (p = t.createElement("script")).type = "text/javascript", p.crossOrigin = "anonymous", p.async = !0, p.src = s.api_host.replace(".i.posthog.com", "-assets.i.posthog.com") + "/static/array.js", (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(p, r); var u = e; for (void 0 !== a ? u = e[a] = [] : a = "posthog", u.people = u.people || [], u.toString = function (t) { var e = "posthog"; return "posthog" !== a && (e += "." + a), t || (e += " (stub)"), e }, u.people.toString = function () { return u.toString(1) + ".people (stub)" }, o = "rn sn init kn Qr wn Cn yn capture calculateEventProperties Rn register register_once register_for_session unregister unregister_for_session An getFeatureFlag getFeatureFlagPayload getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync Fn identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset setIdentity clearIdentity get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException addExceptionStep captureLog startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty On En createPersonProfile setInternalOrTestUser Ln gn $n opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing In debug Kr Pn getPageViewId captureTraceFeedback captureTraceMetric vn".split(" "), n = 0; n < o.length; n++)g(u, o[n]); e._i.push([i, s, a]) }, e.__SV = 1) }(document, window.posthog || []);
+        if (localStorage.getItem('jsemhonzaa') !== 'ano') if (localStorage.getItem('jsemhonzaa') !== 'ano') posthog.init('phc_AcGQ8b8Kg6GpuhFauLiqKpN3wjD8msdjiHKbMQ6YDpmu', {
+            api_host: 'https://szn.bang.honzaa.cz', 
+            ui_host: 'https://eu.posthog.com', 
+            defaults: '2026-05-30',
+            person_profiles: 'identified_only', 
+        })
+    </script>
+</head>
+<body>
+
+    <header class="main-header">
+        <a href="https://bang.honzaa.cz" class="header-brand">
+            <img src="https://bang.honzaa.cz/img/karty/bang.png" alt="Logo">
+            Bang! engine
+        </a>
+        <nav>
+            <a href="/o-hrach">Domů</a>
+            <a href="/bang">BANG!</a>
+            <a href="/prsi">Prší</a>
+            <a href="/uno">UNO</a>
+            <a href="/en/bang" style="margin-left: 20px; color: #fbbf24;">EN</a>
+        </nav>
+    </header>
+
+    <a href="/o-hrach" class="nav-arrow left">&#8249;</a>
+    <a href="/prsi" class="nav-arrow right">&#8250;</a>
+
+    <div class="hero-container">
+        <div class="hero-title">Zahraj si BANG! Online</div>
+        <div class="hero-subtitle">Vyzvi své kamarády na souboj v divokém salonu přímo v prohlížeči!</div>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="badge-container">
+            <span class="badge">4 až 7 Hráčů</span>
+            <span class="badge">Rychlé hry (30 min)</span>
+            <span class="badge">Zcela Zdarma</span>
+        </div>
+
+        <div class="intro-box">
+            <h2>O co ve hře jde?</h2>
+            <p>Prach, divoké přestřelky a neúprosný boj o přežití. V této online verzi legendární hry se proměníš v jednu z ikonických postav Divokého západu. Tvůj cíl závisí na roli, kterou ti osud na začátku hry tajně přidělí. Nikdo neví, kdo je kdo – kromě samotného Šerifa!</p>
+        </div>
+
+        <div class="cta-section">
+            <a href="https://bang.honzaa.cz/cs?game=bang" class="btn-play">Vstoupit do herního salonu</a>
+        </div>
+
+        <div class="image-section">
+            <img src="img/bang.jpg" alt="BANG! Game Illustration">
+        </div>
+
+        <div class="rules-section">
+            <h2>Jak se to hraje? (Stručná pravidla)</h2>
+            <div class="rules-step">
+                <h3>1. Rozdejte role a postavy</h3>
+                <p>Každý hráč dostane tajnou roli a veřejnou kartu postavy, která určuje počet životů (nábojů) a unikátní superschopnost.</p>
+            </div>
+            <div class="rules-step">
+                <h3>2. Průběh herního tahu</h3>
+                <p>Když jsi na tahu, <span class="highlight">lízneš si 2 karty</span>. Následně můžeš zahrát libovolný počet karet. Pozor – kartu <span class="highlight">BANG!</span> smíš standardně zahrát jen jednou za tah!</p>
+            </div>
+            <div class="rules-step">
+                <h3>3. Vzdálenost a dostřel</h3>
+                <p>Na začátku divíš jen sousedy po své levici a pravici. Abys zasáhl vzdálenější hráče, musíš si vyložit lepší zbraň.</p>
+            </div>
+        </div>
+
+        <div class="info-table">
+            <div class="info-column">
+                <h4>Kdo bojuje za zákon?</h4>
+                <ul>
+                    <li><strong>Šerif:</strong> Jediná veřejná role. Musí vyřadit všechny Bandity a Odpadlíka.</li>
+                    <li><strong>Pomocníci šerifa:</strong> Pomáhají Šerifovi plnit jeho cíl a chrání ho.</li>
+                </ul>
+            </div>
+            <div class="info-column">
+                <h4>Kdo porušuje zákon?</h4>
+                <ul>
+                    <li><strong>Bandité:</strong> Jejich jediným úkolem je společně zastřelit Šerifa.</li>
+                    <li><strong>Odpadlík:</strong> Hraje sám na sebe. Musí zůstat jako poslední přeživší.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="teaser-box">
+            <strong>Další hry v herně:</strong> Chceš si odpočinout od střílení? Klikni na šipku vpravo a vyzkoušej klasické české <strong>Prší</strong> nebo celosvětový hit <strong>UNO</strong>!
+        </div>
+
+        <div class="cta-section">
+            <a href="https://bang.honzaa.cz/cs?game=bang" class="btn-play">Vstoupit do herního salonu</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') window.location.href = '/o-hrach';
+            if (e.key === 'ArrowRight') window.location.href = '/prsi';
+        });
+    </script>
+</body>
+</html>

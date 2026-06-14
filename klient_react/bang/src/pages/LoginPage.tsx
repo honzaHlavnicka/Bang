@@ -10,7 +10,7 @@ import { usePostHog } from '@posthog/react';
 import config from '../config';
 
 export default function LoginPage() {
-    const { t } = useTranslation();
+    const { t , i18n} = useTranslation();
     const posthog = usePostHog();
     const [gameCode, setGameCode] = useState('');
     const [jmeno, setJmeno] = useState('');
@@ -119,6 +119,9 @@ export default function LoginPage() {
                 <h1>{t("NAZEV_STRÁNKY")}</h1>
                 <p>
                    {t("LOGIN_POPIS_BEZ_ODKAZU")} <a href='https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md' target='_blank'>{t("plugin")}</a>.
+                </p>
+                <p>
+                    {t("Na")} <a href={i18n.language === "cs" ? "https://bang.honzaa.cz/o-hrach" : "https://bang.honzaa.cz/en/about-games"} target="_blank">{t("link_této_stránce")}</a> {t("si můžete přečíst více.")}
                 </p>
                 <div className={css.radioButtonsParent} >
                     {gameToken &&

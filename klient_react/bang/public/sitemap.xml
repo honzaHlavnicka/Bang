@@ -24,34 +24,55 @@
     </url>
 
     <url>
-        <loc>https://bang.honzaa.cz/cs/clanky/jak-hrat-bang-a-prsi-online-zdarma.html</loc>
+        <loc>https://bang.honzaa.cz/o-hrach</loc>
+        <priority>0.9</priority>
+        <changefreq>monthly</changefreq>
+    </url>
+
+    <url>
+        <loc>https://bang.honzaa.cz/bang</loc>
         <priority>0.8</priority>
+        <changefreq>monthly</changefreq>
+    </url>
+    <url>
+        <loc>https://bang.honzaa.cz/uno</loc>
+        <priority>0.8</priority>
+        <changefreq>monthly</changefreq>
+    </url>
+    <url>
+        <loc>https://bang.honzaa.cz/prsi</loc>
+        <priority>0.8</priority>
+        <changefreq>monthly</changefreq>
+    </url>
+    <url>
+        <loc>https://bang.honzaa.cz/cs/clanky/jak-hrat-bang-a-prsi-online-zdarma.html</loc>
+        <priority>0.7</priority>
         <changefreq>monthly</changefreq>
     </url>
     <url>
         <loc>https://bang.honzaa.cz/cs/clanky/vyvoj-multiplayer-karetni-hry-react-java-websockets.html</loc>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
         <changefreq>monthly</changefreq>
     </url>
     <url>
         <loc>https://bang.honzaa.cz/cs/clanky/tvorba-vlastni-karetni-hry-v-jave-pomoci-pluginu.html</loc>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
         <changefreq>monthly</changefreq>
     </url>
 
     <url>
         <loc>https://bang.honzaa.cz/en/articles/how-to-play-bang-and-uno-online-free.html</loc>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
         <changefreq>monthly</changefreq>
     </url>
     <url>
         <loc>https://bang.honzaa.cz/en/articles/multiplayer-card-game-development-react-java-websockets.html</loc>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
         <changefreq>monthly</changefreq>
     </url>
     <url>
         <loc>https://bang.honzaa.cz/en/articles/creating-custom-card-games-java-plugins-sdk.html</loc>
-        <priority>0.8</priority>
+        <priority>0.7</priority>
         <changefreq>monthly</changefreq>
     </url>
 

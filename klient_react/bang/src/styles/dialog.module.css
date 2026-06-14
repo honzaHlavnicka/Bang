@@ -40,6 +40,13 @@
     text-align: center;
 }
 
+.dialogInnerContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
 :global(.darkMode) .dialogBackground {
     background-color: rgba(99, 99, 99, 0.362);
 }

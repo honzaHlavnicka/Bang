@@ -1,0 +1,51 @@
+server {
+    listen 80;
+    server_name _; # Zachytí veškerý provoz na IP adrese Maliny
+
+    # 1. Kde Nginx najde statické soubory klienta
+    root /var/www/bang;
+    index index.html;
+
+    # Definice vlastní 404 stránky
+    error_page 404 /404.html;
+
+    location / {
+        # KLÍČOVÁ ZMĚNA: 
+        # 1. Zkusí přesnou cestu ($uri)
+        # 2. Zkusí cestu jako složku ($uri/)
+        # 3. Zkusí přidat .html ($uri.html) -> vyřeší /o-hrach na /o-hrach.html
+        # 4. Pokud nic z toho neexistuje, padne to na @react_fallback
+        try_files $uri $uri/ $uri.html @react_fallback;
+    }
+
+    # Speciální lokace pro React Router fallback
+    location @react_fallback {
+        # Pokud máš čistokrevné SPA (všechno řídí React Router), nech tu:
+        try_files /index.html =404;
+
+        # POKUD ALE CHCEŠ, aby neexistující soubory (třeba /neexistujici-stranka) 
+        # rovnou házely 404 místo načtení Reactu, zakomentuj řádek výše a odkomentuj tento:
+        # return 404;
+    }
+
+    # Ošetření, aby samotná 404 stránka byla interní a necyklila se
+    location = /404.html {
+        internal;
+    }
+
+    # 2. Směrování na Java backend (včetně podpory pro WebSockets)
+    location /ws {
+        proxy_pass http://localhost:8080; # Zde změň port, pokud máš jiný než 8080
+        
+        # Tyto hlavičky jsou naprosto kritické pro to, aby se nesesypalo 
+        # WebSocket spojení (HTTP Upgrade request)
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        
+        # Předání reálných IP adres do Javy (pro logy nebo banování)
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}

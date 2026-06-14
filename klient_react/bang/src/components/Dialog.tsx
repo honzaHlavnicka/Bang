@@ -175,7 +175,7 @@ export default function Dialog() {
             
         case "CONFIRM_ACTION":
             content = (
-                <div style={{display:"flex",flexDirection:"row",alignItems:"flex-start", flexWrap:"wrap", gap: 10}} >
+                <div className={css.dialogInnerContent} >
                     {dialog.data.actions.map((val:{id:number,name:string})=>(   
                         <button className={globalCSS.button} key={val.id} onClick={() => {
                             closeDialog();
@@ -202,7 +202,7 @@ export default function Dialog() {
             break;
         case "CONFIRM":
             content = (
-                <div style={{display:"flex", flexDirection:"column", alignItems:"center", gap: 10}} >
+                <div className={css.dialogInnerContent}  >
                     <h2>{dialog.data.title || t("dialog.Potvrzení")}</h2>
                     <p>{dialog.data.message}</p>
                     <div style={{display:"flex", flexDirection:"row", gap: 10}}>
@@ -220,7 +220,7 @@ export default function Dialog() {
             break;
         case "TEXT":
             content = (
-                <div style={{display:"flex",flexDirection:"column", alignItems:"center", gap: 10}} >
+                <div className={css.dialogInnerContent} >
                     <h2>{dialog.data.title || t("dialog.Zadejte text")}</h2>
                     <input 
                         type="text" 
