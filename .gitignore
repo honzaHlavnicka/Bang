@@ -215,3 +215,7 @@ README.html
 .env.local
 .env.*.local
 !.env.example
+
+# Deployment script
+/doprodukce.sh
+

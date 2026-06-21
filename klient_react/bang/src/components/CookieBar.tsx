@@ -1,8 +1,8 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePostHog } from '@posthog/react';
 import config from '../config';
-import globalCSS from '../styles/global.module.css';
-import css from '../styles/loginPage.module.css';
+import styles from '../styles/cookieBar.module.css';
 
 interface CookieBarProps {
     open: boolean;
@@ -13,39 +13,49 @@ interface CookieBarProps {
 export default function CookieBar({ open, onClose, onOpen }: CookieBarProps) {
     const { t } = useTranslation();
     const posthog = usePostHog();
+    const [showDetails, setShowDetails] = useState(false);
 
     return (
         <>
+            {/* Gorgeous floating cookie consent banner */}
             {open && (
-                <footer className={css.footer}>
-                    <div className={css.footerContent}>
-                        <p dangerouslySetInnerHTML={{ __html: t("footer.copyright") }} />
-                        <nav>
-                            <a href="/apidocs" target="_blank" rel="noopener noreferrer">{t("Dokumentace SDK")}</a> | <a href="https://honzaa.cz" target='_blank' >{t("honzaa.cz")}</a> | <a href="https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md" target='_blank' >{t("vytvoření pluginu")}</a> | <a href="https://github.com/honzaHlavnicka/Bang" target="_blank">{t("GitHub")}</a> | <a href="https://honzaa.itch.io/card-games" target="_blank">{t("itch.io")}</a>
-                        </nav>
-                        <small>
-                            <p>
-                                <strong>{t("Upozornění:")}</strong> <span dangerouslySetInnerHTML={{ __html: t("footer.legal_text") }} />
-                            </p>
-                        </small>
-                        <div style={{display: "flex", gap: "10px", marginTop: "16px", justifyContent: "center"}}>
-                            <button onClick={() => { 
-                                localStorage.setItem("souhlas", "true"); 
-                                posthog?.set_config({ 
-                                    persistence: 'localStorage+cookie', 
-                                    disable_persistence: false,
-                                    disable_session_recording: false,
-                                    autocapture: true,
-                                    capture_performance: true
-                                });
-                                posthog?.startSessionRecording();
-                                posthog?.opt_in_capturing();
-                                posthog?.capture('consent_accepted'); 
-                                onClose();
-                            }} className={globalCSS.button}>
-                                {t("Souhlasím")}
-                            </button>
-                            <button onClick={() => { 
+                <div className={styles.cookieBanner}>
+                    <h3 className={styles.title}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'orange' }}>
+                            <path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5" />
+                            <path d="M8.5 8.5v.01" />
+                            <path d="M16 15.5v.01" />
+                            <path d="M12 12v.01" />
+                            <path d="M11 17v.01" />
+                            <path d="M7 14v.01" />
+                        </svg>
+                        {t("cookie_bar.title")}
+                    </h3>
+                    
+                    <p className={styles.text}>
+                        {t("cookie_bar.text")}
+                    </p>
+
+                    <div>
+                        <button 
+                            type="button" 
+                            className={styles.detailsToggle} 
+                            onClick={() => setShowDetails(!showDetails)}
+                        >
+                            {showDetails ? t("cookie_bar.hide_details") : t("cookie_bar.show_details")}
+                        </button>
+                        
+                        {showDetails && (
+                            <div className={styles.detailsContent}>
+                                <strong>{t("Upozornění:")}</strong>{' '}
+                                <span dangerouslySetInnerHTML={{ __html: t("footer.legal_text") }} />
+                            </div>
+                        )}
+                    </div>
+
+                    <div className={styles.buttonContainer}>
+                        <button 
+                            onClick={() => { 
                                 onClose(); 
                                 localStorage.setItem("souhlas", "false"); 
                                 posthog?.set_config({ 
@@ -58,14 +68,36 @@ export default function CookieBar({ open, onClose, onOpen }: CookieBarProps) {
                                 posthog?.stopSessionRecording();
                                 posthog?.opt_out_capturing();
                                 posthog?.capture('consent_declined'); 
-                            }} className={globalCSS.button} style={{backgroundColor: "rgba(100, 100, 100, 0.5)"}}>
-                                {t("Nesouhlasím")}
-                            </button>
-                        </div>
+                            }} 
+                            className={styles.btnDecline}
+                        >
+                            {t("Nesouhlasím")}
+                        </button>
+                        
+                        <button 
+                            onClick={() => { 
+                                localStorage.setItem("souhlas", "true"); 
+                                posthog?.set_config({ 
+                                    persistence: 'localStorage+cookie', 
+                                    disable_persistence: false,
+                                    disable_session_recording: false,
+                                    autocapture: true,
+                                    capture_performance: true
+                                });
+                                posthog?.startSessionRecording();
+                                posthog?.opt_in_capturing();
+                                posthog?.capture('consent_accepted'); 
+                                onClose();
+                            }} 
+                            className={styles.btnAccept}
+                        >
+                            {t("Souhlasím")}
+                        </button>
                     </div>
-                </footer>
+                </div>
             )}
 
+            {/* Small floating privacy settings icon button */}
             {config.showCookies && !open && (
                 <button 
                     onClick={onOpen}

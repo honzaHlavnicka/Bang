@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BANG! Core Override</title>
+    <style>
+        :root {
+            --glow-color: #ff5500;
+            --bg-color: #0b0500;
+            --text-color: #ffaa66;
+            --sub-color: #883300;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Scan lines overlay */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 255, 0, 0.06));
+            z-index: 10;
+            background-size: 100% 4px, 6px 100%;
+            pointer-events: none;
+        }
+
+        .terminal {
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            border: 2px solid var(--glow-color);
+            border-radius: 12px;
+            background-color: rgba(20, 10, 0, 0.75);
+            box-shadow: 0 0 30px rgba(255, 85, 0, 0.2), inset 0 0 15px rgba(255, 85, 0, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .alert-header {
+            color: #ff3300;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+            text-shadow: 0 0 10px rgba(255, 51, 0, 0.5);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        .warning-text {
+            border: 1px solid var(--sub-color);
+            padding: 15px;
+            background-color: rgba(255, 68, 0, 0.05);
+            font-size: 12px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #cc8855;
+            border-radius: 6px;
+        }
+
+        .status-panel {
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 85, 0, 0.3);
+            border-radius: 6px;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+
+        .status-value {
+            font-weight: bold;
+        }
+
+        .status-active {
+            color: #ff3300;
+            text-shadow: 0 0 8px rgba(255, 51, 0, 0.5);
+        }
+
+        .status-inactive {
+            color: #00ff66;
+            text-shadow: 0 0 8px rgba(0, 255, 102, 0.5);
+        }
+
+        .console-log {
+            font-size: 11px;
+            color: #886644;
+            height: 90px;
+            overflow-y: auto;
+            border-top: 1px solid rgba(255, 85, 0, 0.2);
+            padding-top: 10px;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .buttons-group {
+            display: flex;
+            gap: 15px;
+        }
+
+        @media (max-width: 480px) {
+            .buttons-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        .btn {
+            flex: 1;
+            background-color: transparent;
+            border: 1px solid var(--glow-color);
+            color: var(--text-color);
+            padding: 14px;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            box-shadow: 0 0 5px rgba(255, 85, 0, 0.1);
+        }
+
+        .btn:hover {
+            background-color: var(--glow-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px rgba(255, 85, 0, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            border-color: #666;
+            color: #aaa;
+        }
+
+        .btn-secondary:hover {
+            background-color: #333;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #884422;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .back-link:hover {
+            color: var(--text-color);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="terminal">
+        <div class="alert-header">!!! SYSTEM OVERRIDE TERMINAL !!!</div>
+        
+        <div class="warning-text">
+            VAROVÁNÍ: Tento ovládací panel přepisuje nastavení klientské telemetrie a PostHog logování v prohlížeči. 
+            Neoprávněné změny mohou způsobit desynchronizaci herních stavů a nestabilitu připojení. 
+            Vstup povolen pouze správci systému.
+        </div>
+
+        <div class="status-panel">
+            <div class="status-row">
+                <span>Systémový terminál:</span>
+                <span style="color: #00ff66;">PŘIPOJENO</span>
+            </div>
+            <div class="status-row">
+                <span>Vlajka "jsemhonzaa":</span>
+                <span id="flag-status" class="status-value">KONTROLA...</span>
+            </div>
+            <div class="status-row">
+                <span>Stav analytiky PostHog:</span>
+                <span id="posthog-status" class="status-value">KONTROLA...</span>
+            </div>
+        </div>
+
+        <div id="log" class="console-log">
+            [sys] Inicializace terminálu...<br>
+            [sys] Kontrola lokálního úložiště prohlížeče...<br>
+        </div>
+
+        <div class="buttons-group">
+            <button id="btn-deactivate" class="btn btn-secondary" onclick="deactivateOverride()">Povolit PostHog</button>
+            <button id="btn-activate" class="btn" onclick="activateOverride()">Vypnout PostHog</button>
+        </div>
+
+        <a href="/" class="back-link">&lt;&lt; Zpět na domovskou stránku</a>
+    </div>
+
+    <script>
+        const flagStatusEl = document.getElementById("flag-status");
+        const posthogStatusEl = document.getElementById("posthog-status");
+        const logEl = document.getElementById("log");
+
+        function addLog(msg) {
+            const time = new Date().toLocaleTimeString();
+            logEl.innerHTML += `[${time}] ${msg}<br>`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function updateUI() {
+            const value = localStorage.getItem("jsemhonzaa");
+            if (value === "ano") {
+                flagStatusEl.innerText = "AKTIVNÍ (ano)";
+                flagStatusEl.className = "status-value status-active";
+                
+                posthogStatusEl.innerText = "ZABLOKOVÁNA";
+                posthogStatusEl.className = "status-value status-active";
+            } else {
+                flagStatusEl.innerText = "NEAKTIVNÍ (vymazáno)";
+                flagStatusEl.className = "status-value status-inactive";
+                
+                posthogStatusEl.innerText = "POVOLENA (dle souhlasu)";
+                posthogStatusEl.className = "status-value status-inactive";
+            }
+        }
+
+        function activateOverride() {
+            try {
+                localStorage.setItem("jsemhonzaa", "ano");
+                addLog("Zapisuji 'jsemhonzaa' = 'ano' do localStorage.");
+                addLog("PostHog analytika byla deaktivována.");
+                updateUI();
+            } catch(e) {
+                addLog("Chyba při zápisu do localStorage: " + e.message);
+            }
+        }
+
+        function deactivateOverride() {
+            try {
+                localStorage.removeItem("jsemhonzaa");
+                addLog("Odebírám klíč 'jsemhonzaa' z localStorage.");
+                addLog("PostHog analytika byla opět povolena.");
+                updateUI();
+            } catch(e) {
+                addLog("Chyba při mazání z localStorage: " + e.message);
+            }
+        }
+
+        // Init
+        setTimeout(() => {
+            const value = localStorage.getItem("jsemhonzaa");
+            addLog("Aktuální stav klíče 'jsemhonzaa': " + (value ? `'${value}'` : "nedefinován"));
+            updateUI();
+        }, 300);
+    </script>
+</body>
+</html>

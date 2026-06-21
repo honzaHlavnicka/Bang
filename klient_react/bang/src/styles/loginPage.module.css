@@ -25,7 +25,7 @@
   padding: 0;
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
-
+  color: var(--fg);
 }
 
 
@@ -53,6 +53,8 @@
 
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
 }
 .box{
     /*zatim nic*/
@@ -178,25 +180,19 @@
     margin-right: 10px;
 }
 
-.kontent footer{
-    margin-top:20px;
+.footer {
+    margin-top: auto;
+    margin-left: calc(-1 * clamp(12px, 2vw, 24px));
+    margin-right: calc(-1 * clamp(12px, 2vw, 24px));
+    margin-bottom: calc(-1 * clamp(12px, 2vw, 24px));
     text-align: center;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--muted);
-    width:100%;
-    padding: 16px 8px 24px;
-    border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+    padding: 24px clamp(12px, 2vw, 24px) 24px;
+    border-top: 1px solid var(--border);
     background: color-mix(in srgb, var(--bg) 80%, transparent);
-    flex-shrink: 0;
-    border-top:10px solid var(--bg);
-    border-left:10px solid var(--bg);
-    border-right:10px solid var(--bg);
-    border-radius:80px 80px 0 0;
-}
-
-
-.paddingBottom{
-    /* už nepotřeba tlačit dolů */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 .footerContent {
@@ -207,30 +203,44 @@
 
 .footerContent p {
     margin: 4px 0;
-    padding: 0 0;
+    padding: 0;
 }
 
-.footerContent nav {
+.footerNav {
     margin-top: 8px;
-    font-size:15px;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
 }
-.footerContent nav a {
+
+.footerNav a {
     color: orange;
     text-decoration: none;
-    margin: 0 8px;
+    transition: color 0.2s;
 }
 
-.footerContent a {
-    color: var(--accent);
-    text-decoration: none;
-}
-
-.footerContent a:hover {
+.footerNav a:hover {
     text-decoration: underline;
+    color: #e08500;
 }
 
-.footerContent small{
-  font-size: 10px;
+.separator {
+    color: var(--muted);
+    font-size: 10px;
+    user-select: none;
+}
+
+@media (max-width: 600px) {
+    .separator {
+        display: none;
+    }
+    .footerNav {
+        flex-direction: column;
+        gap: 6px;
+    }
 }
 
 .radioButton{

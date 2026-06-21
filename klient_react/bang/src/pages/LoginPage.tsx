@@ -249,7 +249,24 @@ export default function LoginPage() {
                     </form>
                     
                 </div>
-                : null}               
+                : null}
+                
+                <footer className={css.footer}>
+                    <div className={css.footerContent}>
+                        <p dangerouslySetInnerHTML={{ __html: t("footer.copyright") }} />
+                        <nav className={css.footerNav}>
+                            <a href="/apidocs" target="_blank" rel="noopener noreferrer">{t("Dokumentace SDK")}</a>
+                            <span className={css.separator}>•</span>
+                            <a href="https://honzaa.cz" target="_blank" rel="noopener noreferrer">{t("honzaa.cz")}</a>
+                            <span className={css.separator}>•</span>
+                            <a href="https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md" target="_blank" rel="noopener noreferrer">{t("vytvoření pluginu")}</a>
+                            <span className={css.separator}>•</span>
+                            <a href="https://github.com/honzaHlavnicka/Bang" target="_blank" rel="noopener noreferrer">{t("GitHub")}</a>
+                            <span className={css.separator}>•</span>
+                            <a href="https://honzaa.itch.io/card-games" target="_blank" rel="noopener noreferrer">{t("itch.io")}</a>
+                        </nav>
+                    </div>
+                </footer>
             </main >
             {/*<ContextMenu x={menu.x} y={menu.y} options={[{text:"odhodit"},{text:"spalit"}]} />*/}
             <CookieBar

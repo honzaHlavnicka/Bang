@@ -102,8 +102,7 @@
     "Upozornění:": "Upozornění:",
     "footer": {
         "copyright": "&copy; 2026 Jan Hlavnička.",
-        "legal_text": "Tento web je nekomerční studentský a osobní projekt (vytvořený jako ročníková práce pro předmět programování na Gymnáziu, Praha 6, Arabská 14). Není nijak spojen s původními vydavateli her. BANG!® je registrovaná ochranná známka společnosti daVinci Editrice S.r.l. (dV Giochi), v ČR vydává ALBI Česká republika a.s. UNO® je registrovaná ochranná známka společnosti Mattel, Inc. Veškerá autorská práva k ilustracím karet, názvům a herním mechanismům patří jejich příslušným majitelům. Použité ikony: <a href=\"https://www.flaticon.com/free-icons/fire\" title=\"fire icons\" target=\"_blank\" rel=\"noopener noreferrer\">Freepik - Flaticon</a>. Vlastní kód a zbytek obsahu podléhá licenci v souboru <a href=\"https://github.com/honzaHlavnicka/Bang/blob/master/LICENSE\" target=\"_blank\">LICENSE</a>. Připojením ke hře stvrzujete, že nebudete bez výslovného souhlasu stahovat ani dále šířit žádné obrázky či autorsky chráněný obsah z tohoto webu, a zavazujete se k dodržování zásad slušného chování i zákonů ČR. Pro právní záležitosti kontaktujte prava@honzaa.cz. Pro vylepšování chodu hry využíváme analytický nástroj PostHog. Vaše soukromí chráníme: standardně sbíráme pouze základní a plně anonymní data bez použití cookies. Podrobnější analytiku a nahrávání relací spouštíme výhradně až na základě vašeho aktivního souhlasu."
-    },
+"legal_text": "Tento web je nekomerční fanouškovský a osobní projekt. Není nijak spojen s původními vydavateli her. BANG!® je registrovaná ochranná známka společnosti daVinci Editrice S.r.l. (dV Giochi), v ČR vydává ALBI Česká republika a.s. UNO® je registrovaná ochranná známka společnosti Mattel, Inc. Veškerá autorská práva k ilustracím karet, názvům a herním mechanismům patří jejich příslušným majitelům. Použité ikony: <a href=\"https://www.flaticon.com/free-icons/fire\" title=\"fire icons\" target=\"_blank\" rel=\"noopener noreferrer\">Freepik - Flaticon</a>. Vlastní kód a zbytek obsahu podléhá licenci v souboru <a href=\"https://github.com/honzaHlavnicka/Bang/blob/master/LICENSE\" target=\"_blank\">LICENSE</a>. Připojením ke hře stvrzujete, že nebudete bez výslovného souhlasu stahovat ani dále šířit žádné obrázky či autorsky chráněný obsah z tohoto webu, a zavazujete se k dodržování zásad slušného chování i zákonů ČR. Pro právní záležitosti kontaktujte prava@honzaa.cz. <br><br><strong>Ochrana soukromí a data:</strong> Web nevyužívá žádné marketingové ani reklamní cookies. V úložišti prohlížeče (LocalStorage) ukládáme pouze nezbytné funkční identifikátory sloužící pro zachování zvoleného jazyka a znovupřipojení k rozehrané hře po odpojení. Pro analýzu chyb a vylepšování hry využíváme nástroj PostHog, přičemž veškerá data jsou zpracovávána výhradně na serverech v rámci Evropské unie. Bez vašeho souhlasu sbíráme pouze základní, plně anonymní technická data bez identifikace uživatele. Rozšířenou analytiku a nahrávání relací pro odhalování chyb spouštíme výhradně až na základě vašeho aktivního souhlasu."    },
 
     "Probíhá připojování k serveru...": "Probíhá připojování k serveru...",
     "Pokud se tato obrazovka nezmění během několika sekund, zkontroluj prosím připojení k internetu a zda není server vypnutý.": "Pokud se tato obrazovka nezmění během několika sekund, zkontroluj prosím připojení k internetu a zda není server vypnutý.",
@@ -163,7 +162,13 @@
     "Nesouhlasím": "Nesouhlasím",
     "Nastavení soukromí": "Nastavení soukromí",
     "link_této_stránce": "této stránce",
-    "Na":"Na",
+    "Na": "Na",
     "si můžete přečíst více.": "si můžete přečíst více.",
-    "itch.io":"itch.io"
+    "itch.io": "itch.io",
+    "cookie_bar": {
+        "title": "Nastavení soukromí a herních dat",
+        "text": "Pro bezproblémový chod hry ukládáme nezbytná technická data (pro znovupřipojení a jazyk). Pro vylepšování hry využíváme analytické nástroje v rámci EU. Standardně sbíráme pouze anonymní data. Udělením souhlasu nám pomůžete s vývojem povolením podrobnější analytiky a nahrávání chybových relací.",
+        "show_details": "Zobrazit podrobnosti a právní upozornění",
+        "hide_details": "Skrýt podrobnosti a právní upozornění"
+    }
 }
