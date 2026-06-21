@@ -213,15 +213,30 @@ public class PravidlaBangu implements HerniPravidla{
         }
         karty.clear();
 
-        karty = komu.getVylozeneKarty();
-        for (Karta karta : karty) {
-            hra.getOdhazovaciBalicek().vratNahoru(karta);
-            hra.getKomunikator().posliSpaleniVylozenéKarty(karta, komu);
-       }
-       karty.clear();    
-       
-       hra.getKomunikator().posliZmenuPoctuKaret(komu);
-                
+        List<Karta> vylozene = new ArrayList<>(komu.getVylozeneKarty());
+        for (Karta karta : vylozene) {
+            if (karta instanceof VylozitelnaKarta) {
+                komu.odeberVylozenouKartu((VylozitelnaKarta) karta);
+            } else {
+                hra.getKomunikator().posliSpaleniVylozenéKarty(karta, komu);
+            }
+            
+            if (vultureSam != null) {
+                vultureSam.getKarty().add(karta);
+                hra.getKomunikator().posliZmenuPoctuKaret(vultureSam);
+                hra.getKomunikator().posliNovouKartu(vultureSam, karta);
+            } else {
+                hra.getOdhazovaciBalicek().vratNahoru(karta);
+            }
+        }
+        
+        if (komu.getPostava() != null) {
+            komu.getPostava().odebraniPostavy(komu);
+        }
+        komu.getEfekty().clear();
+        
+        hra.getKomunikator().posliZmenuPoctuKaret(komu);
+                 
     }
 
     @Override
@@ -412,7 +427,9 @@ public class PravidlaBangu implements HerniPravidla{
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    vyresitVedleNeboZasah(kym, naKoho, zachranen,poUtoku);
+                    synchronized (hra) {
+                        vyresitVedleNeboZasah(kym, naKoho, zachranen,poUtoku);
+                    }
                 }
             }, 10000);
 

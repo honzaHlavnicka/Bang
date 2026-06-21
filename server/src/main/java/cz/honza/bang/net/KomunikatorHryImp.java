@@ -21,6 +21,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.java_websocket.WebSocket;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,11 +41,11 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     private int idHry;
     private final long SMAZAT_NEAKTIVNI_HRU_MS = 300_000;
     private final Map<Integer, CompletableFuture<String>> cekajiciOdpovedi = new ConcurrentHashMap<>();
-    private int posledniIdCekaciOdpovedi = 0;
+    private final AtomicInteger posledniIdCekaciOdpovedi = new AtomicInteger(0);
     private HracImp admin;
-    private int pocetPripojenychHracu = 0;
+    private final AtomicInteger pocetPripojenychHracu = new AtomicInteger(0);
     private Map<HracImp, Map<Integer, CustomUIButton>> customUIByPlayer = new ConcurrentHashMap<>();
-    private int nextUIButtonId = 1000;
+    private final AtomicInteger nextUIButtonId = new AtomicInteger(1000);
     
     // Timeout pro smazání neaktivní hry
     private Timer hraCleupTimer = null;
@@ -83,112 +84,114 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     }
     
     public void prislaZprava(WebSocket conn, String message) {
-        HracImp hrac = hraciPodleWebsocketu.get(conn);
-        
-        if(message.startsWith("noveJmeno:")){
-            hrac.setJmeno(message.replace("noveJmeno:", ""));
-            posliZmenuJmena(hrac);
-        }
-        if(message.startsWith("nactiHru")){
-            nactiHru(conn);
-        }
-        if(message.startsWith("chat:")){
-            posliVsem(message + " [od: "+hrac.getJmeno()+"]");
-        }
-        if(message.startsWith("zahajeniHry")){
-            // Kontrola, jestli je hráč admin (ten, který vytvořil hru)
-            if (!hrac.equals(getAdmin())) {
-                posliChybu(hrac, Chyba.NEJSI_ADMIN_HRY);
-                return;
+        synchronized (hra) {
+            HracImp hrac = hraciPodleWebsocketu.get(conn);
+            
+            if(message.startsWith("noveJmeno:")){
+                hrac.setJmeno(message.replace("noveJmeno:", ""));
+                posliZmenuJmena(hrac);
             }
-            hra.setZahajena(true);
-        }
-        if(message.startsWith("getIdHry")){
-            conn.send("setIdHry:"+idHry);
-        }
-        if(message.startsWith("setPostava:")){
-            hrac.setPostava(message.replace("setPostava:", ""));
-        }
-        if(message.startsWith("odehrani:")){
-            hrac.odehranaKarta(message.replace("odehrani:", ""));
-        }
-        if(message.startsWith("konecTahu")){
-            if(!hra.getHerniPravidla().hracChceUkoncitTah(hrac))
-                posliChybu(hrac,Chyba.NEMUZES_UKONCIT_TAH);
-        }
-        if(message.startsWith("linuti")){
-            hrac.lizniKontrolovane();
-        }
-        if(message.startsWith("dialog:")){ //očekávaný formát: "dialog:<ID>,<DATA>"
-            String[] data = message.replace("dialog:", "").split(",",2);
-            try{
-                zpracujPozadanouOdpoved(Integer.valueOf(data[0]), data[1]);
-            }catch(Exception ex){
-                logger.error("Chyba při zpracování dialogu: {}", message, ex);
-                posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
+            if(message.startsWith("nactiHru")){
+                nactiHru(conn);
             }
-        }
-        if (message.startsWith("uiClick:")) { // očekávaný formát: "uiClick:<ID>"
-            try {
-                int uiId = Integer.parseInt(message.replace("uiClick:", ""));
-                HracImp hracImp = (HracImp) hrac;
-
-                boolean akceVyresenaCallbackem = false;
-
-                Map<Integer, CustomUIButton> playerUI = customUIByPlayer.get(hracImp);
-
-                if (playerUI != null) {
-                    CustomUIButton button = playerUI.get(uiId);
-
-                    if (button != null && button.akce != null) {
-                        button.akce.run();
-                        akceVyresenaCallbackem = true;
+            if(message.startsWith("chat:")){
+                posliVsem(message + " [od: "+hrac.getJmeno()+"]");
+            }
+            if(message.startsWith("zahajeniHry")){
+                // Kontrola, jestli je hráč admin (ten, který vytvořil hru)
+                if (!hrac.equals(getAdmin())) {
+                    posliChybu(hrac, Chyba.NEJSI_ADMIN_HRY);
+                    return;
+                }
+                hra.setZahajena(true);
+            }
+            if(message.startsWith("getIdHry")){
+                conn.send("setIdHry:"+idHry);
+            }
+            if(message.startsWith("setPostava:")){
+                hrac.setPostava(message.replace("setPostava:", ""));
+            }
+            if(message.startsWith("odehrani:")){
+                hrac.odehranaKarta(message.replace("odehrani:", ""));
+            }
+            if(message.startsWith("konecTahu")){
+                if(!hra.getHerniPravidla().hracChceUkoncitTah(hrac))
+                    posliChybu(hrac,Chyba.NEMUZES_UKONCIT_TAH);
+            }
+            if(message.startsWith("linuti")){
+                hrac.lizniKontrolovane();
+            }
+            if(message.startsWith("dialog:")){ //očekávaný formát: "dialog:<ID>,<DATA>"
+                String[] data = message.replace("dialog:", "").split(",",2);
+                try{
+                    zpracujPozadanouOdpoved(Integer.valueOf(data[0]), data[1]);
+                }catch(Exception ex){
+                    logger.error("Chyba při zpracování dialogu: {}", message, ex);
+                    posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
+                }
+            }
+            if (message.startsWith("uiClick:")) { // očekávaný formát: "uiClick:<ID>"
+                try {
+                    int uiId = Integer.parseInt(message.replace("uiClick:", ""));
+                    HracImp hracImp = (HracImp) hrac;
+    
+                    boolean akceVyresenaCallbackem = false;
+    
+                    Map<Integer, CustomUIButton> playerUI = customUIByPlayer.get(hracImp);
+    
+                    if (playerUI != null) {
+                        CustomUIButton button = playerUI.get(uiId);
+    
+                        if (button != null && button.akce != null) {
+                            button.akce.run();
+                            akceVyresenaCallbackem = true;
+                        }
                     }
-                }
-
-                if (!akceVyresenaCallbackem) {
-                    hra.getHerniPravidla().uiButtonClicked(hrac, uiId);
-                }
-
-            } catch (NumberFormatException ex) {
-                logger.error("Chyba při zpracování uiClick (neplatné ID): {}", message, ex);
-                posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
-            }
-        }
-        if(message.startsWith("vylozeni:")){
-            String[] data = message.replace("vylozeni:", "").split(",",2);
-            if(data.length == 1){
-                data = new String[]{data[0],Integer.toString(hrac.getId())};
-            }else if(data.length == 0){
-                posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
-                return;
-            }
-            hrac.vylozitKartu(data[0], data[1]);
-        }
-        if(message.startsWith("spaleni:")){
-            hrac.spalitKartu(message.replace("spaleni:", ""));
-        }
-        if(message.startsWith("nahradHru:")){
-            if(!hrac.equals(admin)){
-                posliChybu(hrac, Chyba.NEJSI_ADMIN_HRY);
-                return;
-            }
-            try {
-                int id = Integer.parseInt(message.replace("nahradHru:", ""));
-                
-                int noveId = socket.novaHra(id).getIdHry();
-                conn.send("nahradHruBezPtani:" + noveId + "," + hrac.getJmeno());
-                
-                
-                for (Map.Entry<HracImp, WebSocket> entry : websocketPodleHracu.entrySet()) {
-                    if(entry.getKey() != hrac){
-                        entry.getValue().send("nahradHru:" + noveId + "," + entry.getKey().getJmeno());
+    
+                    if (!akceVyresenaCallbackem) {
+                        hra.getHerniPravidla().uiButtonClicked(hrac, uiId);
                     }
+    
+                } catch (NumberFormatException ex) {
+                    logger.error("Chyba při zpracování uiClick (neplatné ID): {}", message, ex);
+                    posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
                 }
-                
-            } catch (NumberFormatException ex) {
-                logger.error("Chyba při zpracování nahradHru (neplatné ID): {}", message, ex);
-                posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
+            }
+            if(message.startsWith("vylozeni:")){
+                String[] data = message.replace("vylozeni:", "").split(",",2);
+                if(data.length == 1){
+                    data = new String[]{data[0],Integer.toString(hrac.getId())};
+                }else if(data.length == 0){
+                    posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
+                    return;
+                }
+                hrac.vylozitKartu(data[0], data[1]);
+            }
+            if(message.startsWith("spaleni:")){
+                hrac.spalitKartu(message.replace("spaleni:", ""));
+            }
+            if(message.startsWith("nahradHru:")){
+                if(!hrac.equals(admin)){
+                    posliChybu(hrac, Chyba.NEJSI_ADMIN_HRY);
+                    return;
+                }
+                try {
+                    int id = Integer.parseInt(message.replace("nahradHru:", ""));
+                    
+                    int noveId = socket.novaHra(id).getIdHry();
+                    conn.send("nahradHruBezPtani:" + noveId + "," + hrac.getJmeno());
+                    
+                    
+                    for (Map.Entry<HracImp, WebSocket> entry : websocketPodleHracu.entrySet()) {
+                        if(entry.getKey() != hrac){
+                            entry.getValue().send("nahradHru:" + noveId + "," + entry.getKey().getJmeno());
+                        }
+                    }
+                    
+                } catch (NumberFormatException ex) {
+                    logger.error("Chyba při zpracování nahradHru (neplatné ID): {}", message, ex);
+                    posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
+                }
             }
         }
     }
@@ -236,13 +239,13 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         }
     }
     
-    public boolean novyHrac(WebSocket websocket){
+    public synchronized boolean novyHrac(WebSocket websocket){
         if(hra.isZahajena()){
             websocket.send("error:{\"error\":\"tato hra už byla zahájena. Bohužel se už nejde připojit.\"}");
             return false;
         }
 
-        if(pocetPripojenychHracu >= 30){
+        if(pocetPripojenychHracu.get() >= 30){
             websocket.send("error:{\"error\":\"server je plný.\"}");
             return false;
         }
@@ -263,7 +266,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         hra.hracVytvoren(hrac);
         posliNovehoHrace(hrac);
 
-        pocetPripojenychHracu++;
+        pocetPripojenychHracu.incrementAndGet();
 
         return true;
 
@@ -274,7 +277,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         hra.nactiHru(conn,hraciPodleWebsocketu.get(conn));
     }
     
-    public void hracOdpojen(WebSocket conn){
+    public synchronized void hracOdpojen(WebSocket conn){
         HracImp hrac = hraciPodleWebsocketu.get(conn);
         hraciPodleWebsocketu.remove(conn);
         websocketPodleHracu.remove(hrac);
@@ -546,7 +549,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
      * 
      * @return úspěch akce
      */
-    public boolean vraciSeHrac(WebSocket conn, String token){
+    public synchronized boolean vraciSeHrac(WebSocket conn, String token){
         HracImp hrac = hraciPodlIdentifikatoru.get(token);
         if(hrac == null){
             conn.send("error:{\"error\":\"hráč v této hře nenalezen\"}");
@@ -577,8 +580,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     @PovolenePluginu
     public CompletableFuture<String> pozadejOdpoved(String otazka,cz.honza.bang.sdk.Hrac komu) {
         //připravý si id:
-        posledniIdCekaciOdpovedi++;
-        Integer id = posledniIdCekaciOdpovedi;
+        Integer id = posledniIdCekaciOdpovedi.incrementAndGet();
         
         
         CompletableFuture<String> future = new CompletableFuture<>();
@@ -683,7 +685,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         
         // Pokud je buttonId 0 nebo záporné, přidělíme nový ID
         if (buttonId <= 0) {
-            buttonId = nextUIButtonId++;
+            buttonId = nextUIButtonId.getAndIncrement();
         }
         
         CustomUIButton button = new CustomUIButton(buttonId, text, disabled, akce);
@@ -734,7 +736,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     /**
      * Zruší timeout smazání hry. Volá se při reconnectu hráče.
      */
-    private void zrusitTimeoutSmezaniHry() {
+    private synchronized void zrusitTimeoutSmezaniHry() {
         if (hraCleupTask != null) {
             hraCleupTask.cancel();
             hraCleupTask = null;
@@ -766,7 +768,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         List<Hrac> hraciList = hra.getHraci();
         List<Hrac> hrajiciHraci = hra.getHrajiciHraci();
         json.put("pocetHracuRealne", hraciList.size());
-        json.put("pocetHracuPodleKomunikatoru", pocetPripojenychHracu);
+        json.put("pocetHracuPodleKomunikatoru", pocetPripojenychHracu.get());
         json.put("pocetHrajiichHracu", hrajiciHraci.size());
 
         // Informace o hráčích

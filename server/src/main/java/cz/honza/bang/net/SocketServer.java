@@ -33,12 +33,12 @@ public class SocketServer extends WebSocketServer {
     private static final Logger logger = LoggerFactory.getLogger(SocketServer.class);
     private Map<WebSocket, KomunikatorHryImp> komunikatoryHracu = new  ConcurrentHashMap<>();
     private Map<String, KomunikatorHryImp> hryPodleId = new ConcurrentHashMap<>();
-    private Set<Integer> pouziteKody = new HashSet<>();
+    private Set<Integer> pouziteKody = ConcurrentHashMap.newKeySet();
     private Random random = new Random();
     private String adminPassword;
     private Set<WebSocket> overeniAdmini = ConcurrentHashMap.newKeySet();
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private boolean overujeSeHeslo;
+    private volatile boolean overujeSeHeslo;
     
     public SocketServer(InetSocketAddress address) {
         super(address);
@@ -181,7 +181,7 @@ public class SocketServer extends WebSocketServer {
             }
             KomunikatorHryImp komunikator = hryPodleId.get(message.substring(10, 16));
             if(komunikator == null){
-                conn.send("error:{\"error\":\"hra do které se snažíš připojit neexistuje\"}");
+                conn.send("error:{\"error\":\"Hra do které se snažíš připojit neexistuje\"}");
                 return;
             }
             if(komunikator.vraciSeHrac( conn,message.substring(16))){

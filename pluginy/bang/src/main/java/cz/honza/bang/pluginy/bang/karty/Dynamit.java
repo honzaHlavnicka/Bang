@@ -76,20 +76,22 @@ public class Dynamit extends Karta implements VylozitelnaKarta, Efekt{
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                if(cislo == 11 || cislo == 12){
-                    hrac.odeberZivot();
-                    hrac.odeberZivot();
-                    hrac.odeberZivot();
-                    hrac.odeberVylozenouKartu(totoVylozitlne);
-                    hra.getOdhazovaciBalicek().vratNahoru(toto);
-                    hra.getKomunikator().posliOdebraniKarty(hrac, toto);
-                }else{
-                    hrac.odeberVylozenouKartu(totoVylozitlne);
-                    List<Hrac> hraci = hra.getHrajiciHraci();
-                    int dalsiIndex = (hraci.indexOf(hrac) + 1) % hraci.size();
-                    Hrac dalsiHrac = hraci.get(dalsiIndex);
-                    hra.getKomunikator().posliSpaleniVylozenéKarty(toto, hrac);
-                    dalsiHrac.pridejVylozenouKartu(totoVylozitlne, hrac);   
+                synchronized (hra) {
+                    if(cislo == 11 || cislo == 12){
+                        hrac.odeberZivot();
+                        hrac.odeberZivot();
+                        hrac.odeberZivot();
+                        hrac.odeberVylozenouKartu(totoVylozitlne);
+                        hra.getOdhazovaciBalicek().vratNahoru(toto);
+                        hra.getKomunikator().posliOdebraniKarty(hrac, toto);
+                    }else{
+                        hrac.odeberVylozenouKartu(totoVylozitlne);
+                        List<Hrac> hraci = hra.getHrajiciHraci();
+                        int dalsiIndex = (hraci.indexOf(hrac) + 1) % hraci.size();
+                        Hrac dalsiHrac = hraci.get(dalsiIndex);
+                        hra.getKomunikator().posliSpaleniVylozenéKarty(toto, hrac);
+                        dalsiHrac.pridejVylozenouKartu(totoVylozitlne, hrac);   
+                    }
                 }
             }
         }, 10000);

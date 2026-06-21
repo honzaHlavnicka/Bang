@@ -321,7 +321,7 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
 
                             // Událost po odehrání karty pro všechny efekty hráče
                             for (Hrac hrac : hra.getHraci()){
-                                for (Efekt e : new ArrayList<>(efekty)) {
+                                for (Efekt e : new ArrayList<>(hrac.getEfekty())) {
                                     e.poOdehraniKarty(hra, hrac, this, karta);
                                 }
                             }

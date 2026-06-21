@@ -86,17 +86,6 @@ Pokud jsou dvě karty odehrány současně (ve dvou vláknech), může dojít ke
 
 ## 🟡 BEST PRACTICES / KVALITA KÓDU
 
-### K1 – `System.out.println` místo logovacího frameworku
-**Soubory:**
-- `server/src/main/java/cz/honza/bang/net/SocketServer.java` (10+ výskytů)
-- `server/src/main/java/cz/honza/bang/net/KomunikatorHryImp.java` (3 výskyty)
-- `server/src/main/java/cz/honza/bang/HracImp.java` (1 výskyt)
-- `server/src/main/java/cz/honza/bang/SpravceTahuImp.java` (1 výskyt)
-- `server/src/main/java/cz/honza/bang/HraImp.java` (1 výskyt)
-
-Místo `System.out.println` by měl být použit logovací framework (SLF4J + Logback nebo Log4j2). Přináší to: log levels, filtrování, výstup do souboru, timestamp a možnost vypnout debug logy v produkci.
-
----
 
 ### K2 – Ruční sestavování JSON řetězců místo použití knihovny
 **Soubory:**
@@ -126,26 +115,6 @@ nextId++;
 
 ---
 
-### K5 – `BalicekImp` používá raw typ `@Deprecated` metodu
-**Soubor:**
-- `server/src/main/java/cz/honza/bang/BalicekImp.java` – metoda `toDeque()` (řádek 136)
-
-Metoda je označena `@Deprecated` a vrací přímý odkaz na vnitřní kolekci (porušuje encapsulation). Pokud tato metoda existuje pouze pro testovací účely, měla by být odstraněna.
-
----
-
-
-### K11 – Pole `HraImp.obrazekZadniStrany` je deklarováno, ale nikde nepoužíváno
-**Soubor:**
-- `server/src/main/java/cz/honza/bang/HraImp.java` – řádek 43
-
-```java
-private String obrazekZadniStrany;
-```
-
-Pole je deklarováno, ale nikdy nenastaveno ani nečteno.
-
----
 
 
 ### K13 – Překlepy v názvech TypeScript typů/proměnných
@@ -189,6 +158,4 @@ Následující funkce jsou v kódu označeny jako nedokončené a nefungují spr
 ### A1 – Žádné testy
 Projekt neobsahuje žádné unit testy ani integrační testy. V `pom.xml` chybí testovací závislosti (JUnit). Frontend nemá žádné testy (Vitest/Jest).
 
-### A2 – Žádná konfigurace
-Port serveru (22207), timeout her (300 000 ms) a cesta ke složce pluginů jsou natvrdo v kódu. Chybí konfigurační soubor (`.properties`, `.env`, `application.yml`).
 
