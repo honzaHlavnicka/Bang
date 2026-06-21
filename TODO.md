@@ -106,10 +106,13 @@ Pokud jsou dvě karty odehrány současně (ve dvou vláknech), může dojít ke
 - `pluginy/kvarteto/src/main/java/cz/honza/bang/pluginy/kvarteto/PravidlaKvarteta.java` – řádek 96
 
 ```java
+// chybně (aktuálně v kódu)
 String[] data = textCoZadal.trim().toLowerCase().split(textCoZadal, 2);
+// správně
+String[] data = textCoZadal.trim().toLowerCase().split(":", 2);
 ```
 
-Místo splitu podle `":"` se používá celý uživatelský vstup jako regulární výraz. Pro běžný vstup jako `5:1` pak `data.length != 2`, logika validace selže a metoda se opakovaně volá znovu.
+Kvůli chybnému splitu pak pro běžný vstup jako `5:1` často vyjde `data.length != 2`, logika validace selže a metoda se opakovaně volá znovu.
 
 ---
 
@@ -195,4 +198,3 @@ Následující funkce jsou v kódu označeny jako nedokončené a nefungují spr
 
 ### A1 – Žádné testy
 Projekt neobsahuje žádné unit testy ani integrační testy. V `pom.xml` chybí testovací závislosti (JUnit). Frontend nemá žádné testy (Vitest/Jest).
-
