@@ -7,6 +7,23 @@ Soubory jsou uváděny relativně ke kořeni projektu.
 
 ## 🔴 BEZPEČNOST (kritické)
 
+### S1 – Výchozí admin heslo `heslo123` při chybějící konfiguraci
+**Soubory:**
+- `server/src/main/java/cz/honza/bang/net/SocketServer.java` – řádky 48–51
+- `.env.example` – řádek 3
+- `build.sh` – řádek 108
+
+```java
+this.adminPassword = System.getenv("ADMIN_PASSWORD");
+if (this.adminPassword == null || this.adminPassword.isEmpty()) {
+    this.adminPassword = "heslo123"; // Výchozí heslo
+}
+```
+
+Pokud není `ADMIN_PASSWORD` nastavené, server automaticky přepne na známé hardcoded heslo. To výrazně zvyšuje riziko neautorizovaného přístupu.
+
+---
+
 
 ## 🟠 CHYBY V LOGICE (bugs)
 
@@ -84,6 +101,18 @@ Pokud jsou dvě karty odehrány současně (ve dvou vláknech), může dojít ke
 
 ---
 
+### C11 – `PravidlaKvarteta.vyberKartu` parsuje vstup špatným oddělovačem
+**Soubor:**
+- `pluginy/kvarteto/src/main/java/cz/honza/bang/pluginy/kvarteto/PravidlaKvarteta.java` – řádek 96
+
+```java
+String[] data = textCoZadal.trim().toLowerCase().split(textCoZadal, 2);
+```
+
+Místo splitu podle `":"` se používá celý uživatelský vstup jako regulární výraz. Pro běžný vstup jako `5:1` pak `data.length != 2`, logika validace selže a metoda se opakovaně volá znovu.
+
+---
+
 ## 🟡 BEST PRACTICES / KVALITA KÓDU
 
 
@@ -127,6 +156,14 @@ gameStateMessege?: string;       // správně: gameStateMessage
 gameStateMessegeFull?: string;   // správně: gameStateMessageFull
 ```
 
+---
+
+### K14 – Frontend dependency konflikt blokuje standardní `npm install`
+**Soubor:**
+- `klient_react/bang/package.json` – řádky 19, 21
+
+Projekt používá `react@^19.1.1`, ale zároveň `react-custom-roulette@^1.4.1`, která vyžaduje peer dependency `react@^18.2.0`. Bez `--force`/`--legacy-peer-deps` tak instalace padá na `ERESOLVE`, což komplikuje setup i CI.
+
 
 
 ## 🔵 NEDOKONČENÉ FUNKCE (TODO v kódu)
@@ -142,6 +179,7 @@ Následující funkce jsou v kódu označeny jako nedokončené a nefungují spr
 | `pluginy/bang/src/main/java/.../Role.java` | 21 | Logika rolí by měla být přesunuta do `PravidlaBangu` |
 | `pluginy/Uno/src/main/java/.../unoZmenaBarvy.java` | 58 | Nelze hrát další kartu, dokud není splněn slib (změna barvy) |
 | `pluginy/prsi/src/main/java/.../PrsiSvrsek.java` | 61 | Stejný problém jako UNO – slib není implementován |
+| `pluginy/vybusnaKotatka/src/main/java/.../PravidlaKotatek.java` | 22, 36, 41, 46, 51, 56 | Klíčové metody hází `UnsupportedOperationException`, plugin není hratelný |
 | `server/src/main/java/.../HraImp.java` | 105 | Výběr z postav pro hry, které ho potřebují |
 | `server/src/main/java/.../HracImp.java` | 220 | Přetypování při výběru postavy |
 | `server/src/main/java/.../HracImp.java` | 342 | Duplicitní kód (DRY) v `spalitKartu` |
@@ -157,5 +195,4 @@ Následující funkce jsou v kódu označeny jako nedokončené a nefungují spr
 
 ### A1 – Žádné testy
 Projekt neobsahuje žádné unit testy ani integrační testy. V `pom.xml` chybí testovací závislosti (JUnit). Frontend nemá žádné testy (Vitest/Jest).
-
 
