@@ -19,6 +19,66 @@
 
     <link rel="icon" type="image/svg+xml" href="/img/karty/bang.png" />
     <link rel="stylesheet" href="/index.css" />
+    <script>
+      (function() {
+        // 1. Inicializace Dark Mode před vykreslením stránky podle poslední návštěvy (výchozí je světlý)
+        var isDark = localStorage.getItem("darkMode") === "true";
+        if (isDark) {
+            document.documentElement.classList.add("darkMode");
+        }
+
+        // 2. Detekce obrazovky s ohledem na Device Pixel Ratio (DPR / Retina)
+        var width = window.innerWidth;
+        var dpr = window.devicePixelRatio || 1;
+        var effectiveWidth = width * dpr;
+
+        var bgUrl = "";
+        if (isDark) {
+            if (effectiveWidth > 1200) {
+                bgUrl = "/img/pozadi-tmave-large.webp";
+            } else if (effectiveWidth > 768) {
+                bgUrl = "/img/pozadi-tmave-desktop.webp";
+            } else {
+                bgUrl = "/img/pozadi-tmave-tablet.webp"; // Vyšší rozlišení pro high-DPI mobily
+            }
+        } else {
+            if (effectiveWidth > 1200) {
+                bgUrl = "/img/pozadi2-large.webp";
+            } else if (effectiveWidth > 768) {
+                bgUrl = "/img/pozadi2-desktop.webp";
+            } else {
+                bgUrl = "/img/pozadi2-tablet.webp"; // Vyšší rozlišení pro high-DPI mobily
+            }
+        }
+
+        // 3. Progresivní přednačtení obrázku na pozadí
+        if (bgUrl) {
+            var img = new Image();
+            img.src = bgUrl;
+            img.onload = function() {
+                document.documentElement.style.setProperty("--high-res-bg", "url('" + bgUrl + "')");
+                document.documentElement.classList.add("bg-loaded");
+            };
+        }
+      })();
+    </script>
+    <noscript>
+      <style>
+        /* Fallback pro prohlížeče se zakázaným JavaScriptem */
+        @media (min-width: 480px) and (max-width: 768px) {
+            html { background-image: url("/img/pozadi2-tablet.webp"); }
+            html.darkMode { background-image: url("/img/pozadi-tmave-tablet.webp"); }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+            html { background-image: url("/img/pozadi2-desktop.webp"); }
+            html.darkMode { background-image: url("/img/pozadi-tmave-desktop.webp"); }
+        }
+        @media (min-width: 1025px) {
+            html { background-image: url("/img/pozadi2-large.webp"); }
+            html.darkMode { background-image: url("/img/pozadi-tmave-large.webp"); }
+        }
+      </style>
+    </noscript>
 
 
     <link rel="alternate" hreflang="cs" href="https://bang.honzaa.cz/cs/" />

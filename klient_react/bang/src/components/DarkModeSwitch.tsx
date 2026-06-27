@@ -23,6 +23,7 @@ export default function DarkModeSwitch({ style }: { style?: React.CSSProperties 
         const next = !isDark;
         document.documentElement.classList.toggle("darkMode", next);
         setIsDark(next);
+        localStorage.setItem("darkMode", String(next));
         posthog.capture('theme_changed', { is_dark: next });
     };
 

@@ -12,17 +12,17 @@
 }
 
 /* ---------------------------------------------------- */
-/* FALLBACKS & INITIAL PROGRESSIVE BACKGROUNDS          */
+/* INITIAL PROGRESSIVE BACKGROUNDS (LOADS INSTANTLY)   */
 /* ---------------------------------------------------- */
-/* Načte se okamžitě (velikost pouze 14-30 KB), slouží  */
-/* jako rychlý náhled před stažením plné verze.         */
+/* Mobilní varianty (cca 14-25 KB) se stáhnou okamžitě a */
+/* slouží jako lehký náhled, než se stáhne plná verze.   */
 html {
     background-image: url("img/pozadi2-mobile.jpg");
     background-size: cover;
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
-    transition: background-image 0.3s ease-in-out;
+    transition: background-image 0.4s ease-in-out;
 }
 html.darkMode {
     background-image: url("img/pozadi-tmave-mobile.jpg");
@@ -30,10 +30,10 @@ html.darkMode {
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
-    transition: background-image 0.3s ease-in-out;
+    transition: background-image 0.4s ease-in-out;
 }
 
-/* Rychlý mobilní WebP fallback pro moderní prohlížeče */
+/* Mobilní WebP verze pro moderní prohlížeče */
 html {
     background-image: url("img/pozadi2-mobile.webp");
 }
@@ -42,55 +42,12 @@ html.darkMode {
 }
 
 /* ---------------------------------------------------- */
-/* RESPONSIVE MEDIA QUERIES (OVERRIDING FALLBACKS)      */
+/* HIGH-RESOLUTION SWAP (TRIGGERED BY JS PRELOADER)     */
 /* ---------------------------------------------------- */
-
-/* Tablety a malá zařízení (480px - 768px) */
-@media (min-width: 480px) and (max-width: 768px) {
-    html {
-        background-image: url("img/pozadi2-tablet.jpg");
-    }
-    html.darkMode {
-        background-image: url("img/pozadi-tmave-tablet.jpg");
-    }
-    html {
-        background-image: url("img/pozadi2-tablet.webp");
-    }
-    html.darkMode {
-        background-image: url("img/pozadi-tmave-tablet.webp");
-    }
-}
-
-/* Střední zařízení / malé desktopy (769px - 1024px) */
-@media (min-width: 769px) and (max-width: 1024px) {
-    html {
-        background-image: url("img/pozadi2-desktop.jpg");
-    }
-    html.darkMode {
-        background-image: url("img/pozadi-tmave-desktop.jpg");
-    }
-    html {
-        background-image: url("img/pozadi2-desktop.webp");
-    }
-    html.darkMode {
-        background-image: url("img/pozadi-tmave-desktop.webp");
-    }
-}
-
-/* Desktopy a velká zařízení (> 1024px) */
-@media (min-width: 1025px) {
-    html {
-        background-image: url("img/pozadi2-large.jpg");
-    }
-    html.darkMode {
-        background-image: url("img/pozadi-tmave-large.jpg");
-    }
-    html {
-        background-image: url("img/pozadi2-large.webp");
-    }
-    html.darkMode {
-        background-image: url("img/pozadi-tmave-large.webp");
-    }
+/* Jakmile je optimalizovaný obrázek pro dané rozlišení */
+/* plně stažen do mezipaměti, plynule se vymění.        */
+html.bg-loaded {
+    background-image: var(--high-res-bg);
 }
 
 /* ---------------------------------------------------- */
