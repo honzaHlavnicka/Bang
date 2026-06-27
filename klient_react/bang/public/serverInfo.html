@@ -73,28 +73,199 @@
             border-top:3px solid #000000;
             padding-top:20px;
         }
-
-      
+        .status-box {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        .status-info {
+            background-color: #e3f2fd;
+            border: 1px solid #90caf9;
+            color: #0d47a1;
+        }
+        .status-success {
+            background-color: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            color: #1b5e20;
+        }
+        .status-error {
+            background-color: #ffeedd;
+            border: 1px solid #ffcc80;
+            color: #e65100;
+        }
+        .manual-config {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
     </style>
 </head>
 <body>
-    <h1>Connecting to Bang Server...</h1>
-    <p>Pokud trvá moc dlouho, server není možná zapnutý.</p>
-    <script>
-        const socketAdress =  "ws://localhost:22207/ws";
+    <h1>Bang Server Info</h1>
+    
+    <div id="status" class="status-box status-info">
+        Inicializace připojení...
+    </div>
 
-        ws = new WebSocket(socketAdress);
-        console.log(ws);
-        ws.onopen = function() {
-            document.body.innerHTML = "<h1>Connected to Bang Server</h1><form><input autofocus id=heslo type=password><button onclick='ws.send(\"serverInfo:\" + heslo.value);return false'>načíst</button></form><div id=container></div>";
-        };
-        ws.onmessage = function(event) {
-            console.log("Received: " + event.data);
-            if(event.data.startsWith("serverDataHTML:")) {
-                let info = event.data.substring("serverInfoHTML:".length);
-                container.innerHTML = info// + "<button onclick='ws.send(\"serverInfo\"+heslo)'>načíst znovu</button>";
+    <div class="manual-config">
+        <strong>Změna zdroje (WebSocket URL):</strong>
+        <form id="customConnectForm" onsubmit="connectToCustom(); return false;">
+            <input type="text" id="customUrl" placeholder="ws://localhost:22207/ws" style="width: 350px; margin-top: 10px;">
+            <button type="submit" style="margin-top: 10px;">Připojit</button>
+        </form>
+    </div>
+
+    <div id="main-content" style="display:none;">
+        <h1 id="connection-title">Připojeno k serveru</h1>
+        <form id="loginForm" onsubmit="sendLogin(); return false;">
+            <input autofocus id="heslo" type="password" placeholder="Heslo administrátora">
+            <button type="submit">Načíst</button>
+        </form>
+        <div id="container"></div>
+    </div>
+
+    <script>
+        const urls = [
+            // 1. Aktuální doména /ws
+            `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`,
+            // 2. localhost:8080
+            "ws://localhost:8080/ws",
+            // 3. localhost:22207
+            "ws://localhost:22207/ws",
+            // 4. bang.honzaa.cz/ws
+            "wss://bang.honzaa.cz/ws",
+            "ws://bang.honzaa.cz/ws"
+        ];
+
+        let ws = null;
+        const statusDiv = document.getElementById("status");
+        const mainContentDiv = document.getElementById("main-content");
+        const connectionTitle = document.getElementById("connection-title");
+        const customUrlInput = document.getElementById("customUrl");
+        const container = document.getElementById("container");
+
+        function showStatus(html, type) {
+            statusDiv.innerHTML = html;
+            statusDiv.className = "status-box status-" + type;
+        }
+
+        function tryConnect(index) {
+            if (index >= urls.length) {
+                showStatus("Nepodařilo se připojit k žádnému z výchozích serverů. Zadejte adresu ručně.", "error");
+                return;
             }
-        };
+
+            const url = urls[index];
+            showStatus(`Zkouším připojení k: <strong>${url}</strong>...`, "info");
+            customUrlInput.value = url;
+
+            connectToUrl(url, (success) => {
+                if (!success) {
+                    tryConnect(index + 1);
+                }
+            });
+        }
+
+        function connectToUrl(url, callback) {
+            if (ws) {
+                try { ws.close(); } catch(e) {}
+            }
+
+            let socket;
+            try {
+                socket = new WebSocket(url);
+            } catch (e) {
+                console.error(e);
+                callback(false);
+                return;
+            }
+
+            let hasFinished = false;
+            const timeout = setTimeout(() => {
+                if (!hasFinished) {
+                    hasFinished = true;
+                    try { socket.close(); } catch(e) {}
+                    callback(false);
+                }
+            }, 3000);
+
+            socket.onopen = function() {
+                if (!hasFinished) {
+                    hasFinished = true;
+                    clearTimeout(timeout);
+                    ws = socket;
+                    setupSocketHandlers(socket, url);
+                    callback(true);
+                }
+            };
+
+            socket.onerror = function() {
+                if (!hasFinished) {
+                    hasFinished = true;
+                    clearTimeout(timeout);
+                    callback(false);
+                }
+            };
+
+            socket.onclose = function() {
+                if (!hasFinished) {
+                    hasFinished = true;
+                    clearTimeout(timeout);
+                    callback(false);
+                }
+            };
+        }
+
+        function setupSocketHandlers(socket, url) {
+            showStatus(`<strong>Úspěšně připojeno k:</strong> ${url}`, "success");
+            connectionTitle.innerText = `Připojeno k: ${url}`;
+            mainContentDiv.style.display = "block";
+
+            socket.onmessage = function(event) {
+                console.log("Received: " + event.data);
+                if (event.data.startsWith("serverDataHTML:")) {
+                    let info = event.data.substring("serverDataHTML:".length);
+                    container.innerHTML = info;
+                }
+            };
+
+            socket.onclose = function() {
+                showStatus(`Spojení se serverem ${url} bylo ukončeno.`, "error");
+                mainContentDiv.style.display = "none";
+            };
+        }
+
+        function sendLogin() {
+            const hesloInput = document.getElementById("heslo");
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send("serverInfo:" + hesloInput.value);
+            } else {
+                alert("Není aktivní připojení k serveru.");
+            }
+        }
+
+        function connectToCustom() {
+            const url = customUrlInput.value.trim();
+            if (!url) {
+                alert("Zadejte platnou WebSocket adresu.");
+                return;
+            }
+
+            showStatus(`Zkouším ruční připojení k: <strong>${url}</strong>...`, "info");
+            mainContentDiv.style.display = "none";
+
+            connectToUrl(url, (success) => {
+                if (!success) {
+                    showStatus(`Nepodařilo se připojit k: <strong>${url}</strong>. Zkontrolujte adresu a zda server běží.`, "error");
+                }
+            });
+        }
+
+        // Spustit automatické připojování
+        tryConnect(0);
     </script>
 </body>
 </html>

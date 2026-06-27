@@ -51,14 +51,19 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
     }
     
     
-    /**
-     * Volá hra úplně na konci kdy už je vše připravené. Prostor pro finální přípravu před spuštěním 1. tahu.
-     */
+    public void zajistiPostavu() {
+        if (postava == null) {
+            if (postavyNaVyber != null && postavyNaVyber.length > 0) {
+                setPostava(postavyNaVyber[0]);
+            } else {
+                setPostava(PostavaImp.TESTOVACI);
+            }
+        }
+    }
+
     public void poZahajeniHry(){
         hra.getKomunikator().posliZmenuPoctuZivotu(this);
-        if(postava == null){
-            setPostava(PostavaImp.TESTOVACI);
-        }
+        zajistiPostavu();
     }
     
     /**

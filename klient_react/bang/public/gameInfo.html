@@ -368,6 +368,13 @@
                 <label for="adminPassword">Admin heslo:</label>
                 <input type="password" id="adminPassword" placeholder="Zadej heslo">
             </div>
+            <div class="form-group" style="margin-top: 15px; border-top: 1px solid #455a64; padding-top: 15px;">
+                <label for="customUrl">Zdroj WebSocket:</label>
+                <div style="display: flex; gap: 5px; width: 100%;">
+                    <input type="text" id="customUrl" placeholder="ws://localhost:22207/ws" style="flex: 2; margin-top: 0; padding: 8px;">
+                    <button onclick="connectToCustom(); return false;" style="flex: 1; margin-top: 0; padding: 8px 12px; font-size: 13px; font-weight: bold; background-color: #455a64; color: #fff;">Změnit</button>
+                </div>
+            </div>
             <div class="button-group">
                 <button class="btn-connect" onclick="connectToGame()" id="connectBtn">Připojit</button>
                 <button class="btn-refresh" onclick="connectToGame()" id="refreshBtn" style="display: none;">Aktualizovat</button>
@@ -384,6 +391,129 @@
 
     <script>
         let ws = null;
+        let currentUrl = "";
+
+        const urls = [
+            `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`,
+            "ws://localhost:8080/ws",
+            "ws://localhost:22207/ws",
+            "wss://bang.honzaa.cz/ws",
+            "ws://bang.honzaa.cz/ws"
+        ];
+
+        function tryConnect(index) {
+            if (index >= urls.length) {
+                updateStatus('disconnected');
+                document.getElementById('connectionStatus').textContent = '✗ Nepodařilo se připojit k žádnému serveru';
+                return;
+            }
+
+            const url = urls[index];
+            updateStatus('connecting');
+            document.getElementById('connectionStatus').textContent = `⟳ Připojování k: ${url}...`;
+            document.getElementById('customUrl').value = url;
+
+            connectToUrl(url, (success) => {
+                if (!success) {
+                    tryConnect(index + 1);
+                }
+            });
+        }
+
+        function connectToUrl(url, callback) {
+            if (ws) {
+                try { ws.close(); } catch(e) {}
+            }
+
+            let socket;
+            try {
+                socket = new WebSocket(url);
+            } catch (e) {
+                console.error(e);
+                callback(false);
+                return;
+            }
+
+            let hasFinished = false;
+            const timeout = setTimeout(() => {
+                if (!hasFinished) {
+                    hasFinished = true;
+                    try { socket.close(); } catch(e) {}
+                    callback(false);
+                }
+            }, 3000);
+
+            socket.onopen = function() {
+                if (!hasFinished) {
+                    hasFinished = true;
+                    clearTimeout(timeout);
+                    ws = socket;
+                    currentUrl = url;
+                    setupSocketHandlers(socket, url);
+                    callback(true);
+                }
+            };
+
+            socket.onerror = function() {
+                if (!hasFinished) {
+                    hasFinished = true;
+                    clearTimeout(timeout);
+                    callback(false);
+                }
+            };
+
+            socket.onclose = function() {
+                if (!hasFinished) {
+                    hasFinished = true;
+                    clearTimeout(timeout);
+                    callback(false);
+                }
+            };
+        }
+
+        function setupSocketHandlers(socket, url) {
+            updateStatus('connected');
+            document.getElementById('customUrl').value = url;
+
+            socket.onmessage = function(event) {
+                console.log('Přijato:', event.data);
+                
+                if (event.data.startsWith('gameInfoJSON:')) {
+                    try {
+                        const jsonStr = event.data.substring('gameInfoJSON:'.length);
+                        const gameData = JSON.parse(jsonStr);
+                        displayGameInfo(gameData);
+                        updateStatus('connected');
+                        document.getElementById('gameContainer').style.display = 'block';
+                    } catch (e) {
+                        showError('Chyba při parsování dat ze serveru: ' + e.message);
+                        console.error(e);
+                    }
+                } else if (event.data.startsWith('error:')) {
+                    let errorMsg = event.data.substring('error:'.length);
+                    try {
+                        const errJson = JSON.parse(errorMsg);
+                        if (errJson.error) errorMsg = errJson.error;
+                    } catch(e) {
+                        // Nebyl to JSON, necháme to jako string
+                    }
+                    showError(errorMsg);
+                }
+            };
+
+            socket.onerror = function(error) {
+                console.error('WebSocket chyba:', error);
+                showError('Nelze se spojit se serverem.');
+                updateStatus('disconnected');
+            };
+
+            socket.onclose = function() {
+                console.log('WebSocket zavřen');
+                if(document.getElementById('connectionStatus').className.includes('connected')){
+                    updateStatus('disconnected');
+                }
+            };
+        }
 
         function connectToGame() {
             const gameCode = document.getElementById('gameCode').value.trim();
@@ -396,76 +526,25 @@
 
             clearError();
 
-            // 1. KROK: Pokud už máme aktivní a otevřené spojení, jen pošleme dotaz
             if (ws && ws.readyState === WebSocket.OPEN) {
                 console.log('Používám existující WebSocket spojení pro okamžitou aktualizaci...');
                 ws.send(`gameInfo:${gameCode}:${adminPassword}`);
-                return; // Zbytek funkce se neprovede, čekáme rovnou na onmessage
+                return;
             }
 
-            // 2. KROK: Pokud spojení neexistuje nebo spadlo, vytvoříme nové
-            const socketAddress = "ws://localhost:22207/ws";
-            
+            const socketAddress = document.getElementById('customUrl').value.trim() || "ws://localhost:22207/ws";
             updateStatus('connecting');
+            document.getElementById('connectionStatus').textContent = `⟳ Připojování k: ${socketAddress}...`;
             document.getElementById('gameContainer').style.display = 'none';
 
-            if (ws) {
-                ws.close(); // Zavřeme případné uvízlé spojení v jiném stavu než OPEN
-            }
-
-            try {
-                ws = new WebSocket(socketAddress);
-
-                ws.onopen = function() {
-                    console.log('WebSocket připojen, žádám o info hry...');
+            connectToUrl(socketAddress, (success) => {
+                if (success) {
                     ws.send(`gameInfo:${gameCode}:${adminPassword}`);
-                };
-
-                ws.onmessage = function(event) {
-                    console.log('Přijato:', event.data);
-                    
-                    if (event.data.startsWith('gameInfoJSON:')) {
-                        try {
-                            const jsonStr = event.data.substring('gameInfoJSON:'.length);
-                            const gameData = JSON.parse(jsonStr);
-                            displayGameInfo(gameData);
-                            updateStatus('connected');
-                            document.getElementById('gameContainer').style.display = 'block';
-                        } catch (e) {
-                            showError('Chyba při parsování dat ze serveru: ' + e.message);
-                            console.error(e);
-                        }
-                    } else if (event.data.startsWith('error:')) {
-                        let errorMsg = event.data.substring('error:'.length);
-                        try {
-                            const errJson = JSON.parse(errorMsg);
-                            if (errJson.error) errorMsg = errJson.error;
-                        } catch(e) {
-                            // Nebyl to JSON, necháme to jako string
-                        }
-                        showError(errorMsg);
-                        updateStatus('disconnected');
-                    }
-                };
-
-                ws.onerror = function(error) {
-                    console.error('WebSocket chyba:', error);
-                    showError('Nelze se spojit se serverem.');
+                } else {
+                    showError('Nepodařilo se připojit k serveru: ' + socketAddress);
                     updateStatus('disconnected');
-                };
-
-                ws.onclose = function() {
-                    console.log('WebSocket zavřen');
-                    // Změníme status na odpojeno pouze pokud jsme si mysleli, že jsme připojeni
-                    if(document.getElementById('connectionStatus').className.includes('connected')){
-                        updateStatus('disconnected');
-                    }
-                };
-
-            } catch (e) {
-                showError('Kritická chyba: ' + e.message);
-                updateStatus('disconnected');
-            }
+                }
+            });
         }
 
         function disconnectFromGame() {
@@ -475,6 +554,26 @@
             }
             updateStatus('disconnected');
             document.getElementById('gameContainer').style.display = 'none';
+        }
+
+        function connectToCustom() {
+            const url = document.getElementById('customUrl').value.trim();
+            if (!url) {
+                alert('Zadejte platnou WebSocket adresu.');
+                return;
+            }
+            updateStatus('connecting');
+            document.getElementById('connectionStatus').textContent = `⟳ Zkouším ruční připojení k: ${url}...`;
+            document.getElementById('gameContainer').style.display = 'none';
+
+            connectToUrl(url, (success) => {
+                if (success) {
+                    updateStatus('connected');
+                } else {
+                    showError('Nepodařilo se připojit k: ' + url);
+                    updateStatus('disconnected');
+                }
+            });
         }
 
         function updateStatus(status) {
@@ -487,20 +586,18 @@
             
             switch (status) {
                 case 'connected':
-                    statusEl.textContent = '✓ Připojeno';
+                    statusEl.textContent = `✓ Připojeno k: ${currentUrl}`;
                     connectBtn.style.display = 'none';
                     refreshBtn.style.display = 'block';
                     disconnectBtn.style.display = 'block';
                     break;
                 case 'connecting':
-                    statusEl.textContent = '⟳ Připojování...';
                     connectBtn.style.display = 'block';
                     connectBtn.disabled = true;
                     refreshBtn.style.display = 'none';
                     disconnectBtn.style.display = 'none';
                     break;
                 case 'disconnected':
-                    statusEl.textContent = '✗ Odpojeno';
                     connectBtn.style.display = 'block';
                     connectBtn.disabled = false;
                     refreshBtn.style.display = 'none';
@@ -508,6 +605,9 @@
                     break;
             }
         }
+
+        // Spustit automatické připojování po načtení
+        tryConnect(0);
 
         function showError(message) {
             const errorContainer = document.getElementById('errorContainer');

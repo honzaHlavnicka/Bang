@@ -189,6 +189,10 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
             this.zahajena = zahajena;
             //zahájení hry:
 
+            for (HracImp hrac : hraci) {
+                hrac.zajistiPostavu();
+            }
+
             herniPravidla.poSpusteniHry();
             
             komunikator.posliZahajeniHry();
