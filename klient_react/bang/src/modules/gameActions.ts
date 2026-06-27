@@ -70,6 +70,10 @@ export function handleGameMessage(
             setGameState(prev => ({ ...prev, inGame: true, gameCode: payload }));
             break;
         }
+        case "setIdHry": {
+            setGameState(prev => ({ ...prev, gameCode: payload }));
+            break;
+        }
         case "pripojenKeHre": {
             posthog.capture('game_joined_success');
             setGameState(prev => ({ ...prev, inGame: true }));
@@ -102,7 +106,17 @@ export function handleGameMessage(
                     inPlayCards: [],
                     isAdmin: player.isAdmin ?? false,
                 }));
-                setGameState(prev => ({ ...prev, players: mappedPlayers }));
+                setGameState(prev => {
+                    const myInfo = mappedPlayers.find(p => p.id === prev.playerId);
+                    return {
+                        ...prev,
+                        players: mappedPlayers,
+                        isAdmin: myInfo ? (myInfo.isAdmin ?? false) : prev.isAdmin,
+                        character: myInfo ? (myInfo.character ?? prev.character) : prev.character,
+                        name: myInfo ? (myInfo.name ?? prev.name) : prev.name,
+                        health: myInfo ? (myInfo.health ?? prev.health) : prev.health
+                    };
+                });
                 console.log(json);
             } catch (error) {
                 console.error("Chyba při parsování.", error, payload);
@@ -124,10 +138,17 @@ export function handleGameMessage(
                     inPlayCards: [],
                     isAdmin: json.isAdmin ?? false,
                 };
-                setGameState(prev => ({
-                    ...prev,
-                    players: prev.players ? [...prev.players, newPlayer] : [newPlayer],
-                }));
+                setGameState(prev => {
+                    const isMe = prev.playerId === json.id;
+                    return {
+                        ...prev,
+                        players: prev.players ? [...prev.players, newPlayer] : [newPlayer],
+                        isAdmin: isMe ? (json.isAdmin ?? false) : prev.isAdmin,
+                        character: isMe ? (json.postava ?? prev.character) : prev.character,
+                        name: isMe ? (json.jmeno ?? prev.name) : prev.name,
+                        health: isMe ? (json.zivoty ?? prev.health) : prev.health
+                    };
+                });
                 console.log("nový hráč", json);
                 toast.success(t(`Připojil se hráč {{name}}!`, {name: json.jmeno}));
             } catch (error) {
@@ -162,6 +183,12 @@ export function handleGameMessage(
             const playerId = parts[0] ?? "";
             const character = parts[1] ?? "";
             updatePlayerProperty(setGameState, playerId, "character", character);
+            setGameState(prev => {
+                if (String(prev.playerId ?? "") === playerId) {
+                    return { ...prev, character: character };
+                }
+                return prev;
+            });
             break;
         }
         case "noveIdHrace": {

@@ -277,6 +277,31 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         hra.getKomunikator().posliChybu(this, Chyba.POSTAVA_NENI_NA_VYBER);
     }
 
+    public void posliVyberPostav() {
+        if (postavyNaVyber == null || postavyNaVyber.length < 2) return;
+        cz.honza.bang.sdk.Postava p1 = postavyNaVyber[0];
+        cz.honza.bang.sdk.Postava p2 = postavyNaVyber[1];
+        StringBuilder sb = new StringBuilder("vyberPostavu:[{\"jmeno\":\"");
+        sb.append(p1.getJmeno());
+        sb.append("\",\"obrazek\":\"");
+        sb.append(p1.name());
+        sb.append("\",\"popis\":\"");
+        sb.append(p1.getPopis());
+        sb.append("\",\"zivoty\":\"");
+        sb.append(p1.getMaximumZivotu());
+        sb.append("\"},{\"jmeno\":\"");
+        sb.append(p2.getJmeno());
+        sb.append("\",\"obrazek\":\"");
+        sb.append(p2.name());
+        sb.append("\",\"popis\":\"");
+        sb.append(p2.getPopis());
+        sb.append("\",\"zivoty\":\"");
+        sb.append(p2.getMaximumZivotu());
+        sb.append("\"}]");
+
+        hra.getKomunikator().posli(this, sb.toString());
+    }
+
     /**
      *  Upozorní hráče na změnu zahájení tahu. Nemělo by se volat jinde, než ve společnosti správce tahů, jinak by mohli být klienti zmatení.
      */

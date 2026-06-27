@@ -232,6 +232,11 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     public void nactiHru(WebSocket conn, HracImp hrac){
         // Základní info o hráči
         conn.send("noveIdHrace:" + hrac.getId());
+        conn.send("setIdHry:" + komunikator.getIdHry());
+
+        if (hrac.getPostava() == null) {
+            hrac.posliVyberPostav();
+        }
 
         // Karty v ruce hráče
         for (Karta karta : hrac.getKarty()) {
