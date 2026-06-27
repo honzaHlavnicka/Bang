@@ -170,5 +170,7 @@
         "text": "Pro bezproblémový chod hry ukládáme nezbytná technická data (pro znovupřipojení a jazyk). Pro vylepšování hry využíváme analytické nástroje v rámci EU. Standardně sbíráme pouze anonymní data. Udělením souhlasu nám pomůžete s vývojem povolením podrobnější analytiky a nahrávání chybových relací.",
         "show_details": "Zobrazit podrobnosti a právní upozornění",
         "hide_details": "Skrýt podrobnosti a právní upozornění"
-    }
+    },
+    "Připoj se naskenováním!": "Připoj se naskenováním!",
+    "Zobrazit QR kód": "Zobrazit QR kód"
 }

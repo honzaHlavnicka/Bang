@@ -4,6 +4,7 @@ import { useGame } from "../modules/GameContext";
 import WaitingRoom from "./WaitingRoom";
 import css from "../styles/waitingPage.module.css";
 import { useTranslation } from "react-i18next";
+import QRConnectButton from "../components/QRConnectButton";
 
 export default function BeforeGameWaiting() {
     const {gameState} = useGame();
@@ -14,6 +15,7 @@ export default function BeforeGameWaiting() {
             {t("Nasdílej jim kód:")} <a className={css.gameCode} href={"/?code=" + gameState.gameCode} target="_blank" > {gameState.gameCode} </a>
             {gameState.allowedUIElements.includes("POSTAVA") ?
             <CharacterPicker />: null}
+            <QRConnectButton code={gameState.gameCode}/>
             <PlayersWaitingGame/>
         </WaitingRoom>
     );

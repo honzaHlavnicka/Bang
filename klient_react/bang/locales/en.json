@@ -157,6 +157,8 @@
     "title": "Privacy & Game Data Settings",
     "text": "To ensure seamless game performance, we store essential technical data (for reconnection and language settings). We use analytics tools hosted within the EU to improve the game. By default, we only collect anonymous data. By granting consent, you help our development by enabling advanced analytics and error session recording.",
     "show_details": "Show details and legal notices",
-    "hide_details": "Hide details and legal notices"
+    "hide_details": "Hide details and legal notices",
+    "Připoj se naskenováním!": "Join by scanning!",
+    "Zobrazit QR kód": "Show QR code"
 }
 }
