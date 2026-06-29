@@ -176,6 +176,9 @@ export default function Dialog() {
         case "CONFIRM_ACTION":
             content = (
                 <div className={css.dialogInnerContent} >
+                    {dialog.data.card &&
+                        <Card image={dialog.data.card.image} />
+                    }
                     {dialog.data.actions.map((val:{id:number,name:string})=>(   
                         <button className={globalCSS.button} key={val.id} onClick={() => {
                             closeDialog();

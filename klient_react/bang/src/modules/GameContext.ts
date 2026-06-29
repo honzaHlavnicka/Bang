@@ -14,12 +14,24 @@ export type CustomUIButton = {
     disabled: boolean;
 }
 
+export type Player = {
+    id: number;
+    name: string;
+    role: string;
+    health: number;
+    cardsInHand: number;
+    character: string;
+    isCurrentTurn: boolean;
+    inPlayCards: Array<CardType> | null;
+    isAdmin?: boolean;
+}
+
 export type GameStateType = {
-    startedConection:boolean;
-    inGame:boolean;
-    gameStarted:boolean;
-    gameEnded:boolean;
-    gameTypesAvailable?:Array<{id:number,name:string,description:string,url:string}>
+    startedConection: boolean;
+    inGame: boolean;
+    gameStarted: boolean;
+    gameEnded: boolean;
+    gameTypesAvailable?: Array<{ id: number; name: string; description: string; url: string }>;
 
     gameCode: string | null;
 
@@ -37,7 +49,7 @@ export type GameStateType = {
 
     turnPlayerId?: number | null;
     characters?: Array<{jmeno:string,obrazek:string,popis:string}> | null;
-    players: Array<{ id: number; name: string; role: string; health: number;cardsInHand:number; character: string; isCurrentTurn: boolean; inPlayCards: Array<CardType> | null; isAdmin?: boolean;}> | null;
+    players: Array<Player> | null;
     turnOrder: string[];
     deckCount: number;
     discardPile: Array<string>;

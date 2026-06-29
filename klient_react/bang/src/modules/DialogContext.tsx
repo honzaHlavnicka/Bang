@@ -28,7 +28,8 @@ type selectPlayerDialog = {
 type confirmActionDialog = {
     type:"CONFIRM_ACTION",
     data:{
-        actions:Array<{id:number,name:string}>
+        actions:Array<{id:number,name:string}>,
+        card?:CardType
     }
     callback?:(selectedAction:number)=>void;
 }

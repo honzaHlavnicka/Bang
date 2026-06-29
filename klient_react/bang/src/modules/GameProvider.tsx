@@ -71,6 +71,9 @@ const getInitialMockGameState = (name: string): GameStateType => {
             isCurrentTurn: false,
             inPlayCards: [
                 generateCard("mustang.png"),
+                generateCard("schofield.png"),
+                generateCard("barel.png"),
+                generateCard("vezeni.png"),
             ]
         },
         {
@@ -192,7 +195,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             });
         };
         return () => socket.close();
-    }, [isMock, t, openDialog]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Mockovací akce
     const mockActions = {
