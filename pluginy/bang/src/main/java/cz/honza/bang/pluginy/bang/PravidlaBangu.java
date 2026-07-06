@@ -241,7 +241,7 @@ public class PravidlaBangu implements HerniPravidla{
 
     @Override
     public boolean hracChceUkoncitTah(Hrac kdo) {
-        if (kdo.getKarty().size() > kdo.getMaximumZivotu() && JE_OMEZENY_POCET_KARET) {
+        if (kdo.getKarty().size() > kdo.getZivoty() && JE_OMEZENY_POCET_KARET) {
             hra.getKomunikator().posliRychleOznameni("Moc karet", kdo);
             return false;
         }
