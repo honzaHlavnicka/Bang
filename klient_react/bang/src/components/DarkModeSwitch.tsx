@@ -2,6 +2,42 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import posthog from "../modules/posthog";
 
+const updateBackground = (isDark: boolean) => {
+    const width = window.innerWidth;
+    const dpr = window.devicePixelRatio || 1;
+    const effectiveWidth = width * dpr;
+
+    let bgUrl = "";
+    if (isDark) {
+        if (effectiveWidth > 1200) {
+            bgUrl = "/img/pozadi-tmave-large.webp";
+        } else if (effectiveWidth > 768) {
+            bgUrl = "/img/pozadi-tmave-desktop.webp";
+        } else {
+            bgUrl = "/img/pozadi-tmave-tablet.webp";
+        }
+    } else {
+        if (effectiveWidth > 1200) {
+            bgUrl = "/img/pozadi2-large.webp";
+        } else if (effectiveWidth > 768) {
+            bgUrl = "/img/pozadi2-desktop.webp";
+        } else {
+            bgUrl = "/img/pozadi2-tablet.webp";
+        }
+    }
+
+    if (bgUrl) {
+        document.documentElement.classList.remove("bg-loaded");
+
+        const img = new Image();
+        img.src = bgUrl;
+        img.onload = () => {
+            document.documentElement.style.setProperty("--high-res-bg", `url('${bgUrl}')`);
+            document.documentElement.classList.add("bg-loaded");
+        };
+    }
+};
+
 export default function DarkModeSwitch({ style }: { style?: React.CSSProperties }) {
     const { i18n } = useTranslation();
 
@@ -11,13 +47,21 @@ export default function DarkModeSwitch({ style }: { style?: React.CSSProperties 
 
     // Reaguj na externí změny classListu na <html>
     useEffect(() => {
-        const update = () => setIsDark(document.documentElement.classList.contains("darkMode"));
+        const update = () => {
+            const hasDarkMode = document.documentElement.classList.contains("darkMode");
+            setIsDark(hasDarkMode);
+        };
         const observer = new MutationObserver(update);
         observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
         return () => {
             observer.disconnect();
         };
     }, []);
+
+    // Aktualizuj pozadí při změně motivu
+    useEffect(() => {
+        updateBackground(isDark);
+    }, [isDark]);
 
     const toggle = () => {
         const next = !isDark;

@@ -86,3 +86,29 @@
 :global(.darkMode) .karta {
     filter: brightness(0.8) contrast(1.1);
 }
+
+/* Step 2: Medium screens (e.g. tablet like 760px wide but with good height) */
+@media (max-width: 1024px) and (min-height: 601px) {
+    .karta {
+        width: 6em;
+        border-radius: 0.4em; /* Smaller corner radius */
+    }
+    .jeDole .karta {
+        width: 7.5em;
+        margin-left: -2.8em;
+        border-radius: 0.4em; /* Smaller corner radius */
+    }
+}
+
+/* Step 3: Small/Mobile screens or very short viewports */
+@media (max-width: 600px), (max-height: 600px) {
+    .karta {
+        width: 4.5em;
+        border-radius: 0.3em; /* Even smaller corner radius */
+    }
+    .jeDole .karta {
+        width: 5.5em;
+        margin-left: -2em;
+        border-radius: 0.3em; /* Even smaller corner radius */
+    }
+}

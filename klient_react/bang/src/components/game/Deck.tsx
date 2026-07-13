@@ -1,64 +1,60 @@
 import { useDroppable } from "@dnd-kit/core";
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
+
 
 export function Deck({ images }: { images: string[] }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const loadedImagesRef = useRef<HTMLImageElement[]>([]);
+    const deckHistoryRef = useRef<Array<{ img: HTMLImageElement; dx: number; dy: number; deg: number }>>([]);
     const { setNodeRef, isOver } = useDroppable({ id: "discardPile" });
+    const [dimensions, setDimensions] = useState({ width: 300, height: 300 });
 
-    useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
+    // Pomocný ref pro uložení poslední zpracované délky pole, abychom reagovali jen na reálné změny
+    const lastLengthRef = useRef(0);
 
-        const dpr = window.devicePixelRatio || 1;
-        const cssWidth = 300;
-        const cssHeight = 300;
-        canvas.width = cssWidth * dpr;
-        canvas.height = cssHeight * dpr;
-        canvas.style.width = cssWidth + "px";
-        canvas.style.height = cssHeight + "px";
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.scale(dpr, dpr);
-    }, []);
+    const nahodneCislo = (min: number, max: number) => {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
 
-    const vykresli = useCallback((
+    const vykresliKartu = useCallback((
         ctx: CanvasRenderingContext2D,
         img: HTMLImageElement,
-        canvas: HTMLCanvasElement,
-        dpr: number
+        canvasW: number,
+        canvasH: number,
+        dx: number,
+        dy: number,
+        deg: number
     ) => {
         const origW = img.naturalWidth || img.width;
         const origH = img.naturalHeight || img.height;
-        const targetW = 112;
+        
+        const targetW = canvasW * 0.35; 
         const targetH = origH * (targetW / origW);
-        const cx = canvas.width / (2 * dpr);
-        const cy = canvas.height / (2 * dpr);
-        const dx = nahodneCislo(-30, 30);
-        const dy = nahodneCislo(-30, 30);
-        const deg = nahodneCislo(-30, 30);
+        
+        const cx = canvasW / 2;
+        const cy = canvasH / 2;
         const rad = (deg * Math.PI) / 180;
 
+        const realneDx = dx * (canvasW / 300);
+        const realneDy = dy * (canvasH / 300);
+
         ctx.save();
-        ctx.translate(cx + dx, cy + dy);
+        ctx.translate(cx + realneDx, cy + realneDy);
         ctx.rotate(rad);
 
-        ctx.shadowColor = "black";
-        ctx.shadowOffsetX = -2;
-        ctx.shadowOffsetY = 2;
-        ctx.shadowBlur = 2;
+        ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+        ctx.shadowOffsetX = -2 * (canvasW / 300); 
+        ctx.shadowOffsetY = 2 * (canvasH / 300);
+        ctx.shadowBlur = 4 * (canvasW / 300);
 
-        const r = 8;
+        const r = 8 * (canvasW / 300); 
         const x = -targetW / 2;
         const y = -targetH / 2;
         const w = targetW;
         const h = targetH;
 
         ctx.beginPath();
-        const rr = (ctx as unknown as { roundRect?: (x:number,y:number,w:number,h:number,r:number)=>void }).roundRect;
-        if (rr) {
-            rr.call(ctx, x, y, w, h, r);
+        if (typeof ctx.roundRect === "function") {
+            ctx.roundRect(x, y, w, h, r);
         } else {
             ctx.moveTo(x + r, y);
             ctx.lineTo(x + w - r, y);
@@ -71,36 +67,89 @@ export function Deck({ images }: { images: string[] }) {
             ctx.quadraticCurveTo(x, y, x + r, y);
         }
         ctx.closePath();
-
         ctx.clip();
         ctx.drawImage(img, x, y, w, h);
-
         ctx.restore();
     }, []);
 
-    useEffect(() => {
-        if (images.length === 0) return;
-        const raw = images[images.length - 1];
-        if (!raw || typeof raw !== "string") return;
-
+    const prekresliVsechno = useCallback(() => {
         const canvas = canvasRef.current;
         if (!canvas) return;
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
         const dpr = window.devicePixelRatio || 1;
+        
+        canvas.width = dimensions.width * dpr;
+        canvas.height = dimensions.height * dpr;
+        
+        ctx.resetTransform();
+        ctx.scale(dpr, dpr);
+        ctx.clearRect(0, 0, dimensions.width, dimensions.height);
+
+        deckHistoryRef.current.forEach((karta) => {
+            vykresliKartu(ctx, karta.img, dimensions.width, dimensions.height, karta.dx, karta.dy, karta.deg);
+        });
+    }, [dimensions, vykresliKartu]);
+
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+
+        const resizeObserver = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                const { width, height } = entry.contentRect;
+                setDimensions({ width: width || 300, height: height || 300 });
+            }
+        });
+
+        resizeObserver.observe(canvas);
+        return () => resizeObserver.disconnect();
+    }, []);
+
+    useEffect(() => {
+        prekresliVsechno();
+    }, [dimensions, prekresliVsechno]);
+
+    // 3. Efekt, který reaguje POUZE na přidání nové karty do pole `images`
+    useEffect(() => {
+        if (images.length === 0) {
+            deckHistoryRef.current = [];
+            lastLengthRef.current = 0;
+            prekresliVsechno();
+            return;
+        }
+
+        // Pokud se délka pole nezvětšila, ignorujeme to (zabraňuje skákání při resize)
+        if (images.length <= lastLengthRef.current) {
+            return;
+        }
+
+        const raw = images[images.length - 1];
+        if (!raw || typeof raw !== "string") return;
+
         const src = raw.startsWith("/") || raw.startsWith("http") ? raw : `/img/karty/${raw}.png`;
+        
         const img = new window.Image();
         img.src = src;
         img.onload = () => {
-            loadedImagesRef.current.push(img);
-            vykresli(ctx, img, canvas, dpr);
-        };
-    }, [images, vykresli]);
+            const novaKarta = {
+                img,
+                dx: nahodneCislo(-30, 30), 
+                dy: nahodneCislo(-30, 30),
+                deg: nahodneCislo(-30, 30) 
+            };
 
-    function nahodneCislo(min: number, max: number) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+            deckHistoryRef.current.push(novaKarta);
+            
+            if (deckHistoryRef.current.length > 20) {
+                deckHistoryRef.current.shift();
+            }
+
+            lastLengthRef.current = images.length;
+            prekresliVsechno();
+        };
+    }, [images]); // Záměrně odebráno 'prekresliVsechno' ze závislostí
 
     return (
         <canvas
@@ -108,9 +157,13 @@ export function Deck({ images }: { images: string[] }) {
                 canvasRef.current = node;
                 setNodeRef(node); 
             }}
-            width={300}
-            height={300}
-            style={{ width: 300, height: 300, outline: isOver ? "2px solid yellow" : undefined }}
+            style={{ 
+                width: "100%",
+                maxWidth: "clamp(6.5em, 30vw, 300px)", 
+                aspectRatio: "1 / 1",
+                outline: isOver ? "2px solid yellow" : undefined,
+                boxSizing: "border-box"
+            }}
         />
     );
 }

@@ -4,12 +4,12 @@ import { useTranslation} from "react-i18next";
 const nameCss = {
     backgroundColor: "white",
     borderRadius: "0.2em",
-    fontSize: "large",
-    padding: "10px",
+    fontSize: "clamp(0.85rem, 1.5vw, 1.2rem)",
+    padding: "clamp(4px, 1vw, 10px)",
     display: "block",
     width: "fit-content",
-    marginTop: "5px",
-    marginBottom: "5px",
+    marginTop: "clamp(2px, 0.5vw, 5px)",
+    marginBottom: "clamp(2px, 0.5vw, 5px)",
     marginLeft: "5px",
 };
 

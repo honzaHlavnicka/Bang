@@ -120,7 +120,8 @@
         "character_label": "postava: {{name}}",
         "health_label_one": "1 život.",
         "health_label_few": "{{count}} životy.",
-        "health_label_other": "{{count}} životů."
+        "health_label_other": "{{count}} životů.",
+        "on_turn": "na tahu"
     },
 
     "flipping_card": {
@@ -172,5 +173,13 @@
         "hide_details": "Skrýt podrobnosti a právní upozornění"
     },
     "Připoj se naskenováním!": "Připoj se naskenováním!",
-    "Zobrazit QR kód": "Zobrazit QR kód"
+    "Zobrazit QR kód": "Zobrazit QR kód",
+    "my_things": {
+        "card_action_header": "Co chceš dělat s kartou?",
+        "action_play": "zahrát",
+        "action_discard": "odhodit",
+        "action_play_in_front": "vyložit",
+        "action_play_on_player": "vyložit před někoho",
+        "play_on_player_header": "Před koho?"
+    }
 }

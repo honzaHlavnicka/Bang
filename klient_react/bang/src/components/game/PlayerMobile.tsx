@@ -5,10 +5,12 @@ import Card from "../Card";
 import globalCss from "../../styles/global.module.css";
 import SmallCards from "./SmallCards";
 import ZoomToggleButton from "../ZoomButton";
+import { useTranslation } from "react-i18next";
 
 export default function PlayerMobile({ player }: { player: Player }) {
     const [detailsOpen, setDetailsOpen] = useState(false);
     const { gameState } = useGame();
+    const { t } = useTranslation();
 
     return (
         <>
@@ -81,7 +83,7 @@ export default function PlayerMobile({ player }: { player: Player }) {
                     onClick={(e) => e.stopPropagation()}
                 > 
                     <h3 style={{ marginTop: 0, marginBottom: '15px' }}>
-                        <NameTag jmeno={player.name + (player.id === gameState.turnPlayerId ? "(na tahu)" : "")} />
+                        <NameTag jmeno={player.name + (player.id === gameState.turnPlayerId ? ` (${t("player.on_turn")})` : "")} />
 
                     </h3>
                     <hr/>
@@ -109,7 +111,7 @@ export default function PlayerMobile({ player }: { player: Player }) {
                     <button 
                         onClick={() => setDetailsOpen(false)}
                         className={globalCss.button}
-                    > Zavřít</button>
+                    > {t("Zavřít")}</button>
                 </div>
             </div>
             

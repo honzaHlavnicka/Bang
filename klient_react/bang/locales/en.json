@@ -103,7 +103,8 @@
     "player": {
         "character_label": "character: {{name}}",
         "health_label_one": "1 life.",
-        "health_label_other": "{{count}} lives."
+        "health_label_other": "{{count}} lives.",
+        "on_turn": "on turn"
     },
 
     "flipping_card": {
@@ -153,12 +154,20 @@
     "Na": "At",
     "si můžete přečíst více.": "you can read more.",
     "itch.io": "itch.io",
-"cookie_bar": {
-    "title": "Privacy & Game Data Settings",
-    "text": "To ensure seamless game performance, we store essential technical data (for reconnection and language settings). We use analytics tools hosted within the EU to improve the game. By default, we only collect anonymous data. By granting consent, you help our development by enabling advanced analytics and error session recording.",
-    "show_details": "Show details and legal notices",
-    "hide_details": "Hide details and legal notices",
+    "cookie_bar": {
+        "title": "Privacy & Game Data Settings",
+        "text": "To ensure seamless game performance, we store essential technical data (for reconnection and language settings). We use analytics tools hosted within the EU to improve the game. By default, we only collect anonymous data. By granting consent, you help our development by enabling advanced analytics and error session recording.",
+        "show_details": "Show details and legal notices",
+        "hide_details": "Hide details and legal notices"
+    },
     "Připoj se naskenováním!": "Join by scanning!",
-    "Zobrazit QR kód": "Show QR code"
-}
+    "Zobrazit QR kód": "Show QR code",
+    "my_things": {
+        "card_action_header": "What do you want to do with the card?",
+        "action_play": "play",
+        "action_discard": "discard",
+        "action_play_in_front": "play in front of me",
+        "action_play_on_player": "play in front of someone",
+        "play_on_player_header": "In front of whom?"
+    }
 }

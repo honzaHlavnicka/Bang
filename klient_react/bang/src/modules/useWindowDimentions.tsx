@@ -27,3 +27,9 @@ export default function useWindowDimensions() {
   return windowDimensions;
 }
 
+export function useIsMobile() {
+  const { width, height } = useWindowDimensions();
+  return width < 600 || height < 600;
+}
+
+

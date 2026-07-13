@@ -6,10 +6,11 @@ import InPlayCards from "./InPlayCards";
 import NameTag from "./NameTag";
 import { useTranslation } from 'react-i18next';
 import { useDialog } from "../../modules/DialogContext";
+import { useIsMobile } from "../../modules/useWindowDimentions";
 
 export default function MyThings() {
     const {t} = useTranslation();
-    const {gameState,playCard} = useGame();
+    const {gameState,playCard, fireCard,putCardInPlay,putCardInPlayOnPlayer} = useGame();
     const role = gameState.role;
     const jmeno = gameState.name;
     const karty = gameState.handCards || [];
@@ -24,12 +25,13 @@ export default function MyThings() {
         if(cardId !== -1){
             openDialog({type:"CONFIRM_ACTION",
                 notClosable:false,
-                dialogHeader:"Co chceš dělat s kartou?",
+                dialogHeader:t("my_things.card_action_header"),
                 data:{
                     actions:[
-                        {name:"zahrát", id:0},
-                        {name:"odhodit", id:1},
-                        {name:"vyložit", id:2},
+                        {name:t("my_things.action_play"), id:0},
+                        {name:t("my_things.action_discard"), id:1},
+                        {name:t("my_things.action_play_in_front"), id:2},
+                        {name:t("my_things.action_play_on_player"), id:3}
                     ]
                                 },
                 callback:(actionId:number)=>{
@@ -38,10 +40,26 @@ export default function MyThings() {
                             playCard(cardId);
                             break;
                         case 1:
-                            alert("odhodit");
+                            fireCard(cardId);
                             break;
                         case 2:
-                            alert("vyložit");
+                            putCardInPlay(cardId);
+                            break;
+                        case 3:
+                            openDialog({type:"SELECT_PLAYER",
+                                notClosable:false,
+                                dialogHeader:t("my_things.play_on_player_header"),
+                                data:{
+                                    max:1,
+                                    min:0,
+                                    players:gameState.players?.filter(p => p.id !== gameState.playerId).map(p => ({ id: p.id, name: p.name })) ?? []
+                                },
+                                callback:(playerId:number[])=>{
+                                    if(playerId.length > 0){
+                                        putCardInPlayOnPlayer(cardId,playerId[0]);
+                                    }
+                                }
+                            });
                             break;
                     }
                 }
@@ -49,11 +67,35 @@ export default function MyThings() {
         }
     }
     const hasVerticalSpace = useMediaQuery("(min-height: 1000px)");
-    const isMobile = useMediaQuery("(max-width: 768px)");
+    const isMobile = useIsMobile();
     if (isMobile) {
+        const rowScrollStyle: React.CSSProperties = {
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start", 
+            width: "100%",
+            overflowX: "auto",
+            WebkitOverflowScrolling: "touch",
+            touchAction: "pan-x",
+            boxSizing: "border-box"
+        };
+
         return (
-            <div style={{ width: "100%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", flex: "0 0 auto", overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x", zIndex: 3 }}>
-                <Cards isDragable={false} onClickCard={CardClick} cards={karty} isInline={false} />
+            <div style={{ width: "100%", display: "flex", flexDirection: "column", flex: "0 0 auto", zIndex: 3 }}>
+                    
+                <div style={rowScrollStyle}>
+                    <NameTag jmeno={jmeno || t("nepojmenovaný hráč")} isDead={isDead} showDeadIndicator={gameState.allowedUIElements.includes("ZIVOTY")} style={{backgroundColor:(gameState.playerId === gameState.turnPlayerId)?"yellow":"white", flex: "0 0 auto"}} />
+                    {gameState.allowedUIElements.includes("ROLE") ?    <Card image={`/img/karty/role/${role}.png`} />: null}
+                    {gameState.allowedUIElements.includes("POSTAVA") ? <Card image={`/img/karty/postavy/${postava}.png`} />: null}
+                    {gameState.allowedUIElements.includes("ZIVOTY") ? <Card image={`/img/velkeZivoty/${zdravy}zivoty.png`} />: null}
+                    <div style={{ width: "30px", flex: "0 0 auto" }} />
+                    <Cards isDragable={false} onClickCard={CardClick} cards={vylozeneKarty} isInline={false} />
+                </div>
+
+                <div style={rowScrollStyle}>
+                    <Cards isDragable={false} onClickCard={CardClick} cards={karty} isInline={false} />
+                </div>
             </div>
         )
     }

@@ -2,13 +2,13 @@ import Player from "./Player";
 import { useRef, useEffect, useMemo } from "react";
 import css from "../../styles/scrolable.module.css"
 import { useGame } from "../../modules/GameContext";
-import useWindowDimensions from "../../modules/useWindowDimentions";
+import { useIsMobile } from "../../modules/useWindowDimentions";
 import PlayerMobile from "./PlayerMobile";
 
 export default function Players() {
     const containerRef = useRef<HTMLDivElement>(null);
     const {gameState} = useGame();
-    const {width} = useWindowDimensions();
+    const isMobile = useIsMobile();
 
     // Přesměrování vertikálního scrollu na horizontální
     function handleWheel(e: React.WheelEvent<HTMLDivElement>) {
@@ -70,7 +70,7 @@ export default function Players() {
            {ostatniHraci.map((player)=>{
             return (
                 <>
-                {width < 600 ?
+                {isMobile ?
                     <PlayerMobile player={player} key={player.id} />
                     :<Player 
                             jmeno={player.name}

@@ -30,7 +30,7 @@ export default function Cards({
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            marginLeft: "5em"
+            marginLeft: isInline ? "5em" : "0"
         }}>
             {isDragable ? (
                 <>
@@ -38,7 +38,6 @@ export default function Cards({
                         <DragableCard
                             {...(onClickCard ? { onClick: onClickCard } : {})}
                             image={"/img/karty/" + card.image + ".png"}
-                            style={{ maxWidth: 100 / (cards.length - 10) + "vw" }}
                             key={card.id}
                             id={card.id}
                             animationOnStart={isAnimated}
@@ -55,7 +54,6 @@ export default function Cards({
                         <Card
                             {...(onClickCard ? { onClick: onClickCard } : {})}
                             image={"/img/karty/" + card.image + ".png"}
-                            style={{ maxWidth: 100 / (cards.length - 10) + "vw" }}
                             key={card.id}
                             id={card.id}
                             animationOnStart={isAnimated}
