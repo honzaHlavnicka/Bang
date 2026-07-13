@@ -1,3 +1,6 @@
+/**
+ * Původní verze tohoto projektu vznikla jako školní dílo na Gymnáziu, Praha 6, Arabská 14, v roce 2026.
+ */
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'

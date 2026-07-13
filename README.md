@@ -232,6 +232,11 @@ Plugin zkompiluj do `.jar` a vlož do složky `/pluginy/` — server ho načte a
 
 ---
 
+## Licence
+
+Původní verze tohoto projektu vznikla jako školní dílo na Gymnáziu, Praha 6, Arabská 14, v roce 2026. Projekt podléhá licenčním podmínkám EULA, viz soubor [LICENSE](LICENSE).
+
+---
 
 <div align="center">
 

@@ -83,11 +83,20 @@
     "honzaa.cz": "honzaa.cz",
     "vytvoření pluginu": "plugin creation",
     "GitHub": "GitHub",
+    "Podpořit hru": "Support the Game",
+    "Jak nás podpořit": "How to Support Us",
+    "IBAN zkopírován do schránky": "IBAN copied to clipboard",
+    "Číslo účtu zkopírováno do schránky": "Account number copied to clipboard",
+    "Zkopírovat": "Copy",
+    "IBAN": "IBAN",
+    "Číslo účtu": "Account Number",
+    "warning_qr_abroad": "Warning: QR payment only works within the Czech Republic. For payments from abroad, please use IBAN.",
+    "voluntary_note": "Financial support is entirely voluntary. Providing it does not grant you any in-game benefits or preferential rights.",
     "Souhlasím": "I agree",
     "Upozornění:": "Warning:",
     "footer": {
-        "copyright": "&copy; 2026 Jan Hlavnička.",
-        "legal_text": "This website is a non-commercial, fan-made, and personal project. It is not affiliated with the original game publishers in any way. BANG!® is a registered trademark of daVinci Editrice S.r.l. (dV Giochi). UNO® is a registered trademark of Mattel, Inc. All copyrights to the card illustrations, names, and game mechanics belong to their respective owners. Icons used: <a href=\"https://www.flaticon.com/free-icons/fire\" title=\"fire icons\" target=\"_blank\" rel=\"noopener noreferrer\">Freepik - Flaticon</a>. The source code and remaining content are licensed under the terms found in the <a href=\"https://github.com/honzaHlavnicka/Bang/blob/master/LICENSE\" target=\"_blank\">LICENSE</a> file. By connecting to the game, you confirm that you will not download or further distribute any images or copyrighted content from this website without explicit consent, and you agree to abide by the principles of decent behavior and applicable laws. For legal inquiries, please contact prava@honzaa.cz. <br><br><strong>Privacy and Data Protection:</strong> This website does not use any marketing or advertising cookies. We only store essential functional identifiers in your browser's local storage (LocalStorage) to preserve your selected language and to allow reconnection to an active game session if disconnected. To analyze errors and improve performance, we utilize PostHog, with all data being processed exclusively on servers located within the European Union. Without your consent, we only collect basic, fully anonymized technical data without any user identification. Advanced analytics and session recording for bug tracking are strictly enabled only upon your explicit active consent."
+        "copyright": "&copy; 2026 Jan Hlavnička. The original version of this project was created as a school project at Gymnázium, Praha 6, Arabská 14, in 2026.",
+        "legal_text": "The original version of this project was created as a school project at Gymnázium, Praha 6, Arabská 14, in 2026. <br><br>This website is a non-commercial, fan-made, and personal project. It is not affiliated with the original game publishers in any way. BANG!® is a registered trademark of daVinci Editrice S.r.l. (dV Giochi). UNO® is a registered trademark of Mattel, Inc. All copyrights to the card illustrations, names, and game mechanics belong to their respective owners. Icons used: <a href=\"https://www.flaticon.com/free-icons/fire\" title=\"fire icons\" target=\"_blank\" rel=\"noopener noreferrer\">Freepik - Flaticon</a>. The source code and remaining content are licensed under the terms found in the <a href=\"https://github.com/honzaHlavnicka/Bang/blob/master/LICENSE\" target=\"_blank\">LICENSE</a> file. By connecting to the game, you confirm that you will not download or further distribute any images or copyrighted content from this website without explicit consent, and you agree to abide by the principles of decent behavior and applicable laws. For legal inquiries, please contact prava@honzaa.cz. <br><br><strong>Privacy and Data Protection:</strong> This website does not use any marketing or advertising cookies. We only store essential functional identifiers in your browser's local storage (LocalStorage) to preserve your selected language and to allow reconnection to an active game session if disconnected. To analyze errors and improve performance, we utilize PostHog, with all data being processed exclusively on servers located within the European Union. Without your consent, we only collect basic, fully anonymized technical data without any user identification. Advanced analytics and session recording for bug tracking are strictly enabled only upon your explicit active consent."
     },
 
 
