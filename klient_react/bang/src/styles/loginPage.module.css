@@ -283,3 +283,218 @@
     font-size:1em;
     padding:8px;
 }
+
+.linkButton {
+    background: none;
+    border: none;
+    color: orange;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0;
+    text-decoration: none;
+    transition: color 0.2s, text-shadow 0.2s;
+}
+
+.linkButton:hover {
+    text-decoration: underline;
+    color: #e08500;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1003;
+    opacity: 0;
+    animation: fadeIn 0.25s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.modalContainer {
+    --bg: #ffffff;
+    --fg: #111827;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --accent: #2563eb;
+    --accent-foreground: #ffffff;
+    --focus: #93c5fd;
+    --bgMuted: #ffffffa2;
+
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: clamp(16px, 4vw, 24px);
+    padding: clamp(16px, 4vw, 30px);
+    width: min(500px, 92vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: var(--fg);
+}
+
+:global(.darkMode) .modalContainer {
+    --bg: #2c2c2c;
+    --bgMuted: #241c1aa2;
+    --fg: #f1f5f9;
+    --muted: #9ca3af;
+    --border: #334155;
+    --accent: #3b82f6;
+    --accent-foreground: #ffffff;
+    --focus: #60a5fa;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); }
+    to { transform: translateY(0); }
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 15px;
+}
+
+.modalHeader h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: orange;
+    font-weight: 700;
+}
+
+.modalCloseButton {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 28px;
+    cursor: pointer;
+    padding: 0 4px;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.modalCloseButton:hover {
+    color: var(--fg);
+}
+
+.modalBody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+}
+
+.qrCodeImg {
+    width: 200px;
+    height: 200px;
+    border-radius: 12px;
+    border: 4px solid white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background-color: white;
+}
+
+.accountDetails {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+}
+
+:global(.darkMode) .accountDetails {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.accountRow {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.accountLabel {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.accountValueContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.accountValue {
+    font-family: 'Segoe UI', system-ui, -apple-system, monospace;
+    font-size: 13px;
+    font-weight: 600;
+    word-break: break-all;
+}
+
+.copyButton {
+    background: orange;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    flex-shrink: 0;
+}
+
+.copyButton:hover {
+    background: #e08500;
+}
+
+.copyButton:active {
+    transform: scale(0.95);
+}
+
+.modalWarning {
+    background-color: rgba(239, 83, 80, 0.1);
+    border: 1px solid rgba(239, 83, 80, 0.2);
+    border-radius: 12px;
+    padding: 12px;
+    color: #f87171;
+    font-size: 13px;
+    text-align: left;
+    line-height: 1.4;
+    width: 100%;
+}
+
+.modalInfo {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: justify;
+}
+

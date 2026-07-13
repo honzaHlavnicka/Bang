@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { usePostHog } from '@posthog/react';
 import config from '../config';
 import CookieBar from '../components/CookieBar';
+import DonateModal from '../components/DonateModal';
 
 export default function LoginPage() {
     const { t , i18n} = useTranslation();
@@ -20,6 +21,7 @@ export default function LoginPage() {
     const [openCard , setOpenCard] = useState<string>("pripojeni");
     const gameToken = localStorage.getItem("gameToken");
     const [worldQuizVisible, setWorldQuizVisible] = useState(true);
+    const [donateOpen, setDonateOpen] = useState(false);
     //const [menu, setMenu] = useState({x:0,y:0,visible:false})
     
 
@@ -121,7 +123,7 @@ export default function LoginPage() {
                    {t("LOGIN_POPIS_BEZ_ODKAZU")} <a href='https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md' target='_blank'>{t("plugin")}</a>.
                 </p>
                 <p>
-                    {t("Na")} <a href={i18n.language === "cs" ? "https://bang.honzaa.cz/o-hrach" : "https://bang.honzaa.cz/en/about-games"} target="_blank">{t("link_této_stránce")}</a> {t("si můžete přečíst více.")}
+                    {t("Na")} <a href={i18n.language.startsWith("cs") ? "https://bang.honzaa.cz/o-hrach" : "https://bang.honzaa.cz/en/about-games"} target="_blank">{t("link_této_stránce")}</a> {t("si můžete přečíst více.")}
                 </p>
                 <div className={css.radioButtonsParent} >
                     {gameToken &&
@@ -264,6 +266,8 @@ export default function LoginPage() {
                             <a href="https://github.com/honzaHlavnicka/Bang" target="_blank" rel="noopener noreferrer">{t("GitHub")}</a>
                             <span className={css.separator}>•</span>
                             <a href="https://honzaa.itch.io/card-games" target="_blank" rel="noopener noreferrer">{t("itch.io")}</a>
+                            <span className={css.separator}>•</span>
+                            <button onClick={() => setDonateOpen(true)} className={css.linkButton}>{t("Podpořit hru")}</button>
                         </nav>
                     </div>
                 </footer>
@@ -274,6 +278,7 @@ export default function LoginPage() {
                 onClose={() => setZobrazenaPaticka(false)}
                 onOpen={() => setZobrazenaPaticka(true)}
             />
+            <DonateModal isOpen={donateOpen} onClose={() => setDonateOpen(false)} />
         </div >
 
     );

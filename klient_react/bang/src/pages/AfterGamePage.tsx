@@ -1,3 +1,4 @@
+import { useState } from "react";
 import css from "../styles/waitingPage.module.css";
 import DarkModeSwitch from "../components/DarkModeSwitch";
 import globalCSS from "../styles/global.module.css";
@@ -7,11 +8,13 @@ import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 
 import { usePostHog } from "@posthog/react";
+import DonateModal from "../components/DonateModal";
 
 export default function AfterGamePage(){
-    const {gameState} = useGame();
+    const {gameState, startNewGameAndDeleteThisOne} = useGame();
     const {t} = useTranslation();
     const posthog = usePostHog();
+    const [donateOpen, setDonateOpen] = useState(false);
 
     const language = i18n.language;
 
@@ -31,7 +34,7 @@ export default function AfterGamePage(){
                         </li>
                     ))}
                 </ol>
-                <div style={{textAlign:"center"}} >
+                <div style={{textAlign:"center", display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap"}} >
                     <a 
                         className={globalCSS.button} 
                         href="/"
@@ -39,6 +42,20 @@ export default function AfterGamePage(){
                     >
                         {t("Zpět na úvodní stránku")}
                     </a>
+                    {gameState.isAdmin && (
+                        <button 
+                            className={globalCSS.button} 
+                            onClick={() => startNewGameAndDeleteThisOne()}
+                        >
+                            {t("Smazat hru a začít jinou")}
+                        </button>
+                    )}
+                    <button 
+                        className={globalCSS.button} 
+                        onClick={() => setDonateOpen(true)}
+                    >
+                        ❤️ {t("Podpořit hru")}
+                    </button>
                 </div>
             </div>
             <div className={css.content}>
@@ -62,6 +79,7 @@ export default function AfterGamePage(){
                 >jef.world-quiz.com</a>.</p>
             </div>
             <DarkModeSwitch style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
+            <DonateModal isOpen={donateOpen} onClose={() => setDonateOpen(false)} />
         </div>
     );
 }
