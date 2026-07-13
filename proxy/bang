@@ -1,51 +1,137 @@
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# UPSTREAM PRO JAVA BACKEND (KEEPALIVE OPTIMALIZACE)
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+upstream java_backend {
+    server localhost:8080;
+    keepalive 32; # Udrží otevřená spojení pro snížení režie CPU na RPi
+}
+
+# Definice zóny pro rate limiting (globální kontext v nginx.conf nebo zde)
+limit_req_zone $binary_remote_addr zone=karty_limit:10m rate=20r/s;
+
 server {
     listen 80;
-    server_name _; # Zachytí veškerý provoz na IP adrese Maliny
+    server_name bang.honzaa.cz; 
 
-    # 1. Kde Nginx najde statické soubory klienta
     root /var/www/bang;
     index index.html;
 
-    # Definice vlastní 404 stránky
     error_page 404 /404.html;
 
+    # Výkon a bezpečnost
+    server_tokens off;
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay on;
+    client_max_body_size 1M;
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # BEZPEČNOSTNÍ HLAVIČKY (Zabezpečení skriptů a iframe pro Itch.io)
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    add_header Content-Security-Policy "frame-ancestors 'self' https://*.itch.io https://itch.io https://*.itch.zone https://*.hwcdn.net;" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # REÁLNÉ IP ADRESY Z CLOUDFLARE (Pro správnou identifikaci za tunelem)
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    set_real_ip_from 103.21.244.0/22;
+    set_real_ip_from 103.22.200.0/22;
+    set_real_ip_from 103.31.4.0/22;
+    set_real_ip_from 104.16.0.0/13;
+    set_real_ip_from 104.24.0.0/14;
+    set_real_ip_from 108.162.192.0/18;
+    set_real_ip_from 131.0.72.0/22;
+    set_real_ip_from 141.101.64.0/18;
+    set_real_ip_from 146.75.0.0/16;
+    set_real_ip_from 162.254.192.0/18;
+    set_real_ip_from 172.64.0.0/13;
+    set_real_ip_from 173.245.48.0/20;
+    set_real_ip_from 188.114.96.0/20;
+    set_real_ip_from 190.93.240.0/20;
+    set_real_ip_from 195.211.220.0/22;
+    set_real_ip_from 197.234.240.0/22;
+    set_real_ip_from 198.41.128.0/17;
+    real_ip_header CF-Connecting-IP;
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # LOGOVÁNÍ ŠETRNÉ K SD KARTĚ (Zápis jednou za 15 minut nebo při 256 KB)
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    access_log /var/log/nginx/access.log combined buffer=256k flush=15m;
+    error_log /var/log/nginx/error.log warn;
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # GZIP KOMPRESE
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 256;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_types text/plain text/css application/json application/javascript text/javascript text/xml application/xml application/xml+rss image/svg+xml;
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # ROUTOVÁNÍ A CACHE STRUKTURA
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    
+    # HTML Stránky (Bez cache, aplikován rate limit)
     location / {
-        # KLÍČOVÁ ZMĚNA: 
-        # 1. Zkusí přesnou cestu ($uri)
-        # 2. Zkusí cestu jako složku ($uri/)
-        # 3. Zkusí přidat .html ($uri.html) -> vyřeší /o-hrach na /o-hrach.html
-        # 4. Pokud nic z toho neexistuje, padne to na @react_fallback
+        expires -1;
+        add_header Cache-Control "no-store, no-cache, must-revalidate, proxy-revalidate" always;
+        
+        limit_req zone=karty_limit burst=30 nodelay;
+
         try_files $uri $uri/ $uri.html @react_fallback;
     }
 
-    # Speciální lokace pro React Router fallback
-    location @react_fallback {
-        # Pokud máš čistokrevné SPA (všechno řídí React Router), nech tu:
-        try_files /index.html =404;
-
-        # POKUD ALE CHCEŠ, aby neexistující soubory (třeba /neexistujici-stranka) 
-        # rovnou házely 404 místo načtení Reactu, zakomentuj řádek výše a odkomentuj tento:
-        # return 404;
+    # Vite Assety (1 rok cache - '^~' zajistí přeskočení regexů níže)
+    location ^~ /assets/ {
+        expires 1y;
+        add_header Cache-Control "public, immutable" always;
+        access_log off;
     }
 
-    # Ošetření, aby samotná 404 stránka byla interní a necyklila se
+    # Obrázky a statické CSS/JS mimo složku /assets/ (7 dní cache)
+    location ~* \.(?:ico|css|js|gif|jpe?g|png|svg|woff2?|eot|ttf)$ {
+        expires 7d;
+        add_header Cache-Control "public, must-revalidate" always;
+        access_log off;
+    }
+
+    location = /favicon.ico { log_not_found off; access_log off; }
+    location = /robots.txt { log_not_found off; access_log off; }
+
+    location @react_fallback {
+        return 404;
+    }
+
     location = /404.html {
         internal;
     }
 
-    # 2. Směrování na Java backend (včetně podpory pro WebSockets)
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # JAVA BACKEND & WEBSOCKETS (S ochranou a keepalive proxy)
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     location /ws {
-        proxy_pass http://localhost:8080; # Zde změň port, pokud máš jiný než 8080
+        # Ochrana před zneužitím z cizích webů
+        if ($http_origin !~* "^(https?://(localhost|bang\.honzaa\.cz|itch\.io|.*\.itch\.io))$") {
+            return 403;
+        }
+
+        # Rate limit pro úvodní WS handshake
+        limit_req zone=karty_limit burst=5 nodelay;
+
+        proxy_pass http://java_backend; 
         
-        # Tyto hlavičky jsou naprosto kritické pro to, aby se nesesypalo 
-        # WebSocket spojení (HTTP Upgrade request)
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
         
-        # Předání reálných IP adres do Javy (pro logy nebo banování)
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        proxy_buffering off;
     }
 }
