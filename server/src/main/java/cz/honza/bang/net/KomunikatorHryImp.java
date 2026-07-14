@@ -97,6 +97,61 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
             if(message.startsWith("chat:")){
                 posliVsem(message + " [od: "+hrac.getJmeno()+"]");
             }
+            if (message.startsWith("vyhodHrace:")) {
+                if (!hrac.equals(getAdmin())) {
+                    posliChybu(hrac, Chyba.NEJSI_ADMIN_HRY);
+                    return;
+                }
+                if (hra.isZahajena()) {
+                    posliChybu(hrac, Chyba.KARTA_NEJDE_ZAHRAT);
+                    return;
+                }
+                try {
+                    int targetId = Integer.parseInt(message.replace("vyhodHrace:", ""));
+                    HracImp targetHrac = null;
+                    for (cz.honza.bang.sdk.Hrac h : hra.getHraci()) {
+                        if (h.getId() == targetId) {
+                            targetHrac = (HracImp) h;
+                            break;
+                        }
+                    }
+                    if (targetHrac != null) {
+                        WebSocket targetConn = websocketPodleHracu.get(targetHrac);
+                        if (targetConn != null && targetConn.isOpen()) {
+                            targetConn.send("error:{\"error\":\"Byl jsi vyhozen ze hry hráčem " + hrac.getJmeno() + ".\",\"kod\":" + Chyba.VYHOZEN_ZE_HRY.getKod() + ",\"skupina\":1}");
+                            targetConn.close();
+                        }
+                        
+                        if (targetConn != null) {
+                            hraciPodleWebsocketu.remove(targetConn);
+                        }
+                        websocketPodleHracu.remove(targetHrac);
+                        
+                        String targetToken = null;
+                        for (Map.Entry<String, HracImp> entry : hraciPodlIdentifikatoru.entrySet()) {
+                            if (entry.getValue().equals(targetHrac)) {
+                                targetToken = entry.getKey();
+                                break;
+                            }
+                        }
+                        if (targetToken != null) {
+                            hraciPodlIdentifikatoru.remove(targetToken);
+                        }
+                        
+                        hra.odeberHrace(targetHrac);
+                        
+                        aktualizujAdmina();
+                        posliHraceVsem();
+                        
+                        logger.info("Admin {} vyhodil hráče {}", hrac.getJmeno(), targetHrac.getJmeno());
+                    }
+                } catch (Exception ex) {
+                    logger.error("Chyba při vyhazování hráče: {}", message, ex);
+                    posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
+                }
+                return;
+            }
+
             if(message.startsWith("zahajeniHry")){
                 // Kontrola, jestli je hráč admin (ten, který vytvořil hru)
                 if (!hrac.equals(getAdmin())) {
@@ -276,6 +331,10 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     public boolean jeHracPripojen(HracImp hrac) {
         WebSocket ws = websocketPodleHracu.get(hrac);
         return ws != null && ws.isOpen();
+    }
+
+    public boolean jeTokenHracePlatny(String token) {
+        return hraciPodlIdentifikatoru.containsKey(token);
     }
 
     public synchronized void aktualizujAdmina() {

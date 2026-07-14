@@ -104,7 +104,7 @@ export default function LoginPage() {
             }
 
             const key = e.key.toLowerCase();
-            if (key === "z" && gameToken) {
+            if (key === "z" && gameToken && gameState.isTokenValid) {
                 setOpenCard("pripojeni");
             } else if (key === "p") {
                 setOpenCard("kod");
@@ -115,7 +115,7 @@ export default function LoginPage() {
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [gameToken]);
+    }, [gameToken, gameState.isTokenValid]);
     
     useEffect(() => {
         const souhlas = localStorage.getItem("souhlas");
@@ -123,6 +123,12 @@ export default function LoginPage() {
             setZobrazenaPaticka(false);
         }
     }, []);
+
+    useEffect(() => {
+        if (gameToken && gameState.isTokenValid) {
+            setOpenCard("pripojeni");
+        }
+    }, [gameState.isTokenValid, gameToken]);
 
 
     function zkontroluj(isToConnect: boolean = false) {
@@ -164,7 +170,7 @@ export default function LoginPage() {
                     {t("Na")} <a href={i18n.language.startsWith("cs") ? "https://bang.honzaa.cz/o-hrach" : "https://bang.honzaa.cz/en/about-games"} target="_blank">{t("link_této_stránce")}</a> {t("si můžete přečíst více.")}
                 </p>
                 <div className={css.radioButtonsParent} >
-                    {gameToken &&
+                    {gameToken && gameState.isTokenValid &&
                     <button 
                         className={globalCSS.button + " " + (openCard == "pripojeni" ? globalCSS.buttonActive : "") + " " + css.radioButton}
                         onClick={() => {setOpenCard("pripojeni");setWorldQuizVisible(false)}}
@@ -207,7 +213,7 @@ export default function LoginPage() {
                             </a>
                         </div>
                     </div> : null}
-                {gameToken && !gameState.inGame && !gameState.playerId && openCard == "pripojeni" ?  (
+                {gameToken && gameState.isTokenValid && !gameState.inGame && !gameState.playerId && openCard == "pripojeni" ?  (
                     
                     <div className={css.box + " " + css.sectionCard} >
                         <h2>{t("Vrátit se k rozehrané hře")}</h2>
@@ -306,6 +312,8 @@ export default function LoginPage() {
                             <a href="https://github.com/honzaHlavnicka/Bang" target="_blank" rel="noopener noreferrer">{t("GitHub")}</a>
                             <span className={css.separator}>•</span>
                             <a href="https://honzaa.itch.io/card-games" target="_blank" rel="noopener noreferrer">{t("itch.io")}</a>
+                            <span className={css.separator}>•</span>
+                            <a href="/privacy" target="_blank" rel="noopener noreferrer">{t("Nastavení soukromí")}</a>
                             <span className={css.separator}>•</span>
                             <button onClick={() => setDonateOpen(true)} className={css.linkButton}>{t("Podpořit hru")}</button>
                         </nav>

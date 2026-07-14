@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { GameContext, gameStateDefault } from "./GameContext";
 import type { GameStateType } from "./GameContext";
-import { handleGameMessage, connectToGame, changePlayerName, chooseCharacter, createGame, startGame, playCard, drawCard, returnToGame, endTurn, fireCard, putCardInPlay, putCardInPlayOnPlayer, clickUIButton, startNewGameAndDeleteThisOne } from "./gameActions";
+import { handleGameMessage, connectToGame, changePlayerName, chooseCharacter, createGame, startGame, playCard, drawCard, returnToGame, endTurn, fireCard, putCardInPlay, putCardInPlayOnPlayer, clickUIButton, startNewGameAndDeleteThisOne, kickPlayer } from "./gameActions";
 import toast from "react-hot-toast";
 import { useDialog } from "./DialogContext";
 import { notify } from "./notify";
@@ -80,6 +80,12 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
                 toast.success(t("Připojeno k serveru"));
                 posthog.capture('socket_connected', { url: socketUrl });
 
+                // Pokud máme uložený token, ověříme jeho platnost na serveru
+                const token = sessionStorage.getItem("gameToken") || localStorage.getItem("gameToken");
+                if (token) {
+                    socket.send("overeniTokenu:" + token);
+                }
+
                 // Pokud se nám podařilo znovupřipojit, zavřeme chybový dialog odpojení, pokud byl otevřený
                 closeDialog();
 
@@ -90,13 +96,13 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
                 // Pokud jsme už byli ve hře, automaticky se znovupřipojíme pomocí tokenu
                 const current = stateRef.current;
-                const token = sessionStorage.getItem("gameToken") || localStorage.getItem("gameToken");
                 if (current.inGame && token) {
                     console.log(`Auto-rejoining game using token: ${token}`);
                     setGameState(prev => ({
                         ...gameStateDefault,
                         name: prev.name,
                         gameCode: prev.gameCode,
+                        gameTypesAvailable: prev.gameTypesAvailable,
                         inGame: true,
                         startedConection: true
                     }));
@@ -214,6 +220,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             putCardInPlayOnPlayer: (cardId, playerId) => isMock ? mockActions.putCardInPlayOnPlayer(cardId, playerId) : putCardInPlayOnPlayer(ws, cardId, playerId),
             clickUIButton: (buttonId) => isMock ? mockActions.clickUIButton(buttonId) : clickUIButton(ws, buttonId),
             startNewGameAndDeleteThisOne: () => isMock ? mockActions.startNewGameAndDeleteThisOne() : startNewGameAndDeleteThisOne(ws, openDialog, gameState),
+            kickPlayer: (playerId) => { if (!isMock) kickPlayer(ws, playerId); }
         }}>
             {children}
         </GameContext.Provider>

@@ -176,6 +176,24 @@ public class SocketServer extends WebSocketServer {
             return;
         }
         
+        if (message.startsWith("overeniTokenu:")) {
+            String fullToken = message.replace("overeniTokenu:", "");
+            if (fullToken.length() < 6) {
+                conn.send("overeniTokenu:false");
+                return;
+            }
+            String idHry = fullToken.substring(0, 6);
+            String tokenHrace = fullToken.substring(6);
+            
+            KomunikatorHryImp komunikatorHry = hryPodleId.get(idHry);
+            if (komunikatorHry != null && komunikatorHry.jeTokenHracePlatny(tokenHrace)) {
+                conn.send("overeniTokenu:true");
+            } else {
+                conn.send("overeniTokenu:false");
+            }
+            return;
+        }
+
         if(message.startsWith("vraceniSe:")){
             if(message.length() < 16 + 8){
                 conn.send("error:{\"error\":\"neplatný token\"}");

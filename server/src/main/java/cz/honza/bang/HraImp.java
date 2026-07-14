@@ -141,6 +141,12 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         List<cz.honza.bang.sdk.Hrac> l = new ArrayList<>(hraci);
         return l;
     }
+
+    public synchronized void odeberHrace(HracImp hrac) {
+        if (!zahajena) {
+            hraci.remove(hrac);
+        }
+    }
     
     /**
      * Vrátí hráče podle jeho id.

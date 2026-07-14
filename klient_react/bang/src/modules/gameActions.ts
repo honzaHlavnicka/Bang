@@ -55,8 +55,13 @@ export function handleGameMessage(
                 toast.error(json.error);
                 posthog.capture('server_error_received', { error_message: json.error, error_code: json.kod });
 
-                if(json.kod === 5 || json.error.includes("Hra neexistuje") || json.error.includes("hra už byla zahájena")){ // opraveno
-                    //Hra neexistuje
+                if (json.kod === 19) {
+                    sessionStorage.removeItem("gameToken");
+                    localStorage.removeItem("gameToken");
+                }
+
+                if(json.kod === 5 || json.kod === 19 || json.error.includes("Hra neexistuje") || json.error.includes("hra už byla zahájena")){ // opraveno
+                    //Hra neexistuje nebo byl hráč vyhozen
                     setGameState(prev => ({ ...prev, inGame: false, gameCode: null }) );
                 }
 
@@ -535,6 +540,11 @@ export function handleGameMessage(
             }
             break;
         }
+        case "overeniTokenu": {
+            const isValid = payload === "true";
+            setGameState(prev => ({ ...prev, isTokenValid: isValid }));
+            break;
+        }
         case "rychleOznameni":{
             notify(payload);
             break;
@@ -748,6 +758,7 @@ export function returnToGame(
                 ...gameStateDefault,
                 name: prev.name,
                 gameCode: prev.gameCode,
+                gameTypesAvailable: prev.gameTypesAvailable,
                 inGame: true,
                 startedConection: true
             }));
@@ -882,4 +893,11 @@ export function startNewGameAndDeleteThisOne(ws: WebSocket | null, openDialog: (
     };
 
     openDialog(dialog);
+}
+
+export function kickPlayer(ws: WebSocket | null, playerId: number) {
+    if (ws !== null) {
+        posthog.capture('player_kicked', { kicked_player_id: playerId });
+        ws.send("vyhodHrace:" + playerId);
+    }
 }

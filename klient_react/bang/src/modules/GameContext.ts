@@ -63,7 +63,7 @@ export type GameStateType = {
     gameStateMessegeFull?:string;
 
     winningPlaces?:number[][]; // [[<id 1. místa>], [<id 2. místa>,<2. id 2. místa>], ...]]
-
+    isTokenValid?: boolean;
 };
 export const gameStateDefault: GameStateType = {
     startedConection:false,
@@ -82,6 +82,7 @@ export const gameStateDefault: GameStateType = {
 
     allowedUIElements: ["ZIVOTY","UKONCENI_TAHU","POSTAVA","ROLE","VYLOZENE_KARTY","ODHAZOVACI_BALICEK","DOBIRACI_BALICEK"],
     customUIButtons: [],
+    isTokenValid: false,
 };
 
 export const GameContext = createContext<{
@@ -101,6 +102,7 @@ export const GameContext = createContext<{
     putCardInPlayOnPlayer: (cardId:number, playerId:number) => void;
     clickUIButton: (buttonId:number) => void;
     startNewGameAndDeleteThisOne: () => void;
+    kickPlayer: (playerId: number) => void;
 
 } | null>(null);
 

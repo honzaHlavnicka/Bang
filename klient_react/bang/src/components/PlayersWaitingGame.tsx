@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { usePostHog } from "@posthog/react";
 
 export default function PlayersWaitingGame() {
-    const {gameState ,startGame} = useGame();
+    const {gameState ,startGame, kickPlayer} = useGame();
     const isAdmin = gameState.isAdmin ?? false;
     const {t} = useTranslation();
     const posthog = usePostHog();
@@ -52,6 +52,31 @@ export default function PlayersWaitingGame() {
                     />
                     {player.name}
                     {player.isOnline === false && <span style={{ fontSize: "0.8em", color: "#ef4444", marginLeft: "4px" }}>({t("Odpojen")})</span>}
+                    {isAdmin && player.id !== gameState.playerId && (
+                        <button
+                            onClick={() => {
+                                if (window.confirm(t("Opravdu chcete vyhodit hráče {{name}}?" as any, { name: player.name }))) {
+                                    kickPlayer(player.id);
+                                }
+                            }}
+                            style={{
+                                background: "none",
+                                border: "none",
+                                color: "#ef4444",
+                                cursor: "pointer",
+                                fontSize: "1.2em",
+                                padding: "0 4px",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                marginLeft: "4px",
+                                transition: "transform 0.2s"
+                            }}
+                            title={t("Vyhodit hráče" as any)}
+                        >
+                            ✕
+                        </button>
+                    )}
                 </li>
             )}) }
             </ul>
