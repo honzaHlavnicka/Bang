@@ -96,5 +96,10 @@
         <priority>0.5</priority>
         <changefreq>monthly</changefreq>
     </url>
+    <url>
+        <loc>https://bang.honzaa.cz/privacy</loc>
+        <priority>0.4</priority>
+        <changefreq>yearly</changefreq>
+    </url>
 
 </urlset>

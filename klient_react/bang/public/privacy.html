@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ochrana osobních údajů a Podmínky použití | Bang! engine</title>
+    <meta name="description" content="Zásady ochrany osobních údajů (Privacy Policy) a Podmínky použití (Terms of Service) pro herní portál bang.honzaa.cz.">
+    <link rel="stylesheet" href="/clanky.css">
+    <script src="/posthog-static.js"></script>
+    <style>
+        .contact-box {
+            background: rgba(139, 90, 43, 0.08);
+            border-left: 4px solid var(--btn-bg);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .contact-box p {
+            margin: 0;
+        }
+        h3 {
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 8px;
+            margin-top: 2em;
+        }
+        ul {
+            margin-bottom: 1.6em;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 0.5em;
+        }
+        hr {
+            border: none;
+            border-top: 1px dashed rgba(0,0,0,0.2);
+            margin: 40px 0;
+        }
+        @media (prefers-color-scheme: dark) {
+            .contact-box {
+                background: rgba(212, 149, 85, 0.08);
+                border-left: 4px solid var(--btn-bg);
+            }
+            h3 {
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/cs/">🎮 Do herního lobby</a>
+        <a href="/o-hrach">Domů</a>
+        <a href="/bang.html">BANG!</a>
+        <a href="/prsi.html">Prší</a>
+        <a href="/uno.html">UNO</a>
+    </nav>
+
+    <div class="container">
+        <h1>Ochrana osobních údajů (Privacy Policy)</h1>
+        
+        <div class="contact-box">
+            <p>Provozovatelem této hry je <strong>Jan Hlavnička</strong>.<br>
+            Kontaktovat mě můžete na: <strong>prava@honzaa.cz</strong> (nebo přes <a href="https://github.com/honzaHlavnicka/Bang/issues" target="_blank" rel="noopener noreferrer">GitHub Issues</a>).</p>
+        </div>
+
+        <p>Protože si vážím vašeho soukromí, sbírám jen naprosté minimum dat, které je potřeba k tomu, aby hra vůbec fungovala.</p>
+
+        <h3>1. Jak funguje herní server a síť? (Všechno v RAM a ochrana přes Cloudflare)</h3>
+        <p>Můj herní server se nachází v Evropské unii. Pro fungování hry nepotřebuji žádnou trvalou databázi a <strong>na disky (SSD) mého serveru se neukládají vůbec žádná herní data</strong>.</p>
+        <ul>
+            <li><strong>Jak to funguje:</strong> Herní místnosti, přezdívky a kódy pro připojení se drží výhradně v operační paměti (RAM) serveru.</li>
+            <li><strong>Síťové zabezpečení (Cloudflare):</strong> Aby byl server chráněný před útoky, veškerý síťový provoz na webu a do hry běží přes zabezpečený tunel a proxy službu <strong>Cloudflare</strong>. Cloudflare zpracovává technické síťové požadavky (jako je vaše IP adresa), aby mohl hru doručit bezpečně a rychle.</li>
+            <li><strong>Kdy se data mažou:</strong> Jakmile ze hry odejdou všichni hráči (případně po krátké neaktivitě v řádu několika minut), celá herní relace se z paměti serveru <strong>okamžitě a nenávratně smaže</strong>.</li>
+        </ul>
+
+        <h3>2. Analytika a nahrávání chyb (PostHog)</h3>
+        <p>Abych mohl hru vylepšovat a opravovat chyby, používám analytický nástroj <strong>PostHog</strong> (jehož servery jsou bezpečně v Evropské unii). PostHog sbírá technické údaje (např. typ prohlížeče, přibližnou lokalitu bez přesné adresy a anonymizovanou IP adresu).</p>
+        <p>Součástí je i <strong>nahrávání obrazovky (Session Recording)</strong>. Proč tu je?</p>
+        <ul>
+            <li>Jako nezávislý vývojář nemám možnost testovat hru na stovkách různých telefonů a prohlížečů. Nahrávka mi ukáže, kde přesně hra zamrzla, proč nefunguje tlačítko nebo proč spadlo připojení.</li>
+            <li><strong>Úplné soukromí:</strong> Nikdy nenahrávám žádná citlivá data (hesla, osobní údaje).</li>
+            <li><strong>Máte to pod kontrolou:</strong> Nahrávání a analytika jsou <strong>kompletně vypnuté</strong>, dokud je sami nepovolíte v Cookie liště. Pokud souhlas nedáte, nic se nenahrává a můžete normálně hrát.</li>
+        </ul>
+
+        <h3>3. Dobrovolné dary (QR kódy a Finanční úřad)</h3>
+        <p>Pokud se rozhodnete podpořit provoz hry a serveru finančním darem přes QR kód:</p>
+        <ul>
+            <li>Na mém bankovním účtu uvidím vaše číslo účtu, jméno majitele účtu, částku a případně zprávu pro příjemce.</li>
+            <li>Tyto údaje vidím pouze já jako majitel účtu a slouží mi výhradně pro kontrolu, že platba dorazila. Nikam je dál neposílám, neprodávám ani je aktivně nezveřejňuji.</li>
+            <li><strong>Zákonná výjimka:</strong> Přestože jsou tyto drobné dary osvobozeny od daně z příjmů, bankovní výpisy musím uchovávat pro své účetnictví. V případě oficiální kontroly (např. ze strany Finančního úřadu nebo banky) mohou být tyto výpisy s vaším jménem a číslem účtu předloženy ke kontrole státním orgánům.</li>
+        </ul>
+
+        <h3>Vaše práva (GDPR)</h3>
+        <p>I když o vás z herního serveru nic neukládám, podle legislativy máte právo vědět, jaká data zpracovávám. Pokud jste schválili cookies a chcete, abych z PostHogu smazal historii spojenou s vaší herní přezdívkou, napište mi na kontakt uvedený výše a já to obratem vyřeším.</p>
+
+        <hr>
+
+        <h2>Podmínky použití (Terms of Service)</h2>
+        <p>Tyto podmínky upravují pravidla pro používání této hry. Vstupem do hry s těmito pravidly souhlasíte. Pokud s nimi nesouhlasíte, hru prosím nepoužívejte.</p>
+
+        <h3>1. Jak hra funguje a vyloučení odpovědnosti („Tak, jak je“)</h3>
+        <ul>
+            <li><strong>Bez záruk:</strong> Tato hra je poskytována <strong>„tak, jak je“ (as is)</strong> a <strong>„podle dostupnosti“</strong>. Jako autor hry nedávám žádné záruky ohledně její funkčnosti, dostupnosti, bezchybnosti nebo spolehlivosti.</li>
+            <li><strong>Omezení odpovědnosti:</strong> Nenesu žádnou odpovědnost za jakékoliv přímé či nepřímé škody, ztráty dat, výpadky spojení nebo jiné komplikace, které by vám mohly v souvislosti s používáním hry vzniknout.</li>
+            <li><strong>Právo na změnu a smazání:</strong> Vyhrazuji si právo hru, herní servery nebo jakoukoliv její část kdykoliv upravit, dočasně pozastavit, trvale smazat nebo vypnout, a to i bez předchozího upozornění a bez udání důvodu.</li>
+        </ul>
+
+        <h3>2. Zdrojový kód a licence (GitHub)</h3>
+        <ul>
+            <li><strong>Open source kód:</strong> Zdrojový kód této hry je veřejně dostupný na mém GitHubu.</li>
+            <li><strong>Licence:</strong> Práva a povinnosti týkající se nakládání se zdrojovým kódem, jeho modifikací a další distribuce se řídí výhradně licencí, jejíž znění najdete na mém <a href="https://github.com/honzaHlavnicka/Bang/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">GitHubu</a>.</li>
+            <li><strong>Grafika a obsah:</strong> Upozorňuji, že tato licence se vztahuje na kód, nikoliv nutně na herní grafiku, značku, loga nebo jiné prvky, které mohou být chráněny autorským právem jako mé duševní vlastnictví (případně licencovány od třetích stran).</li>
+        </ul>
+
+        <h3>3. Zásady chování a zákaz přetěžování (Fair Play)</h3>
+        <p>Při používání hry se zavazujete chovat slušně a ohleduplně k ostatním i k samotnému technickému zázemí:</p>
+        <ul>
+            <li><strong>Zákaz přetěžování serveru:</strong> Je přísně zakázáno provádět jakékoliv aktivity, které by mohly přetížit, poškodit nebo vyřadit z provozu herní server (např. DDoS útoky, automatizované spamování požadavků, zneužívání chyb systému k zahlcení paměti RAM atd.).</li>
+            <li><strong>Zákaz cheatování:</strong> Hru hrajte fér. Jakékoliv zneužívání chyb (exploitů) nebo používání externích programů k získání výhody je zakázáno.</li>
+            <li><strong>Zásady slušného chování:</strong> Při volbě herních přezdívek nepoužívejte vulgární, urážlivé, rasistické nebo jinak nevhodné výrazy.</li>
+            <li><strong>Trest za porušení:</strong> Pokud tato pravidla porušíte, vyhrazuji si právo vám přístup ke hře okamžitě zablokovat (např. zabanováním IP adresy) nebo smazat vaši herní relaci.</li>
+        </ul>
+
+        <h3>4. Věk hráčů</h3>
+        <p>Hra je určena pro uživatele starší <strong>15 let</strong>. Pokud nesplňujete tento věkový limit, můžete hru hrát pouze se souhlasem svých rodičů nebo zákonných zástupců.</p>
+    </div>
+</body>
+</html>
