@@ -38,8 +38,20 @@ export default function PlayersWaitingGame() {
             <h3 style={{marginBottom:"0px"}}>{t("Připojení hráči:")}</h3>
             <ul style={{marginTop:"3px"}}>
             {gameState.players?.map(player => {return(
-                <li key={player.id}>
+                <li key={player.id} style={{ display: "flex", alignItems: "center", gap: "8px", opacity: player.isOnline === false ? 0.6 : 1 }}>
+                    <span 
+                        style={{
+                            width: "8px",
+                            height: "8px",
+                            borderRadius: "50%",
+                            backgroundColor: player.isOnline === false ? "#ef4444" : "#22c55e",
+                            display: "inline-block",
+                            boxShadow: player.isOnline === false ? "none" : "0 0 8px #22c55e"
+                        }}
+                        title={player.isOnline === false ? t("Odpojen") : t("Připojen")}
+                    />
                     {player.name}
+                    {player.isOnline === false && <span style={{ fontSize: "0.8em", color: "#ef4444", marginLeft: "4px" }}>({t("Odpojen")})</span>}
                 </li>
             )}) }
             </ul>

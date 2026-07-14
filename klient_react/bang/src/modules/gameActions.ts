@@ -16,6 +16,7 @@ type ServerPlayer = {
     pocetKaret?: number;
     postava?: string;
     isAdmin?: boolean;
+    isOnline?: boolean;
 };
 
 type ServerCard = { obrazek: string; id: number };
@@ -105,6 +106,7 @@ export function handleGameMessage(
                     isCurrentTurn: false,
                     inPlayCards: [],
                     isAdmin: player.isAdmin ?? false,
+                    isOnline: player.isOnline ?? true,
                 }));
                 setGameState(prev => {
                     const myInfo = mappedPlayers.find(p => p.id === prev.playerId);
@@ -137,6 +139,7 @@ export function handleGameMessage(
                     isCurrentTurn: false,
                     inPlayCards: [],
                     isAdmin: json.isAdmin ?? false,
+                    isOnline: json.isOnline ?? true,
                 };
                 setGameState(prev => {
                     const isMe = prev.playerId === json.id;
@@ -150,10 +153,29 @@ export function handleGameMessage(
                     };
                 });
                 console.log("nový hráč", json);
-                toast.success(t(`Připojil se hráč {{name}}!`, {name: json.jmeno}));
             } catch (error) {
                 console.error(t("Chybná odpověď serveru."), error, payload);
             }
+            break;
+        }
+        case "pripojeniHrace": {
+            const playerId = Number(payload);
+            setGameState(prev => ({
+                ...prev,
+                players: prev.players
+                    ? prev.players.map(p => p.id === playerId ? { ...p, isOnline: true } : p)
+                    : prev.players
+            }));
+            break;
+        }
+        case "odpojeniHrace": {
+            const playerId = Number(payload);
+            setGameState(prev => ({
+                ...prev,
+                players: prev.players
+                    ? prev.players.map(p => p.id === playerId ? { ...p, isOnline: false } : p)
+                    : prev.players
+            }));
             break;
         }
         case "hraSpustena": {
@@ -168,6 +190,17 @@ export function handleGameMessage(
 
             setGameState(prev => {
                 const isMe = String(prev.playerId ?? "") === playerId;
+                const existingPlayer = prev.players?.find(p => String(p.id) === playerId);
+
+                // Ukážeme toast, pokud se přejmenovává jiný hráč z nepojmenovaného na reálné jméno
+                if (!isMe && existingPlayer && (
+                    existingPlayer.name === t("nepojmenovaný hráč") || 
+                    existingPlayer.name === "nepojmenovaný hráč" || 
+                    existingPlayer.name === ""
+                )) {
+                    toast.success(t(`Připojil se hráč {{name}}!`, {name: newName}));
+                }
+
                 const base = isMe ? { ...prev, name: newName } : { ...prev };
                 return {
                     ...base,

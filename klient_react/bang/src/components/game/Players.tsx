@@ -81,8 +81,9 @@ export default function Players() {
                             naTahu={gameState.turnPlayerId === player.id}
                             vylozeneKarty={player.inPlayCards}
                             povoleneUI={gameState.allowedUIElements}
-                    playerId={player.id}
-                />
+                            playerId={player.id}
+                            isOnline={player.isOnline}
+                    />
                }
                </>
             )

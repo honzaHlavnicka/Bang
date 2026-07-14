@@ -15,17 +15,40 @@ const nameCss = {
 
 
 
-export default function NameTag({jmeno,style,isDead=false,showDeadIndicator=true}: {jmeno: string;style?: React.CSSProperties;isDead?: boolean;showDeadIndicator?: boolean;}) {
+export default function NameTag({jmeno,style,isDead=false,showDeadIndicator=true,isOnline=true,className}: {jmeno: string;style?: React.CSSProperties;isDead?: boolean;showDeadIndicator?: boolean;isOnline?: boolean;className?: string;}) {
     const {t} = useTranslation();
     jmeno = jmeno ? jmeno : t("nepojmenovaný hráč");
     const displayName = jmeno.length > 13 ? jmeno.slice(0, 12) + "…" : jmeno;
     const deadIndicator = isDead && showDeadIndicator ? " ☠️" : "";
+    const onlineIndicator = !isOnline ? " (Off)" : "";
+    const onlineColor = !isOnline ? "rgba(220, 220, 220, 0.6)" : (style?.backgroundColor || "white");
+    const textDecoration = !isOnline ? "line-through" : "none";
     return (
         <span
-            style={{ ...nameCss, ...style }}
-            title={jmeno}
+            className={className}
+            style={{ 
+                ...nameCss, 
+                ...style, 
+                backgroundColor: onlineColor, 
+                color: !isOnline ? "#888" : "black",
+                textDecoration,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "5px"
+            }}
+            title={jmeno + (!isOnline ? " (" + t("Odpojen") + ")" : "")}
         >
-            {deadIndicator}{displayName}
+            {!isOnline && (
+                <span 
+                    style={{
+                        width: "6px",
+                        height: "6px",
+                        borderRadius: "50%",
+                        backgroundColor: "#ef4444"
+                    }}
+                />
+            )}
+            {deadIndicator}{displayName}{onlineIndicator}
         </span>
     );
 }

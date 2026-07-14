@@ -46,6 +46,8 @@
     "Byl jsi odpojen od serveru": "You have been disconnected from the server",
     "Zkus znovu načíst stránku a kliknout na znovu se připojit ke hře.": "Try reloading the page and clicking 'Return to a game in progress'.",
     "Odpojení": "Disconnected",
+    "Odpojen": "Disconnected",
+    "Připojen": "Connected",
     "Znovupřipojeno ke hře": "Reconnected to the game",
     "Připojení ztraceno. Pokouším se o znovupřipojení...": "Connection lost. Reconnecting...",
     "Byl jsi odpojen od serveru. Chceš se zkusit znovu připojit?": "You have been disconnected from the server. Do you want to try reconnecting?",

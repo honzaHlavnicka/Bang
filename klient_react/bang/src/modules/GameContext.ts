@@ -24,6 +24,7 @@ export type Player = {
     isCurrentTurn: boolean;
     inPlayCards: Array<CardType> | null;
     isAdmin?: boolean;
+    isOnline?: boolean;
 }
 
 export type GameStateType = {

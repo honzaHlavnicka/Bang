@@ -7,7 +7,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { useTranslation } from "react-i18next";
 
 
-export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,pocetZivotu = 0,vylozeneKarty=[],naTahu=false,povoleneUI,playerId}:{jmeno:string,postava?:string,pocetKaret?:number,pocetZivotu?:number,vylozeneKarty?:Array<CardType>|null,naTahu?:boolean,povoleneUI:string[],playerId:number}) {
+export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,pocetZivotu = 0,vylozeneKarty=[],naTahu=false,povoleneUI,playerId,isOnline=true}:{jmeno:string,postava?:string,pocetKaret?:number,pocetZivotu?:number,vylozeneKarty?:Array<CardType>|null,naTahu?:boolean,povoleneUI:string[],playerId:number,isOnline?:boolean}) {
     vylozeneKarty = vylozeneKarty ? vylozeneKarty : [];
     const isDead = pocetZivotu !== undefined && pocetZivotu <= 0;
     const { t } = useTranslation();
@@ -28,7 +28,7 @@ export default function Player({jmeno,postava = "TESTOVACI2",pocetKaret = 8,poce
             <div ref={setNodeRef} style={{...playerStyle,  }}>
                 <div style={{ display: "flex" , justifyContent:"flex-start", alignItems:"center"}}>
                     <div>
-                    <NameTag jmeno={jmeno} isDead={isDead} showDeadIndicator={povoleneUI.includes("ZIVOTY")} style={{backgroundColor:(naTahu?"yellow":"white")}}/>
+                    <NameTag jmeno={jmeno} isDead={isDead} showDeadIndicator={povoleneUI.includes("ZIVOTY")} style={{backgroundColor:(naTahu?"yellow":"white")}} isOnline={isOnline}/>
                     <div style={{display:"flex",flexDirection:"row"}}>
                         {povoleneUI.includes("POSTAVA") ? <Card name={t("player.character_label", { name: postava.toLowerCase() })} image={`/img/karty/postavy/${postava}.png`} />: null}
                         {povoleneUI.includes("ZIVOTY") ? <Card name={t("player.health_label", { count: pocetZivotu })} image={`/img/velkeZivoty/${pocetZivotu}zivoty.png`} />:null}

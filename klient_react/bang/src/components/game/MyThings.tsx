@@ -81,11 +81,24 @@ export default function MyThings() {
             boxSizing: "border-box"
         };
 
+        const isMyTurn = gameState.playerId === gameState.turnPlayerId;
+
         return (
             <div style={{ width: "100%", display: "flex", flexDirection: "column", flex: "0 0 auto", zIndex: 3 }}>
-                    
+                <style>{`
+                    @keyframes myTurnPulse {
+                        0% { transform: scale(1); box-shadow: 0 0 5px rgba(234, 179, 8, 0.5); }
+                        50% { transform: scale(1.03); box-shadow: 0 0 15px rgba(234, 179, 8, 0.9); }
+                        100% { transform: scale(1); box-shadow: 0 0 5px rgba(234, 179, 8, 0.5); }
+                    }
+                    .my-turn-active {
+                        animation: myTurnPulse 2s infinite ease-in-out;
+                        border: 2px solid #eab308 !important;
+                        background-color: #fef08a !important;
+                    }
+                `}</style>
                 <div style={rowScrollStyle}>
-                    <NameTag jmeno={jmeno || t("nepojmenovaný hráč")} isDead={isDead} showDeadIndicator={gameState.allowedUIElements.includes("ZIVOTY")} style={{backgroundColor:(gameState.playerId === gameState.turnPlayerId)?"yellow":"white", flex: "0 0 auto"}} />
+                    <NameTag jmeno={jmeno || t("nepojmenovaný hráč")} isDead={isDead} showDeadIndicator={gameState.allowedUIElements.includes("ZIVOTY")} style={{flex: "0 0 auto", ...(isMyTurn ? {} : { backgroundColor: "white" })}} className={isMyTurn ? "my-turn-active" : ""} />
                     {gameState.allowedUIElements.includes("ROLE") ?    <Card image={`/img/karty/role/${role}.png`} />: null}
                     {gameState.allowedUIElements.includes("POSTAVA") ? <Card image={`/img/karty/postavy/${postava}.png`} />: null}
                     {gameState.allowedUIElements.includes("ZIVOTY") ? <Card image={`/img/velkeZivoty/${zdravy}zivoty.png`} />: null}
@@ -99,10 +112,25 @@ export default function MyThings() {
             </div>
         )
     }
+
+    const isMyTurn = gameState.playerId === gameState.turnPlayerId;
+
     return (
         <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "flex-end", flex: "0 0 auto", }}>
+            <style>{`
+                @keyframes myTurnPulse {
+                    0% { transform: scale(1); box-shadow: 0 0 5px rgba(234, 179, 8, 0.5); }
+                    50% { transform: scale(1.03); box-shadow: 0 0 15px rgba(234, 179, 8, 0.9); }
+                    100% { transform: scale(1); box-shadow: 0 0 5px rgba(234, 179, 8, 0.5); }
+                }
+                .my-turn-active {
+                    animation: myTurnPulse 2s infinite ease-in-out;
+                    border: 2px solid #eab308 !important;
+                    background-color: #fef08a !important;
+                }
+            `}</style>
             <div style={{ marginRight: "32px", width: "fit-content" }}>
-                <NameTag jmeno={jmeno || t("nepojmenovaný hráč")} isDead={isDead} showDeadIndicator={gameState.allowedUIElements.includes("ZIVOTY")} style={{backgroundColor:(gameState.playerId === gameState.turnPlayerId)?"yellow":"white"}} />
+                <NameTag jmeno={jmeno || t("nepojmenovaný hráč")} isDead={isDead} showDeadIndicator={gameState.allowedUIElements.includes("ZIVOTY")} style={{...(isMyTurn ? {} : { backgroundColor: "white" })}} className={isMyTurn ? "my-turn-active" : ""} />
                 <div style={{display:"flex",justifyContent:"center"}}>
                     {gameState.allowedUIElements.includes("ROLE") ?    <Card image={`/img/karty/role/${role}.png`} />: null}
                     {gameState.allowedUIElements.includes("POSTAVA") ? <Card image={`/img/karty/postavy/${postava}.png`} />: null}

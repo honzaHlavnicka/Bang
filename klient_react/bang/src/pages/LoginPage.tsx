@@ -14,7 +14,7 @@ export default function LoginPage() {
     const { t , i18n} = useTranslation();
     const posthog = usePostHog();
     const [gameCode, setGameCode] = useState('');
-    const [jmeno, setJmeno] = useState('');
+    const [jmeno, setJmeno] = useState(() => localStorage.getItem("savedName") || '');
     const [zobrazenaPaticka, setZobrazenaPaticka] = useState(config.showCookies);
     const [idTypuHry, setIdTypuHry] = useState<number>(0);
     const { connectToGame, createGame, gameState, returnToGame, isConnected } = useGame();
@@ -226,6 +226,7 @@ export default function LoginPage() {
                             e.preventDefault();
                             if (zkontroluj(true)) {
                                 posthog?.capture('game_joined', { game_code: gameCode, player_name: jmeno });
+                                localStorage.setItem("savedName", jmeno);
                                 connectToGame(gameCode, jmeno);
                             }
                         }}
@@ -259,6 +260,7 @@ export default function LoginPage() {
                             if (zkontroluj(false)) {
                                 const gameTypeName = gameState.gameTypesAvailable?.find(gt => gt.id === idTypuHry)?.name;
                                 posthog?.capture('game_created', { game_type_id: idTypuHry, game_type_name: gameTypeName, player_name: jmeno });
+                                localStorage.setItem("savedName", jmeno);
                                 createGame(idTypuHry, jmeno);
                             }
                         }}

@@ -12,10 +12,24 @@ export default function PlayerMobile({ player }: { player: Player }) {
     const { gameState } = useGame();
     const { t } = useTranslation();
 
-    return (
-        <>
-        <div style={{ backgroundColor: "#f0f0f07", height: "100%",padding:"10px" }} onClick={() => {setDetailsOpen(true);}}>
-            <NameTag jmeno={player.name} />
+        const isTheirTurn = player.id === gameState.turnPlayerId;
+
+        return (
+            <>
+            <style>{`
+                @keyframes opponentTurnPulse {
+                    0% { transform: scale(1); box-shadow: 0 0 5px rgba(234, 179, 8, 0.4); }
+                    50% { transform: scale(1.02); box-shadow: 0 0 10px rgba(234, 179, 8, 0.7); }
+                    100% { transform: scale(1); box-shadow: 0 0 5px rgba(234, 179, 8, 0.4); }
+                }
+                .opponent-turn-active {
+                    animation: opponentTurnPulse 2s infinite ease-in-out;
+                    border: 2px solid #eab308 !important;
+                    background-color: #fef08a !important;
+                }
+            `}</style>
+            <div style={{ backgroundColor: "#f0f0f07", height: "100%",padding:"10px" }} onClick={() => {setDetailsOpen(true);}}>
+                <NameTag jmeno={player.name} isOnline={player.isOnline} style={{...(isTheirTurn ? {} : { backgroundColor: "white" })}} className={isTheirTurn ? "opponent-turn-active" : ""} />
             { Array.from({length: player.health }).map((_, i) => (
                 <span style={{ color: "red" }} key={i}>❤︎</span>
             ))}
@@ -83,7 +97,7 @@ export default function PlayerMobile({ player }: { player: Player }) {
                     onClick={(e) => e.stopPropagation()}
                 > 
                     <h3 style={{ marginTop: 0, marginBottom: '15px' }}>
-                        <NameTag jmeno={player.name + (player.id === gameState.turnPlayerId ? ` (${t("player.on_turn")})` : "")} />
+                        <NameTag jmeno={player.name + (player.id === gameState.turnPlayerId ? ` (${t("player.on_turn")})` : "")} isOnline={player.isOnline} />
 
                     </h3>
                     <hr/>
