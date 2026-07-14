@@ -234,6 +234,10 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         conn.send("noveIdHrace:" + hrac.getId());
         conn.send("setIdHry:" + komunikator.getIdHry());
 
+        if (vrchniObrazekZadniStrany != null) {
+            conn.send("obrazekDobiracihoBalicku:" + vrchniObrazekZadniStrany);
+        }
+
         if (hrac.getPostava() == null) {
             hrac.posliVyberPostav();
         }
@@ -265,7 +269,9 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
         
         if(zahajena){
           // Role hráče
-          conn.send("role:" + hrac.getRole().name());
+          if (hrac.getRole() != null) {
+              conn.send("role:" + hrac.getRole().name());
+          }
           
           // Kdo je na tahu
           if (spravceTahu != null && spravceTahu.getNaTahu() != null) {

@@ -740,6 +740,15 @@ public class HracImp implements cz.honza.bang.sdk.Hrac{
         sb.append(maximumZivotu);
         sb.append(",\"isAdmin\":");
         sb.append(this.equals(hra.getKomunikator().getAdmin()));
+
+        boolean isOnline = false;
+        if (hra != null && hra.getKomunikator() instanceof cz.honza.bang.net.KomunikatorHryImp) {
+            cz.honza.bang.net.KomunikatorHryImp kom = (cz.honza.bang.net.KomunikatorHryImp) hra.getKomunikator();
+            isOnline = kom.jeHracPripojen(this);
+        }
+        sb.append(",\"isOnline\":");
+        sb.append(isOnline);
+
         sb.append('}');
         return sb.toString();
     }

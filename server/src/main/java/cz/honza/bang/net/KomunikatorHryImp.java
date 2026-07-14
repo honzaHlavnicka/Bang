@@ -255,11 +255,9 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         
         websocket.send("pripojenKeHre");
         HracImp hrac = hra.novyHrac();
-        if(websocketPodleHracu.isEmpty()){
-            admin = hrac;
-        }
         websocketPodleHracu.put(hrac, websocket);
         hraciPodleWebsocketu.put(websocket, hrac);
+        aktualizujAdmina();
         String identifikator = GeneratorTokenu.NovytokenHrace();
         websocket.send("token:" + idHry + identifikator);
         hraciPodlIdentifikatoru.put(identifikator, hrac);
@@ -269,18 +267,67 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         pocetPripojenychHracu.incrementAndGet();
 
         return true;
-
-
     }
     
     public void nactiHru(WebSocket conn){
         hra.nactiHru(conn,hraciPodleWebsocketu.get(conn));
     }
     
+    public boolean jeHracPripojen(HracImp hrac) {
+        WebSocket ws = websocketPodleHracu.get(hrac);
+        return ws != null && ws.isOpen();
+    }
+
+    public synchronized void aktualizujAdmina() {
+        List<cz.honza.bang.sdk.Hrac> hraci = hra.getHraci();
+        if (hraci.isEmpty()) {
+            admin = null;
+            return;
+        }
+
+        HracImp novyAdmin = null;
+        for (cz.honza.bang.sdk.Hrac h : hraci) {
+            HracImp hracImp = (HracImp) h;
+            if (jeHracPripojen(hracImp)) {
+                novyAdmin = hracImp;
+                break;
+            }
+        }
+
+        if (novyAdmin == null) {
+            novyAdmin = (HracImp) hraci.get(0);
+        }
+
+        if (admin != novyAdmin) {
+            admin = novyAdmin;
+            logger.info("Admin změněn na: {}", admin.getJmeno());
+        }
+    }
+
+    public void posliHraceVsem() {
+        StringBuilder sb = new StringBuilder("hraci:[");
+        boolean jePrvni = true;
+        for (cz.honza.bang.sdk.Hrac h : hra.getHraci()) {
+            HracImp hracImp = (HracImp) h;
+            if (!jePrvni) {
+                sb.append(',');
+            }
+            jePrvni = false;
+            sb.append(hracImp.toJSON());
+        }
+        sb.append(']');
+        posliVsem(sb.toString());
+    }
+
     public synchronized void hracOdpojen(WebSocket conn){
         HracImp hrac = hraciPodleWebsocketu.get(conn);
         hraciPodleWebsocketu.remove(conn);
         websocketPodleHracu.remove(hrac);
+        if (hrac != null) {
+            posliVsem("odpojeniHrace:" + hrac.getId());
+        }
+        aktualizujAdmina();
+        posliHraceVsem();
         if(hraciPodleWebsocketu.isEmpty()){
             // Zrušit starý timeout pokud existuje
             zrusitTimeoutSmezaniHry();
@@ -564,6 +611,11 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         
         hraciPodleWebsocketu.put(conn, hrac);
         websocketPodleHracu.put(hrac, conn);
+        
+        posliVsem("pripojeniHrace:" + hrac.getId());
+        
+        aktualizujAdmina();
+        posliHraceVsem();
         
         conn.send("pripojenKeHre");
         
