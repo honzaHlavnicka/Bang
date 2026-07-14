@@ -104,7 +104,7 @@ export default function PlayerMobile({ player }: { player: Player }) {
                     <SmallCards count={player.cardsInHand} />
 
                     <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
-                        {gameState.allowedUIElements.includes("ROLE") && <Card image={"/img/karty/role/" + player.role + ".png"} />}
+                        {gameState.allowedUIElements.includes("ROLE") && player.role && player.role !== "undefined" && player.role !== "UNDEFINED" && player.role !== "neví se" && player.role !== "nevi se" && <Card image={"/img/karty/role/" + player.role + ".png"} />}
                         {gameState.allowedUIElements.includes("POSTAVA") && <Card image={"/img/karty/postavy/" + player.character + ".png"} />}
                         {gameState.allowedUIElements.includes("ZIVOTY") && <Card image={"/img/velkeZivoty/" + player.health + "zivoty.png"} />}
                     </div>
