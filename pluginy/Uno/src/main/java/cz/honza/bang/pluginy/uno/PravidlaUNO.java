@@ -72,32 +72,32 @@ public class PravidlaUNO implements HerniPravidla{
     }
     
     @Override
-    public void pripravBalicek(Balicek<Karta> balicek){
-        for (int i = 0; i < 10; i++) {
-            balicek.vratNahoru(new UnoKarta(i, "red", hra, balicek));
+    public void pripravBalicek(Balicek<Karta> balicek) {
+        final String[] BARVY = {"red", "green", "blue", "yellow"};
+
+        for (String barva : BARVY) {
+            balicek.vratNahoru(new UnoKarta(0, barva, hra, balicek));
+
+            for (int i = 1; i <= 9; i++) {
+                balicek.vratNahoru(new UnoKarta(i, barva, hra, balicek));
+                balicek.vratNahoru(new UnoKarta(i, barva, hra, balicek));
+            }
         }
-        for (int i = 0; i < 10; i++) {
-            balicek.vratNahoru(new UnoKarta(i, "green", hra, balicek));
+
+        for (String barva : BARVY) {
+            for (int i = 0; i < 2; i++) {
+                balicek.vratNahoru(new ZmenaSmeru(barva, hra, balicek));
+                balicek.vratNahoru(new UnoEso(barva, hra, balicek));
+                balicek.vratNahoru(new plus2(barva, hra, balicek));
+            }
         }
-        for (int i = 0; i < 10; i++) {
-            balicek.vratNahoru(new UnoKarta(i, "blue", hra, balicek));
+       
+        for (int i = 0; i < 4; i++) {
+            balicek.vratNahoru(new Eso(hra, balicek));
+            balicek.vratNahoru(new unoZmenaBarvy(hra, balicek));
         }
-        for (int i = 0; i < 10; i++) {
-            balicek.vratNahoru(new UnoKarta(i, "yellow", hra, balicek));
-        }
-        balicek.vratNahoru(new Eso(hra, balicek));
-        balicek.vratNahoru(new unoZmenaBarvy(hra, balicek));
-        balicek.vratNahoru(new Eso(hra, balicek));
-        balicek.vratNahoru(new unoZmenaBarvy(hra, balicek));
-        balicek.vratNahoru(new Eso(hra, balicek));
-        balicek.vratNahoru(new unoZmenaBarvy(hra, balicek));
-        balicek.vratNahoru(new Eso(hra, balicek));
-        balicek.vratNahoru(new unoZmenaBarvy(hra, balicek));
-        balicek.vratNahoru(new Eso(hra, balicek));
-        balicek.vratNahoru(new unoZmenaBarvy(hra, balicek));
-        
+
         balicek.zamichej();
-        
     }
     
     @Override

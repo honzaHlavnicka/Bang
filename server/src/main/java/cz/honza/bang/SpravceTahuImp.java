@@ -207,14 +207,33 @@ public class SpravceTahuImp implements cz.honza.bang.sdk.SpravceTahu{
     @Override
     @PovolenePluginu
     public Hrac eso(){
-        Tah tah = frontaTahu.pollFirst();
-        if (tah != null) {
-            frontaTahu.addLast(tah);
-            poradiAktualni = false;
-            return tah.hrac;
+        if (frontaTahu.isEmpty()) {
+            return null;
+        }
+
+        if (!zmenenSmer) {
+            for (Tah tah : frontaTahu) {
+                if (!tah.docasneZruseny) {
+                    frontaTahu.remove(tah);
+                    frontaTahu.addLast(tah);
+                    poradiAktualni = false;
+                    return tah.hrac;
+                }
+            }
+        } else {
+            java.util.Iterator<Tah> it = frontaTahu.descendingIterator();
+            while (it.hasNext()) {
+                Tah tah = it.next();
+                if (!tah.docasneZruseny) {
+                    frontaTahu.remove(tah);
+                    frontaTahu.addFirst(tah);
+                    poradiAktualni = false;
+                    return tah.hrac;
+                }
+            }
         }
         return null;
-   }
+    }
 
     /**
      * mění vlastnost násoení tahu. Hráč bude mít místo jednoho tahu k dispozici <code>kolik</code>.
