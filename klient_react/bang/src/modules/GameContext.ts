@@ -85,6 +85,7 @@ export const gameStateDefault: GameStateType = {
 
 export const GameContext = createContext<{
     gameState: GameStateType;
+    isConnected: boolean;
     connectToGame: (gameCode: string, name: string) => void;
     changePlayerName: (newName: string) => void;
     startGame: () => void;

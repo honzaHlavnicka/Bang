@@ -131,7 +131,7 @@ const getInitialMockGameState = (name: string): GameStateType => {
 export function GameProvider({ children }: { children: React.ReactNode }) {
     const [gameState, setGameState] = useState<GameStateType>(gameStateDefault);
     const [ws, setWs] = useState<WebSocket | null>(null);
-    const { openDialog } = useDialog();
+    const { openDialog, closeDialog } = useDialog();
     const { t } = useTranslation();
 
     const isMock = import.meta.env.DEV && new URLSearchParams(window.location.search).has("mock");
@@ -143,6 +143,11 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     }, [gameState]);
 
     useEffect(() => {
+        let isUnmounted = false;
+        let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+        let reconnectAttempt = 0;
+        const maxConnectAttempts = 3;
+
         if (isMock) {
             console.log("Mock Mode is ACTIVE! No server connection will be made.");
             setGameState({
@@ -156,45 +161,154 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             return;
         }
 
-        const socketAddress = `${import.meta.env.VITE_SERVER_PROTOCOL || "ws"}://${import.meta.env.VITE_SERVER_HOST || "localhost"}:${import.meta.env.VITE_SERVER_PORT || "22207"}/ws`;
-        const params = new URLSearchParams(window.location.search);
-        const addrParam = params.get("adress");
-        let socketUrl = socketAddress;
-        if (addrParam && addrParam.trim().length > 0) {
-            socketUrl = addrParam.trim();
-            if (!/^wss?:\/\//i.test(socketUrl)) {
-                socketUrl = `ws://${socketUrl}`;
-            }
-            console.log("Using socket address from ?adress param: " + socketUrl);
-        }
+        let activeSocket: WebSocket | null = null;
 
-        const socket = new WebSocket(socketUrl);
-        console.log("pokus o připojení k ws serveru na adrese " + socketAddress);
-        socket.onopen = () => {
-            setWs(socket);
-            posthog.capture('socket_connected', { url: socketUrl });
-            toast.success(t("Připojeno k serveru"));
-            if (import.meta.env.VITE_DEBUG) {
-                console.log("Debug mode is ON. Socket address: " + socketUrl);
-                (window as unknown as { ws: WebSocket }).ws = socket;
+        const connectSocket = () => {
+            if (isUnmounted) return;
+
+            // Zrušíme předchozí běžící časovač reconnectu, aby nevznikaly paralelní pokusy
+            if (reconnectTimeout) {
+                clearTimeout(reconnectTimeout);
+                reconnectTimeout = null;
+            }
+
+            const socketAddress = `${import.meta.env.VITE_SERVER_PROTOCOL || "ws"}://${import.meta.env.VITE_SERVER_HOST || "localhost"}:${import.meta.env.VITE_SERVER_PORT || "22207"}/ws`;
+            const params = new URLSearchParams(window.location.search);
+            const addrParam = params.get("adress");
+            let socketUrl = socketAddress;
+            if (addrParam && addrParam.trim().length > 0) {
+                socketUrl = addrParam.trim();
+                if (!/^wss?:\/\//i.test(socketUrl)) {
+                    socketUrl = `ws://${socketUrl}`;
+                }
+                console.log("Using socket address from ?adress param: " + socketUrl);
+            }
+
+            console.log(`Connecting to WebSocket (attempt ${reconnectAttempt + 1}/${maxConnectAttempts})...`);
+            const socket = new WebSocket(socketUrl);
+            activeSocket = socket;
+
+            socket.onopen = () => {
+                if (isUnmounted) {
+                    socket.close();
+                    return;
+                }
+                setWs(socket);
+                reconnectAttempt = 0;
+                toast.dismiss("reconnect-toast");
+                toast.success(t("Připojeno k serveru"));
+                posthog.capture('socket_connected', { url: socketUrl });
+
+                // Pokud se nám podařilo znovupřipojit, zavřeme chybový dialog odpojení, pokud byl otevřený
+                closeDialog();
+
+                if (import.meta.env.VITE_DEBUG) {
+                    console.log("Debug mode is ON. Socket address: " + socketUrl);
+                    (window as unknown as { ws: WebSocket }).ws = socket;
+                }
+
+                // Pokud jsme už byli ve hře, automaticky se znovupřipojíme pomocí tokenu
+                const current = stateRef.current;
+                const token = sessionStorage.getItem("gameToken") || localStorage.getItem("gameToken");
+                if (current.inGame && token) {
+                    console.log(`Auto-rejoining game using token: ${token}`);
+                    setGameState(prev => ({
+                        ...gameStateDefault,
+                        name: prev.name,
+                        gameCode: prev.gameCode,
+                        inGame: true,
+                        startedConection: true
+                    }));
+                    socket.send("vraceniSe:" + token);
+                    toast.success(t("Znovupřipojeno ke hře"));
+                }
+            };
+
+            socket.onmessage = (event) => {
+                if (isUnmounted) return;
+                handleGameMessage(event, setGameState, stateRef, openDialog, socket, notify);
+            };
+
+            socket.onclose = () => {
+                if (isUnmounted) return;
+                setWs(null);
+                console.log("WebSocket disconnected");
+
+                // Pokus o automatické znovupřipojení
+                if (reconnectAttempt < maxConnectAttempts) {
+                    reconnectAttempt += 1;
+                    const delay = 1500;
+                    toast.loading(
+                        `${t("Připojení ztraceno. Pokouším se o znovupřipojení...")} (${reconnectAttempt}/${maxConnectAttempts})`,
+                        { id: "reconnect-toast" }
+                    );
+                    
+                    reconnectTimeout = setTimeout(() => {
+                        connectSocket();
+                    }, delay);
+                } else {
+                    // Automatické připojení selhalo, ukážeme chybový dialog
+                    posthog.capture('socket_disconnected');
+                    toast.dismiss("reconnect-toast");
+                    toast.error(t("Byl jsi odpojen od serveru"));
+
+                    const current = stateRef.current;
+                    const token = sessionStorage.getItem("gameToken") || localStorage.getItem("gameToken");
+                    if (current.inGame && token) {
+                        openDialog({
+                            type: "CONFIRM",
+                            data: {
+                                title: t("Odpojení"),
+                                message: t("Byl jsi odpojen od serveru. Chceš se zkusit znovu připojit?")
+                            },
+                            dialogHeader: t("Odpojení"),
+                            callback: (confirmed) => {
+                                if (confirmed) {
+                                    sessionStorage.setItem("autoreturn", "true");
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    } else {
+                        openDialog({
+                            type: "INFO",
+                            data: {
+                                header: t("Odpojení"),
+                                message: t("Zkus znovu načíst stránku a kliknout na znovu se připojit ke hře.")
+                            },
+                            dialogHeader: t("Odpojení")
+                        });
+                    }
+                }
+            };
+        };
+
+        const handleVisibilityChange = () => {
+            if (document.visibilityState === "visible") {
+                console.log("Tab became visible. Checking connection status...");
+                // Pokud nejsme připojeni k serveru, vynutíme okamžitý pokus o připojení
+                if (!activeSocket || activeSocket.readyState === WebSocket.CLOSED || activeSocket.readyState === WebSocket.CLOSING) {
+                    console.log("Active socket is closed. Auto-reconnecting immediately...");
+                    reconnectAttempt = 0;
+                    connectSocket();
+                }
             }
         };
-        socket.onmessage = (event) => { handleGameMessage(event, setGameState, stateRef, openDialog, socket, notify); };
-        socket.onclose = () => {
-            console.log("WebSocket disconnected");
-            posthog.capture('socket_disconnected');
-            setWs(null);
-            toast.error(t("Byl jsi odpojen od serveru"));
-            openDialog({
-                type: "INFO",
-                data: {
-                    header: t("Byl jsi odpojen od serveru"),
-                    message: t("Zkus znovu načíst stránku a kliknout na znovu se připojit ke hře.")
-                },
-                dialogHeader: t("Odpojení")
-            });
+
+        connectSocket();
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
+        return () => {
+            isUnmounted = true;
+            document.removeEventListener("visibilitychange", handleVisibilityChange);
+            if (activeSocket) {
+                activeSocket.close();
+            }
+            if (reconnectTimeout) {
+                clearTimeout(reconnectTimeout);
+            }
+            toast.dismiss("reconnect-toast");
         };
-        return () => socket.close();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -421,6 +535,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     return (
         <GameContext.Provider value={{
             gameState,
+            isConnected: ws !== null,
             connectToGame: (gameCode, name) => isMock ? mockActions.connectToGame(gameCode, name) : connectToGame(ws, setGameState, gameCode, name),
             changePlayerName: (newName) => isMock ? mockActions.changePlayerName(newName) : changePlayerName(ws, newName),
             chooseCharacter: (characterName) => isMock ? mockActions.chooseCharacter(characterName) : chooseCharacter(ws, setGameState, characterName),
@@ -429,7 +544,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             createGame: (gameTypeId, name) => isMock ? mockActions.createGame(gameTypeId, name) : createGame(ws, gameTypeId, name),
             drawCard: () => isMock ? mockActions.drawCard() : drawCard(ws),
             playCard: (cardId) => isMock ? mockActions.playCard(cardId) : playCard(ws, cardId),
-            returnToGame: () => { if (isMock) mockActions.returnToGame(); else returnToGame(ws); },
+            returnToGame: () => { if (isMock) mockActions.returnToGame(); else returnToGame(ws, setGameState); },
             fireCard: (cardId) => isMock ? mockActions.fireCard(cardId) : fireCard(ws, cardId),
             putCardInPlay: (cardId) => isMock ? mockActions.putCardInPlay(cardId) : putCardInPlay(ws, cardId),
             putCardInPlayOnPlayer: (cardId, playerId) => isMock ? mockActions.putCardInPlayOnPlayer(cardId, playerId) : putCardInPlayOnPlayer(ws, cardId, playerId),

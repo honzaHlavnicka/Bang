@@ -38,6 +38,10 @@ export default function CharacterPicker() {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [gameState.characters, chooseCharacter]);
 
+    if (gameState.character) {
+        return null;
+    }
+
     if(!gameState.characters){
         return <div>{t("Načítání postav...")}</div>
     }

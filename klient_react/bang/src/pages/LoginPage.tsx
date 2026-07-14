@@ -17,11 +17,12 @@ export default function LoginPage() {
     const [jmeno, setJmeno] = useState('');
     const [zobrazenaPaticka, setZobrazenaPaticka] = useState(config.showCookies);
     const [idTypuHry, setIdTypuHry] = useState<number>(0);
-    const { connectToGame, createGame, gameState, returnToGame } = useGame();
+    const { connectToGame, createGame, gameState, returnToGame, isConnected } = useGame();
     const [openCard , setOpenCard] = useState<string>("pripojeni");
-    const gameToken = localStorage.getItem("gameToken");
+    const gameToken = sessionStorage.getItem("gameToken") || localStorage.getItem("gameToken");
     const [worldQuizVisible, setWorldQuizVisible] = useState(true);
     const [donateOpen, setDonateOpen] = useState(false);
+    const [h1Title, setH1Title] = useState("");
     //const [menu, setMenu] = useState({x:0,y:0,visible:false})
     
 
@@ -44,6 +45,15 @@ export default function LoginPage() {
     }, []);
 
     useEffect(() => {
+        if (!isConnected) return;
+
+        const autoreturn = sessionStorage.getItem("autoreturn");
+        if (autoreturn === "true") {
+            sessionStorage.removeItem("autoreturn");
+            returnToGame();
+            return;
+        }
+
         const autoconnect = sessionStorage.getItem("autoconnect");
         if (autoconnect !== "" && autoconnect !== null && autoconnect !== undefined && autoconnect.indexOf(",") == 6) {
             const [code,name] = autoconnect.split(",", 2);
@@ -54,7 +64,35 @@ export default function LoginPage() {
             sessionStorage.removeItem("autoconnect");
             return;
         }
-    }, [connectToGame]);
+    }, [connectToGame, returnToGame, isConnected]);
+
+    // Předvyplnění výběru hry podle parametru ?game=
+    useEffect(() => {
+        if (!gameState.gameTypesAvailable || gameState.gameTypesAvailable.length === 0) return;
+
+        const params = new URLSearchParams(location.search);
+        const gameParam = params.get("game");
+        if (gameParam) {
+            const searchTerm = gameParam.toLowerCase().trim();
+            const normalize = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            const normalizedSearch = normalize(searchTerm);
+
+            const matchedGame = gameState.gameTypesAvailable.find(gt => {
+                const name = gt.name.toLowerCase();
+                const normalizedName = normalize(gt.name);
+                return name === searchTerm || 
+                       normalizedName === normalizedSearch || 
+                       name.includes(searchTerm) || 
+                       normalizedName.includes(normalizedSearch);
+            });
+
+            if (matchedGame) {
+                setIdTypuHry(matchedGame.id);
+                setOpenCard("vytvoreni");
+                setH1Title(matchedGame.name);
+            }
+        }
+    }, [gameState.gameTypesAvailable]);
 
     // Klávesové zkratky pro přepínání karet (Z, P, V)
     useEffect(() => {
@@ -81,7 +119,7 @@ export default function LoginPage() {
     
     useEffect(() => {
         const souhlas = localStorage.getItem("souhlas");
-        if (souhlas === "true") {
+        if (souhlas !== null) {
             setZobrazenaPaticka(false);
         }
     }, []);
@@ -118,7 +156,7 @@ export default function LoginPage() {
 
             <main  className={css.paddingBottom} >
                     <div className={`${css.sectionCard} ${css.sectionHero} ${css.box}`} >
-                <h1>{t("NAZEV_STRÁNKY")}</h1>
+                <h1>{h1Title || t("NAZEV_STRÁNKY")}</h1>
                 <p>
                    {t("LOGIN_POPIS_BEZ_ODKAZU")} <a href='https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md' target='_blank'>{t("plugin")}</a>.
                 </p>

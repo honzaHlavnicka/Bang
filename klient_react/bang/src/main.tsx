@@ -41,11 +41,10 @@ if (!isDebug && posthogToken && !isHonza) {
     capture_performance: consent
     });
 
-  if (consent) {
-    posthog.opt_in_capturing();
-  } else {
-    // Explicitně vypneme nahrávání pro jistotu i přes opt_out (v závislosti na nastavení projektu v PH)
-    posthog.opt_out_capturing();
+  // Vždy se ujistíme, že sběr událostí je aktivní (ochrana soukromí je zajištěna vypnutím cookies/localStorage a nahrávání relací)
+  posthog.opt_in_capturing();
+  if (!consent) {
+    posthog.stopSessionRecording();
   }
 
   posthog.register({

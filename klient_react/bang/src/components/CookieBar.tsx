@@ -40,7 +40,11 @@ export default function CookieBar({ open, onClose, onOpen }: CookieBarProps) {
                         <button 
                             type="button" 
                             className={styles.detailsToggle} 
-                            onClick={() => setShowDetails(!showDetails)}
+                            onClick={() => {
+                                const nextShow = !showDetails;
+                                setShowDetails(nextShow);
+                                posthog?.capture('cookie_bar_details_toggled', { show_details: nextShow });
+                            }}
                         >
                             {showDetails ? t("cookie_bar.hide_details") : t("cookie_bar.show_details")}
                         </button>
@@ -52,12 +56,13 @@ export default function CookieBar({ open, onClose, onOpen }: CookieBarProps) {
                             </div>
                         )}
                     </div>
-
+ 
                     <div className={styles.buttonContainer}>
                         <button 
                             onClick={() => { 
                                 onClose(); 
                                 localStorage.setItem("souhlas", "false"); 
+                                posthog?.capture('consent_declined'); 
                                 posthog?.set_config({ 
                                     persistence: 'memory', 
                                     disable_persistence: true,
@@ -66,8 +71,6 @@ export default function CookieBar({ open, onClose, onOpen }: CookieBarProps) {
                                     capture_performance: false
                                 });
                                 posthog?.stopSessionRecording();
-                                posthog?.opt_out_capturing();
-                                posthog?.capture('consent_declined'); 
                             }} 
                             className={styles.btnDecline}
                         >
@@ -85,7 +88,6 @@ export default function CookieBar({ open, onClose, onOpen }: CookieBarProps) {
                                     capture_performance: true
                                 });
                                 posthog?.startSessionRecording();
-                                posthog?.opt_in_capturing();
                                 posthog?.capture('consent_accepted'); 
                                 onClose();
                             }} 
@@ -100,7 +102,10 @@ export default function CookieBar({ open, onClose, onOpen }: CookieBarProps) {
             {/* Small floating privacy settings icon button */}
             {config.showCookies && !open && (
                 <button 
-                    onClick={onOpen}
+                    onClick={() => {
+                        posthog?.capture('cookie_bar_reopened');
+                        onOpen();
+                    }}
                     title={t("Nastavení soukromí")}
                     style={{
                         position: "fixed",

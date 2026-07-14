@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import type { CardType, GameStateType } from "./GameContext";
+import { type CardType, type GameStateType, gameStateDefault } from "./GameContext";
 import { type DialogState } from "./DialogContext";
 import type { RefObject } from "react";
 import {t} from "i18next";
@@ -311,6 +311,7 @@ export function handleGameMessage(
         }
         case "token": {
             localStorage.setItem("gameToken", payload);
+            sessionStorage.setItem("gameToken", payload);
             console.log("uložen token", payload);
             break;
         }
@@ -695,14 +696,28 @@ export function drawCard(ws: WebSocket | null) {
     }
 }
 
-export function returnToGame(ws: WebSocket | null) {
+export function returnToGame(
+    ws: WebSocket | null,
+    setGameState?: (updater: (prev: GameStateType) => GameStateType) => void
+) {
     console.log("pokouším se vrátit do hry");
     if (ws !== null) {
-        const token = localStorage.getItem("gameToken");
+        const token = sessionStorage.getItem("gameToken") || localStorage.getItem("gameToken");
         if (!token) {
             console.error(t("Nelze se vrátit do hry, protože není uložen token"));
             toast.error(t("Nelze se vrátit do hry, protože není uložen token"));
             return;
+        }
+
+        // Promazání stavu pro zamezení duplicity/nekonzistence dat před načtením nového stavu ze serveru
+        if (setGameState) {
+            setGameState(prev => ({
+                ...gameStateDefault,
+                name: prev.name,
+                gameCode: prev.gameCode,
+                inGame: true,
+                startedConection: true
+            }));
         }
         
         console.log("posílám vraceniSe s tokenem", token);

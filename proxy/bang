@@ -115,7 +115,8 @@ server {
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     location /ws {
         # Ochrana před zneužitím z cizích webů
-        if ($http_origin !~* "^(https?://(localhost|bang\.honzaa\.cz|itch\.io|.*\.itch\.io))$") {
+       # Povolí localhost, lokální IP adresy 192.168.x.x (včetně portů) a produkční domény
+        if ($http_origin !~* "^(https?://(localhost|192\.168\.\d+\.\d+)(:\d+)?|https?://(bang\.honzaa\.cz|itch\.io|.*\.itch\.io))$") {
             return 403;
         }
 
