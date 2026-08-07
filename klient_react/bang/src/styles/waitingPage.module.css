@@ -12,6 +12,13 @@
  .scrollArea{
     max-height: calc(100dvh); 
     overflow-y: auto;
+    background-color: var(--mainColor);
+    background-image: inherit;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    min-height: 100dvh;
+    width: 100%;
  }
 .content{
     margin-top: 24px;

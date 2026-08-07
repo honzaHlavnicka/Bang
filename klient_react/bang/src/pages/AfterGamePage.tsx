@@ -26,13 +26,15 @@ export default function AfterGamePage(){
                 <h1>{t("Hra skončila")}</h1>
                 <h2>{t("Výsledková tabulka")}</h2>
                 <ol>
-                    {gameState.winningPlaces?.map((place, index) => (
-                        <li key={index}>
-                            {place.map((playerId) => (
-                                <span key={playerId}>{gameState.players?.find(player => player.id === playerId)?.name}, </span>
-                            ))} {t("na {{index}}. místě", { index: index + 1 })}
-                        </li>
-                    ))}
+                    {gameState.winningPlaces?.map((place, index) => 
+                        place ? (
+                            <li key={index}>
+                                {place.map((playerId) => (
+                                    <span key={playerId}>{gameState.players?.find(player => player.id === playerId)?.name}, </span>
+                                ))} {t("na {{index}}. místě", { index: index + 1 })}
+                            </li>
+                        ) : null
+                    )}
                 </ol>
                 <div style={{textAlign:"center", display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap"}} >
                     <a 

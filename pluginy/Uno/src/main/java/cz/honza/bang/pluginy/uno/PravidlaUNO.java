@@ -143,7 +143,7 @@ public class PravidlaUNO implements HerniPravidla{
         }
         
         // Vytvoř 2D pole výsledků: každé místo je jedno vnitřní pole
-        Hrac[][] vysledky = new Hrac[poradiVyher.size() + zbyvajici.size()][];
+        Hrac[][] vysledky = new Hrac[poradiVyher.size() + (zbyvajici.isEmpty() ? 0 : 1)][];
         
         // První místa jsou v pořadí kdy skončili (0 index = 1. místo, atd.)
         for(int i = 0; i < poradiVyher.size(); i++){

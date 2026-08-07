@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import css from "../styles/global.module.css";
+import { useState } from 'react';
 
 const QRConnectButton = ({ code }:{code:string|null}) => {
   const { i18n, t } = useTranslation();

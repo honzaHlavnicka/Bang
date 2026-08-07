@@ -160,7 +160,7 @@ public class PravidlaPrsi implements HerniPravidla{
             }
         }
         
-        Hrac[][] vysledky = new Hrac[poradiVyher.size() + zbyvajici.size()][];
+        Hrac[][] vysledky = new Hrac[poradiVyher.size() + (zbyvajici.isEmpty() ? 0 : 1)][];
         
         for(int i = 0; i < poradiVyher.size(); i++){
             vysledky[i] = new Hrac[]{poradiVyher.get(i)};
