@@ -26,6 +26,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         let isUnmounted = false;
         let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
+        let resetAttemptTimeout: ReturnType<typeof setTimeout> | null = null;
         let reconnectAttempt = 0;
         const maxConnectAttempts = 3;
 
@@ -75,7 +76,16 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
                     return;
                 }
                 setWs(socket);
-                reconnectAttempt = 0;
+                
+                if (resetAttemptTimeout) {
+                    clearTimeout(resetAttemptTimeout);
+                }
+                resetAttemptTimeout = setTimeout(() => {
+                    if (!isUnmounted && activeSocket === socket && socket.readyState === WebSocket.OPEN) {
+                        reconnectAttempt = 0;
+                    }
+                }, 5000);
+
                 toast.dismiss("reconnect-toast");
                 toast.success(t("Připojeno k serveru"));
                 posthog.capture('socket_connected', { url: socketUrl });
@@ -120,6 +130,11 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
                 if (isUnmounted) return;
                 setWs(null);
                 console.log("WebSocket disconnected");
+
+                if (resetAttemptTimeout) {
+                    clearTimeout(resetAttemptTimeout);
+                    resetAttemptTimeout = null;
+                }
 
                 // Pokus o automatické znovupřipojení
                 if (reconnectAttempt < maxConnectAttempts) {
@@ -193,6 +208,9 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             }
             if (reconnectTimeout) {
                 clearTimeout(reconnectTimeout);
+            }
+            if (resetAttemptTimeout) {
+                clearTimeout(resetAttemptTimeout);
             }
             toast.dismiss("reconnect-toast");
         };

@@ -259,7 +259,13 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     @PovolenePluginu
     public void posliVsem(String co){
         for (WebSocket conn : hraciPodleWebsocketu.keySet()) {
-            conn.send(co);
+            if (conn != null && conn.isOpen()) {
+                try {
+                    conn.send(co);
+                } catch (Exception ex) {
+                    logger.error("Chyba při posílání zprávy všem: {}", ex.getMessage());
+                }
+            }
         }
     }
     
@@ -276,7 +282,11 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         for (WebSocket conn : hraciPodleWebsocketu.keySet()) {
             if (conn != null && conn.isOpen()) {
                 if (!hraciPodleWebsocketu.get(conn).equals(komuNe)) {
-                    conn.send(co);
+                    try {
+                        conn.send(co);
+                    } catch (Exception ex) {
+                        logger.error("Chyba při posílání zprávy všem kromě jednoho: {}", ex.getMessage());
+                    }
                 }
             }
         }
@@ -412,8 +422,13 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     @PovolenePluginu
     public void posliChybu(cz.honza.bang.sdk.Hrac komu,Chyba chyba){
         WebSocket conn = websocketPodleHracu.get(komu);
-        conn.send("error:{\"error\":\"" + chyba.getZprava() + "\",\"kod\":" + chyba.getKod() + ",\"skupina\":" + chyba.getSkupina()+ "}");
-        
+        if (conn != null && conn.isOpen()) {
+            try {
+                conn.send("error:{\"error\":\"" + chyba.getZprava() + "\",\"kod\":" + chyba.getKod() + ",\"skupina\":" + chyba.getSkupina()+ "}");
+            } catch (Exception ex) {
+                logger.error("Chyba při posílání chyby hráči: {}", ex.getMessage());
+            }
+        }
     }
     
     /**
@@ -666,6 +681,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         if(puvodniHrac != null){
          //hráč už je připojen. je potřeba ho odpojit a nahradit novým pripojenim
          puvodniHrac.close();
+         hraciPodleWebsocketu.remove(puvodniHrac);
         }
         
         hraciPodleWebsocketu.put(conn, hrac);
