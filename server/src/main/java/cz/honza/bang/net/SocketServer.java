@@ -276,8 +276,8 @@ public class SocketServer extends WebSocketServer {
 
         
         sb.append("<h2>připojení:</h2>");
-        sb.append("<table><Thead><tr><th>remoteSocketAdress</th></th>gameId</th><th>isOpen</th><th>ReadyState</th></tr></thead><tbopdy>");
-        
+        sb.append("<table><Thead><tr><th>remoteSocketAdress</th><th>gameId</th><th>isOpen</th><th>ReadyState</th></tr></thead><tbody>");
+
         for (WebSocket connection : getConnections()) {
             sb.append("<tr>");
             sb.append("<td>");
