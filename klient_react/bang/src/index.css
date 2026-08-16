@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Rye&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Special+Elite&display=swap');
 
 html,body{
     margin:0;
@@ -9,7 +9,7 @@ html,body{
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Rye', cursive, serif;
+    font-family: 'Special Elite', cursive, serif;
 }
 .testovani *{
     outline: 1px solid blue;

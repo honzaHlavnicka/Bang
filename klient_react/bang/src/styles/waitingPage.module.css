@@ -12,7 +12,7 @@
  .scrollArea{
     max-height: calc(100dvh); 
     overflow-y: auto;
-    background-color: var(--mainColor);
+    background-color: transparent;
     background-image: inherit;
     background-size: cover;
     background-attachment: fixed;

@@ -10,14 +10,14 @@
 
 /* Téma (snadno rozšiřitelné) */
 .kontent {
-  --bg: #ffffff;
-  --fg: #111827;
-  --muted: #6b7280;
-  --border: #e5e7eb;
-  --accent: #2563eb;
+  --bg: #fcfaf2;
+  --fg: #4e342e;
+  --muted: #8d6e63;
+  --border: #8d6e63;
+  --accent: #d84315;
   --accent-foreground: #ffffff;
-  --focus: #93c5fd;
-  --bgMuted: #ffffffa2;
+  --focus: #ffb74d;
+  --bgMuted: #f4ece1d0;
   height: 100svh;
   width: 100%;
   display: flex;
@@ -30,14 +30,14 @@
 
 
 :global(.darkMode)  .kontent {
-    --bg: #2c2c2c;
-    --bgMuted: #241c1aa2;
-    --fg: #f1f5f9;
-    --muted: #9ca3af;
-    --border: #334155;
-    --accent: #3b82f6;
-    --accent-foreground: #ffffff;
-    --focus: #60a5fa;
+    --bg: #1e1613;
+    --bgMuted: #2d1f1ad0;
+    --fg: #efebe9;
+    --muted: #a1887f;
+    --border: #6d4c41;
+    --accent: #ff8f00;
+    --accent-foreground: #1e1613;
+    --focus: #ffb74d;
 }
 
 
@@ -57,12 +57,11 @@
   flex-direction: column;
 }
 .box{
-    /*zatim nic*/
     background-color: var(--bgMuted);
     padding: 25px;
-    border:10px solid var(--bg);
-    border-radius: 25px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 4px double var(--border);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15), inset 0 0 20px rgba(0, 0, 0, 0.05);
     width:min(500px,100%);
     margin-bottom: 20px;
     margin-inline: auto;
