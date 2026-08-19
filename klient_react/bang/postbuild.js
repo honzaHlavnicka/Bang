@@ -81,4 +81,39 @@ if (!fs.existsSync(iframeDir)) {
 fs.writeFileSync(path.join(iframeDir, 'index.html'), iframeHtml);
 console.log(`| Vygenerována iframe verze v: /iframe/index.html`);
 
+// 4. Aktualizace překladů v js/utils.js pro statické stránky
+const prekladyPoJazycich = {};
+JAZYKY.forEach(lang => {
+    const jsonCesta = path.join('./locales', `${lang}.json`);
+    if (fs.existsSync(jsonCesta)) {
+        const preklady = JSON.parse(fs.readFileSync(jsonCesta, 'utf8'));
+        prekladyPoJazycich[lang] = {
+            title: preklady.cookie_bar?.title || '',
+            text: preklady.cookie_bar?.text || '',
+            show_details: preklady.cookie_bar?.show_details || '',
+            hide_details: preklady.cookie_bar?.hide_details || '',
+            legal_text: preklady.footer?.legal_text || '',
+            agree: preklady.Souhlasím || preklady['Souhlasím'] || '',
+            decline: preklady.Nesouhlasím || preklady['Nesouhlasím'] || '',
+            settings: preklady['Nastavení soukromí'] || '',
+            warning: preklady['Upozornění:'] || ''
+        };
+    }
+});
+
+const utilsPaths = [
+    path.join('./public/js/utils.js'),
+    path.join(BUILD_DIR, 'js/utils.js')
+];
+
+utilsPaths.forEach(cesta => {
+    if (fs.existsSync(cesta)) {
+        let content = fs.readFileSync(cesta, 'utf8');
+        const replacement = `/* TRANSLATIONS_START */ ${JSON.stringify(prekladyPoJazycich, null, 8)} /* TRANSLATIONS_END */`;
+        content = content.replace(/\/\* TRANSLATIONS_START \*\/[\s\S]*?\/\* TRANSLATIONS_END \*\//, replacement);
+        fs.writeFileSync(cesta, content);
+        console.log(`| | Aktualizovány i18n překlady v: ${cesta}`);
+    }
+});
+
 console.log("----");
