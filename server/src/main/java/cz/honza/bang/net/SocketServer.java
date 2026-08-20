@@ -125,7 +125,7 @@ public class SocketServer extends WebSocketServer {
             return;
         }
         if(message.startsWith("infoHer")){
-            StringBuilder sb = new StringBuilder("infoHer:{\"verze\":\"0.0.7\",\"hry\":");
+            StringBuilder sb = new StringBuilder("infoHer:{\"verze\":\"1.0\",\"hry\":");
             sb.append(SpravceHernichPravidel.getJSONVytvoritelneHry());
             //tady jsou přidávat další data o serveru.
             sb.append("}");

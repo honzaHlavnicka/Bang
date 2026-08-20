@@ -202,7 +202,8 @@ public class MojeHra implements HerniPlugin {
 
 Plugin zkompiluj do `.jar` a vlož do složky `/pluginy/` — server ho načte automaticky při startu.
 
-📖 **Podrobný návod:** [docs/tutorial/VlastniHra.md](docs/tutorial/VlastniHra.md)  
+📖 **Podrobný návod (Java):** [docs/tutorial/VlastniHra.md](docs/tutorial/VlastniHra.md)  
+📖 **Návod pro JS/TS pluginy:** [docs/tutorial/JavaScript_TypeScript_Pluginy.md](docs/tutorial/JavaScript_TypeScript_Pluginy.md)  
 📚 **API dokumentace:** [bang.honzaa.cz/apidocs](https://bang.honzaa.cz/apidocs)
 
 ---
@@ -213,7 +214,8 @@ Plugin zkompiluj do `.jar` a vlož do složky `/pluginy/` — server ho načte a
 |----------|-------|
 | [Protokol (WebSocket)](docs/protocol/README.md) | Kompletní dokumentace komunikačního protokolu |
 | [API dokumentace (Javadoc)](https://bang.honzaa.cz/apidocs) | Dokumentace SDK pro tvorbu pluginů |
-| [Návod na vlastní plugin](docs/tutorial/VlastniHra.md) | Krok za krokem: jak napsat vlastní hru |
+| [Návod na vlastní plugin (Java)](docs/tutorial/VlastniHra.md) | Krok za krokem: jak napsat vlastní hru v Javě |
+| [Návod na JS/TS pluginy](docs/tutorial/JavaScript_TypeScript_Pluginy.md) | Jak napsat plugin v JavaScriptu nebo TypeScriptu s využitím GraalVM |
 | [IOČ dokumentace](docs/IOC/) | Technická dokumentace ročníkové práce |
 
 ---
@@ -227,7 +229,7 @@ Plugin zkompiluj do `.jar` a vlož do složky `/pluginy/` — server ho načte a
 
 ### Výhled
 - [ ] Peer-to-peer voice chat přes WebRTC + PeerJS
-- [ ] Podpora pluginů v JavaScriptu / TypeScriptu (GraalVM)
+- [x] Podpora pluginů v JavaScriptu / TypeScriptu (GraalVM)
 - [ ] Přizpůsobení vzhledu
 
 ---

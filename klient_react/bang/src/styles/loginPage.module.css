@@ -232,7 +232,19 @@
     user-select: none;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 600px) and (min-width:276px){
+    .separator {
+        display: none;
+    }
+    .footerNav {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        text-align: center;
+    }
+}
+
+@media (max-width:276px) {
     .separator {
         display: none;
     }
