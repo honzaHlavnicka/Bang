@@ -86,6 +86,23 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
                     }
                 }, 5000);
 
+                try {
+                    const isDebug = String(import.meta.env.VITE_DEBUG).trim().toLowerCase() === 'true';
+                    const isHonza = localStorage.getItem("jsemhonzaa") === "ano";
+                    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+                    if (isDebug || isHonza || isLocalhost) {
+                        socket.send("posthogId:ignore");
+                    } else {
+                        const distinctId = posthog.get_distinct_id();
+                        if (distinctId) {
+                            socket.send("posthogId:" + distinctId);
+                        }
+                    }
+                } catch (e) {
+                    console.error("Error sending posthogId", e);
+                }
+
                 toast.dismiss("reconnect-toast");
                 toast.success(t("Připojeno k serveru"));
                 posthog.capture('socket_connected', { url: socketUrl });

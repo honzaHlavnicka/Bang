@@ -36,6 +36,14 @@ public class ServerApp {
         
         logger.info("Spouštím server na portu: {}", port);
         
+        PostHogTracker.init();
+        
+        // Registrace shutdown hooku pro čisté ukončení a flush událostí PostHogu
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("Vypínám server a PostHog tracker...");
+            PostHogTracker.shutdown();
+        }));
+        
         WebSocketServer server = new SocketServer(new InetSocketAddress("0.0.0.0", port));
         server.setReuseAddr(true);
         server.start();

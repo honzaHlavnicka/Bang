@@ -16,6 +16,7 @@ import cz.honza.bang.sdk.Hrac;
 import cz.honza.bang.sdk.Karta;
 import cz.honza.bang.sdk.SpravceTahu;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
@@ -36,7 +37,7 @@ public class HraImp implements cz.honza.bang.sdk.Hra{
     /**
      * Hráči ve hře. Pořadí určuje pořadí hráčů. Nemělo by se měnit po zahájení hry respektive vytvoření správce tahu.
      */
-    private List<HracImp> hraci = new ArrayList<>();
+    private List<HracImp> hraci = new CopyOnWriteArrayList<>(); // lepší pro thread safety (nemění se prakticky nikdy, ale čte se)
     private boolean zahajena = false;
     private final Stack<cz.honza.bang.sdk.Postava>  balicekPostav;
     private KomunikatorHryImp komunikator;

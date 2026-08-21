@@ -38,6 +38,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     private Map<HracImp, WebSocket> websocketPodleHracu = new ConcurrentHashMap<>();
     private Map<WebSocket, HracImp> hraciPodleWebsocketu = new ConcurrentHashMap<>();
     private Map<String, HracImp> hraciPodlIdentifikatoru = new ConcurrentHashMap<>();
+    private Map<HracImp, String> posthogIdsPodleHracu = new ConcurrentHashMap<>();
     private int idHry;
     private final long SMAZAT_NEAKTIVNI_HRU_MS = 300_000;
     private final Map<Integer, CompletableFuture<String>> cekajiciOdpovedi = new ConcurrentHashMap<>();
@@ -147,6 +148,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
                     }
                 } catch (Exception ex) {
                     logger.error("Chyba při vyhazování hráče: {}", message, ex);
+                    PostHogTracker.trackError("KomunikatorHryImp", "Chyba při vyhazování hráče", ex);
                     posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
                 }
                 return;
@@ -159,6 +161,17 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
                     return;
                 }
                 hra.setZahajena(true);
+                
+                String posthogId = SocketServer.getPosthogId(conn);
+                if (posthogId == null) {
+                    posthogId = posthogIdsPodleHracu.get(hrac);
+                }
+                if (posthogId != null) {
+                    java.util.Map<String, Object> props = new java.util.HashMap<>();
+                    props.put("gameId", idHry);
+                    props.put("playerCount", pocetPripojenychHracu.get());
+                    PostHogTracker.trackEvent(posthogId, "server_game_start", props);
+                }
             }
             if(message.startsWith("getIdHry")){
                 conn.send("setIdHry:"+idHry);
@@ -182,6 +195,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
                     zpracujPozadanouOdpoved(Integer.valueOf(data[0]), data[1]);
                 }catch(Exception ex){
                     logger.error("Chyba při zpracování dialogu: {}", message, ex);
+                    PostHogTracker.trackError("KomunikatorHryImp", "Chyba při zpracování dialogu", ex);
                     posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
                 }
             }
@@ -209,6 +223,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     
                 } catch (NumberFormatException ex) {
                     logger.error("Chyba při zpracování uiClick (neplatné ID): {}", message, ex);
+                    PostHogTracker.trackError("KomunikatorHryImp", "Chyba při zpracování uiClick (neplatné ID)", ex);
                     posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
                 }
             }
@@ -245,6 +260,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
                     
                 } catch (NumberFormatException ex) {
                     logger.error("Chyba při zpracování nahradHru (neplatné ID): {}", message, ex);
+                    PostHogTracker.trackError("KomunikatorHryImp", "Chyba při zpracování nahradHru (neplatné ID)", ex);
                     posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
                 }
             }
@@ -330,6 +346,14 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         posliNovehoHrace(hrac);
 
         pocetPripojenychHracu.incrementAndGet();
+        
+        String posthogId = SocketServer.getPosthogId(websocket);
+        if (posthogId != null) {
+            posthogIdsPodleHracu.put(hrac, posthogId);
+            java.util.Map<String, Object> props = new java.util.HashMap<>();
+            props.put("gameId", idHry);
+            PostHogTracker.trackEvent(posthogId, "server_game_join", props);
+        }
 
         return true;
     }
@@ -391,8 +415,8 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     public synchronized void hracOdpojen(WebSocket conn){
         HracImp hrac = hraciPodleWebsocketu.get(conn);
         hraciPodleWebsocketu.remove(conn);
-        websocketPodleHracu.remove(hrac);
         if (hrac != null) {
+            websocketPodleHracu.remove(hrac);
             posliVsem("odpojeniHrace:" + hrac.getId());
         }
         aktualizujAdmina();
@@ -652,9 +676,20 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         for (int i = 0; i < radky; i++) {
             int pocetHracuVeSkupine = vysledky[i].length;
             idPole[i] = new int[pocetHracuVeSkupine];
+            boolean isWinner = (i == 0);
 
             for (int j = 0; j < pocetHracuVeSkupine; j++) {
-                idPole[i][j] = vysledky[i][j].getId();
+                HracImp hrac = (HracImp) vysledky[i][j];
+                idPole[i][j] = hrac.getId();
+                
+                String posthogId = posthogIdsPodleHracu.get(hrac);
+                if (posthogId != null) {
+                    java.util.Map<String, Object> props = new java.util.HashMap<>();
+                    props.put("gameId", idHry);
+                    props.put("isWinner", isWinner);
+                    props.put("rank", i + 1);
+                    PostHogTracker.trackEvent(posthogId, "server_game_end", props);
+                }
             }
         }
 
@@ -700,6 +735,15 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         
         nactiHru(conn);
         posliVsechnaUITlacitka(hrac);
+        
+        String posthogId = SocketServer.getPosthogId(conn);
+        if (posthogId != null) {
+            posthogIdsPodleHracu.put((HracImp) hrac, posthogId);
+            java.util.Map<String, Object> props = new java.util.HashMap<>();
+            props.put("gameId", idHry);
+            PostHogTracker.trackEvent(posthogId, "server_game_rejoin", props);
+        }
+        
         return true;
     }
     

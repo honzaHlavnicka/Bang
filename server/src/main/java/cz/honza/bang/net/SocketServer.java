@@ -40,7 +40,12 @@ public class SocketServer extends WebSocketServer {
     private String adminPassword;
     private Set<WebSocket> overeniAdmini = ConcurrentHashMap.newKeySet();
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private volatile boolean overujeSeHeslo;
+    private java.util.concurrent.atomic.AtomicBoolean overujeSeHeslo = new java.util.concurrent.atomic.AtomicBoolean(false);
+    private static final Map<WebSocket, String> posthogIds = new ConcurrentHashMap<>();
+    
+    public static String getPosthogId(WebSocket conn) {
+        return posthogIds.get(conn);
+    }
     
     public SocketServer(InetSocketAddress address) {
         super(address);
@@ -56,14 +61,15 @@ public class SocketServer extends WebSocketServer {
         // Načti pluginy už při startu
         logger.info("Načítám pluginy...");
         SpravceHernichPravidel.pregeneruj();
-        
-        overujeSeHeslo = false;
     }
 
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         logger.debug("Nové připojení z: {}", conn.getRemoteSocketAddress());
+        
+        String anonId = "anon_" + java.util.UUID.randomUUID().toString();
+        posthogIds.put(conn, anonId);        
         conn.send("welcome");
     }
 
@@ -71,6 +77,11 @@ public class SocketServer extends WebSocketServer {
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         logger.debug("Uzavřeno připojení z: {}, důvod: {}", conn.getRemoteSocketAddress(), reason);
        
+        String posthogId = posthogIds.remove(conn);
+        if (posthogId != null && !"ignore".equals(posthogId) && !posthogId.startsWith("anon_")) {
+            PostHogTracker.trackEvent(posthogId, "server_disconnection", null);
+        }
+        
         KomunikatorHryImp komunikator = komunikatoryHracu.remove(conn);
         overeniAdmini.remove(conn);
         
@@ -82,6 +93,17 @@ public class SocketServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         logger.trace("Přišla zpráva od {}: {}", conn.getRemoteSocketAddress(), message);
+
+        if (message.startsWith("posthogId:")) {
+            String clientId = message.substring("posthogId:".length()).trim();
+            if (!clientId.isEmpty()) {
+                posthogIds.put(conn, clientId);
+                if (!"ignore".equals(clientId)) {
+                    PostHogTracker.trackEvent(clientId, "server_connection", null);
+                }
+            }
+            return;
+        }
 
         if (message.startsWith("serverInfo:")) {
             String zadaneHeslo = message.replace("serverInfo:", "");
@@ -226,7 +248,8 @@ public class SocketServer extends WebSocketServer {
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-        logger.error("Chyba na websocketu (klient: {}): {}", conn != null ? conn.getRemoteSocketAddress() : "neznámý", ex.getMessage(), ex);
+        logger.error("Chyba na websocketu (klient: {}): {}", conn != null ? conn.getRemoteSocketAddress() : "neznámý", ex != null ? ex.getMessage() : "null", ex);
+        PostHogTracker.trackError("SocketServer", "Chyba na websocketu: " + (ex != null ? ex.getMessage() : "null"), ex);
     }
 
     @Override
@@ -249,7 +272,11 @@ public class SocketServer extends WebSocketServer {
     }
     
     public KomunikatorHryImp novaHra(int typHry){
-        int kodKry = nahodneIdHry();
+        int kodKry;
+        synchronized(pouziteKody) {
+            kodKry = nahodneIdHry();
+            pouziteKody.add(Integer.valueOf(kodKry));
+        }
         KomunikatorHryImp komunikator = KomunikatorHryImp.vytvor(this, kodKry, typHry);
         hryPodleId.put(Integer.toString(kodKry), komunikator);
         pouziteKody.add(Integer.valueOf(kodKry));
@@ -344,15 +371,14 @@ public class SocketServer extends WebSocketServer {
             return future;
         }
         
-        if(overujeSeHeslo){ // Už probíhá 4s pauza před kontrolou hesla.
+        if (!overujeSeHeslo.compareAndSet(false, true)) { // Už probíhá 4s pauza před kontrolou hesla.
             future.complete(false);
             return future;
         }
         
         // Spojení není ověřené.
-        overujeSeHeslo = true;
         scheduler.schedule(() -> {
-            overujeSeHeslo = false;
+            overujeSeHeslo.set(false);
             if (adminPassword.equals(zadaneHeslo)) {
                 overeniAdmini.add(conn);
                 future.complete(true);
