@@ -40,7 +40,7 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
     private Map<String, HracImp> hraciPodlIdentifikatoru = new ConcurrentHashMap<>();
     private Map<HracImp, String> posthogIdsPodleHracu = new ConcurrentHashMap<>();
     private int idHry;
-    private final long SMAZAT_NEAKTIVNI_HRU_MS = 300_000;
+    private final long SMAZAT_NEAKTIVNI_HRU_MS = 3_600_000;
     private final Map<Integer, CompletableFuture<String>> cekajiciOdpovedi = new ConcurrentHashMap<>();
     private final AtomicInteger posledniIdCekaciOdpovedi = new AtomicInteger(0);
     private HracImp admin;
@@ -721,6 +721,9 @@ public class KomunikatorHryImp implements cz.honza.bang.sdk.KomunikatorHry{
         
         hraciPodleWebsocketu.put(conn, hrac);
         websocketPodleHracu.put(hrac, conn);
+        
+        // Zrušit timeout smazání hry - hráč se znovu připojil
+        zrusitTimeoutSmezaniHry();
         
         posliVsem("pripojeniHrace:" + hrac.getId());
         
