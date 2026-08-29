@@ -19,6 +19,7 @@ export default function MyThings() {
     const zdravy = gameState.health || 0;
     const isDead = zdravy !== undefined && zdravy <= 0;
     const { openDialog } = useDialog();
+    const [isRoleVisible, setIsRoleVisible] = useState(false);
 
     function CardClick(e: React.MouseEvent<HTMLDivElement>){
         const cardId = parseInt((e.currentTarget as HTMLDivElement).getAttribute("data-id") || "-1");
@@ -99,9 +100,9 @@ export default function MyThings() {
                 `}</style>
                 <div style={rowScrollStyle}>
                     <NameTag jmeno={jmeno || t("nepojmenovaný hráč")} isDead={isDead} showDeadIndicator={gameState.allowedUIElements.includes("ZIVOTY")} style={{flex: "0 0 auto", ...(isMyTurn ? {} : { backgroundColor: "white" })}} className={isMyTurn ? "my-turn-active" : ""} />
-                    {gameState.allowedUIElements.includes("ROLE") ?    <Card image={`/img/karty/role/${role}.png`} />: null}
+                    {gameState.allowedUIElements.includes("ROLE") ?    <Card onClick={() => setIsRoleVisible(!isRoleVisible)} image={isRoleVisible ? `/img/karty/role/${role}.png` : "/img/karty/role/zezadu.png"} />: null}
                     {gameState.allowedUIElements.includes("POSTAVA") ? <Card image={`/img/karty/postavy/${postava}.png`} />: null}
-                    {gameState.allowedUIElements.includes("ZIVOTY") ? <Card image={`/img/velkeZivoty/${zdravy}zivoty.png`} />: null}
+                    {gameState.allowedUIElements.includes("ZIVOTY") ?  <Card image={`/img/velkeZivoty/${zdravy}zivoty.png`} />: null}
                     <div style={{ width: "30px", flex: "0 0 auto" }} />
                     <Cards isDragable={false} onClickCard={CardClick} cards={vylozeneKarty} isInline={false} />
                 </div>
@@ -132,9 +133,9 @@ export default function MyThings() {
             <div style={{ marginRight: "32px", width: "fit-content" }}>
                 <NameTag jmeno={jmeno || t("nepojmenovaný hráč")} isDead={isDead} showDeadIndicator={gameState.allowedUIElements.includes("ZIVOTY")} style={{...(isMyTurn ? {} : { backgroundColor: "white" })}} className={isMyTurn ? "my-turn-active" : ""} />
                 <div style={{display:"flex",justifyContent:"center"}}>
-                    {gameState.allowedUIElements.includes("ROLE") ?    <Card image={`/img/karty/role/${role}.png`} />: null}
+                    {gameState.allowedUIElements.includes("ROLE") ?    <Card onClick={() => setIsRoleVisible(!isRoleVisible)} image={isRoleVisible ? `/img/karty/role/${role}.png` : "/img/karty/role/zezadu.png"} />: null}
                     {gameState.allowedUIElements.includes("POSTAVA") ? <Card image={`/img/karty/postavy/${postava}.png`} />: null}
-                    {gameState.allowedUIElements.includes("ZIVOTY") ? <Card image={`/img/velkeZivoty/${zdravy}zivoty.png`} />: null}
+                    {gameState.allowedUIElements.includes("ZIVOTY") ?  <Card image={`/img/velkeZivoty/${zdravy}zivoty.png`} />: null}
                 </div>
             </div>
             <div style={{flex: 1, display: "flex", justifyContent: "center",flexDirection:(hasVerticalSpace ? "column" : "row"), zIndex:3 }}>
