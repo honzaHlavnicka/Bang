@@ -19,7 +19,7 @@ export default function MyThings() {
     const zdravy = gameState.health || 0;
     const isDead = zdravy !== undefined && zdravy <= 0;
     const { openDialog } = useDialog();
-    const [isRoleVisible, setIsRoleVisible] = useState(false);
+    const [isRoleVisible, setIsRoleVisible] = useState(true);
 
     function CardClick(e: React.MouseEvent<HTMLDivElement>){
         const cardId = parseInt((e.currentTarget as HTMLDivElement).getAttribute("data-id") || "-1");
