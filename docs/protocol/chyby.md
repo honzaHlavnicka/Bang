@@ -1,6 +1,6 @@
 # Dokumentace chyb
 
-Tento dokument obsahuje podrobné informace o chybových zprávách v protokolu, jejich kódech a skupinách podle implementace v `src/main/java/cz/honza/bang/net/Chyba.java`.
+Tento dokument obsahuje podrobné informace o chybových zprávách v protokolu, jejich kódech a skupinách podle implementace v `src/main/java/cz/honzaa/bang/net/Chyba.java`.
 
 ## Formát chybové zprávy
 
@@ -515,4 +515,4 @@ function handleError(errorData) {
 - [index.md](index.md) - Kompletní reference protokolu
 - [behem-hry.md](behem-hry.md) - Herní fáze a možné chyby
 - [predHrou.md](predHrou.md) - Fáze před hrou a možné chyby
-- `src/main/java/cz/honza/bang/net/Chyba.java` - Zdrojový kód definic chyb
+- `src/main/java/cz/honzaa/bang/net/Chyba.java` - Zdrojový kód definic chyb

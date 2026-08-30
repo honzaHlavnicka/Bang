@@ -77,22 +77,22 @@
     </url>
 
     <url>
-        <loc>https://bang.honzaa.cz/apidocs/cz/honza/bang/sdk/package-summary.html</loc>
+        <loc>https://bang.honzaa.cz/apidocs/cz/honzaa/bang/sdk/package-summary.html</loc>
         <priority>0.6</priority>
         <changefreq>monthly</changefreq>
     </url>
     <url>
-        <loc>https://bang.honzaa.cz/apidocs/cz/honza/bang/sdk/HerniPlugin.html</loc>
+        <loc>https://bang.honzaa.cz/apidocs/cz/honzaa/bang/sdk/HerniPlugin.html</loc>
         <priority>0.5</priority>
         <changefreq>monthly</changefreq>
     </url>
     <url>
-        <loc>https://bang.honzaa.cz/apidocs/cz/honza/bang/sdk/HerniPravidla.html</loc>
+        <loc>https://bang.honzaa.cz/apidocs/cz/honzaa/bang/sdk/HerniPravidla.html</loc>
         <priority>0.5</priority>
         <changefreq>monthly</changefreq>
     </url>
     <url>
-        <loc>https://bang.honzaa.cz/apidocs/cz/honza/bang/sdk/Hrac.html</loc>
+        <loc>https://bang.honzaa.cz/apidocs/cz/honzaa/bang/sdk/Hrac.html</loc>
         <priority>0.5</priority>
         <changefreq>monthly</changefreq>
     </url>

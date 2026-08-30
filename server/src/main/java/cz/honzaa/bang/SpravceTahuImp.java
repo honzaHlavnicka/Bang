@@ -1,0 +1,310 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+
+Toto je domácí verze souborů z programování.
+ */
+package cz.honzaa.bang;
+
+import cz.honzaa.bang.sdk.PovolenePluginu;
+import cz.honzaa.bang.sdk.Hrac;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Deque;
+import java.util.List;
+import java.util.function.Predicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/**
+ * Spravuje pořadí hráčů a jejich tahy.
+ * Umožňuje přeskakování hráčů, násobení tahů a vyřazování ze hry.
+ * Obsahuje lazy cache pro pořadí aktivních hráčů.
+ *
+ * @author honza
+ */
+public class SpravceTahuImp implements cz.honzaa.bang.sdk.SpravceTahu{
+    private static final Logger logger = LoggerFactory.getLogger(SpravceTahuImp.class);
+    private HracImp naTahu;
+    private final Deque<Tah> frontaTahu;
+
+    // Lazy cache pořadí hráčů
+    private List<HracImp> hrajiciHraciCache;
+    private boolean poradiAktualni = false;
+
+    private int nasobicTahu = 1;
+    private int kolikatyTah = 1;
+    
+    private boolean zmenenSmer = false;
+
+    /**
+     * Třída pro správu tahů. Podporuje dynamicky měnit směr, přidávat dočasné tahy i násobit tahy.
+     * @param hraci
+     */
+    public SpravceTahuImp(List<HracImp> hraci) {
+        this.frontaTahu = new ArrayDeque<>();
+        for (HracImp hrac : hraci) {
+            frontaTahu.addLast(new Tah(hrac, false));
+        }
+        this.poradiAktualni = false;
+   }
+    
+    /**
+     * Vrátí kolekci hráčů, kteří jsou zapojeni ve hře v pořadí, ve kterém se vykonávají jejich tahy.
+     * Ignoruje jednorázové tahy.
+     * Respektuje směr, tzn. hráči vždy budou hrát směrem od 0 do List.size().
+     * Aktuálně hrající hráč je poslední.
+     * 
+     * @return kolekce hráčů seřazená podle pořadí hraní.
+     */
+    @Override
+    @PovolenePluginu
+    public List<Hrac> getHrajiciHraci() {
+        if (!poradiAktualni) {
+            hrajiciHraciCache = new ArrayList<>();
+            for (Tah t : frontaTahu) {
+                if (!t.docasneZruseny && !t.jednorazovy) {
+                    hrajiciHraciCache.add((HracImp) t.hrac);
+                }
+            }
+            if (zmenenSmer) {
+                Collections.reverse(hrajiciHraciCache); // otočí list in-place
+            }
+            poradiAktualni = true;
+        }
+        return List.copyOf(hrajiciHraciCache);
+    }
+
+     /**
+     * Spustí tah dalšího hráče. Další hráč nebude upozorněn, pouze se nastaví
+     * interně ve správci tahů.
+     * 
+     * Pokud už žádní hráči, co by mohli mít tah, nehrajou, zůstane zvolen stejný hráč, který byl doposud.
+     *
+     * @return hráč, který je na tahu. 
+     */
+    @Override
+    @PovolenePluginu
+    public HracImp dalsiHrac() {
+        if(getHrajiciHraci().isEmpty()){
+            return naTahu;
+        }
+        if (kolikatyTah >= nasobicTahu) {
+            Tah tah;
+            if(!zmenenSmer){
+                tah = frontaTahu.pollFirst();
+            }else{
+                tah = frontaTahu.pollLast();
+            }
+            if (tah == null) {
+                throw new IllegalStateException("Ve frontě tahů není žádný hráč.");
+            }
+
+            if (!tah.jednorazovy) {
+                if(zmenenSmer){
+                    frontaTahu.addFirst(tah);
+                }else{
+                    frontaTahu.addLast(tah);
+                }
+            }
+
+            if (!tah.docasneZruseny) {
+                naTahu = (HracImp) tah.hrac;
+                kolikatyTah = 1;
+                logger.info("Začíná tah hráče: {}", naTahu.getJmeno());
+                return naTahu;
+            } else {
+                // přeskočí vyřazeného hráče
+                return dalsiHrac();
+            }
+        }
+
+        kolikatyTah++;
+        return naTahu;
+    }
+
+    /**
+     * Najde dalšího hráče se zadanou rolí.
+     * @param role
+     */
+    @Override
+    @PovolenePluginu
+    public HracImp dalsiHracPodleRole(cz.honzaa.bang.sdk.Role role) {
+        return dalsiHracPodlePodminky(hrac -> hrac.getRole().equals(role));
+    }
+    
+    /**
+     * Najde dalšího hráče podle libovolné podmínky a přetočí frontu tak, aby po
+     * něm hráli správní hráči. Pokud podmínku nikdo nesplnuje, tak se nov tah
+     * neprovede a vrátí se aktuálně hrající hráč. Pokud více hráčů splnuje
+     * podmínku, tak se vybere první z nich. Hráč bude na tah upozorněn a budou
+     * provedeny všechyn potřebné náležitosti. Jednorázové tahy se neberou v potaz.
+     *
+     * @param podminka Funkce, která otestuje hráče a vrátí true, pokud je to
+     * ten hledaný.
+     * @return Hráč co bude na tahu
+     */
+    @Override
+    @PovolenePluginu
+    public HracImp dalsiHracPodlePodminky(Predicate<Hrac> podminka) {
+        Tah hledanyTah = null;
+        for (Tah t : frontaTahu) {
+            if (podminka.test(t.hrac) && !t.jednorazovy && !t.docasneZruseny) {
+                hledanyTah = t;
+                break;
+            }
+        }
+        
+        // Nikdo nesplnuje podmínku
+        if (hledanyTah == null) {
+            return naTahu;
+        }
+        
+        // Protočení řady, aby se pořadí posunulo
+        while (true) {
+            Tah tah;
+            if (!zmenenSmer) {
+                tah = frontaTahu.pollFirst();
+            } else {
+                tah = frontaTahu.pollLast();
+            }
+
+            
+            if (zmenenSmer) {
+                frontaTahu.addFirst(tah);
+            } else {
+                frontaTahu.addLast(tah);
+            }
+            
+
+            if (tah == hledanyTah) {
+                naTahu = (HracImp) tah.hrac;
+                kolikatyTah = 1;
+                poradiAktualni = false;
+                naTahu.zahajitTah();
+                return naTahu;
+            }
+        }
+    }
+
+ 
+    
+    @Override
+    @PovolenePluginu
+    public void dalsiHracSUpozornenim() {
+        if (naTahu != null) {
+            naTahu.konecTahu();
+        }else{
+            dalsiHrac();
+        }
+    }
+
+    /**
+     * Další hráč bude přeskočen. Stávající hráč hraje dál, neukončí to jeho tah.
+     * @return hráč, který byl přeskočen.
+     */
+    @Override
+    @PovolenePluginu
+    public Hrac eso(){
+        if (frontaTahu.isEmpty()) {
+            return null;
+        }
+
+        if (!zmenenSmer) {
+            for (Tah tah : frontaTahu) {
+                if (!tah.docasneZruseny) {
+                    frontaTahu.remove(tah);
+                    frontaTahu.addLast(tah);
+                    poradiAktualni = false;
+                    return tah.hrac;
+                }
+            }
+        } else {
+            java.util.Iterator<Tah> it = frontaTahu.descendingIterator();
+            while (it.hasNext()) {
+                Tah tah = it.next();
+                if (!tah.docasneZruseny) {
+                    frontaTahu.remove(tah);
+                    frontaTahu.addFirst(tah);
+                    poradiAktualni = false;
+                    return tah.hrac;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * mění vlastnost násoení tahu. Hráč bude mít místo jednoho tahu k dispozici <code>kolik</code>.
+     * @param kolik kolikrát za sebou bude hrát stejný hráč
+     */
+    @Override
+    @PovolenePluginu
+    public void setNasobicTahu(int kolik){
+        nasobicTahu = kolik;
+    }
+    
+    @Override
+    @PovolenePluginu
+    public HracImp getNaTahu(){
+        return naTahu;
+    }
+    
+    /**
+     * Vyřadí hráče z koloběhu tahů.
+     * Jeho pořadí ve kterém byl se nezapomene, nic ze nezmění kromě toho, že se jeho tah bude pokaždé přeskakovat.
+     * @param koho
+     */
+    @Override
+    @PovolenePluginu
+    public void vyraditHrace(Hrac koho){
+        for (Tah tah : frontaTahu) {
+            if(tah.hrac.equals(koho)){
+                tah.docasneZruseny = true;
+            }
+        }
+        poradiAktualni = false;
+    }
+    
+    /**
+     * Vratí vyřazeného hráče do koloběhu tahů.
+     * Pokud je parametr <code>koho</code> hráč, kterého už SpravceTahu zná a má pořadí,
+     * tak ho přestane přeskakovat. Hráč, který nikdy zařazený nebyl přidán nebude.
+     * @param koho
+     * @see pridatHrace
+     */
+    @Override
+    @PovolenePluginu
+    public void vratitHrace(Hrac koho){
+        for (Tah tah : frontaTahu) {
+            if (tah.hrac.equals(koho)) {
+                tah.docasneZruseny = false;
+            }
+        }
+        poradiAktualni = false;
+    }
+
+    /**
+     * Přidá nového hráče do koloběhu tahů. 
+     * Pouze pro hráče, který nikdy zařazen nebyl. Pro hráče co již někdy zařazen byl použít <code>vratitHrace</code>.
+     * Hráč bude přidán na poslení místo, tzn před hráče co aktuálně hraje.
+     * @param koho
+     */
+    @Override
+    public void pridatHrace(Hrac koho) {
+        frontaTahu.addLast(new Tah(koho, false));
+        poradiAktualni = false;
+    }
+    
+    /**
+     * Změní směr hraní
+     */
+    @Override
+    @PovolenePluginu
+    public void zmenaSmeru(){
+        zmenenSmer = !zmenenSmer;
+        poradiAktualni = false;
+    }
+}
+

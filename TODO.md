@@ -13,7 +13,7 @@ Soubory jsou uváděny relativně ke kořeni projektu.
 
 ### C2 – `message.startsWith("novaHra")` zachytí i zprávu `novaHraSHracema:`
 **Soubor:**
-- `server/src/main/java/cz/honza/bang/net/SocketServer.java` – řádek 92
+- `server/src/main/java/cz/honzaa/bang/net/SocketServer.java` – řádek 92
 
 ```java
 if (message.startsWith("novaHra") || message.startsWith("pripojeniKeHre:111")) {
@@ -25,7 +25,7 @@ Zpráva `novaHraSHracema:<id>` (určená pro reset hry) začíná `"novaHra"`, a
 
 ### C4 – `SpravceTahuImp.dalsiHrac()` používá rekurzi bez limitu hloubky
 **Soubor:**
-- `server/src/main/java/cz/honza/bang/SpravceTahuImp.java` – řádky 76–113
+- `server/src/main/java/cz/honzaa/bang/SpravceTahuImp.java` – řádky 76–113
 
 ```java
 if (!tah.docasneZruseny) {
@@ -44,7 +44,7 @@ Pokud jsou všichni hráči vyřazeni (nebo kvůli jiné chybě), metoda se reku
 
 ### C7 – `vylozitKartu` v `HracImp`: možný `NullPointerException` při neexistujícím hráči
 **Soubor:**
-- `server/src/main/java/cz/honza/bang/HracImp.java` – řádky 394–397
+- `server/src/main/java/cz/honzaa/bang/HracImp.java` – řádky 394–397
 
 ```java
 Hrac predKoho = (HracImp) hra.getHrac(idPredKoho);
@@ -59,7 +59,7 @@ if(hra.getHerniPravidla().muzeVylozit(this, vylozena)){
 
 ### C8 – `smazatHruAVyrobytNovou` v `KomunikatorHryImp` nedokončuje reset správně
 **Soubor:**
-- `server/src/main/java/cz/honza/bang/net/KomunikatorHryImp.java` – metoda `smazatHruAVyrobytNovou`
+- `server/src/main/java/cz/honzaa/bang/net/KomunikatorHryImp.java` – metoda `smazatHruAVyrobytNovou`
 
 Metoda vytvoří nové mapy hráčů a WebSocket spojení, ale:
 1. Nová mapa `novyHraciPodlIdentifikatoru` se ani nevytvoří – místo ní se průběžně mění stará `hraciPodlIdentifikatoru`.
@@ -71,7 +71,7 @@ Metoda vytvoří nové mapy hráčů a WebSocket spojení, ale:
 
 ### C10 – `podleniIdCekaciOdpovedi` není thread-safe
 **Soubor:**
-- `server/src/main/java/cz/honza/bang/net/KomunikatorHryImp.java` – řádky 26, 256–259
+- `server/src/main/java/cz/honzaa/bang/net/KomunikatorHryImp.java` – řádky 26, 256–259
 
 ```java
 private int podleniIdCekaciOdpovedi = 0; // plain int, ne AtomicInteger
@@ -89,10 +89,10 @@ Pokud jsou dvě karty odehrány současně (ve dvou vláknech), může dojít ke
 
 ### K2 – Ruční sestavování JSON řetězců místo použití knihovny
 **Soubory:**
-- `server/src/main/java/cz/honza/bang/net/SocketServer.java` – metoda `posliChybu` (řádek 254)
-- `server/src/main/java/cz/honza/bang/net/KomunikatorHryImp.java` – metoda `posliChybu` (řádek 195)
-- `server/src/main/java/cz/honza/bang/HracImp.java` – metody `toJSON` a `vyberZPostav`
-- `server/src/main/java/cz/honza/bang/HraImp.java` – metoda `nactiHru`
+- `server/src/main/java/cz/honzaa/bang/net/SocketServer.java` – metoda `posliChybu` (řádek 254)
+- `server/src/main/java/cz/honzaa/bang/net/KomunikatorHryImp.java` – metoda `posliChybu` (řádek 195)
+- `server/src/main/java/cz/honzaa/bang/HracImp.java` – metody `toJSON` a `vyberZPostav`
+- `server/src/main/java/cz/honzaa/bang/HraImp.java` – metoda `nactiHru`
 
 Projekt má v `pom.xml` závislost na `org.json`, ale místo ní se JSON sestavuje pomocí `StringBuilder` a ručního escapování. To je náchylné na chyby – pokud jméno hráče nebo popis chyby obsahuje uvozovky, vznikne nevalidní JSON. Metoda `escapeJSON` v `SpravceHernichPravidel` ošetřuje jen uvozovky, ignoruje ostatní speciální znaky (`\n`, `\r`, `\`, …).
 
@@ -100,7 +100,7 @@ Projekt má v `pom.xml` závislost na `org.json`, ale místo ní se JSON sestavu
 
 ### K3 – Statický čítač `HracImp.nextId` – bezpečnostní a provozní problémy
 **Soubor:**
-- `server/src/main/java/cz/honza/bang/HracImp.java` – řádky 36, 43–44
+- `server/src/main/java/cz/honzaa/bang/HracImp.java` – řádky 36, 43–44
 
 ```java
 private static int nextId = 0;

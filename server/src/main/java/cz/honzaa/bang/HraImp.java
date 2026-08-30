@@ -1,0 +1,366 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+
+Toto je domácí verze souborů z programování.
+ */
+package cz.honzaa.bang;
+
+import cz.honzaa.bang.sdk.PovolenePluginu;
+import cz.honzaa.bang.pravidla.SpravceHernichPravidel;
+import cz.honzaa.bang.sdk.HerniPravidla;
+
+import cz.honzaa.bang.net.KomunikatorHryImp;
+import cz.honzaa.bang.sdk.UIPrvek;
+import cz.honzaa.bang.sdk.Hrac;
+import cz.honzaa.bang.sdk.Karta;
+import cz.honzaa.bang.sdk.SpravceTahu;
+import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Stack;
+import java.util.function.Consumer;
+import org.java_websocket.WebSocket;
+import org.json.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+/**
+ * Třída samotné hry.
+ * @author honza
+ * 
+ */
+public class HraImp implements cz.honzaa.bang.sdk.Hra{
+    private static final Logger logger = LoggerFactory.getLogger(HraImp.class);
+    /**
+     * Hráči ve hře. Pořadí určuje pořadí hráčů. Nemělo by se měnit po zahájení hry respektive vytvoření správce tahu.
+     */
+    private List<HracImp> hraci = new CopyOnWriteArrayList<>(); // lepší pro thread safety (nemění se prakticky nikdy, ale čte se)
+    private boolean zahajena = false;
+    private final Stack<cz.honzaa.bang.sdk.Postava>  balicekPostav;
+    private KomunikatorHryImp komunikator;
+    private BalicekImp<Karta> balicek;
+    private BalicekImp<Karta> odhazovaciBalicek;
+    private SpravceTahuImp spravceTahu;
+    private HerniPravidla herniPravidla;
+    private String vrchniObrazekZadniStrany;
+
+    
+    @Override
+    @PovolenePluginu
+    public BalicekImp<Karta> getOdhazovaciBalicek() {
+        return odhazovaciBalicek;
+    }
+    
+    @Override
+    @PovolenePluginu
+    public SpravceTahu getSpravceTahu() {
+        return spravceTahu;
+    }
+      
+    
+    private HraImp(KomunikatorHryImp komunikator) {
+        this.komunikator = komunikator;
+        this.balicekPostav = new Stack<>();
+
+        this.balicek = new BalicekImp<>();
+        this.odhazovaciBalicek = new BalicekImp<>();
+        
+        // Akce pro balíčky
+        Consumer<BalicekImp<Karta>> kontrolaZadniStrany = (zmeneny) -> {
+            if (zmeneny == balicek) {
+                Karta vrchniKarta = balicek.nahledni();
+                if (vrchniKarta != null) {
+                    String vrchniObrazek = vrchniKarta.getZadniObrazek();
+                    if (!vrchniObrazek.equals(vrchniObrazekZadniStrany)) {
+                        vrchniObrazekZadniStrany = vrchniObrazek;
+                        komunikator.posliZadniObrazekLizacihoBalicku(vrchniObrazek);
+                    }
+                } else {
+                    // TODO: Balíček ja prázdný, možná to nějak znázornit
+                }
+            }
+        };
+
+        balicek.setPoUprave(kontrolaZadniStrany);
+        odhazovaciBalicek.setPoUprave(kontrolaZadniStrany);
+    }
+        
+        
+    
+    /**
+     * Vytvoří a vrátí novou instanci hry
+     * @param typHry
+     * @param komunikator 
+     * @param id id hry.
+     * @return new Hra();
+     */
+    public static HraImp vytvor(KomunikatorHryImp komunikator,int typHry){
+        HraImp hra = new HraImp(komunikator);
+        hra.herniPravidla = SpravceHernichPravidel.vytvorHerniPravidla(typHry, hra);
+        hra.herniPravidla.pripravBalicek(hra.balicek);
+        hra.herniPravidla.pripravBalicekPostav(hra.balicekPostav);
+        return hra;
+    }
+
+    /**
+     * Vytvoří hráče. Po zavolání této metody by se měla zavolat metoda hracVytvoren()
+     * @return nový hráč
+     */
+    @Override
+    public HracImp novyHrac(){
+        //v této metodě se nesmí volat nic, co by způsobovalo, že by se něco posílalo klientovi. Misto toho použij metodu hracVytvoren, která se spouští hned poté.
+        HracImp hrac = new HracImp(this);
+        hraci.add(hrac);
+        return hrac;
+    }
+    
+    /**
+     * Připravý hráče poté, co už je spojen se serverm. měla by se volat hned po novyHrac()
+     * @param hrac hráč, který by se měl připravit
+     */
+    @Override
+    public void hracVytvoren(Hrac hrac){
+        //metoda co se spouští po vytvoření hráče a zařazení ho do komunikátoru
+
+        if(balicekPostav.size() < 2){//pokud už nezbyde postava, tak to tam nejakou soupne. nemelo by se to stat kvuli maximalnimu poctu hracu, ten ale nemusí být dodren.
+            balicekPostav.add(PostavaImp.TESTOVACI);
+            balicekPostav.add(PostavaImp.TESTOVACI);
+        }
+        hrac.vyberZPostav(balicekPostav.pop(),balicekPostav.pop());//nechá hráče vybrat ze dvou postav
+    }
+
+    /**
+     *
+     * @return Kopii seznamu všech hráčů
+     */
+    @Override
+    @PovolenePluginu
+    public List<cz.honzaa.bang.sdk.Hrac> getHraci() {
+        List<cz.honzaa.bang.sdk.Hrac> l = new ArrayList<>(hraci);
+        return l;
+    }
+
+    public synchronized void odeberHrace(HracImp hrac) {
+        if (!zahajena) {
+            hraci.remove(hrac);
+        }
+    }
+    
+    /**
+     * Vrátí hráče podle jeho id.
+     * @param id id hráče
+     * @return Hrac nebo null
+     */
+    @Override
+    @PovolenePluginu
+    public HracImp getHrac(int id){
+        for (cz.honzaa.bang.sdk.Hrac hrac : hraci) {
+            if(hrac.getId() == id){
+                return (HracImp) hrac;
+            }
+        }
+        return null;
+    }
+    
+    @Override
+    @PovolenePluginu
+    public KomunikatorHryImp getKomunikator() {
+        return komunikator;
+    }
+
+    @Override
+    @PovolenePluginu
+    public boolean isZahajena() {
+        return zahajena;
+    }
+
+    @Override
+    @PovolenePluginu
+    public HerniPravidla getHerniPravidla() {
+        return herniPravidla;
+    }
+
+    
+    /**
+     * Spustí hru.
+     * @param zahajena pokud true, tak zahájí hru.
+     */
+    @Override
+    @PovolenePluginu
+    public void setZahajena(boolean zahajena) {
+        
+        if(!this.zahajena && zahajena){
+            this.zahajena = zahajena;
+            //zahájení hry:
+
+            for (HracImp hrac : hraci) {
+                hrac.zajistiPostavu();
+            }
+
+            herniPravidla.poSpusteniHry();
+            
+            komunikator.posliZahajeniHry();
+            spravceTahu = new SpravceTahuImp(hraci);
+            
+            for (Hrac hrac : hraci) {
+                herniPravidla.pripravitHrace(hrac);
+            }
+            
+            logger.info("Zahájen tah v setZahajena.");
+            
+
+            
+            herniPravidla.spustitPrvniTah(spravceTahu);
+            
+            for (HracImp hrac : hraci) {
+                hrac.poZahajeniHry();
+            }
+            
+            komunikator.posliZadniObrazekLizacihoBalicku(vrchniObrazekZadniStrany);
+                        
+            
+        }
+    }
+    @Override
+    @PovolenePluginu
+    public BalicekImp<Karta> getBalicek() {
+        return balicek;
+    }
+    
+    /**
+     * Pošle všechny informace o hře, které má právo hráč vědět.
+     * Volá se při počátečním připojení a při reconnectu.
+     * @param conn
+     * @param hrac 
+     */
+    public void nactiHru(WebSocket conn, HracImp hrac){
+        // Základní info o hráči
+        conn.send("noveIdHrace:" + hrac.getId());
+        conn.send("setIdHry:" + komunikator.getIdHry());
+
+        if (vrchniObrazekZadniStrany != null) {
+            conn.send("obrazekDobiracihoBalicku:" + vrchniObrazekZadniStrany);
+        }
+
+        if (hrac.getPostava() == null) {
+            hrac.posliVyberPostav();
+        }
+
+        // Karty v ruce hráče
+        for (Karta karta : hrac.getKarty()) {
+            conn.send(karta.toJSONold());
+        }
+        
+        // Seznam všech hráčů s jejich základními informacemi
+        StringBuilder sb = new StringBuilder("hraci:[");
+        boolean jePrvni = true;
+        for (HracImp hrac1 : hraci) {
+            if(!jePrvni){
+                sb.append(',');
+            }
+            jePrvni = false;
+            sb.append(hrac1.toJSON());
+        }
+        sb.append(']');
+        conn.send(sb.toString());
+        
+        // Vyložené karty všech hráčů
+        for (HracImp hrac1 : hraci) {
+            for (Karta vylozena : hrac1.getVylozeneKarty()) {
+                conn.send("vylozeni:" + hrac1.getId() + "," + hrac1.getId() + "," + vylozena.toJSON());
+            }
+        }
+        
+        if(zahajena){
+          // Role hráče
+          if (hrac.getRole() != null) {
+              conn.send("role:" + hrac.getRole().name());
+          }
+          
+          // Kdo je na tahu
+          if (spravceTahu != null && spravceTahu.getNaTahu() != null) {
+              conn.send("tahZacal:" + spravceTahu.getNaTahu().getId());
+          }
+
+
+        }
+        
+        // UI prvky dostupné pro hráče
+        JSONArray povoleneUIJSON = new JSONArray();
+        UIPrvek[] povoleneUI = herniPravidla.getViditelnePrvky();
+        for (int i = 0; i < povoleneUI.length; i++) {
+            povoleneUIJSON.put(i, povoleneUI[i].name());
+        }
+        conn.send("povoleneUI:" + povoleneUIJSON.toString());
+        
+        // Počty životů všech hráčů (znovu pro jistotu)
+        for (HracImp hrac1 : hraci) {
+            conn.send("pocetZivotu:" + hrac1.getId() + "," + hrac1.getZivoty());
+        }
+
+        
+        // Všechna aktivní UI tlačítka pro hráče
+        komunikator.posliVsechnaUITlacitka(hrac);
+
+        komunikator.posliZmenuJmena(hrac);
+
+        komunikator.posliZmenuPoctuZivotu(hrac);
+
+    }
+
+    /**
+     * Vyřadí hráče z herní smyčky. Nezávisle na tom jestli vyhrál nebo prohrál, ale už nebude hrát.
+     * @param kdo
+     */
+    @Override
+    @PovolenePluginu
+    public void skoncil(Hrac kdo){
+        spravceTahu.vyraditHrace(kdo);
+        komunikator.posliSkonceniHrace(kdo);
+    }
+    
+    /**
+     * Nechá hráčům ukázat, že hráč vyhrál, ale nevyřadí hráče z hrací smyčky. 
+     * Pokud chce plugin řešit svoje pořadí a pokročilý konec, měl by si držžet tabulku sám a použít Komunikator.posliPoradi() a Komunikator.posliKonec().
+     * @param kdo
+     */
+    @Override
+    @PovolenePluginu
+    public void vyhral(Hrac kdo){
+        komunikator.posliVitezstvi(kdo);
+    }
+    
+    /**
+     * Prohodí odhazovací a lízací balíčky. Novým lízacím balíčkem bude odhazovací balíček v opačném pořadí.
+     */
+    @Override
+    @PovolenePluginu
+    public void prohodBalicky(){
+        odhazovaciBalicek.otoc();
+        BalicekImp<Karta> novyOdhazovaciBalicek = balicek;
+        balicek = odhazovaciBalicek;
+        odhazovaciBalicek = novyOdhazovaciBalicek;   
+    }
+
+
+    
+    @Override 
+    @PovolenePluginu
+    public Karta otocVrchniKartu(){
+        Karta karta = balicek.lizni();
+        odhazovaciBalicek.vratNahoru(karta);
+        // Toto je speciální případ - otočení vrchní karty (není odehrání hráčem)
+        komunikator.posliVsem("odehrat:-1" + '|' + karta.toJSON());
+        return karta;
+    }
+
+    @Override
+    @PovolenePluginu
+    public List<Hrac> getHrajiciHraci() {
+        return spravceTahu.getHrajiciHraci();
+    }
+
+}
