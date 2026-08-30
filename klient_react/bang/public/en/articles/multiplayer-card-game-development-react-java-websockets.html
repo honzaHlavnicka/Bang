@@ -48,7 +48,7 @@
             </blockquote>
 
             <h2>Resurrecting Dead Connections (Reconnect Logic)</h2>
-            <p>The hardest nut to crack was handling dropped connections. When you've been playing Bang! for an hour and your Wi-Fi suddenly dies, you want to throw your PC out the window. Fortunately, my server's <code>KomunikatorHry</code> (Game Communicator) handles this. When a player connects, they are assigned a unique token stored in <code>localStorage</code>. If they drop, the server doesn't kill their character—it holds them "in limbo" for up to 5 minutes. Once the player returns with a valid token, the server immediately shoots them a massive JSON with everything they missed, and the game continues seamlessly.</p>
+            <p>The hardest nut to crack was handling dropped connections. When you've been playing Bang! for an hour and your Wi-Fi suddenly dies, you want to throw your PC out the window. Fortunately, my server's <code>KomunikatorHry</code> (Game Communicator) handles this. When a player connects, they are assigned a unique token stored in <code>localStorage</code>. If they drop, the server doesn't kill their character—it holds them "in limbo" for up to 1 hour. Once the player returns with a valid token, the server immediately shoots them a massive JSON with everything they missed, and the game continues seamlessly.</p>
 
             <h2>The Frontend: Falling in Love with React and TypeScript</h2>
             <p>The very first version of the client was written in Vanilla JavaScript. It was a massive plate of spaghetti code. I quickly migrated to <strong>React, Vite, and TypeScript</strong>.</p>

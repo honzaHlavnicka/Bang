@@ -297,7 +297,7 @@ export default function LoginPage() {
                             <span className={css.separator}>•</span>
                             <a href="/privacy" target="_blank" rel="noopener noreferrer">{t("Podmínky a soukromí")}</a>
                             <span className={css.separator}>•</span>
-                            <button onClick={() => setDonateOpen(true)} className={css.linkButton}>{t("Podpořit hru")}</button>
+                            {import.meta.env.VITE_DONATE_ACTIVE !== 'false' && <button onClick={() => setDonateOpen(true)} className={css.linkButton}>{t("Podpořit hru")}</button>}
                         </nav>
                     </div>
                 </footer>

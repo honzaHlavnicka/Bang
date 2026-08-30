@@ -46,7 +46,7 @@ Architektura je navržena tak, aby **konkrétní hra nebyla součástí enginu**
 - **Server:** Java 21, Java WebSocket, org.json
 - **Klient:** React, TypeScript, Vite, react-dnd, react-hot-toast
 - **Komunikace:** WebSocket s vlastním textovým protokolem
-- **Hosting:**  Školní server Avava (Gymnázium Arabská)
+- **Hosting:**  Rasbery Pi
 
 ---
 
@@ -242,7 +242,7 @@ Původní verze tohoto projektu vznikla jako školní dílo na Gymnáziu, Praha 
 
 <div align="center">
 
-Vytvořil **Jan Hlavnička** — Ročníkový projekt 2025/2026, Gymnázium Arabská, Praha 6
+Vytvořil **Jan Hlavnička**
 
 [bang.honzaa.cz](https://bang.honzaa.cz) · [GitHub](https://github.com/honzaHlavnicka/Bang)
 

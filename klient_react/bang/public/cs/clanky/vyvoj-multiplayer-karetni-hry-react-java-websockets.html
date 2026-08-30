@@ -39,7 +39,7 @@
             </blockquote>
 
             <h2>Vzkříšení mrtvých spojení (Reconnect logic)</h2>
-            <p>Největší oříšek, který jsem musel rozlousknout, byly výpadky spojení. Když hrajete Bang! už hodinu a najednou vám spadne Wi-Fi, máte chuť prohodit počítač oknem. Můj <code>KomunikatorHry</code> na serveru to naštěstí řeší. Každému hráči při připojení vygeneruje unikátní token, který si klient uloží do <code>localStorage</code>. Když hráč vypadne, server jeho postavu nezabije, ale podrží ji "v limbu" až 5 minut. Jakmile se hráč vrátí s platným tokenem, server mu obratem pošle masivní JSON se vším, co propásl, a hra plynule pokračuje dál.</p>
+            <p>Největší oříšek, který jsem musel rozlousknout, byly výpadky spojení. Když hrajete Bang! už hodinu a najednou vám spadne Wi-Fi, máte chuť prohodit počítač oknem. Můj <code>KomunikatorHry</code> na serveru to naštěstí řeší. Každému hráči při připojení vygeneruje unikátní token, který si klient uloží do <code>localStorage</code>. Když hráč vypadne, server jeho postavu nezabije, ale podrží ji "v limbu" až 1 hodinu. Jakmile se hráč vrátí s platným tokenem, server mu obratem pošle masivní JSON se vším, co propásl, a hra plynule pokračuje dál.</p>
 
             <h2>Frontend: záchrana jménem React a TypeScript</h2>
             <p>Úplně první verze klienta byla ve Vanilla JavaScriptu. Byla to obrovská špageta kódu. Velmi rychle jsem přešel na <strong>React, Vite a TypeScript</strong>.</p>

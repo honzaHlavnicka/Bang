@@ -52,14 +52,17 @@ export default function AfterGamePage(){
                             {t("Smazat hru a začít jinou")}
                         </button>
                     )}
-                    <button 
-                        className={globalCSS.button} 
-                        onClick={() => setDonateOpen(true)}
-                    >
-                        ❤️ {t("Podpořit hru")}
-                    </button>
+                    {import.meta.env.VITE_DONATE_ACTIVE !== 'false' && (
+                        <button 
+                            className={globalCSS.button} 
+                            onClick={() => setDonateOpen(true)}
+                        >
+                            ❤️ {t("Podpořit hru")}
+                        </button>
+                    )}
                 </div>
             </div>
+            {import.meta.env.VITE_WORLDQUIZ_AD_ACTIVE !== 'false' && (
             <div className={css.content}>
                 <h2><img src="https://world-quiz.com/newlogo.webp" alt="World quiz!" width={50} height={50} style={{ verticalAlign: "middle", marginRight: "8px" }} /> World quiz</h2>
                 <a 
@@ -80,6 +83,7 @@ export default function AfterGamePage(){
                     onClick={() => posthog?.capture('external_link_clicked', { destination: 'just-enough-flags', location: 'after_game_page', type: 'link' })}
                 >jef.world-quiz.com</a>.</p>
             </div>
+            )}
             <DarkModeSwitch style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
             <DonateModal isOpen={donateOpen} onClose={() => setDonateOpen(false)} />
         </div>

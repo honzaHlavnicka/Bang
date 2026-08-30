@@ -191,7 +191,7 @@ export default function LoginPage() {
                     </button>   
                     </div>
                     </div>
-                    {worldQuizVisible ?
+                    {worldQuizVisible && import.meta.env.VITE_WORLDQUIZ_AD_ACTIVE !== 'false' ?
                     <div className={css.box} >
                         <div style={{textAlign:"center",fontSize:".8em"}}>
                             {t("Chceš hrát sám zeměpisný kvíz, nebo navštívit největší databázi vlajek?")}<br />
@@ -317,7 +317,7 @@ export default function LoginPage() {
                             <span className={css.separator}>•</span>
                             <a href="/privacy" target="_blank" rel="noopener noreferrer">{t("Podmínky a soukromí")}</a>
                             <span className={css.separator}>•</span>
-                            <button onClick={() => setDonateOpen(true)} className={css.linkButton}>{t("Podpořit")}</button>
+                            {import.meta.env.VITE_DONATE_ACTIVE !== 'false' && <button onClick={() => setDonateOpen(true)} className={css.linkButton}>{t("Podpořit")}</button>}
                         </nav>
                     </div>
                 </footer>
