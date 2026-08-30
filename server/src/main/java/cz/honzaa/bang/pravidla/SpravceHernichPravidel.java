@@ -62,6 +62,8 @@ public class SpravceHernichPravidel {
             for (Path cesta : cesty) {
                 if (java.nio.file.Files.exists(cesta)) {
                     pluginy.addAll(NacitacPluginu.nactiPluginy(cesta));
+                    // Seřazení pluginů abecedně podle jména
+                    pluginy.sort((p1, p2) -> p1.getJmeno().compareToIgnoreCase(p2.getJmeno()));
                     logger.info("Pluginy načteny z: {}, počet: {}", cesta.toAbsolutePath(), pluginy.size());
                     break;
                 }
