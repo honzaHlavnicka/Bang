@@ -33,16 +33,9 @@ public class Bang extends Karta implements HratelnaKarta{
     @Override
     public boolean odehrat(cz.honza.bang.sdk.Hrac kym){
         
-        
-        boolean maVolcanic = kym.getEfekty().stream()
-                .filter(e -> e instanceof Zbran)
-                .anyMatch(e -> ((Zbran) e).umoznujeBangBezLimitu());
-
-        if (!maVolcanic && kym.getPostava() != JednoduchePostavy.WILLY_THE_KID) {
-           if(((PravidlaBangu) hra.getHerniPravidla()).UzZahralBang()){
-               return false; //Nemůže zahrát 2 bangy
-           }
-           ((PravidlaBangu) hra.getHerniPravidla()).setUzZahralBang(true);
+        //ověření, zda hráč může kartu zahrát
+        if(!((PravidlaBangu) hra.getHerniPravidla()).pokusZahratKartuDoLimituKaretBang(kym)){
+            return false;
         }
         
         int vzdalenostKamDosahnePodleZbrane = kym.getEfekty().stream().filter(e -> e instanceof Zbran).findAny().map(e -> ((Zbran) e).getVzdalenost()).orElse(1);
@@ -65,7 +58,7 @@ public class Bang extends Karta implements HratelnaKarta{
         return true;
     }
 
-    private void poUtoku(Hrac kym, Hrac naKoho) { // Neodstranovat nepoužitý parametr! Je potřeba pro budoucí účeli a tato funkce se postupně propašovává až do pravidelbangu do vyresvedle
+    private void poUtoku(Hrac naKoho, Boolean uspech) { // Neodstranovat nepoužitý parametr! Je potřeba pro budoucí účely a tato funkce se postupně propašovává až do pravidelbangu do vyresvedle
 
     }
     

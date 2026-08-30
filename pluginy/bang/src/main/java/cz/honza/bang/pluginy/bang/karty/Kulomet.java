@@ -44,8 +44,6 @@ public class Kulomet extends Karta implements HratelnaKarta{
         return true;
     }
     
-    private void poUtoku(Hrac kym, Hrac naKoho){
-        return;
-    }
+    private void poUtoku(Hrac naKoho, Boolean uspech){}
     
 }

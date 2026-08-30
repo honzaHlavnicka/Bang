@@ -19,6 +19,7 @@ import cz.honza.bang.pluginy.bang.karty.Dynamit;
 import cz.honza.bang.pluginy.bang.karty.Hokynarstvi;
 import cz.honza.bang.pluginy.bang.karty.Indiani;
 import cz.honza.bang.pluginy.bang.karty.Kulomet;
+import cz.honza.bang.pluginy.bang.karty.OpetovnaPalba;
 import cz.honza.bang.pluginy.bang.karty.Salon;
 import cz.honza.bang.pluginy.bang.karty.Vedle;
 import cz.honza.bang.pluginy.bang.karty.Vezeni;
@@ -36,6 +37,7 @@ import cz.honza.bang.pluginy.bang.zbrane.RevCarabine;
 import cz.honza.bang.pluginy.bang.zbrane.Schofield;
 import cz.honza.bang.pluginy.bang.zbrane.Volcanic;
 import cz.honza.bang.pluginy.bang.zbrane.Winchester;
+import cz.honza.bang.pluginy.bang.zbrane.Zbran;
 import cz.honza.bang.sdk.HerniPravidla;
 
 
@@ -416,9 +418,9 @@ public class PravidlaBangu implements HerniPravidla{
      * Pokusí se zastřelit hráče naKoho, ale nechá ho použít barel a vedle.
      * @param kym kdo ho vyvolal
      * @param naKoho kdo bude zastřelen
-     * @param poUtoku co udělat po útoku
+     * @param poUtoku co udělat po útoku <naKoho, úspěch>
      */
-    public void vyvolejAkciBang(Hrac kym, Hrac naKoho, BiConsumer<Hrac, Hrac> poUtoku){
+    public void vyvolejAkciBang(Hrac kym, Hrac naKoho, BiConsumer<Hrac, Boolean> poUtoku){
         boolean melBarel = naKoho.getEfekty().stream().anyMatch(e -> e instanceof BarelEfekt);
 
         if (melBarel) {
@@ -446,7 +448,7 @@ public class PravidlaBangu implements HerniPravidla{
      * @param zachranenBarelem
      * @param poUtoku 
      */
-    private void vyresitVedleNeboZasah(Hrac kym, Hrac naKoho, boolean zachranenBarelem, BiConsumer<Hrac, Hrac> poUtoku) {
+    private void vyresitVedleNeboZasah(Hrac kym, Hrac naKoho, boolean zachranenBarelem, BiConsumer<Hrac, Boolean> poUtoku) {
         if (!zachranenBarelem) {
             List<Karta> vedleNaKoho = naKoho.getKarty().stream()
                     .filter(k -> k instanceof Vedle)
@@ -462,8 +464,11 @@ public class PravidlaBangu implements HerniPravidla{
                             try {
                                 idInt = Integer.parseInt(id);
                             } catch (NumberFormatException ex) {
+                                hra.getKomunikator().posliChybu(kym, Chyba.CHYBA_PROTOKOLU);
+                                
+                                // Při špatně napsané odpovědi (může nastat jen ručním zásahem do protokolu) se vedle nepočítá.
                                 naKoho.odeberZivot();
-                                poUtoku.accept(kym,naKoho);
+                                poUtoku.accept(naKoho,true);
                                 return;
                             }
 
@@ -478,21 +483,29 @@ public class PravidlaBangu implements HerniPravidla{
                                         hra.getKomunikator().posliOdebraniKarty(naKoho, karta);
                                         hra.getKomunikator().posliZmenuPoctuKaret(naKoho);
                                         hra.getKomunikator().posliRychleOznameniVsem("Vedle!", null);
+                                        
+                                        if(karta instanceof OpetovnaPalba){
+                                            vyvolejAkciBang(naKoho, kym, poUtoku);
+                                            return;
+                                        }
                                         break;
                                     }
                                 }
                             }
-                            poUtoku.accept(kym, naKoho);
+                            
+                            // Využil vedle
+                            poUtoku.accept(naKoho, false);
+                            hra.getKomunikator().posliStavovouZpravu("");
                         });
             } else {
                 // Nemá ani barel, ani Vedle, přichází o život
                 hra.getKomunikator().posliRychleOznameniVsem("Trefa!", null);
                 naKoho.odeberZivot();
-                poUtoku.accept(kym, naKoho);
+                poUtoku.accept(naKoho, true);
             }
         } else {
             // Byl zachráněn barelem
-            poUtoku.accept(kym, naKoho);
+            poUtoku.accept(naKoho, false);
         }
     }
     
@@ -511,6 +524,31 @@ public class PravidlaBangu implements HerniPravidla{
 
     public boolean UzZahralBang() {
         return uzZahralBang;
+    }
+    
+    
+    /**
+     * Mělo by se volat pokud hráč chce hrát kartu, která se počítá do limitu počtu zahraných
+     * karet Bang na kolo. Pokud má hráč kartu, která mu umožní tento limit překonat, tak se
+     * ho nechá hrát vždy zahrát (vrátí true), pokud ještě žádný Bang nezahrál tak také vrátí
+     * true a příště ve stejném kole už vrátí false. Řeší vymazání limitu po zkončení tahu i
+     * speciální karty.
+     * 
+     * @param kym kým je karta zahraná
+     * @return zda se karta má povolit zahrát
+     */
+    public boolean pokusZahratKartuDoLimituKaretBang(Hrac kym){
+        boolean maVolcanic = kym.getEfekty().stream()
+                .filter(e -> e instanceof Zbran)
+                .anyMatch(e -> ((Zbran) e).umoznujeBangBezLimitu());
+
+        if (!maVolcanic && kym.getPostava() != JednoduchePostavy.WILLY_THE_KID) {
+            if (UzZahralBang()) {
+                return false; //Nemůže zahrát 2 bangy
+            }
+            setUzZahralBang(true);
+        }
+        return true;
     }
 
     
