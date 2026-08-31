@@ -7,6 +7,7 @@ Toto je domácí verze souborů z programování.
 package cz.honzaa.bang.pluginy.bang.karty;
 
 import cz.honzaa.bang.pluginy.bang.Role;
+import cz.honzaa.bang.pluginy.bang.postavy.LizaciPostava;
 import cz.honzaa.bang.sdk.Balicek;
 import cz.honzaa.bang.sdk.Efekt;
 import cz.honzaa.bang.sdk.Hra;
@@ -73,6 +74,13 @@ public class Vezeni extends Karta implements VylozitelnaKarta, Efekt{
             hrac.odeberVylozenouKartu(this);
             hra.getKomunikator().posliSpaleniVylozenéKarty(this, hrac);
             hra.getOdhazovaciBalicek().vratNahoru(this);
+            
+            if (hrac.getPostava() instanceof LizaciPostava) {
+                ((LizaciPostava) hrac.getPostava()).lizniNaZacatkuTahu(hrac, hra);
+                return;
+            }
+            hrac.lizni();
+            hrac.lizni();
         }else{
             hra.getSpravceTahu().dalsiHracSUpozornenim();
             hrac.odeberVylozenouKartu(this);

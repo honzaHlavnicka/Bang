@@ -318,6 +318,12 @@ public class PravidlaBangu implements HerniPravidla{
 
     @Override
     public void zacalTah(Hrac komu) {
+        
+        // Pokud má vězení, tak samotné lízání zajistí až vězení.
+        if(komu.getKarty().stream().anyMatch((k)->k instanceof Vezeni)){
+            return;
+        }
+        
         if(komu.getPostava() instanceof LizaciPostava){
             ((LizaciPostava) komu.getPostava()).lizniNaZacatkuTahu(komu,hra);
             return;
