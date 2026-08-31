@@ -74,6 +74,10 @@ public abstract class Karta{
         sb.append(this.getObrazek());
         sb.append("\",\"id\":");
         sb.append(id);
+        sb.append(",\"vylozitelna\":");
+        sb.append(this instanceof VylozitelnaKarta);
+        sb.append(",\"hratelna\":");
+        sb.append(this instanceof HratelnaKarta);
         sb.append("}");
         return sb.toString();
     }

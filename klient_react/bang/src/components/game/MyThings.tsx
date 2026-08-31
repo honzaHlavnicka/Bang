@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useGame } from "../../modules/GameContext";
+import { useGame, type CardType } from "../../modules/GameContext";
 import Card from "../Card";
 import Cards from "../Cards";
 import InPlayCards from "./InPlayCards";
@@ -23,17 +23,30 @@ export default function MyThings() {
 
     function CardClick(e: React.MouseEvent<HTMLDivElement>){
         const cardId = parseInt((e.currentTarget as HTMLDivElement).getAttribute("data-id") || "-1");
+        const card: CardType | undefined = karty.find(c => c.id === cardId) || vylozeneKarty.find(c => c.id === cardId);
+
+        if (!card) return;
+
+        const actions = [];
+
+
+        if(card.isPlayable){
+            actions.push({name:t("my_things.action_play"), id:0});
+        }
+
+        actions.push({name:t("my_things.action_discard"), id:1});
+
+        if(card.isPutInPlayable){
+            actions.push({name:t("my_things.action_play_in_front"), id:2});
+            actions.push({name:t("my_things.action_play_on_player"), id:3});
+        }
+
         if(cardId !== -1){
             openDialog({type:"CONFIRM_ACTION",
                 notClosable:false,
                 dialogHeader:t("my_things.card_action_header"),
                 data:{
-                    actions:[
-                        {name:t("my_things.action_play"), id:0},
-                        {name:t("my_things.action_discard"), id:1},
-                        {name:t("my_things.action_play_in_front"), id:2},
-                        {name:t("my_things.action_play_on_player"), id:3}
-                    ]
+                    actions:actions
                                 },
                 callback:(actionId:number)=>{
                     switch (actionId) {

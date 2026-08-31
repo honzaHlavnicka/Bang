@@ -19,7 +19,7 @@ type ServerPlayer = {
     isOnline?: boolean;
 };
 
-type ServerCard = { obrazek: string; id: number };
+type ServerCard = { obrazek: string; id: number; jmeno: string; hratelna: boolean; vylozitelna: boolean };
 
 type Player = NonNullable<GameStateType["players"]>[number];
 
@@ -246,7 +246,7 @@ export function handleGameMessage(
         case "novaKarta": {
             try {
                 const json = JSON.parse(payload) as ServerCard;
-                const card = { image: json.obrazek, id: json.id };
+                const card = { image: json.obrazek, id: json.id, name: json.jmeno, isPlayable: json.hratelna, isPutInPlayable: json.vylozitelna };
                 setGameState(prev => ({
                     ...prev,
                     handCards: prev.handCards ? [...prev.handCards, card] : [card]
@@ -406,12 +406,12 @@ export function handleGameMessage(
         }
         case "vyberKartu": {
             try {
-                const json = JSON.parse(payload) as {id:(string | number),karty:{obrazek:string,id:number,jmeno:string}[], nadpis?:string, min?:number, max?:number, notClosable?: boolean}; 
+                const json = JSON.parse(payload) as {id:(string | number),karty:ServerCard[], nadpis?:string, min?:number, max?:number, notClosable?: boolean}; 
                 const heading = json.nadpis ?? t("Vyber kartu");
                 const min = json.min ?? 1;
                 const max = json.max ?? 1;
                 const notClosable = json.notClosable ?? true;
-                const cards = json.karty.map(k=>({image:k.obrazek,id:k.id}));
+                const cards = json.karty.map(k=>({image:k.obrazek,id:k.id,name:k.jmeno,isPlayable:k.hratelna,isPutInPlayable:k.vylozitelna}));
                 openDialog({type:"SELECT_CARD", data:{cards,min,max},dialogHeader:heading,notClosable,callback:(selectedCards:number[])=>{ 
                     console.log("vybrané karty:",selectedCards);
                     if(stateRef.current?.playerId == null){
@@ -491,7 +491,7 @@ export function handleGameMessage(
             const predKoho = Number(payload.slice(firstComma + 1, secondComma));
             const jsonStr = payload.slice(secondComma + 1).trim();
 
-            let co: { id: number; obrazek: string };
+            let co: ServerCard;
             try {
                 co = JSON.parse(jsonStr);
             } catch (e) {
@@ -501,7 +501,7 @@ export function handleGameMessage(
             }
 
             console.log("zpracovávám vylozeni", payload, { kym, predKoho, co });
-            const card: CardType = { id: co.id, image: co.obrazek };
+            const card: CardType = { id: co.id, image: co.obrazek , name:co.jmeno, isPlayable: co.hratelna, isPutInPlayable: co.vylozitelna };
 
             setGameState((prev) => {
                 const nextState = { ...prev };

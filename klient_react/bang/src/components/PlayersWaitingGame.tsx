@@ -2,6 +2,9 @@ import { useTranslation } from "react-i18next";
 import { useGame } from "../modules/GameContext";
 import { useEffect } from "react";
 import { usePostHog } from "@posthog/react";
+import  trashIcon  from "../assets/trashIcon.svg"
+import profileIcon from "../assets/profileIcon.svg"
+
 
 export default function PlayersWaitingGame() {
     const {gameState ,startGame, kickPlayer} = useGame();
@@ -52,6 +55,11 @@ export default function PlayersWaitingGame() {
                     />
                     {player.name}
                     {player.isOnline === false && <span style={{ fontSize: "0.8em", color: "#ef4444", marginLeft: "4px" }}>({t("Odpojen")})</span>}
+                    {player.id == gameState.playerId &&
+                    <>
+                        <img src={profileIcon} alt={t("Vy" as any)} title={t("Vy" as any)} />
+                    </>
+                    }
                     {isAdmin && player.id !== gameState.playerId && (
                         <button
                             onClick={() => {
@@ -74,7 +82,7 @@ export default function PlayersWaitingGame() {
                             }}
                             title={t("Vyhodit hráče" as any)}
                         >
-                            ✕
+                            <img src={trashIcon} alt={t("Vyhodit hráče" as any)} />
                         </button>
                     )}
                 </li>

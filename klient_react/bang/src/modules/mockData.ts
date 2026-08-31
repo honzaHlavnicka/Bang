@@ -29,7 +29,10 @@ export const getInitialMockGameState = (name: string): GameStateType => {
     let nextCardId = 100;
     const generateCard = (file: string) => ({
         id: nextCardId++,
-        image: file.replace(/\.(png|jpg|webp)$/i, "")
+        image: file.replace(/\.(png|jpg|webp)$/i, ""),
+        name: "test",
+        isPlayable: true,
+        isPutInPlayable: true
     });
 
     const handCards = [
@@ -185,7 +188,7 @@ export const getMockActions = (
         },
         drawCard: () => {
             const randomCardInfo = mockCardsPool[Math.floor(Math.random() * mockCardsPool.length)];
-            const newCard = { id: Date.now() + Math.floor(Math.random() * 1000), image: randomCardInfo.file.replace(/\.(png|jpg|webp)$/i, "") };
+            const newCard = { id: Date.now() + Math.floor(Math.random() * 1000), image: randomCardInfo.file.replace(/\.(png|jpg|webp)$/i, "") , name:"liznutá", isPlayable: true, isPutInPlayable: true };
             setGameState(prev => {
                 const nextHand = [...prev.handCards, newCard];
                 const nextPlayers = prev.players ? prev.players.map(p => p.id === 1 ? { ...p, cardsInHand: nextHand.length } : p) : null;

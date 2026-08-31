@@ -6,6 +6,9 @@ export type GameValueType = "PLAYER_ACTION" | "DRAW_CARD" | "CONNECT" | "CHANGE_
 export type CardType = {
     image:string;
     id:number;
+    name:string;
+    isPlayable:boolean;
+    isPutInPlayable:boolean;
 }
 
 export type CustomUIButton = {
