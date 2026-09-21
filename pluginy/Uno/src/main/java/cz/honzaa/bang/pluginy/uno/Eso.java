@@ -30,7 +30,7 @@ public class Eso extends Karta implements HratelnaKarta {
 
     @Override
     public String getJmeno() {
-        return "eso";
+        return "$uno.eso";
     }
 
     @Override

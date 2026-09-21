@@ -4,6 +4,13 @@
     "color_red": "Red",
     "color_blue": "Blue",
     "color_green": "Green",
-    "color_yellow": "Yellow"
+    "color_yellow": "Yellow",
+    "card_number": "{{color}} {{number}}",
+    "reverse": "{{color}} Reverse",
+    "plus2": "{{color}} +2",
+    "skip": "{{color}} Skip",
+    "wild": "Wild",
+    "eso": "Ace",
+    "notification_plus2": "Player {{name}} draws 2 cards and skips a turn due to +2!"
   }
 }

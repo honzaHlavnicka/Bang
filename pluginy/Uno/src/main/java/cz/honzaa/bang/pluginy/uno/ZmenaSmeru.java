@@ -25,6 +25,11 @@ public class ZmenaSmeru extends UnoKarta{
     }
 
     @Override
+    public String getJmeno() {
+        return "$uno.reverse:{\"color\":\"$uno.color_" + getBarva() + "\"}";
+    }
+
+    @Override
     public boolean odehrat(Hrac kym) {
         if (super.odehrat(kym)){
             hra.getSpravceTahu().zmenaSmeru();

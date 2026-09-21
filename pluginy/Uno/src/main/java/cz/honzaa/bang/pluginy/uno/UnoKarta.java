@@ -43,7 +43,7 @@ public class UnoKarta extends Karta implements HratelnaKarta{
 
     @Override
     public String getJmeno() {
-        return barva + hodnota;
+        return "$uno.card_number:{\"color\":\"$uno.color_" + barva + "\",\"number\":" + hodnota + "}";
     }
 
     @Override

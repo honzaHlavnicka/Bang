@@ -22,6 +22,11 @@ public class UnoEso extends UnoKarta{
     }
 
     @Override
+    public String getJmeno() {
+        return "$uno.skip:{\"color\":\"$uno.color_" + getBarva() + "\"}";
+    }
+
+    @Override
     public boolean odehrat(Hrac kym) {
         if(super.odehrat(kym)){
             hra.getSpravceTahu().eso();

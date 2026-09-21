@@ -22,12 +22,17 @@ public class plus2 extends UnoKarta{
     }
 
     @Override
+    public String getJmeno() {
+        return "$uno.plus2:{\"color\":\"$uno.color_" + getBarva() + "\"}";
+    }
+
+    @Override
     public boolean odehrat(Hrac kym) {
         if(super.odehrat(kym)){
             Hrac pristiHrac = hra.getSpravceTahu().getHrajiciHraci().get(0);
             
             // Oznámíme všem hráčům, co se stalo
-            String oznameni = "Hráč " + pristiHrac.getJmeno() + " si lízá 2 karty a stojí kvůli +2!";
+            String oznameni = "$uno.notification_plus2:{\"name\":\"" + Karta.escapeJson(pristiHrac.getJmeno()) + "\"}";
             hra.getKomunikator().posliVsem("rychleOznameni:" + oznameni);
             
             hra.getSpravceTahu().eso();

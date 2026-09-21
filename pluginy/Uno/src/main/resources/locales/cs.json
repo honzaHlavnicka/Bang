@@ -4,6 +4,13 @@
     "color_red": "Červená",
     "color_blue": "Modrá",
     "color_green": "Zelená",
-    "color_yellow": "Žlutá"
+    "color_yellow": "Žlutá",
+    "card_number": "{{color}} {{number}}",
+    "reverse": "{{color}} Změna směru",
+    "plus2": "{{color}} +2",
+    "skip": "{{color}} Zákaz tahu",
+    "wild": "Změna barvy",
+    "eso": "Eso",
+    "notification_plus2": "Hráč {{name}} si lízá 2 karty a stojí kvůli +2!"
   }
 }

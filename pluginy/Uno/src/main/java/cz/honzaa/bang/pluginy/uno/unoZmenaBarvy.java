@@ -73,7 +73,7 @@ public class unoZmenaBarvy extends UnoKarta {
 
     @Override
     public String getJmeno() {
-        return "Měnič";
+        return "$uno.wild";
     }
     
 }
