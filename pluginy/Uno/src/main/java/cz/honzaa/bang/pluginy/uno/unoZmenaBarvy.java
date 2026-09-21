@@ -29,27 +29,32 @@ public class unoZmenaBarvy extends UnoKarta {
     public boolean odehrat(Hrac kym){
         podleniBarva = "neni";
         
-        List<String> moznosti = List.of("Červené", "Modré", "Zelené", "Žluté");
+        List<String> moznosti = List.of("$uno.color_red", "$uno.color_blue", "$uno.color_green", "$uno.color_yellow");
         
-        hra.getKomunikator().pozadejOVyberMoznosti(kym, moznosti, "Vyber barvu", false)
+        hra.getKomunikator().pozadejOVyberMoznosti(kym, moznosti, "$uno.select_color", false)
                 .thenAccept(odpoved -> {
             System.out.println("Hráč odpověděl: " + odpoved);
+            String oznameniKey = "$uno.color_red";
             switch(odpoved){
                 case "0":
                     podleniBarva = "red";
+                    oznameniKey = "$uno.color_red";
                     break;
                 case "1":
                     podleniBarva = "blue";
+                    oznameniKey = "$uno.color_blue";
                     break;
                 case "2":
                     podleniBarva = "green";
+                    oznameniKey = "$uno.color_green";
                     break;
                 case "3":
                     podleniBarva = "yellow";
+                    oznameniKey = "$uno.color_yellow";
                     System.out.println("zlutá");
                     break;
             }
-            hra.getKomunikator().posliRychleOznameniVsem(podleniBarva, kym);
+            hra.getKomunikator().posliRychleOznameniVsem(oznameniKey, kym);
             
         });
         return true;

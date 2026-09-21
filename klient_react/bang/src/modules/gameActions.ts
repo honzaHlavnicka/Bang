@@ -2,8 +2,43 @@ import toast from "react-hot-toast";
 import { type CardType, type GameStateType, gameStateDefault } from "./GameContext";
 import { type DialogState } from "./DialogContext";
 import type { RefObject } from "react";
-import {t} from "i18next";
+import i18n, { t } from "i18next";
 import posthog from "./posthog";
+
+export function translateServerText(text: string): string {
+    if (!text || typeof text !== "string") {
+        return text;
+    }
+    if (!text.startsWith("$")) {
+        return text;
+    }
+    const raw = text.substring(1);
+    const colonIndex = raw.indexOf(":");
+    let key = raw;
+    const processedParams: Record<string, any> = {};
+
+    if (colonIndex !== -1) {
+        key = raw.substring(0, colonIndex);
+        const jsonStr = raw.substring(colonIndex + 1);
+        try {
+            const params = JSON.parse(jsonStr) as Record<string, any>;
+            for (const [k, v] of Object.entries(params)) {
+                if (typeof v === "string" && v.startsWith("$")) {
+                    processedParams[k] = translateServerText(v);
+                } else {
+                    processedParams[k] = v;
+                }
+            }
+        } catch {
+            // invalid JSON params
+        }
+    }
+
+    if ((i18n.exists as any)(key, { ns: 'plugin' })) {
+        return (i18n.t as any)(key, { ns: 'plugin', ...processedParams });
+    }
+    return (i18n.t as any)(key, { ...processedParams, defaultValue: key });
+}
 
 
 // Helper types for server payloads
@@ -45,6 +80,17 @@ export function handleGameMessage(
     }
 
     switch (type) {
+        case "preklady": {
+            try {
+                const json = JSON.parse(payload);
+                const currentLang = i18n.language || "cs";
+                i18n.addResourceBundle(currentLang, 'plugin', json, true, true);
+                console.log("Překlady pluginu načteny pro jazyk:", currentLang, json);
+            } catch (error) {
+                console.error("Chyba při zpracování překladů ze serveru:", error, payload);
+            }
+            break;
+        }
         case "popoup": {
             alert(payload);
             break;
@@ -53,8 +99,9 @@ export function handleGameMessage(
             console.error("Chyba ze serveru: " + payload);
             try {
                 const json = JSON.parse(payload) as { error: string, kod?: number };
-                toast.error(json.error);
-                posthog.capture('server_error_received', { error_message: json.error, error_code: json.kod });
+                const translatedError = translateServerText(json.error);
+                toast.error(translatedError);
+                posthog.capture('server_error_received', { error_message: translatedError, error_code: json.kod, raw_error: json.error });
 
                 if (json.kod === 19) {
                     sessionStorage.removeItem("gameToken");
@@ -67,7 +114,8 @@ export function handleGameMessage(
                 }
 
             } catch {
-                toast.error("Chyba ze serveru: " + payload);
+                const translatedError = translateServerText(payload);
+                toast.error("Chyba ze serveru: " + translatedError);
                 posthog.capture('server_error_received', { error_message: payload });
             }
             break;
@@ -84,6 +132,9 @@ export function handleGameMessage(
         case "pripojenKeHre": {
             posthog.capture('game_joined_success');
             setGameState(prev => ({ ...prev, inGame: true }));
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                socket.send("nactiPreklady:" + (i18n.language || "cs"));
+            }
             break;
         }
         case "vyberPostavu": {
@@ -368,7 +419,7 @@ export function handleGameMessage(
             break;
         case "stavHry": {
             // Payload obsahuje text, který se má zobrazit v centru obrazovky
-            setGameState(prev => ({ ...prev, gameStateMessege: payload }));
+            setGameState(prev => ({ ...prev, gameStateMessege: translateServerText(payload) }));
             break;
         }
         case "tvujTahZacal": {
@@ -402,10 +453,11 @@ export function handleGameMessage(
         }
         case "vyberAkci": {
             try {
-                const json = JSON.parse(payload) as {id:number,akce:{ id: number; nazev: string }[], notClosable?: boolean}; 
-                const actions = json.akce.map(a=>({id:a.id,name:a.nazev}));
+                const json = JSON.parse(payload) as {id:number,akce:{ id: number; nazev: string }[], nadpis?: string, notClosable?: boolean}; 
+                const actions = json.akce.map(a=>({id:a.id,name:translateServerText(a.nazev)}));
                 const notClosable = json.notClosable ?? true;
-                openDialog({type:"CONFIRM_ACTION", data:{actions},dialogHeader:t("Vyber akci kterou chceš provést."),notClosable,callback:(selectedAction:number)=>{
+                const heading = json.nadpis ? translateServerText(json.nadpis) : t("Vyber akci kterou chceš provést.");
+                openDialog({type:"CONFIRM_ACTION", data:{actions},dialogHeader:heading,notClosable,callback:(selectedAction:number)=>{
                     console.log(t("vybraná akce"),selectedAction);
                     if(stateRef.current?.playerId == null){
                         toast.error(t("Nelze provést akci, protože není znám tvůj hráčský ID"));
@@ -427,7 +479,7 @@ export function handleGameMessage(
         case "vyberHrace": {
             try {
                 const json = JSON.parse(payload) as {id:number,hraci:number[], nadpis?:string, min?:number, max?:number, notClosable?: boolean}; 
-                const heading = json.nadpis ?? t("Vyber hráče");
+                const heading = json.nadpis ? translateServerText(json.nadpis) : t("Vyber hráče");
                 const min = json.min ?? 1;
                 const max = json.max ?? 1;
                 const notClosable = json.notClosable ?? true;
@@ -454,11 +506,11 @@ export function handleGameMessage(
         case "vyberKartu": {
             try {
                 const json = JSON.parse(payload) as {id:(string | number),karty:ServerCard[], nadpis?:string, min?:number, max?:number, notClosable?: boolean}; 
-                const heading = json.nadpis ?? t("Vyber kartu");
+                const heading = json.nadpis ? translateServerText(json.nadpis) : t("Vyber kartu");
                 const min = json.min ?? 1;
                 const max = json.max ?? 1;
                 const notClosable = json.notClosable ?? true;
-                const cards = json.karty.map(k=>({image:k.obrazek,id:k.id,name:k.jmeno,isPlayable:k.hratelna,isPutInPlayable:k.vylozitelna}));
+                const cards = json.karty.map(k=>({image:k.obrazek,id:k.id,name:translateServerText(k.jmeno),isPlayable:k.hratelna,isPutInPlayable:k.vylozitelna}));
                 openDialog({type:"SELECT_CARD", data:{cards,min,max},dialogHeader:heading,notClosable,callback:(selectedCards:number[])=>{ 
                     console.log("vybrané karty:",selectedCards);
                     if(stateRef.current?.playerId == null){
@@ -600,7 +652,7 @@ export function handleGameMessage(
             break;
         }
         case "rychleOznameni":{
-            notify(payload);
+            notify(translateServerText(payload));
             break;
         }
         case "vysledkyHry":{
@@ -616,21 +668,25 @@ export function handleGameMessage(
         case "konecHry":{
             posthog.capture('game_ended');
             setGameState(prev=>({...prev, gameEnded:true}));
+            ['cs', 'en', i18n.language].filter(Boolean).forEach(lng => {
+                i18n.removeResourceBundle(lng, 'plugin');
+            });
             break;
         }
         case "noveUI": {
             try {
                 const json = JSON.parse(payload) as {id: number, text: string, disabled: boolean};
+                const translatedText = translateServerText(json.text);
                 setGameState(prev => {
                     const existingIndex = prev.customUIButtons.findIndex(btn => btn.id === json.id);
                     if (existingIndex >= 0) {
                         // Aktualizace existujícího tlačítka
                         const updated = [...prev.customUIButtons];
-                        updated[existingIndex] = { id: json.id, text: json.text, disabled: json.disabled };
+                        updated[existingIndex] = { id: json.id, text: translatedText, disabled: json.disabled };
                         return { ...prev, customUIButtons: updated };
                     } else {
                         // Přidání nového tlačítka
-                        return { ...prev, customUIButtons: [...prev.customUIButtons, { id: json.id, text: json.text, disabled: json.disabled }] };
+                        return { ...prev, customUIButtons: [...prev.customUIButtons, { id: json.id, text: translatedText, disabled: json.disabled }] };
                     }
                 });
             } catch (error) {
@@ -656,7 +712,10 @@ export function handleGameMessage(
             try {
                 const json = JSON.parse(payload) as {id:number, title?:string, placeholder?:string, buttonText?:string, notClosable?: boolean};
                 const notClosable = json.notClosable ?? false;
-                openDialog({type:"TEXT", data:{title:json.title, placeholder:json.placeholder, buttonText:json.buttonText},dialogHeader:json.title ?? t("Zadej text"),notClosable,callback:(text:string)=>{
+                const title = json.title ? translateServerText(json.title) : t("Zadej text");
+                const placeholder = json.placeholder ? translateServerText(json.placeholder) : undefined;
+                const buttonText = json.buttonText ? translateServerText(json.buttonText) : undefined;
+                openDialog({type:"TEXT", data:{title, placeholder, buttonText},dialogHeader:title,notClosable,callback:(text:string)=>{
                     console.log("zadaný text:",text);
                     if(stateRef.current?.playerId == null){
                         toast.error(t("Nelze provést akci, protože není znám tvůj hráčský ID"));
@@ -677,7 +736,8 @@ export function handleGameMessage(
         case "koloStesti": {  // Poznámka: náhoda probíhá na serveru, není třeba posílat oddpověď
             try {
                 const json = JSON.parse(payload) as {moznosti:{name:string,barva:string,id:number,velikost:number}[], vybranaMoznost:number, nadpis:string};
-                openDialog({type:"LUCKY_WHEEL", data:{options:json.moznosti.map(o => ({name:o.name,color:o.barva,id:o.id,size:o.velikost})), chosedOptionId:json.vybranaMoznost},dialogHeader:json.nadpis,notClosable:false});
+                const heading = json.nadpis ? translateServerText(json.nadpis) : "";
+                openDialog({type:"LUCKY_WHEEL", data:{options:json.moznosti.map(o => ({name:translateServerText(o.name),color:o.barva,id:o.id,size:o.velikost})), chosedOptionId:json.vybranaMoznost},dialogHeader:heading,notClosable:false});
                
             } catch (error) {
                 console.error("chyba při parsování", error, payload);
@@ -746,6 +806,7 @@ export function connectToGame(
         setGameState(prevState => ({ ...prevState, gameCode: gameCode, inGame: true }));
         ws.send("pripojeniKeHre:" + gameCode);
         ws.send("noveJmeno:" + name);
+        ws.send("nactiPreklady:" + (i18n.language || "cs"));
     }
 }
 
@@ -753,6 +814,7 @@ export function createGame(ws: WebSocket | null,gameTypeId:number, name: string)
     if (ws !== null) {
         ws.send("novaHra:"+gameTypeId);
         ws.send("noveJmeno:" + name);
+        ws.send("nactiPreklady:" + (i18n.language || "cs"));
     }
 }
 
@@ -820,6 +882,7 @@ export function returnToGame(
         
         console.log("posílám vraceniSe s tokenem", token);
         ws.send("vraceniSe:" + token);
+        ws.send("nactiPreklady:" + (i18n.language || "cs"));
     }
 }
 
@@ -933,7 +996,7 @@ export function startNewGameAndDeleteThisOne(ws: WebSocket | null, openDialog: (
 
     const dialog: DialogState = {
         type: "CONFIRM_ACTION",
-        data: {actions: [{id:0,name:"zrušit"},...games]},
+        data: {actions: [{id:0,name:t("Zrušit")},...games]},
         dialogHeader: t("Jakou hru začít? Ostatní hráči budou pozváni."),
         notClosable: false,
         callback: (confirmed) => {

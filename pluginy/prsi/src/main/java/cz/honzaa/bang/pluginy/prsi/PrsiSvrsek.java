@@ -34,15 +34,15 @@ public class PrsiSvrsek extends PrsiKarta{
         poslendniBarva = null;
         cekaNaBarvu = true;
             // Zobrazit stavovou zprávu že hráč vybírá barvu
-            hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " vybírá barvu...");
+            hra.getKomunikator().posliStavovouZpravu("$prsi.status_choosing_color:{\"name\":\"" + Karta.escapeJson(kym.getJmeno()) + "\"}");
             
             
-            ArrayList moznosti = new ArrayList(4);
-            moznosti.add("Kule");
-            moznosti.add("Zelené");
-            moznosti.add("Červené");
-            moznosti.add("Žaludy");
-            hra.getKomunikator().pozadejOVyberMoznosti(kym, moznosti, "Na co chceš změnit?", false).thenAccept(odpoved -> {
+            ArrayList<String> moznosti = new ArrayList<>(4);
+            moznosti.add("$prsi.color_kule");
+            moznosti.add("$prsi.color_zelene");
+            moznosti.add("$prsi.color_cervene");
+            moznosti.add("$prsi.color_zaludy");
+            hra.getKomunikator().pozadejOVyberMoznosti(kym, moznosti, "$prsi.select_color", false).thenAccept(odpoved -> {
                 System.out.println("Hráč odpověděl: " + odpoved);
                 switch ( (String) odpoved) {
                     case "0":
@@ -63,9 +63,9 @@ public class PrsiSvrsek extends PrsiKarta{
                 }
                 cekaNaBarvu = false;
                 // Zobrazit informaci o vybrané barvě
-                hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " si vybral barvu: " + poslendniBarva.getNazev());
+                hra.getKomunikator().posliStavovouZpravu("$prsi.status_chosen_color:{\"name\":\"" + Karta.escapeJson(kym.getJmeno()) + "\",\"color\":\"$" + poslendniBarva.getTranslationKey() + "\"}");
                 // Dodatečná zpráva pro plugin - zvláštní oznámení
-                hra.getKomunikator().posliRychleOznameniVsem(String.valueOf(poslendniBarva.getNazev()), kym);
+                hra.getKomunikator().posliRychleOznameniVsem("$" + poslendniBarva.getTranslationKey(), kym);
                 
                 // Nyní předáme tah dalšímu hráči
                 hra.getSpravceTahu().dalsiHracSUpozornenim();

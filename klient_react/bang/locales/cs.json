@@ -14,6 +14,8 @@
     "OK": "OK",
     "Spustit hru": "Spustit hru",
     "Připojení hráči:": "Připojení hráči:",
+    "Zrušit": "Zrušit",
+    "zrušit": "Zrušit",
     "dialog": {
         "vyber_karty_one": "Vyber ještě {{count}} kartu.",
         "vyber_karty_few": "Vyber ještě {{count}} karty.",
@@ -199,5 +201,27 @@
     },
     "Podmínky a soukromí": "Podmínky a soukromí",
     "Podpořit": "Podpořit",
-    "Vy":"Vy"
+    "Vy":"Vy",
+    "error": {
+        "nepripojen_ke_hre": "Nejsi připojen ke hře.",
+        "karta_neexistuje": "Tato karta neexistuje.",
+        "karta_neni_hratelna": "Tato karta není hratelná.",
+        "karta_nejde_zahrat": "Tato karta teď nejde zahrát.",
+        "hra_neexistuje": "Hra neexistuje.",
+        "postava_neni_na_vyber": "Tato postava není na výběr.",
+        "nejsi_na_tahu": "Nejsi na tahu.",
+        "nemuzes_ukoncit_tah": "Nemůžeš ukončit tah.",
+        "karta_nejde_spalit": "Tato karta nejde spálit.",
+        "neni_vylozitelna": "Tato karta není vyložitelná.",
+        "kartu_nejde_vylozit": "Tuto kartu teď nejde vyložit.",
+        "chyba_protokolu": "Chyba protokolu.",
+        "nejde_si_liznout": "Teď si nemůžeš líznout kartu.",
+        "spatne_heslo": "Špatné heslo.",
+        "uz_pripojen": "Už jsi připojen k jiné hře.",
+        "dosli_karty_v_balicku": "Došly karty v balíčku.",
+        "nejsi_admin_hry": "Nejsi administrátorem této hry.",
+        "plny_server": "Server je plný.",
+        "vyhozen_ze_hry": "Byl jsi vyhozen ze hry.",
+        "vyhozen_ze_hry_adminem": "Byl jsi vyhozen ze hry hráčem {{admin}}."
+    }
 }

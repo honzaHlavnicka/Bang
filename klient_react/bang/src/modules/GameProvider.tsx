@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { useDialog } from "./DialogContext";
 import { notify } from "./notify";
 import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 import posthog from "./posthog";
 import { getMockActions } from "./mockData";
 
@@ -214,11 +215,23 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             }
         };
 
+        const handleLanguageChange = (lng: string) => {
+            if (activeSocket && activeSocket.readyState === WebSocket.OPEN && stateRef.current?.inGame) {
+                activeSocket.send("nactiPreklady:" + lng);
+            }
+        };
+
+        i18n.on('languageChanged', handleLanguageChange);
+
         connectSocket();
         document.addEventListener("visibilitychange", handleVisibilityChange);
 
         return () => {
             isUnmounted = true;
+            i18n.off('languageChanged', handleLanguageChange);
+            ['cs', 'en', i18n.language].filter(Boolean).forEach(lng => {
+                i18n.removeResourceBundle(lng, 'plugin');
+            });
             document.removeEventListener("visibilitychange", handleVisibilityChange);
             if (activeSocket) {
                 activeSocket.close();

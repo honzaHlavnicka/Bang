@@ -4,15 +4,32 @@
 # tento script byl vygenerován AI a není přímou součástí projektu
 # --------------------------------------------------------
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BUILD_DIR="$SCRIPT_DIR/build"
+PLUGINS_DIR="$BUILD_DIR/pluginy"
+
+# Pokud je zadán parametr 's', pouze spusť existující build bez kompilace
+if [ "$1" = "s" ]; then
+    if [ -f "$BUILD_DIR/start.sh" ]; then
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🎮 Spouštím existující build serveru..."
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
+        cd "$BUILD_DIR"
+        bash start.sh
+        exit $?
+    else
+        echo "❌ Server ještě nebyl sestaven ($BUILD_DIR/start.sh neexistuje)!"
+        echo "   Spusťte nejprve './build.sh' nebo './build.sh r'."
+        exit 1
+    fi
+fi
+
 # Zjisti, zda chceme spustit server po buildu
 RUN_SERVER=false
 if [ "$1" = "r" ]; then
     RUN_SERVER=true
 fi
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BUILD_DIR="$SCRIPT_DIR/build"
-PLUGINS_DIR="$BUILD_DIR/pluginy"
 
 echo "🔨 Zahajuji build..."
 if [ "$RUN_SERVER" = true ]; then
@@ -50,25 +67,16 @@ cp server/target/server-1.0-SNAPSHOT.jar "$BUILD_DIR/server.jar"
 
 # Kopírování Java (JAR) pluginů
 echo "📋 Kopíruji Java pluginy..."
-if [ -f "pluginy/bang/target/bang-1.0-SNAPSHOT.jar" ]; then
-    cp pluginy/bang/target/bang-1.0-SNAPSHOT.jar "$PLUGINS_DIR/bang.jar"
-fi
-
-if [ -f "pluginy/prsi/target/prsi-1.0-SNAPSHOT.jar" ]; then
-    cp pluginy/prsi/target/prsi-1.0-SNAPSHOT.jar "$PLUGINS_DIR/prsi.jar"
-fi
-
-if [ -f "pluginy/VychoziHry/target/VychoziHry-1.0-SNAPSHOT.jar" ]; then
-    cp pluginy/VychoziHry/target/VychoziHry-1.0-SNAPSHOT.jar "$PLUGINS_DIR/VychoziHry.jar"
-fi
-
-if [ -f "pluginy/Uno/target/Uno-1.0-SNAPSHOT.jar" ]; then
-    cp pluginy/Uno/target/Uno-1.0-SNAPSHOT.jar "$PLUGINS_DIR/Uno.jar"
-fi
-
-if [ -f "pluginy/kvarteto/target/kvarteto-1.0-SNAPSHOT.jar" ]; then
-    cp pluginy/kvarteto/target/kvarteto-1.0-SNAPSHOT.jar "$PLUGINS_DIR/kvarteto.jar"
-fi
+for jar in pluginy/*/target/*.jar; do
+    if [ -f "$jar" ]; then
+        filename=$(basename "$jar")
+        if [[ ! "$filename" =~ ^original- && ! "$filename" =~ -sources\.jar$ && ! "$filename" =~ -javadoc\.jar$ ]]; then
+            plugin_name=$(echo "$filename" | sed -E 's/-[0-9].*\.jar$//')
+            cp "$jar" "$PLUGINS_DIR/${plugin_name}.jar"
+            echo "   -> Nalezen a zkopírován Java plugin: ${plugin_name}.jar"
+        fi
+    fi
+done
 
 # --- NOVÉ: Kopírování skriptovaných (JS/Python) pluginů ---
 echo "📋 Kopíruji skriptované pluginy..."
@@ -132,10 +140,11 @@ echo "   Příklad:"
 echo "     SERVER_PORT=8080"
 echo "     ADMIN_PASSWORD=heslo123"
 echo ""
-echo "🚀 Spuštění serveru:"
-echo "   cd $BUILD_DIR && bash start.sh"
-echo "   nebo"
-echo "   cd $BUILD_DIR && java --enable-native-access=ALL-UNNAMED -jar server.jar"
+echo "🚀 Spuštění serveru:
+   ./build.sh s         (okamžité spuštění existujícího buildu)
+   ./build.sh r         (nový build + automatické spuštění)
+   nebo
+   cd $BUILD_DIR && bash start.sh"
 echo ""
 
 # Pokud je zadán parametr 'r', spusť server

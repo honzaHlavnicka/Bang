@@ -1,0 +1,11 @@
+{
+  "prsi": {
+    "select_color": "Na co chceš změnit?",
+    "color_kule": "Kule",
+    "color_zelene": "Zelené",
+    "color_cervene": "Červené",
+    "color_zaludy": "Žaludy",
+    "status_choosing_color": "{{name}} vybírá barvu...",
+    "status_chosen_color": "{{name}} si vybral barvu: {{color}}"
+  }
+}

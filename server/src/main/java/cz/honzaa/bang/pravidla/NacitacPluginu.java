@@ -54,12 +54,24 @@ public class NacitacPluginu {
             for (Path prvek : stream) {
                 
                 if (Files.isDirectory(prvek)) {
-                    logger.debug("Našel jsem složku");
                     Path potencialniManifest = prvek.resolve("plugin.json");
 
                     if (Files.exists(potencialniManifest)) {
-                        logger.debug("Načítám plugin.json");
+                        logger.debug("Načítám plugin.json z {}", prvek);
                         pluginy.addAll(nactiPluginyZManifestu(potencialniManifest));
+                    }
+
+                    // Podpora pro vývojové prostředí (target/*.jar v podsložkách)
+                    Path targetSlozka = prvek.resolve("target");
+                    if (Files.exists(targetSlozka) && Files.isDirectory(targetSlozka)) {
+                        try (DirectoryStream<Path> targetStream = Files.newDirectoryStream(targetSlozka, "*.jar")) {
+                            for (Path jar : targetStream) {
+                                String jarName = jar.getFileName().toString();
+                                if (!jarName.startsWith("original-") && !jarName.endsWith("-sources.jar") && !jarName.endsWith("-javadoc.jar")) {
+                                    pluginy.addAll(nactiPluginyZJARu(jar));
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -74,10 +86,11 @@ public class NacitacPluginu {
     public static List<HerniPlugin> nactiPluginyZJARu(Path cesta) throws Exception{
         List<HerniPlugin> pluginy = new ArrayList<>();
         
-    try (URLClassLoader classLoader = new URLClassLoader(
-        new URL[]{cesta.toUri().toURL()},
-        NacitacPluginu.class.getClassLoader()
-    ); JarFile jar = new JarFile(cesta.toFile())) {
+        URLClassLoader classLoader = new URLClassLoader(
+            new URL[]{cesta.toUri().toURL()},
+            NacitacPluginu.class.getClassLoader()
+        );
+        try (JarFile jar = new JarFile(cesta.toFile())) {
             Enumeration<JarEntry> entries = jar.entries();
 
             while (entries.hasMoreElements()) {
@@ -149,7 +162,7 @@ public class NacitacPluginu {
             
             
             // Instancování polyglot pluginu
-            HerniPlugin plugin = new PolyglotPlugin(manifest, zdroj);
+            HerniPlugin plugin = new PolyglotPlugin(manifest, zdroj, cesta.getParent());
             pluginy.add(plugin);
             
             logger.info("Načten skriptovaný plugin: {} (v{})", manifest.nazev(), manifest.verze());

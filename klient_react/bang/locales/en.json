@@ -12,6 +12,8 @@
     "OK": "OK",
     "Spustit hru": "Start game",
     "Připojení hráči:": "Connected players:",
+    "Zrušit": "Cancel",
+    "zrušit": "Cancel",
     "dialog": {
         "vyber_karty_one": "Select {{count}} more card.",
         "vyber_karty_other": "Select {{count}} more cards.",
@@ -187,6 +189,27 @@
     },
     "Podmínky a soukromí": "Terms and Privacy",
     "Podpořit": "Donate",
-    "Vy":"You"
-
+    "Vy":"You",
+    "error": {
+        "nepripojen_ke_hre": "You are not connected to the game.",
+        "karta_neexistuje": "This card does not exist.",
+        "karta_neni_hratelna": "This card cannot be played.",
+        "karta_nejde_zahrat": "This card cannot be played right now.",
+        "hra_neexistuje": "Game does not exist.",
+        "postava_neni_na_vyber": "This character is not available.",
+        "nejsi_na_tahu": "It is not your turn.",
+        "nemuzes_ukoncit_tah": "You cannot end your turn.",
+        "karta_nejde_spalit": "This card cannot be discarded.",
+        "neni_vylozitelna": "This card cannot be put into play.",
+        "kartu_nejde_vylozit": "This card cannot be put into play right now.",
+        "chyba_protokolu": "Protocol error.",
+        "nejde_si_liznout": "You cannot draw a card right now.",
+        "spatne_heslo": "Wrong password.",
+        "uz_pripojen": "You are already connected to another game.",
+        "dosli_karty_v_balicku": "Out of cards in deck.",
+        "nejsi_admin_hry": "You are not the administrator of this game.",
+        "plny_server": "Server is full.",
+        "vyhozen_ze_hry": "You were kicked from the game.",
+        "vyhozen_ze_hry_adminem": "You were kicked from the game by {{admin}}."
+    }
 }

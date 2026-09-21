@@ -8,6 +8,7 @@ package cz.honzaa.bang;
 
 import cz.honzaa.bang.sdk.PovolenePluginu;
 import cz.honzaa.bang.pravidla.SpravceHernichPravidel;
+import cz.honzaa.bang.sdk.HerniPlugin;
 import cz.honzaa.bang.sdk.HerniPravidla;
 
 import cz.honzaa.bang.net.KomunikatorHryImp;
@@ -45,7 +46,19 @@ public class HraImp implements cz.honzaa.bang.sdk.Hra{
     private BalicekImp<Karta> odhazovaciBalicek;
     private SpravceTahuImp spravceTahu;
     private HerniPravidla herniPravidla;
+    private HerniPlugin plugin;
     private String vrchniObrazekZadniStrany;
+
+    public HerniPlugin getPlugin() {
+        return plugin;
+    }
+
+    public String getPreklady(String jazyk) {
+        if (plugin != null) {
+            return plugin.getPreklady(jazyk);
+        }
+        return "{}";
+    }
 
     
     @Override
@@ -76,7 +89,9 @@ public class HraImp implements cz.honzaa.bang.sdk.Hra{
                     String vrchniObrazek = vrchniKarta.getZadniObrazek();
                     if (!vrchniObrazek.equals(vrchniObrazekZadniStrany)) {
                         vrchniObrazekZadniStrany = vrchniObrazek;
-                        komunikator.posliZadniObrazekLizacihoBalicku(vrchniObrazek);
+                        if (komunikator != null) {
+                            komunikator.posliZadniObrazekLizacihoBalicku(vrchniObrazek);
+                        }
                     }
                 } else {
                     // TODO: Balíček ja prázdný, možná to nějak znázornit
@@ -99,6 +114,7 @@ public class HraImp implements cz.honzaa.bang.sdk.Hra{
      */
     public static HraImp vytvor(KomunikatorHryImp komunikator,int typHry){
         HraImp hra = new HraImp(komunikator);
+        hra.plugin = SpravceHernichPravidel.getPlugin(typHry);
         hra.herniPravidla = SpravceHernichPravidel.vytvorHerniPravidla(typHry, hra);
         hra.herniPravidla.pripravBalicek(hra.balicek);
         hra.herniPravidla.pripravBalicekPostav(hra.balicekPostav);

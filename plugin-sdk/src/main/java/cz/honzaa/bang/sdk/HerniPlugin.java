@@ -51,4 +51,56 @@ public interface HerniPlugin {
      * @return 
      */
     public HerniPravidla vytvor(Hra hra);
+
+    /**
+     * Vrátí JSON s překlady pro zadaný jazyk (např. "cs", "en").
+     * Výchozí implementace načte locales/{jazyk}.json z resources pluginu, s fallbackem na en.json a cs.json.
+     * @param jazyk Kód jazyka (např. "cs", "en")
+     * @return JSON řetězec s překlady nebo "{}" pokud není nalezen
+     */
+    @PovolenePluginu
+    default String getPreklady(String jazyk) {
+        String[] hledaneJazyky = new String[]{
+            (jazyk != null && !jazyk.isEmpty()) ? jazyk.toLowerCase() : "en",
+            "en",
+            "cs"
+        };
+        
+        for (String lang : hledaneJazyky) {
+            String cesta = "/locales/" + lang + ".json";
+            try (java.io.InputStream is = getClass().getResourceAsStream(cesta)) {
+                if (is != null) {
+                    try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(is, java.nio.charset.StandardCharsets.UTF_8))) {
+                        StringBuilder sb = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            sb.append(line).append("\n");
+                        }
+                        return sb.toString().trim();
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+
+            String cestaBezLomitka = "locales/" + lang + ".json";
+            ClassLoader cl = getClass().getClassLoader();
+            if (cl != null) {
+                try (java.io.InputStream is = cl.getResourceAsStream(cestaBezLomitka)) {
+                    if (is != null) {
+                        try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(is, java.nio.charset.StandardCharsets.UTF_8))) {
+                            StringBuilder sb = new StringBuilder();
+                            String line;
+                            while ((line = reader.readLine()) != null) {
+                                sb.append(line).append("\n");
+                            }
+                            return sb.toString().trim();
+                        }
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        }
+
+        return "{}";
+    }
 }

@@ -8,6 +8,9 @@ import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.Value;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 /**
  *
  * @author honza
@@ -17,15 +20,42 @@ public class PolyglotPlugin implements HerniPlugin{
     private final String popis;
     private final String URLPravidel;
     private final PluginManifest manifest;
+    private final Path slozkaPluginu;
     
     private final Source zdrojak;
 
-    public PolyglotPlugin(PluginManifest manifest, Source zdrojak) {
+    public PolyglotPlugin(PluginManifest manifest, Source zdrojak, Path slozkaPluginu) {
         this.jmeno = manifest.nazev();
         this.popis = manifest.popis();
         this.URLPravidel = manifest.URLPravidel();
         this.zdrojak = zdrojak;
         this.manifest = manifest;
+        this.slozkaPluginu = slozkaPluginu;
+    }
+
+    public PolyglotPlugin(PluginManifest manifest, Source zdrojak) {
+        this(manifest, zdrojak, null);
+    }
+    
+    @Override
+    public String getPreklady(String jazyk) {
+        if (slozkaPluginu != null) {
+            String[] hledaneJazyky = new String[]{
+                (jazyk != null && !jazyk.isEmpty()) ? jazyk.toLowerCase() : "en",
+                "en",
+                "cs"
+            };
+            for (String lang : hledaneJazyky) {
+                Path localeFile = slozkaPluginu.resolve("locales").resolve(lang + ".json");
+                if (Files.exists(localeFile)) {
+                    try {
+                        return Files.readString(localeFile).trim();
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+        }
+        return HerniPlugin.super.getPreklady(jazyk);
     }
     
     

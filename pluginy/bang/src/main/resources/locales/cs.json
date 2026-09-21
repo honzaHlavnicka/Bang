@@ -1,0 +1,29 @@
+{
+  "bang": {
+    "dialog": {
+      "out_of_lives": "Došli ti životy! Co chceš? Pokud zbýváte jen 2, tak pivo může být k ničemu!",
+      "missed_choice": "Vyber o co přijdeš. (Může za to {{attacker}})",
+      "shoot_target": "Vyber koho chceš zastřelit!",
+      "discard_target": "Vyber komu kartu spálíš",
+      "discard_card": "Jakou kartu mu spálíš?",
+      "steal_target": "Vyber koho kartu si vezmeš",
+      "steal_card": "Jakou kartu mu vezmeš?",
+      "duel_target": "Vyber koho chceš vyzvat na duel",
+      "duel_discard": "Vyber o co přijdeš v duelu!",
+      "bang_choice": "Jaký Bang použiješ?",
+      "general_store_choice": "Jakou kartu si chceš nechat?",
+      "indians_discard": "Vyber o co přijdeš kvůli Indiánům!",
+      "target_prompt": "Na koho?",
+      "kit_draw": "Jaké dvě si lízneš?",
+      "sid_discard": "Vyber 2 karty, za které dostaneš život"
+    },
+    "status": {
+      "choosing_target": "{{name}} vybírá cíl útoku...",
+      "choosing_card_from": "{{name}} vybírá kartu od {{target}}...",
+      "can_play_missed": "{{target}} může ještě použít Vedle na odražení útoku!",
+      "duel_choosing": "{{name}} právě vybírá hráče do duelu.",
+      "duel_turn": "{{target}} buď ztratí život v duelu, nebo ho předá na {{attacker}}",
+      "general_store": "{{name}} vybírá kartu z hokynářství"
+    }
+  }
+}

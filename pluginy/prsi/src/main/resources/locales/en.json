@@ -1,0 +1,11 @@
+{
+  "prsi": {
+    "select_color": "Which suit do you want to change to?",
+    "color_kule": "Bells",
+    "color_zelene": "Leaves",
+    "color_cervene": "Hearts",
+    "color_zaludy": "Acorns",
+    "status_choosing_color": "{{name}} is choosing a suit...",
+    "status_chosen_color": "{{name}} chose suit: {{color}}"
+  }
+}

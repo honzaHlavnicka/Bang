@@ -8,6 +8,7 @@ import Fire from "./Fire";
 import { useDialog } from "../../modules/DialogContext";
 import { useTranslation } from "react-i18next";
 import { useIsMobile } from "../../modules/useWindowDimentions";
+import { translateServerText } from "../../modules/gameActions";
 
 
 export default function CentralPanel() {
@@ -40,15 +41,15 @@ export default function CentralPanel() {
                     padding: isMobile ? "0 10px" : "0"
                 }}
             >
-                {gameState.gameStateMessege ? gameState.gameStateMessege : ""}
+                {gameState.gameStateMessege ? translateServerText(gameState.gameStateMessege) : ""}
                 {gameState.gameStateMessegeFull ?  (
                     <button 
                         onClick={() => openDialog({
                             type: "INFO",
                             dialogHeader: t("central_panel.game_state_header"),
                             data: {
-                                message: gameState.gameStateMessegeFull || "", 
-                                header: gameState.gameStateMessege
+                                message: translateServerText(gameState.gameStateMessegeFull || ""), 
+                                header: translateServerText(gameState.gameStateMessege || "")
                             }
                         })} 
                         className={globalCSS.button}
@@ -97,7 +98,7 @@ export default function CentralPanel() {
                 {gameState.customUIButtons.length > 0 && 
                     gameState.customUIButtons.map(btn => (
                         <button key={btn.id} className={globalCSS.button} onClick={() => clickUIButton(btn.id)} style={mobileButtonStyle}>
-                            {btn.text}
+                            {translateServerText(btn.text)}
                         </button>
                     ))
                 }

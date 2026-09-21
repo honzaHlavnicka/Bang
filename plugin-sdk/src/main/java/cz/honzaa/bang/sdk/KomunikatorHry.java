@@ -59,12 +59,21 @@ public interface KomunikatorHry {
 
     
     /**
-     * Pošle klientovi chybovou zprávu.
+     * Pošle klientovi chybovou zprávu s výchozím textem dané chyby.
      * @param komu komu se má chyba doručit.
      * @param chyba chyba, která se posílá.
      */
     @PovolenePluginu
     public void posliChybu(Hrac komu,Chyba chyba);
+
+    /**
+     * Pošle klientovi chybovou zprávu s vlastním popisem (může být text nebo překladový klíč začínající na '$').
+     * @param komu komu se má chyba doručit.
+     * @param chyba typ chyby (určuje kód a skupinu).
+     * @param vlastniPopis vlastní chybová zpráva nebo překladový klíč (např. "$prsi.error.barva").
+     */
+    @PovolenePluginu
+    public void posliChybu(Hrac komu, Chyba chyba, String vlastniPopis);
     
     /**
      * Pošle stavovou zprávu všem hráčům. Zpráva se zobrazí v centru obrazovky.

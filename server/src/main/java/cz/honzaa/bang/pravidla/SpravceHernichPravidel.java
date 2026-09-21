@@ -40,8 +40,19 @@ public class SpravceHernichPravidel {
                 .collect(Collectors.joining(", ", "[", "]"));
     }
 
+    public static HerniPlugin getPlugin(int id) {
+        if (id >= 0 && id < pluginy.size()) {
+            return pluginy.get(id);
+        }
+        return null;
+    }
+
     public static HerniPravidla vytvorHerniPravidla(int id, HraImp hra) {
-        return pluginy.get(id).vytvor(hra);
+        HerniPlugin p = getPlugin(id);
+        if (p != null) {
+            return p.vytvor(hra);
+        }
+        throw new IllegalArgumentException("Plugin s ID " + id + " neexistuje");
     }
 
     private static String escapeJSON(String text) {
@@ -57,15 +68,20 @@ public class SpravceHernichPravidel {
                 Paths.get("pluginy"),           // Relativní vůči pracovnímu adresáři
                 Paths.get("./pluginy"),         // Explicitní aktuální složka
                 Paths.get("../pluginy"),        // Nadřazená složka (pro build/)
+                Paths.get("build/pluginy"),
+                Paths.get("../build/pluginy"),
             };
             
             for (Path cesta : cesty) {
                 if (java.nio.file.Files.exists(cesta)) {
-                    pluginy.addAll(NacitacPluginu.nactiPluginy(cesta));
-                    // Seřazení pluginů abecedně podle jména
-                    pluginy.sort((p1, p2) -> p1.getJmeno().compareToIgnoreCase(p2.getJmeno()));
-                    logger.info("Pluginy načteny z: {}, počet: {}", cesta.toAbsolutePath(), pluginy.size());
-                    break;
+                    List<HerniPlugin> nactene = NacitacPluginu.nactiPluginy(cesta);
+                    if (!nactene.isEmpty()) {
+                        pluginy.addAll(nactene);
+                        // Seřazení pluginů abecedně podle jména
+                        pluginy.sort((p1, p2) -> p1.getJmeno().compareToIgnoreCase(p2.getJmeno()));
+                        logger.info("Pluginy načteny z: {}, počet: {}", cesta.toAbsolutePath(), pluginy.size());
+                        break;
+                    }
                 }
             }
             

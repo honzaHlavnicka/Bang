@@ -25,4 +25,14 @@ public enum PrsiBarva {
     public String getNazev() {
         return nazev;
     }
+
+    public String getTranslationKey() {
+        switch (this) {
+            case CERVENE: return "prsi.color_cervene";
+            case ZELENE: return "prsi.color_zelene";
+            case KULE: return "prsi.color_kule";
+            case ZALUDY: return "prsi.color_zaludy";
+            default: return "prsi.color_cervene";
+        }
+    }
 }

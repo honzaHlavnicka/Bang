@@ -92,6 +92,14 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
                 hrac.setJmeno(message.replace("noveJmeno:", ""));
                 posliZmenuJmena(hrac);
             }
+            if(message.startsWith("nactiPreklady")){
+                String jazyk = "cs";
+                if (message.startsWith("nactiPreklady:")) {
+                    jazyk = message.substring("nactiPreklady:".length()).trim();
+                }
+                String preklady = hra.getPreklady(jazyk);
+                conn.send("preklady:" + preklady);
+            }
             if(message.startsWith("nactiHru")){
                 nactiHru(conn);
             }
@@ -120,7 +128,8 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
                     if (targetHrac != null) {
                         WebSocket targetConn = websocketPodleHracu.get(targetHrac);
                         if (targetConn != null && targetConn.isOpen()) {
-                            targetConn.send("error:{\"error\":\"Byl jsi vyhozen ze hry hráčem " + hrac.getJmeno() + ".\",\"kod\":" + Chyba.VYHOZEN_ZE_HRY.getKod() + ",\"skupina\":1}");
+                            String errPayload = "$error.vyhozen_ze_hry_adminem:{\"admin\":\"" + Karta.escapeJson(hrac.getJmeno()) + "\"}";
+                            targetConn.send("error:{\"error\":\"" + Karta.escapeJson(errPayload) + "\",\"kod\":" + Chyba.VYHOZEN_ZE_HRY.getKod() + ",\"skupina\":1}");
                             targetConn.close();
                         }
                         
@@ -445,11 +454,20 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
      */
     @Override
     @PovolenePluginu
-    public void posliChybu(cz.honzaa.bang.sdk.Hrac komu,Chyba chyba){
+    public void posliChybu(cz.honzaa.bang.sdk.Hrac komu, Chyba chyba) {
+        posliChybu(komu, chyba, chyba != null ? chyba.getZprava() : "");
+    }
+
+    @Override
+    @PovolenePluginu
+    public void posliChybu(cz.honzaa.bang.sdk.Hrac komu, Chyba chyba, String vlastniPopis) {
         WebSocket conn = websocketPodleHracu.get(komu);
         if (conn != null && conn.isOpen()) {
             try {
-                conn.send("error:{\"error\":\"" + chyba.getZprava() + "\",\"kod\":" + chyba.getKod() + ",\"skupina\":" + chyba.getSkupina()+ "}");
+                String popis = (vlastniPopis != null) ? vlastniPopis : (chyba != null ? chyba.getZprava() : "");
+                int kod = chyba != null ? chyba.getKod() : 0;
+                int skupina = chyba != null ? chyba.getSkupina() : 0;
+                conn.send("error:{\"error\":\"" + Karta.escapeJson(popis) + "\",\"kod\":" + kod + ",\"skupina\":" + skupina + "}");
             } catch (Exception ex) {
                 logger.error("Chyba při posílání chyby hráči: {}", ex.getMessage());
             }

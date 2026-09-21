@@ -1,0 +1,29 @@
+{
+  "bang": {
+    "dialog": {
+      "out_of_lives": "You ran out of lives! What do you want to play? If only 2 players remain, beer may be useless!",
+      "missed_choice": "Choose what to lose (caused by {{attacker}})",
+      "shoot_target": "Choose who you want to shoot!",
+      "discard_target": "Choose who you want to discard a card from",
+      "discard_card": "Which card will you discard?",
+      "steal_target": "Choose whose card you want to steal",
+      "steal_card": "Which card will you take?",
+      "duel_target": "Choose who you want to challenge to a duel",
+      "duel_discard": "Choose what you'll play in the duel!",
+      "bang_choice": "Which Bang will you use?",
+      "general_store_choice": "Which card do you want to keep?",
+      "indians_discard": "Choose what you'll discard due to Indians!",
+      "target_prompt": "Target who?",
+      "kit_draw": "Which two will you draw?",
+      "sid_discard": "Choose 2 cards to regain 1 life"
+    },
+    "status": {
+      "choosing_target": "{{name}} is choosing a target...",
+      "choosing_card_from": "{{name}} is choosing a card from {{target}}...",
+      "can_play_missed": "{{target}} can still play Missed! to avoid the hit!",
+      "duel_choosing": "{{name}} is choosing a player for a duel.",
+      "duel_turn": "{{target}} will either lose a life in the duel, or pass it back to {{attacker}}",
+      "general_store": "{{name}} is choosing a card from the General Store"
+    }
+  }
+}

@@ -7,25 +7,25 @@ package cz.honzaa.bang.sdk;
  */
 @PovolenePluginu
 public enum Chyba {
-    NEPRIPOJEN_KE_HRE("Nejsi připojen ke hře.",1,2),
-    KARTA_NEEXISTUJE("Tato karta neexistuje",2,2),
-    KARTA_NENI_HRATELNA("Tato karta není hratelná.",3,1),
-    KARTA_NEJDE_ZAHRAT("Tuto kartu ted nemuzes zahrat.",4,3),
-    HRA_NEEXISTUJE("Hra, ke které se snažíš připojit neexistuje.",5,1),
-    POSTAVA_NENI_NA_VYBER("Postava není na výběr",6,1),
-    NEJSI_NA_TAHU("Nejsi na tahu.",7,3),
-    NEMUZES_UKONCIT_TAH("Takhle tah ukončit nejde.",8,3),
-    KARTA_NEJDE_SPALIT("Tuhle kartu bohužel nemůžeš spálit.",9,1),
-    NENI_VYLOZITELNA("Tahle karta není vyložitelná.",10,1),
-    KARTU_NEJDE_VYLOZIT("Tuhle kartu teď nemůžeš vyložit.",11,3),
-    CHYBA_PROTOKOLU("Nastala chyba při komunikaci.\nZkontrolujte, zda používáte správnou verzi.",12,1),
-    NEJDE_SI_LIZNOUT("Podle pravidel si teď liznout nemuzes.",13,3),
-    SPATNE_HESLO("Špatné heslo.",14,1),
-    UZ_PRIPOJEN("Už jsi připojen ke hře.",15,2),
-    DOSLI_KARTY_V_BALICKU("Došli karty v balíčcích, už nejde lízat.",16,3),
-    NEJSI_ADMIN_HRY("Toto může dělat pouze admin hry, což ty nejsi.",17,1),
-    PLNY_SERVER("Server je bohužel plný.",18,1),
-    VYHOZEN_ZE_HRY("Byl jsi vyhozen ze hry.",19,1)
+    NEPRIPOJEN_KE_HRE("$error.nepripojen_ke_hre",1,2),
+    KARTA_NEEXISTUJE("$error.karta_neexistuje",2,2),
+    KARTA_NENI_HRATELNA("$error.karta_neni_hratelna",3,1),
+    KARTA_NEJDE_ZAHRAT("$error.karta_nejde_zahrat",4,3),
+    HRA_NEEXISTUJE("$error.hra_neexistuje",5,1),
+    POSTAVA_NENI_NA_VYBER("$error.postava_neni_na_vyber",6,1),
+    NEJSI_NA_TAHU("$error.nejsi_na_tahu",7,3),
+    NEMUZES_UKONCIT_TAH("$error.nemuzes_ukoncit_tah",8,3),
+    KARTA_NEJDE_SPALIT("$error.karta_nejde_spalit",9,1),
+    NENI_VYLOZITELNA("$error.neni_vylozitelna",10,1),
+    KARTU_NEJDE_VYLOZIT("$error.kartu_nejde_vylozit",11,3),
+    CHYBA_PROTOKOLU("$error.chyba_protokolu",12,1),
+    NEJDE_SI_LIZNOUT("$error.nejde_si_liznout",13,3),
+    SPATNE_HESLO("$error.spatne_heslo",14,1),
+    UZ_PRIPOJEN("$error.uz_pripojen",15,2),
+    DOSLI_KARTY_V_BALICKU("$error.dosli_karty_v_balicku",16,3),
+    NEJSI_ADMIN_HRY("$error.nejsi_admin_hry",17,1),
+    PLNY_SERVER("$error.plny_server",18,1),
+    VYHOZEN_ZE_HRY("$error.vyhozen_ze_hry",19,1)
     
     ;
     private final String zprava;

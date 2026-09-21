@@ -1,0 +1,9 @@
+{
+  "uno": {
+    "select_color": "Choose a color",
+    "color_red": "Red",
+    "color_blue": "Blue",
+    "color_green": "Green",
+    "color_yellow": "Yellow"
+  }
+}
