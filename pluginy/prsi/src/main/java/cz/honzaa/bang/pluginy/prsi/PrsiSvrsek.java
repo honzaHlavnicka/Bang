@@ -18,14 +18,21 @@ import java.util.ArrayList;
  */
 public class PrsiSvrsek extends PrsiKarta{
     private PrsiBarva poslendniBarva;
+    private boolean cekaNaBarvu = false;
+    
     public PrsiSvrsek(Hra hra, Balicek<Karta> balicek, PrsiBarva b, PrsiHodnota h) {
         super(hra, balicek, b, h);
         poslendniBarva = null;
     }
 
+    public boolean isCekaNaBarvu() {
+        return cekaNaBarvu;
+    }
+
     @Override
     public boolean odehrat(Hrac kym) {
         poslendniBarva = null;
+        cekaNaBarvu = true;
             // Zobrazit stavovou zprávu že hráč vybírá barvu
             hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " vybírá barvu...");
             
@@ -54,10 +61,14 @@ public class PrsiSvrsek extends PrsiKarta{
                         poslendniBarva = PrsiBarva.CERVENE; // Výchozí barva při chybě
                         break;
                 }
+                cekaNaBarvu = false;
                 // Zobrazit informaci o vybrané barvě
                 hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " si vybral barvu: " + poslendniBarva.getNazev());
                 // Dodatečná zpráva pro plugin - zvláštní oznámení
                 hra.getKomunikator().posliRychleOznameniVsem(String.valueOf(poslendniBarva.getNazev()), kym);
+                
+                // Nyní předáme tah dalšímu hráči
+                hra.getSpravceTahu().dalsiHracSUpozornenim();
 
             });//toto nemůže blokovat thred!
             return true;
@@ -65,7 +76,7 @@ public class PrsiSvrsek extends PrsiKarta{
 
     @Override
     public PrsiBarva getBarva() {
-        return poslendniBarva;
+        return poslendniBarva != null ? poslendniBarva : super.getBarva();
     }
     
     }

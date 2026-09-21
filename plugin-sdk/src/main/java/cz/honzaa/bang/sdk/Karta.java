@@ -45,15 +45,68 @@ public abstract class Karta{
     }
     
     /**
+     * Escapuje text pro bezpečné vložení do JSONu (ošetření uvozovek, zpětných lomítek a řídicích znaků).
+     * Znaky jako < a > zůstávají zachovány.
+     * @param text Vstupní text
+     * @return Text bezpečný pro JSON hodnotu
+     */
+    @PovolenePluginu
+    public static String escapeJson(String text) {
+        if (text == null) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder(text.length() + 16);
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            switch (c) {
+                case '"':
+                    sb.append("\\\"");
+                    break;
+                case '\\':
+                    sb.append("\\\\");
+                    break;
+                case '\b':
+                    sb.append("\\b");
+                    break;
+                case '\f':
+                    sb.append("\\f");
+                    break;
+                case '\n':
+                    sb.append("\\n");
+                    break;
+                case '\r':
+                    sb.append("\\r");
+                    break;
+                case '\t':
+                    sb.append("\\t");
+                    break;
+                default:
+                    if (c < 32 || c == 127) {
+                        String hex = Integer.toHexString(c);
+                        sb.append("\\u");
+                        for (int k = 0; k < 4 - hex.length(); k++) {
+                            sb.append('0');
+                        }
+                        sb.append(hex);
+                    } else {
+                        sb.append(c);
+                    }
+                    break;
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
      * Vrací informace o kratě ve formátu json
      * @return json ve formátu: novaKarta:{"jmeno":jmeno,"obrazek":obrazek,"id":id}
      */
     @Deprecated
     public final String toJSONold(){
         StringBuilder sb = new StringBuilder("novaKarta:{\"jmeno\":\"");
-        sb.append(this.getJmeno());
+        sb.append(escapeJson(this.getJmeno()));
         sb.append("\",\"obrazek\":\"");
-        sb.append(this.getObrazek());
+        sb.append(escapeJson(this.getObrazek()));
         sb.append("\",\"id\":");
         sb.append(id);
         sb.append("}");
@@ -69,9 +122,9 @@ public abstract class Karta{
     @PovolenePluginu
     public final String toJSON() {
         StringBuilder sb = new StringBuilder("{\"jmeno\":\"");
-        sb.append(this.getJmeno());
+        sb.append(escapeJson(this.getJmeno()));
         sb.append("\",\"obrazek\":\"");
-        sb.append(this.getObrazek());
+        sb.append(escapeJson(this.getObrazek()));
         sb.append("\",\"id\":");
         sb.append(id);
         sb.append(",\"vylozitelna\":");

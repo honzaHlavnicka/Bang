@@ -34,7 +34,13 @@ public class PravidlaPrsi implements HerniPravidla{
 
     @Override
     public void poOdehrani(Hrac kym) {
-        hra.getSpravceTahu().dalsiHracSUpozornenim();
+        Karta vrchni = hra.getOdhazovaciBalicek().nahledni();
+        if (vrchni instanceof PrsiSvrsek && ((PrsiSvrsek) vrchni).isCekaNaBarvu()) {
+            // Hráč zahrál svrška a vybírá barvu. Tah posune on sám z callbacku.
+        } else {
+            hra.getSpravceTahu().dalsiHracSUpozornenim();
+        }
+
         if(kym.getKarty().isEmpty()){
             // Hráč skončil - přidej ho do pořadí
             poradiVyher.add(kym);
@@ -60,6 +66,11 @@ public class PravidlaPrsi implements HerniPravidla{
 
     @Override
     public boolean hracChceLiznout(Hrac kdo) {
+        Karta vrchni = hra.getOdhazovaciBalicek().nahledni();
+        if (vrchni instanceof PrsiSvrsek && ((PrsiSvrsek) vrchni).isCekaNaBarvu()) {
+            return false; // Nikdo nemůže lízat, dokud se nevybere barva
+        }
+        
         System.out.println("někdo chce lízat. pocetKaretNaLiznuti="+pocetKaretNaLiznuti);
         if(kdo.jeNaTahu()){
             if(pocetKaretNaLiznuti != 0){
@@ -129,6 +140,10 @@ public class PravidlaPrsi implements HerniPravidla{
 
     @Override
     public boolean muzeZahrat(Karta co, Hrac kdo) {
+        Karta vrchni = hra.getOdhazovaciBalicek().nahledni();
+        if (vrchni instanceof PrsiSvrsek && ((PrsiSvrsek) vrchni).isCekaNaBarvu()) {
+            return false; // Nikdo nemůže hrát, dokud se nevybere barva
+        }
         
         //Pokud se má lízat na sedmičku, tak se nemůže hrát nic jiného.
         if(pocetKaretNaLiznuti <= 0){

@@ -96,7 +96,8 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
                 nactiHru(conn);
             }
             if(message.startsWith("chat:")){
-                posliVsem(message + " [od: "+hrac.getJmeno()+"]");
+                String text = message.replace("chat:", "").replace("\n", " ").replace("\r", " ");
+                posliVsem("chat:" + text + " [od: "+hrac.getJmeno()+"]");
             }
             if (message.startsWith("vyhodHrace:")) {
                 if (!hrac.equals(getAdmin())) {
@@ -462,7 +463,8 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
     @Override
     @PovolenePluginu
     public void posliStavovouZpravu(String zprava) {
-        posliVsem("stavHry:" + zprava);
+        if (zprava == null) zprava = "";
+        posliVsem("stavHry:" + zprava.replace("\n", " ").replace("\r", ""));
     }
     
     // ===== IMPLEMENTACE METOD AKCÍ =====
@@ -548,13 +550,15 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
     @Override
     @PovolenePluginu
     public void posliRychleOznameniVsem(String oznameni, Hrac vyjimka) {
-        posliVsem("rychleOznameni:" + oznameni, vyjimka);
+        if (oznameni == null) oznameni = "";
+        posliVsem("rychleOznameni:" + oznameni.replace("\n", " ").replace("\r", ""), vyjimka);
     }
     
     @Override
     @PovolenePluginu
     public void posliRychleOznameni(String oznameni, Hrac komu) {
-        posli(komu,"rychleOznameni:" + oznameni);
+        if (oznameni == null) oznameni = "";
+        posli(komu, "rychleOznameni:" + oznameni.replace("\n", " ").replace("\r", ""));
     }
 
     @Override
@@ -566,7 +570,8 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
     @Override
     @PovolenePluginu
     public void posliZadniObrazekLizacihoBalicku(String obrazek){
-        posliVsem("obrazekDobiracihoBalicku:"+obrazek);
+        if (obrazek == null) obrazek = "";
+        posliVsem("obrazekDobiracihoBalicku:" + obrazek.replace("\n", "").replace("\r", ""));
     }
 
     
@@ -642,6 +647,7 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
         json.put("notClosable", !closable);
+        json.put("nadpis", nadpis);
         JSONArray akce = new JSONArray();
         for (int i = 0; i < moznosti.size(); i++) {
             JSONObject akceObj = new JSONObject();
@@ -1055,8 +1061,8 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
         kartaObj.put("id", karta.getId());
         kartaObj.put("nazev", karta.getJmeno());
         kartaObj.put("obrazek", karta.getObrazek());
-        kartaObj.put("zadniObrazek",karta.getZadniObrazek());
-        kartaObj.put("jeHratelna",karta instanceof HratelnaKarta);
+        kartaObj.put("zadniObrazek", karta.getZadniObrazek());
+        kartaObj.put("jeHratelna", karta instanceof HratelnaKarta);
         kartaObj.put("jeVylozitelna", karta instanceof VylozitelnaKarta);
         kartaObj.put("jeEfekt", karta instanceof Efekt);
         return kartaObj;

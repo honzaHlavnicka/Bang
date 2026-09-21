@@ -37,8 +37,9 @@ public class PostHogTracker {
                     .build();
             posthog = PostHog.with(config);
             logger.info("PostHog tracker úspěšně inicializován s hostem: {}", host);
-            // Zaznamenání spuštění serveru
-            posthog.capture("server", "server_started");
+            PostHogCaptureOptions.Builder startBuilder = PostHogCaptureOptions.builder();
+            startBuilder.property("$geoip_disable", true);
+            posthog.capture("server", "server_started", startBuilder.build());
         } catch (Exception e) {
             logger.error("Chyba při inicializaci PostHog trackeru: {}", e.getMessage(), e);
         }
@@ -49,10 +50,14 @@ public class PostHogTracker {
         
         try {
             PostHogCaptureOptions.Builder builder = PostHogCaptureOptions.builder();
+            builder.property("$geoip_disable", true);
             builder.property("component", component);
             builder.property("message", message);
             
             if (throwable != null) {
+                // PostHog Error Tracking expects type at the top level
+                builder.property("type", throwable.getClass().getName());
+                
                 // PostHog Error Tracking očekává pole $exception_list
                 List<Map<String, Object>> exceptionList = new ArrayList<>();
                 Map<String, Object> exceptionObj = new HashMap<>();
@@ -100,6 +105,7 @@ public class PostHogTracker {
         try {
             String id = (distinctId != null && !distinctId.isEmpty()) ? distinctId : "server";
             PostHogCaptureOptions.Builder builder = PostHogCaptureOptions.builder();
+            builder.property("$geoip_disable", true);
             if (properties != null) {
                 for (Map.Entry<String, Object> entry : properties.entrySet()) {
                     builder.property(entry.getKey(), entry.getValue());

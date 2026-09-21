@@ -360,6 +360,9 @@ public class HraImp implements cz.honzaa.bang.sdk.Hra{
     @Override
     @PovolenePluginu
     public List<Hrac> getHrajiciHraci() {
+        if (spravceTahu == null) {
+            return new java.util.ArrayList<>();
+        }
         return spravceTahu.getHrajiciHraci();
     }
 

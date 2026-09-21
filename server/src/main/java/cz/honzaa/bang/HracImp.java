@@ -219,6 +219,11 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
     @Override
     @PovolenePluginu
     public void setJmeno(String jmeno) {
+        if (jmeno == null) {
+            jmeno = "";
+        }
+        // Nahradit čárky a nové řádky, aby se nerozbil protokol v 'noveJmeno:id,jmeno'
+        jmeno = jmeno.replace(",", " ").replace("\n", " ").replace("\r", "").trim();
         this.jmeno = jmeno;
         hra.getKomunikator().posliZmenuJmena(this);
     }
@@ -725,7 +730,7 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
         StringBuilder sb = new StringBuilder("{\"id\":");
         sb.append(id);
         sb.append(", \"jmeno\":\"");
-        sb.append(jmeno);
+        sb.append(Karta.escapeJson(jmeno));
         sb.append("\",\"zivoty\":");
         sb.append(zivoty);
         sb.append(",\"pocetKaret\":");
@@ -748,6 +753,17 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
         }
         sb.append(",\"isOnline\":");
         sb.append(isOnline);
+
+        sb.append(",\"vylozeneKarty\":[");
+        boolean prvniKarta = true;
+        for (Karta k : vylozeneKarty) {
+            if (!prvniKarta) {
+                sb.append(',');
+            }
+            prvniKarta = false;
+            sb.append(k.toJSON());
+        }
+        sb.append(']');
 
         sb.append('}');
         return sb.toString();

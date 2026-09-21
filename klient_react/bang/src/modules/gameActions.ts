@@ -17,6 +17,7 @@ type ServerPlayer = {
     postava?: string;
     isAdmin?: boolean;
     isOnline?: boolean;
+    vylozeneKarty?: ServerCard[];
 };
 
 type ServerCard = { obrazek: string; id: number; jmeno: string; hratelna: boolean; vylozitelna: boolean };
@@ -101,19 +102,37 @@ export function handleGameMessage(
         case "hraci": {
             try {
                 const json = JSON.parse(payload) as ServerPlayer[];
-                const mappedPlayers: Player[] = json.map((player) => ({
-                    id: player.id,
-                    name: player.jmeno,
-                    role: player.role,
-                    health: player.zivoty,
-                    cardsInHand: player.pocetKaret ?? 0,
-                    character: player.postava ?? "",
-                    isCurrentTurn: false,
-                    inPlayCards: [],
-                    isAdmin: player.isAdmin ?? false,
-                    isOnline: player.isOnline ?? true,
-                }));
                 setGameState(prev => {
+                    const mappedPlayers: Player[] = json.map((player) => {
+                        const existingPlayer = prev.players?.find(p => p.id === player.id);
+                        
+                        let inPlayCards: CardType[] = [];
+                        if (player.vylozeneKarty && Array.isArray(player.vylozeneKarty)) {
+                            inPlayCards = player.vylozeneKarty.map(k => ({
+                                id: k.id,
+                                image: k.obrazek,
+                                name: k.jmeno,
+                                isPlayable: k.hratelna,
+                                isPutInPlayable: k.vylozitelna
+                            }));
+                        } else if (existingPlayer?.inPlayCards) {
+                            inPlayCards = existingPlayer.inPlayCards;
+                        }
+
+                        return {
+                            id: player.id,
+                            name: player.jmeno,
+                            role: player.role ?? existingPlayer?.role,
+                            health: player.zivoty,
+                            cardsInHand: player.pocetKaret ?? 0,
+                            character: player.postava ?? existingPlayer?.character ?? "",
+                            isCurrentTurn: existingPlayer ? existingPlayer.isCurrentTurn : (prev.turnPlayerId === player.id),
+                            inPlayCards: inPlayCards,
+                            isAdmin: player.isAdmin ?? false,
+                            isOnline: player.isOnline ?? true,
+                        };
+                    });
+
                     const myInfo = mappedPlayers.find(p => p.id === prev.playerId);
                     return {
                         ...prev,
@@ -121,7 +140,8 @@ export function handleGameMessage(
                         isAdmin: myInfo ? (myInfo.isAdmin ?? false) : prev.isAdmin,
                         character: myInfo ? (myInfo.character ?? prev.character) : prev.character,
                         name: myInfo ? (myInfo.name ?? prev.name) : prev.name,
-                        health: myInfo ? (myInfo.health ?? prev.health) : prev.health
+                        health: myInfo ? (myInfo.health ?? prev.health) : prev.health,
+                        inPlayCards: (myInfo?.inPlayCards && myInfo.inPlayCards.length > 0) ? myInfo.inPlayCards : prev.inPlayCards
                     };
                 });
                 console.log(json);
@@ -134,23 +154,42 @@ export function handleGameMessage(
         case "novyHrac": {
             try {
                 const json = JSON.parse(payload) as ServerPlayer;
-                const newPlayer: Player = {
-                    id: json.id,
-                    name: json.jmeno,
-                    role: json.role,
-                    health: json.zivoty,
-                    cardsInHand: json.pocetKaret ?? 0,
-                    character: json.postava ?? "",
-                    isCurrentTurn: false,
-                    inPlayCards: [],
-                    isAdmin: json.isAdmin ?? false,
-                    isOnline: json.isOnline ?? true,
-                };
                 setGameState(prev => {
+                    const existingPlayer = prev.players?.find(p => p.id === json.id);
+                    let inPlayCards: CardType[] = [];
+                    if (json.vylozeneKarty && Array.isArray(json.vylozeneKarty)) {
+                        inPlayCards = json.vylozeneKarty.map(k => ({
+                            id: k.id,
+                            image: k.obrazek,
+                            name: k.jmeno,
+                            isPlayable: k.hratelna,
+                            isPutInPlayable: k.vylozitelna
+                        }));
+                    } else if (existingPlayer?.inPlayCards) {
+                        inPlayCards = existingPlayer.inPlayCards;
+                    }
+
+                    const newPlayer: Player = {
+                        id: json.id,
+                        name: json.jmeno,
+                        role: json.role ?? existingPlayer?.role,
+                        health: json.zivoty,
+                        cardsInHand: json.pocetKaret ?? 0,
+                        character: json.postava ?? existingPlayer?.character ?? "",
+                        isCurrentTurn: existingPlayer ? existingPlayer.isCurrentTurn : (prev.turnPlayerId === json.id),
+                        inPlayCards: inPlayCards,
+                        isAdmin: json.isAdmin ?? false,
+                        isOnline: json.isOnline ?? true,
+                    };
+
                     const isMe = prev.playerId === json.id;
+                    const updatedPlayers = prev.players
+                        ? (existingPlayer ? prev.players.map(p => p.id === json.id ? newPlayer : p) : [...prev.players, newPlayer])
+                        : [newPlayer];
+
                     return {
                         ...prev,
-                        players: prev.players ? [...prev.players, newPlayer] : [newPlayer],
+                        players: updatedPlayers,
                         isAdmin: isMe ? (json.isAdmin ?? false) : prev.isAdmin,
                         character: isMe ? (json.postava ?? prev.character) : prev.character,
                         name: isMe ? (json.jmeno ?? prev.name) : prev.name,
@@ -287,20 +326,28 @@ export function handleGameMessage(
             break;        
         case "spalenaVylozena":
             //payload: cardId,playerId
-            setGameState(prev=>{
+            setGameState(prev => {
                 const parts = payload.split(",");
                 const cardId = parseInt(parts[0] ?? "");
                 const playerId = parts[1] ?? "";
                 const isMe = String(prev.playerId ?? "") === playerId;
-                const nextDiscard = [...prev.discardPile, prev.inPlayCards?.find(c=>c.id === cardId)?.image ?? ""];
 
-                if(isMe){
+                let cardImage: string | undefined;
+                if (isMe) {
+                    cardImage = prev.inPlayCards?.find(c => c.id === cardId)?.image;
+                } else {
+                    const targetPlayer = prev.players?.find(p => String(p.id) === playerId);
+                    cardImage = targetPlayer?.inPlayCards?.find(c => c.id === cardId)?.image;
+                }
+                const nextDiscard = cardImage ? [...prev.discardPile, cardImage] : prev.discardPile;
+
+                if (isMe) {
                     return {
                         ...prev,
-                        inPlayCards: prev.inPlayCards?.filter(c=>c.id !== cardId) ?? [],
+                        inPlayCards: prev.inPlayCards?.filter(c => c.id !== cardId) ?? [],
                         discardPile: nextDiscard
-                    }
-                }else{
+                    };
+                } else {
                     const updatedPlayers = prev.players
                         ? prev.players.map(p => {
                             if (String(p.id) === playerId) {
@@ -314,11 +361,11 @@ export function handleGameMessage(
                         ...prev,
                         players: updatedPlayers,
                         discardPile: nextDiscard
-                    }
+                    };
                 }
             });
 
-             break;
+            break;
         case "stavHry": {
             // Payload obsahuje text, který se má zobrazit v centru obrazovky
             setGameState(prev => ({ ...prev, gameStateMessege: payload }));
@@ -515,14 +562,21 @@ export function handleGameMessage(
                 // Přidání karty na stůl před hráče, který je cíl (predKoho)
                 if (statePlayerId !== null && predKoho === statePlayerId) {
                     // Hráč to hraje sám před sebe, nebo na něj
-                    nextState.inPlayCards = [...(nextState.inPlayCards ?? []), card];
+                    const existing = nextState.inPlayCards ?? [];
+                    if (!existing.some(c => c.id === card.id)) {
+                        nextState.inPlayCards = [...existing, card];
+                    }
                 } else {
                     // vykládá se před někoho jiného
-                    nextState.players = (nextState.players ?? []).map((p) =>
-                        p.id === predKoho
-                            ? { ...p, inPlayCards: [...(p.inPlayCards ?? []), card] }
-                            : p
-                    );
+                    nextState.players = (nextState.players ?? []).map((p) => {
+                        if (p.id === predKoho) {
+                            const existing = p.inPlayCards ?? [];
+                            if (!existing.some(c => c.id === card.id)) {
+                                return { ...p, inPlayCards: [...existing, card] };
+                            }
+                        }
+                        return p;
+                    });
                 }
 
                 return nextState;

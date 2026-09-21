@@ -63,7 +63,8 @@ public class PrsiKarta extends Karta implements HratelnaKarta{
         Karta predchoziKarta = hra.getOdhazovaciBalicek().nahledni();
         if (predchoziKarta instanceof PrsiKarta ) {
             PrsiKarta prsiKarta = (PrsiKarta) predchoziKarta;
-            if (prsiKarta.getBarva().equals(barva) || prsiKarta.getHodnota().equals(hodnota)) {
+            if ((prsiKarta.getBarva() != null && prsiKarta.getBarva().equals(barva)) || 
+                (prsiKarta.getHodnota() != null && prsiKarta.getHodnota().equals(hodnota))) {
                 return true;
             } else {
                 return false;
