@@ -5,9 +5,14 @@
     <artifactId>prsi</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <parent>
+        <groupId>cz.honzaa</groupId>
+        <artifactId>bang</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <exec.mainClass>cz.honzaa.bang.pluginy.prsi.Prsi</exec.mainClass>
     </properties>
     <dependencies>
@@ -16,11 +21,29 @@
             <groupId>cz.honzaa.bang</groupId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.5.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-    <parent>
-        <groupId>cz.honzaa</groupId>
-        <artifactId>bang</artifactId>
-        <version>1.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
-    </parent>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <argLine>-Dnet.bytebuddy.experimental=true</argLine>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
