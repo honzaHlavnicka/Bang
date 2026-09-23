@@ -666,7 +666,9 @@ export function handleGameMessage(
             break;
         }
         case "konecHry":{
-            posthog.capture('game_ended');
+            if (!stateRef.current?.gameEnded) {
+                posthog.capture('game_ended');
+            }
             setGameState(prev=>({...prev, gameEnded:true}));
             ['cs', 'en', i18n.language].filter(Boolean).forEach(lng => {
                 i18n.removeResourceBundle(lng, 'plugin');

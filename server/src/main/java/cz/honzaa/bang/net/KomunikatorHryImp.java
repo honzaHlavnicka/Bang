@@ -21,6 +21,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.java_websocket.WebSocket;
 import org.json.JSONArray;
@@ -51,6 +52,7 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
     // Timeout pro smazání neaktivní hry
     private Timer hraCleupTimer = null;
     private TimerTask hraCleupTask = null;
+    private final AtomicBoolean konecHryOdeslan = new AtomicBoolean(false);
     
     
     private static final Logger logger = LoggerFactory.getLogger(KomunikatorHryImp.class);
@@ -582,7 +584,9 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
     @Override
     @PovolenePluginu
     public void posliKonecHry() {
-        posliVsem("konecHry");
+        if (konecHryOdeslan.compareAndSet(false, true)) {
+            posliVsem("konecHry");
+        }
     }
     
     @Override

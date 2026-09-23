@@ -68,6 +68,7 @@ public class PravidlaBangu implements HerniPravidla{
     private final boolean PIVO_FUNGUJE_VZDY;
     private final boolean JE_OMEZENY_POCET_KARET;
     private boolean uzZahralBang = false;
+    private boolean hraSkoncila = false;
 
 
 
@@ -185,7 +186,8 @@ public class PravidlaBangu implements HerniPravidla{
             poradi[2] = hra.getHraci().stream().filter(h -> h.getRole() == Role.BANDITA).toArray(Hrac[]::new);
         }
 
-        if (poradi != null) {
+        if (!hraSkoncila && poradi != null) {
+            hraSkoncila = true;
             // OPRAVA: Vyčistíme pole od prázdných rolí (např. když chybí odpadlík nebo pomocník)
             Hrac[][] vycistenePoradi = Arrays.stream(poradi)
                     .filter(skupina -> skupina.length > 0)

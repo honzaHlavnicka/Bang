@@ -25,6 +25,7 @@ public class PravidlaPrsi implements HerniPravidla{
     private final Hra hra;
     private int pocetKaretNaLiznuti;
     private List<Hrac> poradiVyher = new ArrayList<>();  // Pořadí končících hráčů
+    private boolean hraSkoncila = false;
 
     public PravidlaPrsi(Hra hra) {
         this.hra = hra;
@@ -168,6 +169,10 @@ public class PravidlaPrsi implements HerniPravidla{
      * Vytvoří 2D pole kde každá řada je jedno umístění a obsahuje hráče na tom místě. 
      */
     private void ukoncitHru(){
+        if (hraSkoncila) {
+            return;
+        }
+        hraSkoncila = true;
         List<Hrac> zbyvajici = new ArrayList<>();
         for(Hrac hrac : hra.getHraci()){
             if(!poradiVyher.contains(hrac)){

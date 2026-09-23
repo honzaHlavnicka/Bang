@@ -25,6 +25,7 @@ import java.util.List;
 public class PravidlaUNO implements HerniPravidla{
     private final Hra hra;
     private List<Hrac> poradiVyher = new ArrayList<>();  // Pořadí končících hráčů
+    private boolean hraSkoncila = false;
 
     public PravidlaUNO( Hra hra) {
         this.hra = hra;
@@ -129,6 +130,10 @@ public class PravidlaUNO implements HerniPravidla{
      * Vytvoří 2D pole kde každá řada je jedno umístění a obsahuje hráče na tom místě.
      */
     private void ukoncitHru(){
+        if (hraSkoncila) {
+            return;
+        }
+        hraSkoncila = true;
         // Zbývá jeden hráč - poslední (vítěz)
         List<Hrac> zbyvajici = new ArrayList<>();
         for(Hrac hrac : hra.getHraci()){
