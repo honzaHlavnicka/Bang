@@ -24,6 +24,12 @@ public enum Role implements cz.honzaa.bang.sdk.Role {
      */
     public static List<Role> poleRoliBangu(int kolik){
         List<Role> role = new ArrayList<>(kolik);
+        if (kolik == 2) {
+            role.add(Role.ODPADLIK);
+            role.add(Role.ODPADLIK);
+            System.out.println(role.toString());
+            return role;
+        }
         for (int i = 0; i < kolik; i++) {
             role.add(poradiZiskavaniRoli[i]);
         }

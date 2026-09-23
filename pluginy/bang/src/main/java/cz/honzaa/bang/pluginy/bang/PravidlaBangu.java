@@ -159,6 +159,8 @@ public class PravidlaBangu implements HerniPravidla{
             hra.getSpravceTahu().dalsiHracSUpozornenim();
         }
 
+        boolean existujeSerif = hra.getHraci().stream().anyMatch(h -> h.getRole() == Role.SERIF);
+        boolean existujeBandita = hra.getHraci().stream().anyMatch(h -> h.getRole() == Role.BANDITA);
         long pocetZivychBanditu = hra.getHraci().stream().filter(h -> h.getRole() == Role.BANDITA && h.jeZivy()).count();
         long pocetZivychOdpadliku = hra.getHraci().stream().filter(h -> h.getRole() == Role.ODPADLIK && h.jeZivy()).count();
         long celkemZivych = hra.getHraci().stream().filter(Hrac::jeZivy).count();
@@ -166,12 +168,25 @@ public class PravidlaBangu implements HerniPravidla{
 
         Hrac[][] poradi = null;
 
-        if (!zivySerif) {
+        if (!existujeSerif && !existujeBandita) {
+            // Hra bez šerifa a bandity (např. 2 odpadlíci)
+            if (celkemZivych <= 1) {
+                if (celkemZivych == 1) {
+                    poradi = new Hrac[2][];
+                    poradi[0] = hra.getHraci().stream().filter(Hrac::jeZivy).toArray(Hrac[]::new);
+                    poradi[1] = hra.getHraci().stream().filter(h -> !h.jeZivy()).toArray(Hrac[]::new);
+                } else {
+                    // Všichni zemřeli
+                    poradi = new Hrac[1][];
+                    poradi[0] = hra.getHraci().toArray(Hrac[]::new);
+                }
+            }
+        } else if (!zivySerif) {
             // Šerif zemřel
             if (celkemZivych == 1 && pocetZivychOdpadliku == 1) {
                 poradi = new Hrac[2][];
-                poradi[0] = hra.getHraci().stream().filter(h -> h.getRole() == Role.ODPADLIK).toArray(Hrac[]::new);
-                poradi[1] = hra.getHraci().stream().filter(h -> h.getRole() != Role.ODPADLIK).toArray(Hrac[]::new);
+                poradi[0] = hra.getHraci().stream().filter(h -> h.getRole() == Role.ODPADLIK && h.jeZivy()).toArray(Hrac[]::new);
+                poradi[1] = hra.getHraci().stream().filter(h -> !(h.getRole() == Role.ODPADLIK && h.jeZivy())).toArray(Hrac[]::new);
             } else {
                 poradi = new Hrac[3][];
                 poradi[0] = hra.getHraci().stream().filter(h -> h.getRole() == Role.BANDITA).toArray(Hrac[]::new);
@@ -419,7 +434,18 @@ public class PravidlaBangu implements HerniPravidla{
 
     @Override
     public void spustitPrvniTah(SpravceTahu spravceTahu) {
-        spravceTahu.dalsiHracPodleRole(Role.SERIF);
+        boolean maSerifa = hra.getHraci().stream().anyMatch(h -> h.getRole() == Role.SERIF);
+        if (maSerifa) {
+            spravceTahu.dalsiHracPodleRole(Role.SERIF);
+        } else {
+            List<Hrac> hraci = spravceTahu.getHrajiciHraci();
+            if (!hraci.isEmpty()) {
+                Hrac nahodny = hraci.get(new java.util.Random().nextInt(hraci.size()));
+                spravceTahu.dalsiHracPodlePodminky(h -> h.equals(nahodny));
+            } else {
+                spravceTahu.dalsiHracSUpozornenim();
+            }
+        }
     }
     
     /**
