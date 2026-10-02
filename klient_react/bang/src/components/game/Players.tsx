@@ -55,7 +55,7 @@ export default function Players() {
                 flexShrink: 0,
                 flexDirection: "row",
                 display: "flex",
-                justifyContent: "space-between",
+                justifyContent: ostatniHraci.length === 1 ? "center" : "space-between",
                 padding: "0",
                 margin: "0",
                 width: "100%",

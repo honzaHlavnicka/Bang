@@ -8,7 +8,7 @@ import AfterGamePage from "./pages/AfterGamePage";
 import { useTranslation } from "react-i18next";
 
 // Lazy importy těžkých stránek
-const GamePage = React.lazy(() => import('./pages/GamePage'));
+const GamePageWrapper = React.lazy(() => import('./pages/GamePageWrapper'));
 const LoginPage = React.lazy(() => import('./pages/LoginPage'));
 const BeforeGameWaiting = React.lazy(() => import('./pages/BeforeGameWaiting'));
 
@@ -37,7 +37,7 @@ function App() {
           gameState.gameEnded ? (
             <AfterGamePage />
           ) : (
-            <GamePage />
+            <GamePageWrapper />
           )
         ) : (
           <BeforeGameWaiting />

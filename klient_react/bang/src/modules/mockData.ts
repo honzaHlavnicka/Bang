@@ -328,13 +328,15 @@ export const getMockActions = (
         clickUIButton: (buttonId: number) => {
             toast.success(`Mock: Kliknuto na tlačítko ${buttonId}`);
         },
+
+        // Simulovat nahrazení hry není třeba, mnohem lepší je využít jako ukončovač hry.
         startNewGameAndDeleteThisOne: () => {
-            setGameState({
-                ...gameStateDefault,
-                allowedUIElements: ["ZIVOTY","UKONCENI_TAHU","POSTAVA","ROLE","VYLOZENE_KARTY","ODHAZOVACI_BALICEK","DOBIRACI_BALICEK"],
-                customUIButtons: []
-            });
-            toast.success("Mock: Hra smazána");
+
+            setGameState((prev) => ({
+                ...prev,
+                gameEnded: true,
+                winningPlaces: [[1], [2, 3], [4]]
+            }));
         }
     };
 

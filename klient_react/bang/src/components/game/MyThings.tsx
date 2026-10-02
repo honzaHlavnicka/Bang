@@ -151,7 +151,7 @@ export default function MyThings() {
                     {gameState.allowedUIElements.includes("ZIVOTY") ?  <Card image={`/img/velkeZivoty/${zdravy}zivoty.png`} />: null}
                 </div>
             </div>
-            <div style={{flex: 1, display: "flex", justifyContent: "center",flexDirection:(hasVerticalSpace ? "column" : "row"), zIndex:3 }}>
+            <div style={{flex: 1, display: "flex", justifyContent: "center",flexDirection:(hasVerticalSpace ? "column" : "row"), zIndex:3, alignItems: "center" }}>
                 {(gameState.allowedUIElements.includes("VYLOZENE_KARTY")) ?
                     <InPlayCards vylozeneKarty={vylozeneKarty} />
                 : null}

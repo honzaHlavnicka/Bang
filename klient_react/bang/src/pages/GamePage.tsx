@@ -32,7 +32,7 @@ export default function GamePage() {
     }
     return (
             <DndContext onDragEnd={onDragEnd}>
-                <div style={{display:"flex",flexDirection:"column",height:"100dvh"}}>
+                <div style={{display:"flex",flexDirection:"column",height:"100dvh", flex:1}}>
                     <GlobalNotifications />
                     <Players />
                     <CentralPanel />
