@@ -2,8 +2,9 @@ import { t } from "i18next";
 import css from "../../styles/loginPage.module.css";
 import DonateModal from "../DonateModal";
 import { useState } from "react";
-export default function Footer() {
 
+
+export default function Footer() {
     const [donateOpen, setDonateOpen] = useState(false);
 
     return (

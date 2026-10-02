@@ -12,6 +12,7 @@ test.describe('Bang Multiplayer E2E', () => {
 
     // Host otevře aplikaci
     await hostPage.goto('/?mock=false');
+    await hostPage.click('text=🇨🇿');
     await expect(hostPage.getByRole('button', { name: /vytvořit novou hru/i })).toBeVisible();
 
     // Host klikne na Vytvořit novou hru

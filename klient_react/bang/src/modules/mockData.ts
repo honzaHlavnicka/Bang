@@ -1,6 +1,5 @@
 import toast from "react-hot-toast";
 import type { GameStateType } from "./GameContext";
-import { gameStateDefault } from "./GameContext";
 
 // --- MOCK DATA PRO VÝVOJ BEZ SERVERU ---
 export const mockCardsPool = [

@@ -9,7 +9,6 @@ import i18n from "../../i18n";
 
 import { usePostHog } from "@posthog/react";
 import DonateModal from "../components/DonateModal";
-import Footer from "../components/web/Footer";
 
 export default function AfterGamePage(){
     const {gameState, startNewGameAndDeleteThisOne} = useGame();
