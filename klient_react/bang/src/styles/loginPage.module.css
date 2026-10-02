@@ -2,14 +2,23 @@
 .kontent {
   /* čitelné systémové písmo, dobrý řádkování, respekt k light/dark */
   
-  line-height: 1.5;
   padding: clamp(12px, 2vw, 24px); /* okraje kolem obsahu na malých i velkých displejích */
 }
 
-.kontent *, .kontent *::before, .kontent *::after { box-sizing: border-box; }
+.context *, .context *::before, .context *::after { box-sizing: border-box; }
+
+.kontent {
+  height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+}
 
 /* Téma (snadno rozšiřitelné) */
-.kontent {
+.context{
   --bg: #fcfaf2;
   --fg: #4e342e;
   --muted: #8d6e63;
@@ -18,20 +27,14 @@
   --accent-foreground: #ffffff;
   --focus: #ffb74d;
   --bgMuted: #f4ece1d0;
-  height: 100svh;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  overflow: hidden;
-  -webkit-overflow-scrolling: touch;
-  color: var(--fg);
+    color: var(--fg);
+  line-height: 1.5;
 }
 
 
-:global(.darkMode)  .kontent {
+:global(.darkMode)  .context {
     --bg: #1e1613;
-    --bgMuted: #2d1f1ad0;
+    --bgMuted: #2d251ad0;
     --fg: #efebe9;
     --muted: #a1887f;
     --border: #6d4c41;
@@ -43,7 +46,7 @@
 
 
 /* Vycentrované <main> s pevnou max. šířkou a responzivní šířkou na mobilech */
-.kontent main {
+.context main {
   width: 100%;
   margin-inline: auto;
   padding: clamp(12px, 2vw, 24px);
@@ -81,9 +84,9 @@
 }
 
 /* Form prvky – velké, pohodlné touch targety */
-.kontent input,
-.kontent select,
-.kontent textarea {
+.context input,
+.context select,
+.context textarea {
   display: block;
   width: 100%;
   max-width: 100%;
@@ -98,20 +101,20 @@
   transition: box-shadow 120ms ease, border-color 120ms ease, transform 120ms ease;
 }
 
-.kontent input::placeholder,
-.kontent textarea::placeholder { color: var(--muted); }
+.context input::placeholder,
+.context textarea::placeholder { color: var(--muted); }
 
-.kontent input:focus,
-.kontent select:focus,
-.kontent textarea:focus {
+.context input:focus,
+.context select:focus,
+.context textarea:focus {
   border-color: var(--focus);
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 30%, transparent);
 }
 
-.kontent textarea { min-height: 120px; resize: vertical; }
+.context textarea { min-height: 120px; resize: vertical; }
 
 /* Tlačítka – default a primární varianta 
-.kontent button {
+.context button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -129,49 +132,49 @@
   user-select: none;
 }*/
 
-.kontent button:hover { transform: translateY(-1px); }
-.kontent button:active { transform: translateY(0); }
+.context button:hover { transform: translateY(-1px); }
+.context button:active { transform: translateY(0); }
 
-.kontent button:focus-visible {
+.context button:focus-visible {
   outline: none;
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--focus) 30%, transparent);
   border-color: var(--focus);
 }
 
 /* Primární tlačítko */
-.kontent .btnPrimary {
+.context .btnPrimary {
   background: var(--accent);
   color: var(--accent-foreground);
   border-color: color-mix(in srgb, var(--accent) 60%, var(--border));
 }
-.kontent .btnPrimary:hover {
+.context .btnPrimary:hover {
   filter: brightness(1.05);
   transform: translateY(-1px);
 }
 
 /* Stav disabled */
-.kontent button:disabled,
-.kontent input:disabled,
-.kontent select:disabled,
-.kontent textarea:disabled {
+.context button:disabled,
+.context input:disabled,
+.context select:disabled,
+.context textarea:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 /* Skupiny polí (volitelné, pro hezké rozestupy ve formulářích) */
-.kontent .field { margin-block: 12px; }
-.kontent label {
+.context .field { margin-block: 12px; }
+.context label {
   display: inline-block;
   margin-bottom: 6px;
   font-weight: 600;
 }
 
 /* Lepší tap highlight na mobilech */
-.kontent { -webkit-tap-highlight-color: transparent; }
+.context { -webkit-tap-highlight-color: transparent; }
 
 /* Preferované omezení animací pro uživatele s omezením pohybu */
 @media (prefers-reduced-motion: reduce) {
-  .kontent *, .kontent *::before, .kontent *::after { transition: none !important; }
+  .context *, .context *::before, .context *::after { transition: none !important; }
 }
 
 .btnRight {

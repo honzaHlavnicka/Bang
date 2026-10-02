@@ -12,13 +12,13 @@
     border-radius: 12px;
 }
 :global(.darkMode) .button{
-    background-color: #037da5; 
+    background-color: #296118; 
 }
 .buttonActive{
     background-color: #5a2e00; 
 }
 :global(.darkMode) .buttonActive{
-    background-color: #025f78; 
+    background-color: #092c06; 
 }
 
 .button:disabled{

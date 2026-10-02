@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { usePostHog } from '@posthog/react';
 import config from '../config';
 import CookieBar from '../components/CookieBar';
-import DonateModal from '../components/DonateModal';
+import Footer from '../components/web/Footer';
 
 export default function LoginPage() {
     const { t , i18n} = useTranslation();
@@ -21,7 +21,6 @@ export default function LoginPage() {
     const [openCard , setOpenCard] = useState<string>("pripojeni");
     const gameToken = sessionStorage.getItem("gameToken") || localStorage.getItem("gameToken");
     const [worldQuizVisible, setWorldQuizVisible] = useState(true);
-    const [donateOpen, setDonateOpen] = useState(false);
     const [h1Title, setH1Title] = useState("");
     //const [menu, setMenu] = useState({x:0,y:0,visible:false})
     
@@ -157,7 +156,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className={css.kontent}>
+        <div className={css.kontent + " " + css.context}>
             <DarkModeSwitch  style={{position:"fixed",top:10,left:10,zIndex:1005,fontSize:"2em"}}/>
 
             <main  className={css.paddingBottom} >
@@ -298,29 +297,9 @@ export default function LoginPage() {
                     
                 </div>
                 : null}
-                
-                <footer className={css.footer}>
-                    <div className={css.footerContent}>
-                        <p dangerouslySetInnerHTML={{ __html: t("footer.copyright") }} />
-                           <nav className={css.footerNav}>
-                            <a href="/apidocs" target="_blank" rel="noopener noreferrer">{t("Dokumentace SDK")}</a>
-                            <span className={css.separator}>•</span>
-                            <a href="https://honzaa.cz" target="_blank" rel="noopener noreferrer">{t("honzaa.cz")}</a>
-                            <span className={css.separator}>•</span>
-                            <a href="https://github.com/honzaHlavnicka/Bang/blob/master/docs/tutorial/VlastniHra.md" target="_blank" rel="noopener noreferrer">{t("vytvoření pluginu")}</a>
-                            <span className={css.separator}>•</span>
-                            <a href="https://github.com/honzaHlavnicka/Bang" target="_blank" rel="noopener noreferrer">{t("GitHub")}</a>
-                            <span className={css.separator}>•</span>
-                            <a href="https://discord.gg/WYmtDmMdJS" target="_blank" rel="noopener noreferrer">{t("Discord")}</a>
-                            <span className={css.separator}>•</span>
-                            <a href="https://honzaa.itch.io/card-games" target="_blank" rel="noopener noreferrer">{t("itch.io")}</a>
-                            <span className={css.separator}>•</span>
-                            <a href="/privacy" target="_blank" rel="noopener noreferrer">{t("Podmínky a soukromí")}</a>
-                            <span className={css.separator}>•</span>
-                            {import.meta.env.VITE_DONATE_ACTIVE !== 'false' && <button onClick={() => setDonateOpen(true)} className={css.linkButton}>{t("Podpořit")}</button>}
-                        </nav>
-                    </div>
-                </footer>
+
+                <Footer />
+
             </main >
             {/*<ContextMenu x={menu.x} y={menu.y} options={[{text:"odhodit"},{text:"spalit"}]} />*/}
             <CookieBar
@@ -328,7 +307,6 @@ export default function LoginPage() {
                 onClose={() => setZobrazenaPaticka(false)}
                 onOpen={() => setZobrazenaPaticka(true)}
             />
-            <DonateModal isOpen={donateOpen} onClose={() => setDonateOpen(false)} />
         </div >
 
     );
