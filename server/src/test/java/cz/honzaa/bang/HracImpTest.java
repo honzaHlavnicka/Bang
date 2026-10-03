@@ -260,4 +260,101 @@ public class HracImpTest {
         assertTrue(json.contains("\"maximumZivotu\":5"));
         assertTrue(json.contains("\"pocetKaret\":0"));
     }
+
+    private static class TestHratelnaKarta extends Karta implements HratelnaKarta {
+        private final Runnable onOdehrat;
+
+        public TestHratelnaKarta(Runnable onOdehrat) {
+            super(null, null);
+            this.onOdehrat = onOdehrat;
+        }
+
+        @Override
+        public String getJmeno() { return "TestHratelna"; }
+        @Override
+        public String getObrazek() { return "test"; }
+
+        @Override
+        public boolean odehrat(Hrac kym) {
+            if (onOdehrat != null) {
+                onOdehrat.run();
+            }
+            return true;
+        }
+    }
+
+    private static class TestVylozitelnaKartaCustom extends Karta implements VylozitelnaKarta {
+        private final Runnable onVylozit;
+
+        public TestVylozitelnaKartaCustom(Runnable onVylozit) {
+            super(null, null);
+            this.onVylozit = onVylozit;
+        }
+
+        @Override
+        public String getJmeno() { return "TestVylozitelna"; }
+        @Override
+        public String getObrazek() { return "test"; }
+        @Override
+        public Efekt getEfekt() { return null; }
+        @Override
+        public void spalitVylozenou() {}
+
+        @Override
+        public boolean vylozit(Hrac predKoho, Hrac kym) {
+            if (onVylozit != null) {
+                onVylozit.run();
+            }
+            return true;
+        }
+    }
+
+    @Test
+    public void testOdehraniKartyVyhozeniNejdeZahratException() {
+        when(mockSpravceTahu.getNaTahu()).thenReturn(hrac);
+        when(mockPravidla.muzeZahrat(any(), eq(hrac))).thenReturn(true);
+
+        TestHratelnaKarta karta = new TestHratelnaKarta(() -> {
+            throw new NejdeZahratException("$bang.error.limit_bang");
+        });
+        hrac.getKarty().add(karta);
+
+        hrac.odehranaKarta(String.valueOf(karta.getId()));
+
+        verify(mockKomunikator).posliChybu(hrac, Chyba.KARTA_NEJDE_ZAHRAT, "$bang.error.limit_bang");
+        assertTrue(hrac.getKarty().contains(karta), "Karta musí zůstat hráči v ruce při zamítnutí");
+    }
+
+    @Test
+    public void testVylozeniKartyVyhozeniNejdeZahratException() {
+        when(mockSpravceTahu.getNaTahu()).thenReturn(hrac);
+        when(mockPravidla.muzeVylozit(eq(hrac), any())).thenReturn(true);
+        when(mockHra.getHrac(hrac.getId())).thenReturn(hrac);
+
+        TestVylozitelnaKartaCustom karta = new TestVylozitelnaKartaCustom(() -> {
+            throw new NejdeZahratException("$bang.error.jiz_vylozena_zbran");
+        });
+        hrac.getKarty().add(karta);
+
+        hrac.vylozitKartu(String.valueOf(karta.getId()), String.valueOf(hrac.getId()));
+
+        verify(mockKomunikator).posliChybu(hrac, Chyba.KARTU_NEJDE_VYLOZIT, "$bang.error.jiz_vylozena_zbran");
+        assertTrue(hrac.getKarty().contains(karta), "Karta musí zůstat v ruce");
+    }
+
+    @Test
+    public void testSpaleniKartyVyhozeniNejdeZahratException() {
+        when(mockSpravceTahu.getNaTahu()).thenReturn(hrac);
+        when(mockPravidla.muzeSpalit(any())).thenAnswer(invocation -> {
+            throw new NejdeZahratException(Chyba.KARTA_NEJDE_SPALIT, "$bang.error.nelze_spalit_dynamit");
+        });
+
+        TestHratelnaKarta karta = new TestHratelnaKarta(null);
+        hrac.getKarty().add(karta);
+
+        hrac.spalitKartu(String.valueOf(karta.getId()));
+
+        verify(mockKomunikator).posliChybu(hrac, Chyba.KARTA_NEJDE_SPALIT, "$bang.error.nelze_spalit_dynamit");
+        assertTrue(hrac.getKarty().contains(karta), "Karta nesmí být spálena při výjimce");
+    }
 }

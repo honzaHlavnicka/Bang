@@ -15,6 +15,7 @@ import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.HratelnaKarta;
 import cz.honzaa.bang.sdk.Karta;
 import cz.honzaa.bang.sdk.KomunikatorHry;
+import cz.honzaa.bang.sdk.NejdeZahratException;
 import cz.honzaa.bang.sdk.Postava;
 import java.util.ArrayList;
 import java.util.List;
@@ -345,37 +346,43 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
             if(karta.getId() == idKarty){
                 if (karta instanceof HratelnaKarta ) {
                     HratelnaKarta hratelna = (HratelnaKarta) karta;
-                    if(hra.getHerniPravidla().muzeZahrat(karta, this)){
-                        if(hratelna.odehrat(this)){ //provede efekt karty, karta zkontroluje jestli je hratelna v tomto kontextu.
+                    try {
+                        if(hra.getHerniPravidla().muzeZahrat(karta, this)){
+                            if(hratelna.odehrat(this)){ //provede efekt karty, karta zkontroluje jestli je hratelna v tomto kontextu.
 
-                            hra.getOdhazovaciBalicek().vratNahoru(karta);
-                            karty.remove(karta);
+                                hra.getOdhazovaciBalicek().vratNahoru(karta);
+                                karty.remove(karta);
 
-                            hra.getKomunikator().posliOdebraniKarty(this, karta);
-                            hra.getKomunikator().posliZmenuPoctuKaret(this);
+                                hra.getKomunikator().posliOdebraniKarty(this, karta);
+                                hra.getKomunikator().posliZmenuPoctuKaret(this);
 
-                            // Událost po odehrání karty pro všechny efekty hráče
-                            for (Hrac hrac : hra.getHraci()){
-                                for (Efekt e : new ArrayList<>(hrac.getEfekty())) {
-                                    e.poOdehraniKarty(hra, hrac, this, karta);
+                                // Událost po odehrání karty pro všechny efekty hráče
+                                for (Hrac hrac : hra.getHraci()){
+                                    for (Efekt e : new ArrayList<>(hrac.getEfekty())) {
+                                        e.poOdehraniKarty(hra, hrac, this, karta);
+                                    }
                                 }
-                            }
 
-                            // Pokud už nemá karty v ruce, vyvolej příslušnou událost
-                            if (karty.isEmpty()) {
-                                for (Efekt e : new ArrayList<>(efekty)) {
-                                    e.kdyzNemaKarty(hra, this);
+                                // Pokud už nemá karty v ruce, vyvolej příslušnou událost
+                                if (karty.isEmpty()) {
+                                    for (Efekt e : new ArrayList<>(efekty)) {
+                                        e.kdyzNemaKarty(hra, this);
+                                    }
                                 }
-                            }
 
-                            hra.getHerniPravidla().poOdehrani(this);
-                            return;
+                                hra.getHerniPravidla().poOdehrani(this);
+                                return;
+                            }else{
+                                hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_ZAHRAT);
+                                return;
+                            }
                         }else{
                             hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_ZAHRAT);
                             return;
                         }
-                    }else{
-                        hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_ZAHRAT);
+                    } catch (NejdeZahratException ex) {
+                        Chyba typChyby = ex.getChyba() != null ? ex.getChyba() : Chyba.KARTA_NEJDE_ZAHRAT;
+                        hra.getKomunikator().posliChybu(this, typChyby, ex.getMessage());
                         return;
                     }
                 } else {
@@ -409,20 +416,25 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
         }
         for (Karta karta : karty) {
             if(karta.getId() == idKarty){
-                if (hra.getHerniPravidla().muzeSpalit(karta)){
-                    karty.remove(karta);
-                    hra.getOdhazovaciBalicek().vratNahoru(karta);
-                    // Pokud po spálení nemám žádné karty, vyvolej událost
-                    if (karty.isEmpty()) {
-                        for (Efekt e : new ArrayList<>(efekty)) {
-                            e.kdyzNemaKarty(hra, this);
+                try {
+                    if (hra.getHerniPravidla().muzeSpalit(karta)){
+                        karty.remove(karta);
+                        hra.getOdhazovaciBalicek().vratNahoru(karta);
+                        // Pokud po spálení nemám žádné karty, vyvolej událost
+                        if (karty.isEmpty()) {
+                            for (Efekt e : new ArrayList<>(efekty)) {
+                                e.kdyzNemaKarty(hra, this);
+                            }
                         }
-                    }
-                    hra.getKomunikator().posliZmenuPoctuKaret(this);
-                    hra.getKomunikator().posliSpaleniKarty(this, karta);
+                        hra.getKomunikator().posliZmenuPoctuKaret(this);
+                        hra.getKomunikator().posliSpaleniKarty(this, karta);
 
-                }else{
-                    hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_SPALIT);
+                    }else{
+                        hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_SPALIT);
+                    }
+                } catch (NejdeZahratException ex) {
+                    Chyba typChyby = ex.getChyba() != null ? ex.getChyba() : Chyba.KARTA_NEJDE_SPALIT;
+                    hra.getKomunikator().posliChybu(this, typChyby, ex.getMessage());
                 }
                 return;
             }
@@ -430,20 +442,25 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
         
         for (Karta karta : vylozeneKarty) { //TODO: DRY
             if (karta.getId() == idKarty) {
-                if (hra.getHerniPravidla().muzeSpalit(karta)) {
-                    // Odebrání efektu vyložené karty z hráče
-                    Efekt e = ((VylozitelnaKarta) karta).getEfekt();
-                    if (e != null) {
-                        e.odebrani(this);
-                        efekty.remove(e);
-                    }
-                    ((VylozitelnaKarta) karta).spalitVylozenou();
-                    vylozeneKarty.remove(karta);
-                    hra.getOdhazovaciBalicek().vratNahoru(karta);
+                try {
+                    if (hra.getHerniPravidla().muzeSpalit(karta)) {
+                        // Odebrání efektu vyložené karty z hráče
+                        Efekt e = ((VylozitelnaKarta) karta).getEfekt();
+                        if (e != null) {
+                            e.odebrani(this);
+                            efekty.remove(e);
+                        }
+                        ((VylozitelnaKarta) karta).spalitVylozenou();
+                        vylozeneKarty.remove(karta);
+                        hra.getOdhazovaciBalicek().vratNahoru(karta);
 
-                    hra.getKomunikator().posliSpaleniVylozenéKarty(karta, this);
-                } else {
-                    hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_SPALIT);
+                        hra.getKomunikator().posliSpaleniVylozenéKarty(karta, this);
+                    } else {
+                        hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEJDE_SPALIT);
+                    }
+                } catch (NejdeZahratException ex) {
+                    Chyba typChyby = ex.getChyba() != null ? ex.getChyba() : Chyba.KARTA_NEJDE_SPALIT;
+                    hra.getKomunikator().posliChybu(this, typChyby, ex.getMessage());
                 }
                 return;
             }
@@ -473,26 +490,32 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
                     VylozitelnaKarta vylozena = (VylozitelnaKarta) karta;
                      Hrac predKoho = (HracImp) hra.getHrac(idPredKoho); 
 
-                     if(hra.getHerniPravidla().muzeVylozit(this,vylozena)){
-                         if(vylozena.vylozit(predKoho, this)){ // Správné pořadí: (ten kdo má na stole, ten kdo vylozuje)
-                            karty.remove(karta);
-                            predKoho.pridejEfekt(vylozena.getEfekt());
-                            predKoho.getVylozeneKarty().add(karta);
-                            // pokud po vyložení nezůstaly v ruce žádné karty, upozorni efekty
-                            if (karty.isEmpty()) {
-                                for (Efekt e : new ArrayList<>(efekty)) {
-                                    e.kdyzNemaKarty(hra, this);
+                     try {
+                         if(hra.getHerniPravidla().muzeVylozit(this,vylozena)){
+                             if(vylozena.vylozit(predKoho, this)){ // Správné pořadí: (ten kdo má na stole, ten kdo vylozuje)
+                                karty.remove(karta);
+                                predKoho.pridejEfekt(vylozena.getEfekt());
+                                predKoho.getVylozeneKarty().add(karta);
+                                // pokud po vyložení nezůstaly v ruce žádné karty, upozorni efekty
+                                if (karty.isEmpty()) {
+                                    for (Efekt e : new ArrayList<>(efekty)) {
+                                        e.kdyzNemaKarty(hra, this);
+                                    }
                                 }
+                                hra.getKomunikator().posliVylozeniKarty(this, predKoho, karta);
+                                return;
+                            }else{
+                                hra.getKomunikator().posliChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);
+                                return;
                             }
-                            hra.getKomunikator().posliVylozeniKarty(this, predKoho, karta);
-                            return;
-                        }else{
-                            hra.getKomunikator().posliChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);
-                            return;
-                        }
-                     }else{
-                            hra.getKomunikator().posliChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);
-                            return;
+                         }else{
+                                hra.getKomunikator().posliChybu(this, Chyba.KARTU_NEJDE_VYLOZIT);
+                                return;
+                         }
+                     } catch (NejdeZahratException ex) {
+                         Chyba typChyby = ex.getChyba() != null ? ex.getChyba() : Chyba.KARTU_NEJDE_VYLOZIT;
+                         hra.getKomunikator().posliChybu(this, typChyby, ex.getMessage());
+                         return;
                      }
                     
                 }else{
