@@ -44,9 +44,24 @@ public class KitCarlson implements Postava, LizaciPostava{
 
     @Override
     public void lizniNaZacatkuTahu(Hrac komu, Hra hra) {
-        List<Karta> vytazene = hra.getBalicek().lizni(3);
+        List<Karta> vytazene = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Karta k = hra.getBalicek().lizni();
+            if (k == null && !hra.getOdhazovaciBalicek().jePrazdny()) {
+                hra.prohodBalicky();
+                k = hra.getBalicek().lizni();
+            }
+            if (k != null) {
+                vytazene.add(k);
+            }
+        }
 
-        hra.getKomunikator().pozadejOKarty(komu, vytazene, "Jaké dvě si lízneš?", 2, 2, false).thenAccept(ids -> {
+        if (vytazene.isEmpty()) {
+            return;
+        }
+
+        int pocetVyberu = Math.min(2, vytazene.size());
+        hra.getKomunikator().pozadejOKarty(komu, vytazene, "Jaké dvě si lízneš?", pocetVyberu, pocetVyberu, false).thenAccept(ids -> {
             List<Karta> proHrace = new ArrayList<>();
             List<Karta> zpet = new ArrayList<>(vytazene); 
 
@@ -62,7 +77,7 @@ public class KitCarlson implements Postava, LizaciPostava{
                             .filter(k -> parsedIds.contains(k.getId()))
                             .collect(Collectors.toList());
 
-                    if (vybrane.size() == 2) {
+                    if (vybrane.size() == pocetVyberu) {
                         proHrace.addAll(vybrane);
                         zpet.removeAll(vybrane); 
                     } else {
@@ -75,7 +90,7 @@ public class KitCarlson implements Postava, LizaciPostava{
 
             //Pokud je proHrace prázdné (chyba, timeout, špatné ID), vnutí mu první 2
             if (proHrace.isEmpty()) {
-                proHrace.addAll(vytazene.subList(0, Math.min(2, vytazene.size())));
+                proHrace.addAll(vytazene.subList(0, Math.min(pocetVyberu, vytazene.size())));
                 zpet.removeAll(proHrace);
             }
 

@@ -82,11 +82,10 @@ public class Vezeni extends Karta implements VylozitelnaKarta, Efekt{
             hrac.lizni();
             hrac.lizni();
         }else{
-            hra.getSpravceTahu().dalsiHracSUpozornenim();
             hrac.odeberVylozenouKartu(this);
             hra.getKomunikator().posliSpaleniVylozenéKarty(this, hrac);
             hra.getOdhazovaciBalicek().vratNahoru(this);
-
+            hra.getSpravceTahu().dalsiHracSUpozornenim();
         }
     }
 

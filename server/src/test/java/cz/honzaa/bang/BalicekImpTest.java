@@ -30,4 +30,12 @@ public class BalicekImpTest {
         String liznuta = balicek.lizni();
         assertNull(liznuta, "Při líznutí z prázdného balíčku by měla metoda vrátit null.");
     }
+
+    @Test
+    public void testNullHandling() {
+        assertDoesNotThrow(() -> new BalicekImp<String>(null));
+        assertDoesNotThrow(() -> balicek.vratNahoru(null));
+        assertDoesNotThrow(() -> balicek.vratNaSpodek(null));
+        assertEquals(0, balicek.pocet());
+    }
 }

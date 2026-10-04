@@ -241,9 +241,14 @@ public class SocketServer extends WebSocketServer {
             return;
         }
         
-        komunikator.prislaZprava(conn, message);
-        
-        conn.send("Echo: " + message);
+        try {
+            komunikator.prislaZprava(conn, message);
+            conn.send("Echo: " + message);
+        } catch (Exception ex) {
+            logger.error("Chyba při zpracování zprávy '{}': {}", message, ex.getMessage(), ex);
+            PostHogTracker.trackError("SocketServer", "Chyba při zpracování zprávy: " + (ex != null ? ex.getMessage() : "null"), ex);
+            conn.send("error:{\"error\":\"Došlo k neočekávané chybě na serveru při zpracování akce\"}");
+        }
 
     }
 

@@ -162,6 +162,43 @@ public class HraImpTest {
     }
 
     @Test
+    public void testOtocVrchniKartuPrazdnyBalicekSProhozenim() {
+        HraImp hra = HraImp.vytvor(mockKomunikator, 0);
+        while (!hra.getBalicek().jePrazdny()) {
+            hra.getBalicek().lizni();
+        }
+
+        DummyKarta k1 = new DummyKarta("Barel");
+        hra.getOdhazovaciBalicek().vratNahoru(k1);
+
+        assertEquals(0, hra.getBalicek().pocet());
+        assertEquals(1, hra.getOdhazovaciBalicek().pocet());
+
+        Karta otocena = hra.otocVrchniKartu();
+
+        assertEquals(k1, otocena);
+        assertEquals(k1, hra.getOdhazovaciBalicek().nahledni());
+        verify(mockKomunikator).posliVsem(contains("odehrat:-1|"));
+    }
+
+    @Test
+    public void testOtocVrchniKartuObaBalickyPrazdne() {
+        HraImp hra = HraImp.vytvor(mockKomunikator, 0);
+        while (!hra.getBalicek().jePrazdny()) {
+            hra.getBalicek().lizni();
+        }
+
+        assertEquals(0, hra.getBalicek().pocet());
+        assertEquals(0, hra.getOdhazovaciBalicek().pocet());
+
+        Karta otocena = hra.otocVrchniKartu();
+
+        assertNull(otocena);
+        assertEquals(0, hra.getBalicek().pocet());
+        assertEquals(0, hra.getOdhazovaciBalicek().pocet());
+    }
+
+    @Test
     public void testSkoncilAVyhralHrac() {
         HraImp hra = HraImp.vytvor(mockKomunikator, 0);
         HracImp h1 = hra.novyHrac();

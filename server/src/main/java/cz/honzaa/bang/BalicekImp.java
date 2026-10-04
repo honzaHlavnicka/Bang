@@ -27,7 +27,9 @@ public class BalicekImp<T> implements cz.honzaa.bang.sdk.Balicek<T>{
      * @param karty objekty, které se mají do balíčku nandat.
      */
     public BalicekImp(Collection<T> karty) {
-        this.karty.addAll(karty);
+        if (karty != null) {
+            this.karty.addAll(karty);
+        }
     }
 
     /**
@@ -134,6 +136,9 @@ public class BalicekImp<T> implements cz.honzaa.bang.sdk.Balicek<T>{
     @Override
     @PovolenePluginu
     public void vratNaSpodek(T karta) {
+        if (karta == null) {
+            return;
+        }
         if (jeOtoceny) {
             karty.addFirst(karta);
         } else {
@@ -150,6 +155,9 @@ public class BalicekImp<T> implements cz.honzaa.bang.sdk.Balicek<T>{
     @Override
     @PovolenePluginu
     public void vratNahoru(T karta) {
+        if (karta == null) {
+            return;
+        }
         if(jeOtoceny){
             karty.addLast(karta);
         }else{

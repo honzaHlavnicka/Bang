@@ -130,7 +130,7 @@ public class PravidlaPrsi implements HerniPravidla{
         hra.getKomunikator().posliVsem("odehrat:-1|" + vrchni.toJSON());*/
 
         PrsiKarta karta = (PrsiKarta) hra.otocVrchniKartu();
-        while (karta.getHodnota() == PrsiHodnota.SVRSEK || karta == null) {
+        while (karta != null && karta.getHodnota() == PrsiHodnota.SVRSEK) {
             karta = (PrsiKarta) hra.otocVrchniKartu();
         }
     }

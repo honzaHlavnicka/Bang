@@ -2,6 +2,7 @@ package cz.honzaa.bang.pluginy.bang;
 
 import cz.honzaa.bang.pluginy.bang.karty.Indiani;
 import cz.honzaa.bang.pluginy.bang.karty.Kulomet;
+import cz.honzaa.bang.pluginy.bang.karty.Vezeni;
 import cz.honzaa.bang.pluginy.bang.postavy.*;
 import cz.honzaa.bang.sdk.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -202,5 +203,21 @@ public class BangAdvancedMechanicsTest {
         assertTrue(odehrano);
         verify(pravidla).vyvolejAkciBang(eq(kym), eq(souper), any());
         verify(pravidla, never()).vyvolejAkciBang(eq(kym), eq(kym), any());
+    }
+
+    @Test
+    @DisplayName("Vězení na začátku tahu odstraní kartu a vrátí ji do odhazovacího balíčku")
+    public void testVezeniNaZacatekTahu() {
+        Hrac hrac = Mockito.mock(Hrac.class);
+        when(hrac.getJmeno()).thenReturn("TestHrac");
+        when(hra.getOdhazovaciBalicek()).thenReturn(odhazovaciBalicek);
+
+        Vezeni vezeni = new Vezeni(hra, lizaciBalicek);
+        vezeni.naZacatekTahu(hra, hrac);
+
+        verify(hra).otocVrchniKartu();
+        verify(hrac).odeberVylozenouKartu(vezeni);
+        verify(odhazovaciBalicek).vratNahoru(vezeni);
+        verify(komunikator).posliSpaleniVylozenéKarty(vezeni, hrac);
     }
 }

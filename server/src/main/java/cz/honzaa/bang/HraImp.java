@@ -367,6 +367,15 @@ public class HraImp implements cz.honzaa.bang.sdk.Hra{
     @PovolenePluginu
     public Karta otocVrchniKartu(){
         Karta karta = balicek.lizni();
+        if (karta == null) {
+            if (!odhazovaciBalicek.jePrazdny()) {
+                prohodBalicky();
+                karta = balicek.lizni();
+            }
+        }
+        if (karta == null) {
+            return null;
+        }
         odhazovaciBalicek.vratNahoru(karta);
         // Toto je speciální případ - otočení vrchní karty (není odehrání hráčem)
         komunikator.posliVsem("odehrat:-1" + '|' + karta.toJSON());

@@ -39,9 +39,20 @@ public class Hokynarstvi extends Karta implements HratelnaKarta{
     public boolean odehrat(Hrac kym) {
         List<Karta> karty = new ArrayList<>(hra.getHrajiciHraci().size());
         for (int i = 0; i < hra.getHrajiciHraci().size(); i++) {
-            karty.add(hra.getBalicek().lizni());
+            Karta k = hra.getBalicek().lizni();
+            if (k == null && !hra.getOdhazovaciBalicek().jePrazdny()) {
+                hra.prohodBalicky();
+                k = hra.getBalicek().lizni();
+            }
+            if (k != null) {
+                karty.add(k);
+            }
         }
         
+        if (karty.isEmpty()) {
+            return true;
+        }
+
         nechatVybrat(karty, hra.getHrajiciHraci(), hra.getHrajiciHraci().indexOf(kym));
         System.out.println("index v poli: " + hra.getHrajiciHraci().indexOf(kym));
         
