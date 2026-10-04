@@ -14,8 +14,21 @@ import ZoomDialog from './components/zoomDialog.tsx'
 import posthog from 'posthog-js'
 import { PostHogProvider } from '@posthog/react'
 import config from './config';
+import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 
 import '../i18n.ts';
+
+// Ošetření chyby při načítání nových verzí buildů (Vite preload error pro CSS i JS chunky)
+window.addEventListener('vite:preloadError', (event) => {
+  console.warn('Detekována chyba přednačítání assetů (vite:preloadError). Probíhá reload stránky pro načtení nejnovější verze...', event);
+  const reloadKey = 'vite_preload_reload_timestamp';
+  const lastReload = sessionStorage.getItem(reloadKey);
+  const now = Date.now();
+  if (!lastReload || now - parseInt(lastReload, 10) > 15000) {
+    sessionStorage.setItem(reloadKey, String(now));
+    window.location.reload();
+  }
+});
 
 const isDebug: boolean = String(import.meta.env.VITE_DEBUG).trim().toLowerCase() === 'true';
 const posthogToken: string = String(import.meta.env.VITE_PUBLIC_POSTHOG_TOKEN);
@@ -83,17 +96,19 @@ if (!isDebug && posthogToken && !isHonza) {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <PostHogProvider client={posthog}>
-      <DialogProvider>
-        <GameProvider>
-          <ZoomProvider >
-            <ZoomDialog />
-            <Dialog />
-            <Toaster position={'top-right'} containerStyle={{fontSize:"1.4em"}} toastOptions={{className:"toastsForCSS"}}/>
-            <App />
-          </ZoomProvider>
-        </GameProvider>
-      </DialogProvider>
-    </PostHogProvider>
+    <ErrorBoundary>
+      <PostHogProvider client={posthog}>
+        <DialogProvider>
+          <GameProvider>
+            <ZoomProvider >
+              <ZoomDialog />
+              <Dialog />
+              <Toaster position={'top-right'} containerStyle={{fontSize:"1.4em"}} toastOptions={{className:"toastsForCSS"}}/>
+              <App />
+            </ZoomProvider>
+          </GameProvider>
+        </DialogProvider>
+      </PostHogProvider>
+    </ErrorBoundary>
   </StrictMode>,
 )

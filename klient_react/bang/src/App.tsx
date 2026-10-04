@@ -1,16 +1,15 @@
-/**
- * Původní verze tohoto projektu vznikla jako školní dílo na Gymnáziu, Praha 6, Arabská 14, v roce 2026.
- */
-import React, { Suspense, useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useGame } from './modules/GameContext';
 import WaitingRoom from "./pages/WaitingRoom";
 import AfterGamePage from "./pages/AfterGamePage";
 import { useTranslation } from "react-i18next";
 
-// Lazy importy těžkých stránek
-const GamePageWrapper = React.lazy(() => import('./pages/GamePageWrapper'));
-const LoginPage = React.lazy(() => import('./pages/LoginPage'));
-const BeforeGameWaiting = React.lazy(() => import('./pages/BeforeGameWaiting'));
+import { lazyWithRetry } from "./utils/lazyWithRetry";
+
+// Lazy importy těžkých stránek s automatickým retry/reloadem při chybě načtení assetů
+const GamePageWrapper = lazyWithRetry(() => import('./pages/GamePageWrapper'));
+const LoginPage = lazyWithRetry(() => import('./pages/LoginPage'));
+const BeforeGameWaiting = lazyWithRetry(() => import('./pages/BeforeGameWaiting'));
 
 
 function App() {
@@ -23,10 +22,10 @@ function App() {
   useEffect(() => {
     if (!gameState.inGame) {
       // Pokud je uživatel na LoginPage, přednačti BeforeGameWaiting
-      import('./pages/BeforeGameWaiting');
+      import('./pages/BeforeGameWaiting').catch(err => console.warn('Preload BeforeGameWaiting failed:', err));
     } else if (!gameState.gameStarted) {
-      // Pokud je uživatel na BeforeGameWaiting, přednačti GamePage
-      import('./pages/GamePage');
+      // Pokud je uživatel na BeforeGameWaiting, přednačti GamePageWrapper
+      import('./pages/GamePageWrapper').catch(err => console.warn('Preload GamePageWrapper failed:', err));
     }
   }, [gameState.inGame, gameState.gameStarted]);
 
