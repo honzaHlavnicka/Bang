@@ -357,4 +357,19 @@ public class HracImpTest {
         verify(mockKomunikator).posliChybu(hrac, Chyba.KARTA_NEJDE_SPALIT, "$bang.error.nelze_spalit_dynamit");
         assertTrue(hrac.getKarty().contains(karta), "Karta nesmí být spálena při výjimce");
     }
+
+    @Test
+    public void testAkcePredZahajenimHryKdyJeSpravceTahuNull() {
+        when(mockHra.getSpravceTahu()).thenReturn(null);
+        when(mockPravidla.hracChceLiznout(hrac)).thenReturn(false);
+
+        assertFalse(hrac.jeNaTahu());
+
+        assertDoesNotThrow(() -> hrac.lizniKontrolovane());
+        verify(mockKomunikator).posliChybu(hrac, Chyba.NEJSI_NA_TAHU);
+
+        assertDoesNotThrow(() -> hrac.odehranaKarta("1"));
+        assertDoesNotThrow(() -> hrac.spalitKartu("1"));
+        assertDoesNotThrow(() -> hrac.vylozitKartu("1", "0"));
+    }
 }

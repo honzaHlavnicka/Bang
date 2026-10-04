@@ -90,6 +90,24 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
         synchronized (hra) {
             HracImp hrac = hraciPodleWebsocketu.get(conn);
             
+            if (hrac == null) {
+                if (message.startsWith("nactiPreklady")) {
+                    String jazyk = "cs";
+                    if (message.startsWith("nactiPreklady:")) {
+                        jazyk = message.substring("nactiPreklady:".length()).trim();
+                    }
+                    String preklady = hra.getPreklady(jazyk);
+                    conn.send("preklady:" + preklady);
+                } else if (message.startsWith("nactiHru")) {
+                    nactiHru(conn);
+                } else if (message.startsWith("getIdHry")) {
+                    conn.send("setIdHry:" + idHry);
+                } else {
+                    logger.warn("Přišla zpráva od neznámého nebo odpojeného websocketu: {}", message);
+                }
+                return;
+            }
+            
             if(message.startsWith("noveJmeno:")){
                 hrac.setJmeno(message.replace("noveJmeno:", ""));
                 posliZmenuJmena(hrac);
@@ -195,7 +213,7 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
                 hrac.odehranaKarta(message.replace("odehrani:", ""));
             }
             if(message.startsWith("konecTahu")){
-                if(!hra.getHerniPravidla().hracChceUkoncitTah(hrac))
+                if(hra.getHerniPravidla() == null || !hra.getHerniPravidla().hracChceUkoncitTah(hrac))
                     posliChybu(hrac,Chyba.NEMUZES_UKONCIT_TAH);
             }
             if(message.startsWith("linuti")){
@@ -630,8 +648,12 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
         json.put("max", max);
         json.put("notClosable", !closable);
         JSONArray hraciNaVyber = new JSONArray();
-        for (Hrac hrac : hraci) {
-            hraciNaVyber.put(hrac.getId());
+        if (hraci != null) {
+            for (Hrac hrac : hraci) {
+                if (hrac != null) {
+                    hraciNaVyber.put(hrac.getId());
+                }
+            }
         }
         json.put("hraci", hraciNaVyber);
         
@@ -650,13 +672,16 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
         json.put("max", max);
         json.put("notClosable", !closable);
         JSONArray kartyNaVyber = new JSONArray();
-        for (Karta karta : karty) {
-            JSONObject kartaJson = new JSONObject();
-            kartaJson.put("id", karta.getId());
-            kartaJson.put("obrazek", karta.getObrazek());
-            kartaJson.put("jmeno", karta.getJmeno());
-            kartyNaVyber.put(kartaJson);
-            
+        if (karty != null) {
+            for (Karta karta : karty) {
+                if (karta != null) {
+                    JSONObject kartaJson = new JSONObject();
+                    kartaJson.put("id", karta.getId());
+                    kartaJson.put("obrazek", karta.getObrazek());
+                    kartaJson.put("jmeno", karta.getJmeno());
+                    kartyNaVyber.put(kartaJson);
+                }
+            }
         }
         json.put("karty", kartyNaVyber);
         

@@ -232,6 +232,9 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
     @Override
     @PovolenePluginu
     public boolean jeNaTahu(){
+        if (hra.getSpravceTahu() == null) {
+            return false;
+        }
         Hrac naTahu = hra.getSpravceTahu().getNaTahu();
         return naTahu != null && naTahu.equals(this);
     }
@@ -337,7 +340,7 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
             hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);
             return;
         }
-        Hrac naTahu = hra.getSpravceTahu().getNaTahu();
+        Hrac naTahu = hra.getSpravceTahu() != null ? hra.getSpravceTahu().getNaTahu() : null;
         if(naTahu == null || !naTahu.equals(this)){
             hra.getKomunikator().posliChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
@@ -409,7 +412,7 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
             hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);
             return;
         }
-        Hrac naTahu = hra.getSpravceTahu().getNaTahu();
+        Hrac naTahu = hra.getSpravceTahu() != null ? hra.getSpravceTahu().getNaTahu() : null;
         if (naTahu == null || !naTahu.equals(this)) {
             hra.getKomunikator().posliChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
@@ -479,7 +482,7 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
             hra.getKomunikator().posliChybu(this, Chyba.KARTA_NEEXISTUJE);
             return;
         }
-        Hrac naTahu = hra.getSpravceTahu().getNaTahu();
+        Hrac naTahu = hra.getSpravceTahu() != null ? hra.getSpravceTahu().getNaTahu() : null;
         if (naTahu == null || !naTahu.equals(this)) {
             hra.getKomunikator().posliChybu(this, Chyba.NEJSI_NA_TAHU);
             return;
@@ -561,8 +564,8 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
     @Override
     @PovolenePluginu
     public void lizniKontrolovane(){
-        if(!hra.getHerniPravidla().hracChceLiznout(this)){
-            Hrac naTahu = hra.getSpravceTahu().getNaTahu();
+        if(hra.getHerniPravidla() == null || !hra.getHerniPravidla().hracChceLiznout(this)){
+            Hrac naTahu = hra.getSpravceTahu() != null ? hra.getSpravceTahu().getNaTahu() : null;
             if (naTahu != null && naTahu.equals(this)) {
                 hra.getKomunikator().posliChybu(this, Chyba.NEJDE_SI_LIZNOUT);
             }else{
@@ -611,7 +614,7 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
     @Override
     @PovolenePluginu
     public int fyzickaVzdalenostK(Hrac komu)throws IllegalArgumentException{
-        List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
+        List<Hrac> hraci = hra.getSpravceTahu() != null ? hra.getSpravceTahu().getHrajiciHraci() : hra.getHrajiciHraci();
         
         int velikost = hraci.size();
         int i1 = hraci.indexOf(this);
@@ -653,7 +656,7 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
     @Override
     @PovolenePluginu
     public List<Hrac> vzdalenostPod(int max, boolean iZpetne) {
-        List<Hrac> hraci = hra.getSpravceTahu().getHrajiciHraci();
+        List<Hrac> hraci = hra.getSpravceTahu() != null ? hra.getSpravceTahu().getHrajiciHraci() : hra.getHrajiciHraci();
         List<Hrac> vysledniHraci = new ArrayList<>();
 
         int velikost = hraci.size();
@@ -726,8 +729,12 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
             e.naKonecTahu(hra, this);
         }
         // zachovat původní pořadí: nejdříve další hráč, pak pravidla.skoncilTah
-        hra.getSpravceTahu().dalsiHrac().zahajitTah();
-        hra.getHerniPravidla().skoncilTah(this);
+        if (hra.getSpravceTahu() != null && hra.getSpravceTahu().dalsiHrac() != null) {
+            hra.getSpravceTahu().dalsiHrac().zahajitTah();
+        }
+        if (hra.getHerniPravidla() != null) {
+            hra.getHerniPravidla().skoncilTah(this);
+        }
     }
 
     @Override

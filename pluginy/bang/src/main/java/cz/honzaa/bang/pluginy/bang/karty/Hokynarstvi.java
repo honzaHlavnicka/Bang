@@ -53,8 +53,12 @@ public class Hokynarstvi extends Karta implements HratelnaKarta{
             return true;
         }
 
-        nechatVybrat(karty, hra.getHrajiciHraci(), hra.getHrajiciHraci().indexOf(kym));
-        System.out.println("index v poli: " + hra.getHrajiciHraci().indexOf(kym));
+        int startIndex = hra.getHrajiciHraci().indexOf(kym);
+        if (startIndex < 0) {
+            startIndex = 0;
+        }
+        nechatVybrat(karty, hra.getHrajiciHraci(), startIndex);
+        System.out.println("index v poli: " + startIndex);
         
         return true;
     }
@@ -66,8 +70,12 @@ public class Hokynarstvi extends Karta implements HratelnaKarta{
      * @param uKohoZacit u jaké položky v seznamu začít
      */
     private void nechatVybrat(List<Karta> karty, List<Hrac> hrajiciHraci, int uKohoZacit){
-        // TODO: je tu potřeba kontrola uKohoZacit a .size() ?
-        Hrac hrac = hrajiciHraci.get(uKohoZacit);
+        if (hrajiciHraci == null || hrajiciHraci.isEmpty() || karty == null || karty.isEmpty()) {
+            hra.getKomunikator().posliStavovouZpravu("");
+            return;
+        }
+        final int indexHrace = (uKohoZacit < 0 || uKohoZacit >= hrajiciHraci.size()) ? 0 : uKohoZacit;
+        Hrac hrac = hrajiciHraci.get(indexHrace);
         hra.getKomunikator().posliStavovouZpravu(hrac.getJmeno() + " vybírá kartu od hokynářství");
         
         hra.getKomunikator().pozadejOKarty(hrac, karty, "Jakou kartu si chceš nechat?", 1, 1, false)
@@ -78,13 +86,13 @@ public class Hokynarstvi extends Karta implements HratelnaKarta{
                     }catch(NumberFormatException ex){
                         hra.getKomunikator().posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
                         
-                        nechatVybrat(karty, hrajiciHraci, uKohoZacit); //Druhý pokus
+                        nechatVybrat(karty, hrajiciHraci, indexHrace); //Druhý pokus
                         return;
                     }
                     
                     boolean kartaNalezena = false;
                     for (Karta karta : karty) {
-                        if(karta.getId() == idKarty){
+                        if(karta != null && karta.getId() == idKarty){
                             kartaNalezena = true;
                             hrac.getKarty().add(karta);
                             karty.remove(karta);
@@ -96,13 +104,15 @@ public class Hokynarstvi extends Karta implements HratelnaKarta{
                     
                     if (!kartaNalezena && !karty.isEmpty()) {
                         Karta vnucenaKarta = karty.remove(0); // Vezme a rovnou smaže první kartu
-                        hrac.getKarty().add(vnucenaKarta);
-                        hra.getKomunikator().posliNovouKartu(hrac, vnucenaKarta);
-                        hra.getKomunikator().posliZmenuPoctuKaret(hrac);
+                        if (vnucenaKarta != null) {
+                            hrac.getKarty().add(vnucenaKarta);
+                            hra.getKomunikator().posliNovouKartu(hrac, vnucenaKarta);
+                            hra.getKomunikator().posliZmenuPoctuKaret(hrac);
+                        }
                     }
                     
                     
-                    int pointer = uKohoZacit; // Přejmenování, protože nejde upravovat proměná v then blocku
+                    int pointer = indexHrace; // Přejmenování, protože nejde upravovat proměná v then blocku
                     if (!karty.isEmpty()) {
                         if (pointer >= hrajiciHraci.size() - 1) {
                             pointer = 0;

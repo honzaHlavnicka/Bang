@@ -1,5 +1,6 @@
 package cz.honzaa.bang.pluginy.bang;
 
+import cz.honzaa.bang.pluginy.bang.karty.Hokynarstvi;
 import cz.honzaa.bang.pluginy.bang.karty.Indiani;
 import cz.honzaa.bang.pluginy.bang.karty.Kulomet;
 import cz.honzaa.bang.pluginy.bang.karty.Vezeni;
@@ -219,5 +220,50 @@ public class BangAdvancedMechanicsTest {
         verify(hrac).odeberVylozenouKartu(vezeni);
         verify(odhazovaciBalicek).vratNahoru(vezeni);
         verify(komunikator).posliSpaleniVylozenéKarty(vezeni, hrac);
+    }
+
+    @Test
+    @DisplayName("Hokynářství funguje i když je lízací i odhazovací balíček prázdný")
+    public void testHokynarstviPrazdnyBalicek() {
+        Hrac hrac1 = Mockito.mock(Hrac.class);
+        when(hrac1.getJmeno()).thenReturn("Hrac1");
+        when(hra.getHrajiciHraci()).thenReturn(List.of(hrac1));
+        when(hra.getBalicek()).thenReturn(lizaciBalicek);
+        when(hra.getOdhazovaciBalicek()).thenReturn(odhazovaciBalicek);
+        when(lizaciBalicek.lizni()).thenReturn(null);
+        when(odhazovaciBalicek.jePrazdny()).thenReturn(true);
+
+        Hokynarstvi hokynarstvi = new Hokynarstvi(hra, lizaciBalicek);
+        boolean vysledek = hokynarstvi.odehrat(hrac1);
+
+        assertTrue(vysledek);
+        verify(komunikator, never()).pozadejOKarty(any(), any(), any(), anyInt(), anyInt(), anyBoolean());
+    }
+
+    @Test
+    @DisplayName("Hokynářství rozdá karty a nechá hráče vybrat")
+    public void testHokynarstviVyberKarty() {
+        Hrac hrac1 = Mockito.mock(Hrac.class);
+        when(hrac1.getJmeno()).thenReturn("Hrac1");
+        List<Karta> kartyHrace = new ArrayList<>();
+        when(hrac1.getKarty()).thenReturn(kartyHrace);
+
+        when(hra.getHrajiciHraci()).thenReturn(List.of(hrac1));
+        when(hra.getBalicek()).thenReturn(lizaciBalicek);
+        when(hra.getOdhazovaciBalicek()).thenReturn(odhazovaciBalicek);
+
+        DummyKarta k1 = new DummyKarta();
+        when(lizaciBalicek.lizni()).thenReturn(k1);
+        when(komunikator.pozadejOKarty(eq(hrac1), any(), any(), eq(1), eq(1), eq(false)))
+                .thenReturn(CompletableFuture.completedFuture(String.valueOf(k1.getId())));
+
+        Hokynarstvi hokynarstvi = new Hokynarstvi(hra, lizaciBalicek);
+        boolean vysledek = hokynarstvi.odehrat(hrac1);
+
+        assertTrue(vysledek);
+        verify(komunikator).pozadejOKarty(eq(hrac1), any(), any(), eq(1), eq(1), eq(false));
+        assertTrue(kartyHrace.contains(k1));
+        verify(komunikator).posliNovouKartu(hrac1, k1);
+        verify(komunikator).posliZmenuPoctuKaret(hrac1);
     }
 }
