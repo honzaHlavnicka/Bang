@@ -10,6 +10,7 @@ import cz.honzaa.bang.sdk.Balicek;
 import cz.honzaa.bang.sdk.Hra;
 import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.Karta;
+import cz.honzaa.bang.sdk.ZpravoveUtils;
 
 /**
  *
@@ -23,7 +24,7 @@ public class plus2 extends UnoKarta{
 
     @Override
     public String getJmeno() {
-        return "$uno.plus2:{\"color\":\"$uno.color_" + getBarva() + "\"}";
+        return ZpravoveUtils.lokalizuj("uno.plus2", "color", "$uno.color_" + getBarva());
     }
 
     @Override
@@ -32,7 +33,7 @@ public class plus2 extends UnoKarta{
             Hrac pristiHrac = hra.getSpravceTahu().getHrajiciHraci().get(0);
             
             // Oznámíme všem hráčům, co se stalo
-            String oznameni = "$uno.notification_plus2:{\"name\":\"" + Karta.escapeJson(pristiHrac.getJmeno()) + "\"}";
+            String oznameni = ZpravoveUtils.lokalizuj("uno.notification_plus2", "name", pristiHrac.getJmeno());
             hra.getKomunikator().posliVsem("rychleOznameni:" + oznameni);
             
             hra.getSpravceTahu().eso();

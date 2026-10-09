@@ -14,6 +14,7 @@ import cz.honzaa.bang.sdk.Hra;
 import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.Karta;
 import cz.honzaa.bang.sdk.KomunikatorHry;
+import cz.honzaa.bang.sdk.ZpravoveUtils;
 import cz.honzaa.bang.sdk.VylozitelnaKarta;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,10 +65,10 @@ public class Vezeni extends Karta implements VylozitelnaKarta, Efekt{
 
         List<KomunikatorHry.MoznostKolaStesti> moznosti = new ArrayList<>(0);
         moznosti.add(new KomunikatorHry.MoznostKolaStesti("", "#d6b058", 1, 1));
-        moznosti.add(new KomunikatorHry.MoznostKolaStesti("Vězení", "#fc6f03", 2, 1));
-        moznosti.add(new KomunikatorHry.MoznostKolaStesti("Vězení", "#fc6f03", 3, 1));
-        moznosti.add(new KomunikatorHry.MoznostKolaStesti("Vězení", "#fc6f03", 0, 1));
-        hra.getKomunikator().posliKoloStesti(cislo, "Zůstane " + hrac.getJmeno() + " ve vězení?", moznosti);
+        moznosti.add(new KomunikatorHry.MoznostKolaStesti("$bang.dialog.wheel_prison_stay", "#fc6f03", 2, 1));
+        moznosti.add(new KomunikatorHry.MoznostKolaStesti("$bang.dialog.wheel_prison_stay", "#fc6f03", 3, 1));
+        moznosti.add(new KomunikatorHry.MoznostKolaStesti("$bang.dialog.wheel_prison_stay", "#fc6f03", 0, 1));
+        hra.getKomunikator().posliKoloStesti(cislo, ZpravoveUtils.lokalizuj("bang.dialog.wheel_prison_heading", "name", hrac.getJmeno()), moznosti);
         hra.otocVrchniKartu();
         
         if(cislo == 1){

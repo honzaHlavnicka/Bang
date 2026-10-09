@@ -14,7 +14,7 @@ package cz.honzaa.bang.net;
  */
 import cz.honzaa.bang.pravidla.SpravceHernichPravidel;
 import cz.honzaa.bang.sdk.Chyba;
-import cz.honzaa.bang.sdk.Karta;
+import cz.honzaa.bang.sdk.JsonUtils;
 import org.java_websocket.server.WebSocketServer;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
@@ -367,7 +367,7 @@ public class SocketServer extends WebSocketServer {
             String popis = (vlastniPopis != null) ? vlastniPopis : (chyba != null ? chyba.getZprava() : "");
             int kod = chyba != null ? chyba.getKod() : 0;
             int skupina = chyba != null ? chyba.getSkupina() : 0;
-            conn.send("error:{\"error\":\"" + Karta.escapeJson(popis) + "\",\"kod\":" + kod + ",\"skupina\":" + skupina + "}");
+            conn.send("error:{\"error\":\"" + JsonUtils.escapeJson(popis) + "\",\"kod\":" + kod + ",\"skupina\":" + skupina + "}");
         }
     }
     

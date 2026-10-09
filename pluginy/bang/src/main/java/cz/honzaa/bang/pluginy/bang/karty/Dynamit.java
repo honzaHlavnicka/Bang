@@ -12,6 +12,7 @@ import cz.honzaa.bang.sdk.Hra;
 import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.Karta;
 import cz.honzaa.bang.sdk.KomunikatorHry;
+import cz.honzaa.bang.sdk.ZpravoveUtils;
 import cz.honzaa.bang.sdk.VylozitelnaKarta;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,10 +64,10 @@ public class Dynamit extends Karta implements VylozitelnaKarta, Efekt{
         for (int i = 0; i < 11; i++) {
             moznosti.add(new KomunikatorHry.MoznostKolaStesti("", "#d6b058", i, 1));
         }
-        moznosti.add(new KomunikatorHry.MoznostKolaStesti("Velký", "#fc6f03", 11, 1));
-        moznosti.add(new KomunikatorHry.MoznostKolaStesti("výbuch", "#fc6f03", 12, 1));
+        moznosti.add(new KomunikatorHry.MoznostKolaStesti("$bang.dialog.wheel_dynamite_big", "#fc6f03", 11, 1));
+        moznosti.add(new KomunikatorHry.MoznostKolaStesti("$bang.dialog.wheel_dynamite_explode", "#fc6f03", 12, 1));
        
-        hra.getKomunikator().posliKoloStesti(cislo, "Vybouchne " + hrac.getJmeno() + "?", moznosti);
+        hra.getKomunikator().posliKoloStesti(cislo, ZpravoveUtils.lokalizuj("bang.dialog.wheel_dynamite_heading", "name", hrac.getJmeno()), moznosti);
         hra.otocVrchniKartu();
         
         final Karta toto = this;

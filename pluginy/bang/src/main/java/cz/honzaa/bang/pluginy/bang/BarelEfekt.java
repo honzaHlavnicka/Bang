@@ -4,6 +4,7 @@ import cz.honzaa.bang.sdk.Efekt;
 import cz.honzaa.bang.sdk.Hra;
 import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.KomunikatorHry;
+import cz.honzaa.bang.sdk.ZpravoveUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -35,11 +36,11 @@ public class BarelEfekt implements Efekt {
         System.out.println("barel vygeneroval: " + cislo);
 
         List<KomunikatorHry.MoznostKolaStesti> moznosti = new ArrayList<>(0);
-        moznosti.add(new KomunikatorHry.MoznostKolaStesti("Zachráněn", "#58d680", 1, 1));
+        moznosti.add(new KomunikatorHry.MoznostKolaStesti("$bang.dialog.wheel_barrel_saved", "#58d680", 1, 1));
         moznosti.add(new KomunikatorHry.MoznostKolaStesti("", "#d6b058", 2, 1));
         moznosti.add(new KomunikatorHry.MoznostKolaStesti("", "#d6b058", 3, 1));
         moznosti.add(new KomunikatorHry.MoznostKolaStesti("", "#d6b058", 0, 1));
-        hra.getKomunikator().posliKoloStesti(cislo, "Bude " + hrac.getJmeno() + " zachráněn barelem?", moznosti);
+        hra.getKomunikator().posliKoloStesti(cislo, ZpravoveUtils.lokalizuj("bang.dialog.wheel_barrel_heading", "name", hrac.getJmeno()), moznosti);
         hra.otocVrchniKartu();
         
         return cislo == 1;

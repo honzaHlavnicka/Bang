@@ -13,6 +13,7 @@ import cz.honzaa.bang.sdk.Chyba;
 import cz.honzaa.bang.sdk.Hra;
 import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.HratelnaKarta;
+import cz.honzaa.bang.sdk.JsonUtils;
 import cz.honzaa.bang.sdk.Karta;
 import cz.honzaa.bang.sdk.KomunikatorHry;
 import cz.honzaa.bang.sdk.NejdeZahratException;
@@ -760,7 +761,7 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
         StringBuilder sb = new StringBuilder("{\"id\":");
         sb.append(id);
         sb.append(", \"jmeno\":\"");
-        sb.append(Karta.escapeJson(jmeno));
+        sb.append(JsonUtils.escapeJson(jmeno));
         sb.append("\",\"zivoty\":");
         sb.append(zivoty);
         sb.append(",\"pocetKaret\":");

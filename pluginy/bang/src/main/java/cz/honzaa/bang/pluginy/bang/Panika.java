@@ -12,6 +12,7 @@ import cz.honzaa.bang.sdk.Hra;
 import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.HratelnaKarta;
 import cz.honzaa.bang.sdk.Karta;
+import cz.honzaa.bang.sdk.ZpravoveUtils;
 import cz.honzaa.bang.sdk.VylozitelnaKarta;
 import cz.honzaa.bang.sdk.ZastupnaKarta;
 import java.util.ArrayList;
@@ -43,11 +44,11 @@ public class Panika extends Karta implements HratelnaKarta{
     @Override
     public boolean odehrat(Hrac kym) {
         // Zobrazit stavovou zprávu že hráč vybírá cíl
-        hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " vybírá cíl útoku...");
+        hra.getKomunikator().posliStavovouZpravu(ZpravoveUtils.lokalizuj("bang.status.choosing_target", "name", kym.getJmeno()));
         
         List<Hrac> povoleniHraci = kym.vzdalenostPod(1); // Neplatí na ní zbraně, ale efekty platí. (Vzdálenost max 1, ale s hledím to je 2 apod.)
         
-        hra.getKomunikator().pozadejOHrace(kym, povoleniHraci, "Vyber koho kartu si vezmeš", 1, 1, false)
+        hra.getKomunikator().pozadejOHrace(kym, povoleniHraci, "$bang.dialog.steal_target", 1, 1, false)
                 .thenAccept(odpoved -> {
 
                     System.out.println("Hráč odpověděl: " + odpoved);
@@ -60,13 +61,13 @@ public class Panika extends Karta implements HratelnaKarta{
                     }
 
                     // Zobrazit stavovou zprávu že hráč vybírá kartu
-                    hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " vybírá kartu od " + naKoho.getJmeno() + "...");
+                    hra.getKomunikator().posliStavovouZpravu(ZpravoveUtils.lokalizuj("bang.status.choosing_card_from", "name", kym.getJmeno(), "target", naKoho.getJmeno()));
                     
                     List<Karta> kartyNaVyber = new ArrayList<>();
                     kartyNaVyber.addAll(naKoho.getVylozeneKarty());
                     kartyNaVyber.add(ZastupnaKarta.getNahodna());
 
-                    hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "Jakou kartu mu vezmeš?", 1, 1, false)
+                    hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "$bang.dialog.steal_card", 1, 1, false)
                             .thenAccept(idKarty -> {
                                 try {
                                     int idKartyCislo = Integer.parseInt(idKarty);

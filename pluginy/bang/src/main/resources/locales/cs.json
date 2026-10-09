@@ -15,7 +15,14 @@
       "indians_discard": "Vyber o co přijdeš kvůli Indiánům!",
       "target_prompt": "Na koho?",
       "kit_draw": "Jaké dvě si lízneš?",
-      "sid_discard": "Vyber 2 karty, za které dostaneš život"
+      "sid_discard": "Vyber 2 karty, za které dostaneš život",
+      "wheel_prison_heading": "Zůstane {{name}} ve vězení?",
+      "wheel_prison_stay": "Vězení",
+      "wheel_dynamite_heading": "Vybouchne {{name}}?",
+      "wheel_dynamite_big": "Velký",
+      "wheel_dynamite_explode": "výbuch",
+      "wheel_barrel_heading": "Bude {{name}} zachráněn barelem?",
+      "wheel_barrel_saved": "Zachráněn"
     },
     "status": {
       "choosing_target": "{{name}} vybírá cíl útoku...",
@@ -24,6 +31,19 @@
       "duel_choosing": "{{name}} právě vybírá hráče do duelu.",
       "duel_turn": "{{target}} buď ztratí život v duelu, nebo ho předá na {{attacker}}",
       "general_store": "{{name}} vybírá kartu z hokynářství"
+    },
+    "notification": {
+      "narrowly_saved": "{{name}} těsně zachráněn!",
+      "died": "{{name}} umřel/a 💔",
+      "too_many_cards": "Moc karet",
+      "hit": "Trefa!",
+      "missed": "Vedle!",
+      "duel_won": "Duel vyhrál {{winner}}",
+      "duel_continues": "Duel pokračuje",
+      "beer_does_not_work": "Pivo nefunguje"
+    },
+    "button": {
+      "sid_ketchum": "Odhodit dvě karty za život"
     }
   }
 }

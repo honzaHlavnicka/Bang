@@ -10,6 +10,7 @@ import cz.honzaa.bang.sdk.Balicek;
 import cz.honzaa.bang.sdk.Hra;
 import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.Karta;
+import cz.honzaa.bang.sdk.ZpravoveUtils;
 import java.util.ArrayList;
 
 /**
@@ -34,7 +35,7 @@ public class PrsiSvrsek extends PrsiKarta{
         poslendniBarva = null;
         cekaNaBarvu = true;
             // Zobrazit stavovou zprávu že hráč vybírá barvu
-            hra.getKomunikator().posliStavovouZpravu("$prsi.status_choosing_color:{\"name\":\"" + Karta.escapeJson(kym.getJmeno()) + "\"}");
+            hra.getKomunikator().posliStavovouZpravu(ZpravoveUtils.lokalizuj("prsi.status_choosing_color", "name", kym.getJmeno()));
             
             
             ArrayList<String> moznosti = new ArrayList<>(4);
@@ -63,7 +64,7 @@ public class PrsiSvrsek extends PrsiKarta{
                 }
                 cekaNaBarvu = false;
                 // Zobrazit informaci o vybrané barvě
-                hra.getKomunikator().posliStavovouZpravu("$prsi.status_chosen_color:{\"name\":\"" + Karta.escapeJson(kym.getJmeno()) + "\",\"color\":\"$" + poslendniBarva.getTranslationKey() + "\"}");
+                hra.getKomunikator().posliStavovouZpravu(ZpravoveUtils.lokalizuj("prsi.status_chosen_color", "name", kym.getJmeno(), "color", "$" + poslendniBarva.getTranslationKey()));
                 // Dodatečná zpráva pro plugin - zvláštní oznámení
                 hra.getKomunikator().posliRychleOznameniVsem("$" + poslendniBarva.getTranslationKey(), kym);
                 

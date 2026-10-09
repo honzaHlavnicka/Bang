@@ -43,7 +43,7 @@ public class Indiani extends Karta implements HratelnaKarta{
                 List<Karta> karty = new ArrayList<>(2);
                 karty.add(ZastupnaKarta.getZivot());
                 hrac.getKarty().stream().filter(k->k instanceof Bang).allMatch(k->karty.add(k));
-                hra.getKomunikator().pozadejOKarty(hrac, karty, "Vyber o co přijdeš kvůli Indiánům!", 1, 1,false).thenAccept(id->{
+                hra.getKomunikator().pozadejOKarty(hrac, karty, "$bang.dialog.indians_discard", 1, 1,false).thenAccept(id->{
                     int idKarty;
                     try{
                         idKarty = Integer.parseInt(id);

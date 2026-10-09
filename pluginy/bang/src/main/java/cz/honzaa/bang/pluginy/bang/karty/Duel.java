@@ -12,6 +12,7 @@ import cz.honzaa.bang.sdk.Hra;
 import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.HratelnaKarta;
 import cz.honzaa.bang.sdk.Karta;
+import cz.honzaa.bang.sdk.ZpravoveUtils;
 import cz.honzaa.bang.sdk.ZastupnaKarta;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +39,8 @@ public class Duel extends Karta implements HratelnaKarta{
 
     @Override
     public boolean odehrat(Hrac kym) {
-        hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " právě vybírá hráče do duelu.");
-        hra.getKomunikator().pozadejOHrace(kym, hra.getHrajiciHraci().stream().filter(h->!h.equals(kym)).collect(java.util.stream.Collectors.toList()), "Vyber koho chceš vyzvat na duel", 1, 1, true)
+        hra.getKomunikator().posliStavovouZpravu(ZpravoveUtils.lokalizuj("bang.status.duel_choosing", "name", kym.getJmeno()));
+        hra.getKomunikator().pozadejOHrace(kym, hra.getHrajiciHraci().stream().filter(h->!h.equals(kym)).collect(java.util.stream.Collectors.toList()), "$bang.dialog.duel_target", 1, 1, true)
                 .thenAccept(id->{
                     try{
                         Hrac naKoho = hra.getHrac(Integer.parseInt(id));
@@ -54,7 +55,7 @@ public class Duel extends Karta implements HratelnaKarta{
     }
     
     private void duelNa(Hrac naKoho, Hrac odKoho){
-        hra.getKomunikator().posliStavovouZpravu(naKoho.getJmeno() + " bud ztratí život v duelu, nebo ho předá na " + odKoho.getJmeno());
+        hra.getKomunikator().posliStavovouZpravu(ZpravoveUtils.lokalizuj("bang.status.duel_turn", "target", naKoho.getJmeno(), "attacker", odKoho.getJmeno()));
 
         List<Karta> karty = new ArrayList<>(2);
         karty.add(ZastupnaKarta.getZivot());
@@ -63,7 +64,7 @@ public class Duel extends Karta implements HratelnaKarta{
                 karty.add(k);
             }
         }
-        hra.getKomunikator().pozadejOKarty(naKoho, karty, "Vyber o co přijdeš v duelu!", 1, 1, false).thenAccept(id -> {
+        hra.getKomunikator().pozadejOKarty(naKoho, karty, "$bang.dialog.duel_discard", 1, 1, false).thenAccept(id -> {
             int idKarty;
             try {
                 idKarty = Integer.parseInt(id);
@@ -74,7 +75,7 @@ public class Duel extends Karta implements HratelnaKarta{
             }
             if (idKarty == ZastupnaKarta.getZivot().getId()) {
                 naKoho.odeberZivot();
-                hra.getKomunikator().posliRychleOznameniVsem("Duel vyhrál " + odKoho.getJmeno(),naKoho);
+                hra.getKomunikator().posliRychleOznameniVsem(ZpravoveUtils.lokalizuj("bang.notification.duel_won", "winner", odKoho.getJmeno()), naKoho);
                 hra.getKomunikator().posliStavovouZpravu("");
                 // Duel tímto skončil
             } else {
@@ -85,7 +86,7 @@ public class Duel extends Karta implements HratelnaKarta{
                         hra.getKomunikator().posliSpaleniKarty(naKoho, karta);
                         hra.getKomunikator().posliZmenuPoctuKaret(naKoho);
                         
-                        hra.getKomunikator().posliRychleOznameniVsem("Duel pokračuje",naKoho);
+                        hra.getKomunikator().posliRychleOznameniVsem("$bang.notification.duel_continues",naKoho);
                         
                         // Duel pokračuje, útok se obrací
                         duelNa(odKoho,naKoho);

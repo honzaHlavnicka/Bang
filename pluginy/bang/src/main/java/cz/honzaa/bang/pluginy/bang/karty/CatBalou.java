@@ -14,6 +14,7 @@ import cz.honzaa.bang.sdk.Hra;
 import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.HratelnaKarta;
 import cz.honzaa.bang.sdk.Karta;
+import cz.honzaa.bang.sdk.ZpravoveUtils;
 import cz.honzaa.bang.sdk.VylozitelnaKarta;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +45,9 @@ public class CatBalou extends Karta implements HratelnaKarta{
     @Override
     public boolean odehrat(Hrac kym) {
         // Zobrazit stavovou zprávu že hráč vybírá cíl
-        hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " vybírá cíl útoku...");
+        hra.getKomunikator().posliStavovouZpravu(ZpravoveUtils.lokalizuj("bang.status.choosing_target", "name", kym.getJmeno()));
         
-        hra.getKomunikator().pozadejOHrace(kym, hra.getHrajiciHraci(), "Vyber komu kartu spálíš", 1, 1, true) 
+        hra.getKomunikator().pozadejOHrace(kym, hra.getHrajiciHraci(), "$bang.dialog.discard_target", 1, 1, true) 
             .thenAccept(odpoved -> {
                 System.out.println("Hráč odpověděl: " + odpoved);
                 
@@ -58,13 +59,13 @@ public class CatBalou extends Karta implements HratelnaKarta{
                     return; // Nemá cenu pokračovat bez vůle hráče
                 }
                 
-                hra.getKomunikator().posliStavovouZpravu(kym.getJmeno() + " vybírá kartu od " + naKoho.getJmeno() + "...");
+                hra.getKomunikator().posliStavovouZpravu(ZpravoveUtils.lokalizuj("bang.status.choosing_card_from", "name", kym.getJmeno(), "target", naKoho.getJmeno()));
                 
                 List<Karta> kartyNaVyber = new ArrayList<>();
                 kartyNaVyber.addAll(naKoho.getVylozeneKarty());
                 kartyNaVyber.add(ZastupnaKarta.getNahodna());
 
-                hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "Jakou kartu mu spálíš?", 1, 1, true)
+                hra.getKomunikator().pozadejOKarty(kym, kartyNaVyber, "$bang.dialog.discard_card", 1, 1, true)
                     .thenAccept(idKarty -> {
                         try {
                             int idKartyCislo = Integer.parseInt(idKarty);

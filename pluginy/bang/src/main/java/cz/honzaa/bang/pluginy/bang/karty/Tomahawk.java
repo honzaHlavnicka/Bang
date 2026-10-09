@@ -33,7 +33,7 @@ public class Tomahawk extends Karta implements HratelnaKarta{
             return false;
         }
 
-        hra.getKomunikator().pozadejOHrace(kym, kym.vzdalenostPod(2), "Na Koho?", 1, 1, true).thenAccept((String idHrace)->{
+        hra.getKomunikator().pozadejOHrace(kym, kym.vzdalenostPod(2), "$bang.dialog.target_prompt", 1, 1, true).thenAccept((String idHrace)->{
             try {
                 Hrac naKoho = hra.getHrac(Integer.parseInt(idHrace));
                 ((PravidlaBangu) hra.getHerniPravidla()).vyvolejAkciBang(kym, naKoho, this::poUtoku);

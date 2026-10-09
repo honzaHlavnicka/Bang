@@ -148,7 +148,7 @@ public class BangMechanicsTest {
         // 2. Ve 2 hráčích ve standardní variantě pivo nefunguje
         when(mockHra.getHrajiciHraci()).thenReturn(List.of(mock(Hrac.class), mock(Hrac.class)));
         assertTrue(pivo.odehrat(hrac));
-        verify(mockKomunikator).posliRychleOznameniVsem("Pivo nefunguje", null);
+        verify(mockKomunikator).posliRychleOznameniVsem("$bang.notification.beer_does_not_work", null);
         verify(hrac, times(1)).pridejZivot(); // stále jen 1 z předchozího volání
 
         // 3. Ve 2 hráčích ve variantě bez limitu na piva pivo FUNGUJE

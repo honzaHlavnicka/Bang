@@ -61,7 +61,7 @@ public class KitCarlson implements Postava, LizaciPostava{
         }
 
         int pocetVyberu = Math.min(2, vytazene.size());
-        hra.getKomunikator().pozadejOKarty(komu, vytazene, "Jaké dvě si lízneš?", pocetVyberu, pocetVyberu, false).thenAccept(ids -> {
+        hra.getKomunikator().pozadejOKarty(komu, vytazene, "$bang.dialog.kit_draw", pocetVyberu, pocetVyberu, false).thenAccept(ids -> {
             List<Karta> proHrace = new ArrayList<>();
             List<Karta> zpet = new ArrayList<>(vytazene); 
 

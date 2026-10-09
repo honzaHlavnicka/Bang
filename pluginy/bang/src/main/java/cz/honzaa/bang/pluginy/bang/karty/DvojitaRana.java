@@ -48,7 +48,7 @@ public class DvojitaRana extends Karta implements HratelnaKarta{
         }
         
         List<Karta> bangy = kym.getKarty().stream().filter((k)->k instanceof Bang).toList();
-        hra.getKomunikator().pozadejOKarty(kym, bangy , "Jaký Bang použiješ?", 1, 1, true).thenAccept((String id)->{
+        hra.getKomunikator().pozadejOKarty(kym, bangy , "$bang.dialog.bang_choice", 1, 1, true).thenAccept((String id)->{
             try{
                 int intId = Integer.parseInt(id);
                 Karta bang = bangy.stream().filter((k)->k.getId() == intId).findFirst().orElseThrow();
@@ -62,7 +62,7 @@ public class DvojitaRana extends Karta implements HratelnaKarta{
                 hra.getKomunikator().posliOdebraniKarty(kym, bang);
                 hra.getKomunikator().posliZmenuPoctuKaret(kym);
                 
-                hra.getKomunikator().pozadejOHrace(kym, hraciNaVyber, "Na koho střílíš?", 1, 1, true).thenAccept((idHrace)-> {
+                hra.getKomunikator().pozadejOHrace(kym, hraciNaVyber, "$bang.dialog.shoot_target", 1, 1, true).thenAccept((idHrace)-> {
                     try{
                         int intIdHrace = Integer.parseInt(idHrace);
                         

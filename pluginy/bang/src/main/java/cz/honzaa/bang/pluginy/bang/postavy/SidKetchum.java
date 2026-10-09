@@ -48,11 +48,11 @@ public class SidKetchum implements Postava{
 
     @Override
     public void pridaniPostavy(Hrac komu) {
-        idTlacitka = hra.getKomunikator().pridejUIButton(komu, 0, "Odhodit dvě karty za život", false, () -> {
+        idTlacitka = hra.getKomunikator().pridejUIButton(komu, 0, "$bang.button.sid_ketchum", false, () -> {
             if(!komu.jeNaTahu()){
                 return;
             }
-            hra.getKomunikator().pozadejOKarty(komu, komu.getKarty(), "Vyber 2 karty, za které dostaneš život", 2, 2, true)
+            hra.getKomunikator().pozadejOKarty(komu, komu.getKarty(), "$bang.dialog.sid_discard", 2, 2, true)
                     .thenAccept(idcka -> {
                         try {
                             String[] poleId = idcka.split(",");

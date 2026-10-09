@@ -39,7 +39,7 @@ public class Pivo extends Karta implements HratelnaKarta{
         if(hra.getHrajiciHraci().size() > 2 || ((PravidlaBangu) hra.getHerniPravidla()).fungujePivoVzdy()){
             kym.pridejZivot();
         }else{
-            hra.getKomunikator().posliRychleOznameniVsem("Pivo nefunguje", null);
+            hra.getKomunikator().posliRychleOznameniVsem("$bang.notification.beer_does_not_work", null);
         }
         
         return true;

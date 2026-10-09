@@ -11,7 +11,9 @@ import cz.honzaa.bang.sdk.Chyba;
 import cz.honzaa.bang.HraImp;
 import cz.honzaa.bang.HracImp;
 import cz.honzaa.bang.sdk.Hrac;
+import cz.honzaa.bang.sdk.JsonUtils;
 import cz.honzaa.bang.sdk.Karta;
+import cz.honzaa.bang.sdk.ZpravoveUtils;
 import cz.honzaa.bang.sdk.Efekt;
 import cz.honzaa.bang.sdk.HratelnaKarta;
 import cz.honzaa.bang.sdk.VylozitelnaKarta;
@@ -148,8 +150,8 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
                     if (targetHrac != null) {
                         WebSocket targetConn = websocketPodleHracu.get(targetHrac);
                         if (targetConn != null && targetConn.isOpen()) {
-                            String errPayload = "$error.vyhozen_ze_hry_adminem:{\"admin\":\"" + Karta.escapeJson(hrac.getJmeno()) + "\"}";
-                            targetConn.send("error:{\"error\":\"" + Karta.escapeJson(errPayload) + "\",\"kod\":" + Chyba.VYHOZEN_ZE_HRY.getKod() + ",\"skupina\":1}");
+                            String errPayload = ZpravoveUtils.lokalizuj("error.vyhozen_ze_hry_adminem", "admin", hrac.getJmeno());
+                            targetConn.send("error:{\"error\":\"" + JsonUtils.escapeJson(errPayload) + "\",\"kod\":" + Chyba.VYHOZEN_ZE_HRY.getKod() + ",\"skupina\":1}");
                             targetConn.close();
                         }
                         
@@ -487,7 +489,7 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
                 String popis = (vlastniPopis != null) ? vlastniPopis : (chyba != null ? chyba.getZprava() : "");
                 int kod = chyba != null ? chyba.getKod() : 0;
                 int skupina = chyba != null ? chyba.getSkupina() : 0;
-                conn.send("error:{\"error\":\"" + Karta.escapeJson(popis) + "\",\"kod\":" + kod + ",\"skupina\":" + skupina + "}");
+                conn.send("error:{\"error\":\"" + JsonUtils.escapeJson(popis) + "\",\"kod\":" + kod + ",\"skupina\":" + skupina + "}");
             } catch (Exception ex) {
                 logger.error("Chyba při posílání chyby hráči: {}", ex.getMessage());
             }

@@ -47,6 +47,7 @@ import cz.honzaa.bang.sdk.Hra;
 import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.HratelnaKarta;
 import cz.honzaa.bang.sdk.Karta;
+import cz.honzaa.bang.sdk.ZpravoveUtils;
 import cz.honzaa.bang.sdk.SpravceTahu;
 import cz.honzaa.bang.sdk.VylozitelnaKarta;
 import cz.honzaa.bang.sdk.ZastupnaKarta;
@@ -103,7 +104,7 @@ public class PravidlaBangu implements HerniPravidla{
         
         if(!piva.isEmpty()){
             piva.add(ZastupnaKarta.getSmrt());
-            hra.getKomunikator().pozadejOKarty(komu, piva, "Došli ti životy! Co chceš? Pokud zbíváte jen 2, tak pivo může být kničemu!", 1, 1, false)
+            hra.getKomunikator().pozadejOKarty(komu, piva, "$bang.dialog.out_of_lives", 1, 1, false)
                     .thenAccept(id->{
                         try{
                             int idInt = Integer.parseInt(id);
@@ -127,7 +128,7 @@ public class PravidlaBangu implements HerniPravidla{
                                         return;
                                     }
                                     
-                                    hra.getKomunikator().posliRychleOznameniVsem(komu.getJmeno() + " těsně zachráněn!", komu);
+                                    hra.getKomunikator().posliRychleOznameniVsem(ZpravoveUtils.lokalizuj("bang.notification.narrowly_saved", "name", komu.getJmeno()), komu);
                                     // nesmrt
                                     return;
                                 }
@@ -151,7 +152,7 @@ public class PravidlaBangu implements HerniPravidla{
     }
 
     private void smrtHrace(Hrac komu){
-        hra.getKomunikator().posliRychleOznameniVsem(komu.getJmeno() + " umřel/a 💔", null);
+        hra.getKomunikator().posliRychleOznameniVsem(ZpravoveUtils.lokalizuj("bang.notification.died", "name", komu.getJmeno()), null);
         
         hra.getSpravceTahu().vyraditHrace(komu);
         
@@ -261,7 +262,7 @@ public class PravidlaBangu implements HerniPravidla{
     @Override
     public boolean hracChceUkoncitTah(Hrac kdo) {
         if (kdo.getKarty().size() > kdo.getMaximumZivotu() && JE_OMEZENY_POCET_KARET) {
-            hra.getKomunikator().posliRychleOznameni("Moc karet", kdo);
+            hra.getKomunikator().posliRychleOznameni("$bang.notification.too_many_cards", kdo);
             return false;
         }
         
@@ -490,9 +491,9 @@ public class PravidlaBangu implements HerniPravidla{
 
             if (!vedleNaKoho.isEmpty()) {
                 vedleNaKoho.add(ZastupnaKarta.getZivot());
-                hra.getKomunikator().posliStavovouZpravu(naKoho.getJmeno() + " může ještě použít vedle na odražení útoku!");
+                hra.getKomunikator().posliStavovouZpravu(ZpravoveUtils.lokalizuj("bang.status.can_play_missed", "target", naKoho.getJmeno()));
                 
-                hra.getKomunikator().pozadejOKarty(naKoho, vedleNaKoho, "Vyber o co přijdeš. (Může za to " + kym.getJmeno() + " )", 1, 1, false)
+                hra.getKomunikator().pozadejOKarty(naKoho, vedleNaKoho, ZpravoveUtils.lokalizuj("bang.dialog.missed_choice", "attacker", kym.getJmeno()), 1, 1, false)
                         .thenAccept(id -> {
                             int idInt;
                             try {
@@ -507,7 +508,7 @@ public class PravidlaBangu implements HerniPravidla{
                             }
 
                             if (idInt == ZastupnaKarta.getZivot().getId()) {
-                                hra.getKomunikator().posliRychleOznameniVsem("Trefa!", null);
+                                hra.getKomunikator().posliRychleOznameniVsem("$bang.notification.hit", null);
                                 naKoho.odeberZivot();
                             } else {
                                 for (Karta karta : vedleNaKoho) {
@@ -516,7 +517,7 @@ public class PravidlaBangu implements HerniPravidla{
                                         hra.getOdhazovaciBalicek().vratNahoru(karta);
                                         hra.getKomunikator().posliOdebraniKarty(naKoho, karta);
                                         hra.getKomunikator().posliZmenuPoctuKaret(naKoho);
-                                        hra.getKomunikator().posliRychleOznameniVsem("Vedle!", null);
+                                        hra.getKomunikator().posliRychleOznameniVsem("$bang.notification.missed", null);
                                         
                                         if(karta instanceof OpetovnaPalba){
                                             vyvolejAkciBang(naKoho, kym, poUtoku);
@@ -533,7 +534,7 @@ public class PravidlaBangu implements HerniPravidla{
                         });
             } else {
                 // Nemá ani barel, ani Vedle, přichází o život
-                hra.getKomunikator().posliRychleOznameniVsem("Trefa!", null);
+                hra.getKomunikator().posliRychleOznameniVsem("$bang.notification.hit", null);
                 naKoho.odeberZivot();
                 poUtoku.accept(naKoho, true);
             }

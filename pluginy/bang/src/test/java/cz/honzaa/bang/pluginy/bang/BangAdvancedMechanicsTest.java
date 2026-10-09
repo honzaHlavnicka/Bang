@@ -79,7 +79,7 @@ public class BangAdvancedMechanicsTest {
 
         // 4 karty > 3 životy -> nelze ukončit tah
         assertFalse(pravidla.hracChceUkoncitTah(hrac), "Hráč s více kartami než životy nesmí ukončit tah");
-        verify(komunikator).posliRychleOznameni(eq("Moc karet"), eq(hrac));
+        verify(komunikator).posliRychleOznameni(eq("$bang.notification.too_many_cards"), eq(hrac));
         verify(hrac, never()).konecTahu();
 
         // Po odhození 1 karty (3 karty <= 3 životy)
@@ -183,8 +183,8 @@ public class BangAdvancedMechanicsTest {
         boolean odehrano = indiani.odehrat(kym);
 
         assertTrue(odehrano);
-        verify(komunikator).pozadejOKarty(eq(hrac1), any(), eq("Vyber o co přijdeš kvůli Indiánům!"), eq(1), eq(1), eq(false));
-        verify(komunikator).pozadejOKarty(eq(hrac2), any(), eq("Vyber o co přijdeš kvůli Indiánům!"), eq(1), eq(1), eq(false));
+        verify(komunikator).pozadejOKarty(eq(hrac1), any(), eq("$bang.dialog.indians_discard"), eq(1), eq(1), eq(false));
+        verify(komunikator).pozadejOKarty(eq(hrac2), any(), eq("$bang.dialog.indians_discard"), eq(1), eq(1), eq(false));
         verify(komunikator, never()).pozadejOKarty(eq(kym), any(), any(), anyInt(), anyInt(), anyBoolean());
     }
 

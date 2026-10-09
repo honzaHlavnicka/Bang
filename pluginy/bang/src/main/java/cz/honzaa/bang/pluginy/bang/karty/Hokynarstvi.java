@@ -12,6 +12,7 @@ import cz.honzaa.bang.sdk.Hra;
 import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.HratelnaKarta;
 import cz.honzaa.bang.sdk.Karta;
+import cz.honzaa.bang.sdk.ZpravoveUtils;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,9 +77,9 @@ public class Hokynarstvi extends Karta implements HratelnaKarta{
         }
         final int indexHrace = (uKohoZacit < 0 || uKohoZacit >= hrajiciHraci.size()) ? 0 : uKohoZacit;
         Hrac hrac = hrajiciHraci.get(indexHrace);
-        hra.getKomunikator().posliStavovouZpravu(hrac.getJmeno() + " vybírá kartu od hokynářství");
+        hra.getKomunikator().posliStavovouZpravu(ZpravoveUtils.lokalizuj("bang.status.general_store", "name", hrac.getJmeno()));
         
-        hra.getKomunikator().pozadejOKarty(hrac, karty, "Jakou kartu si chceš nechat?", 1, 1, false)
+        hra.getKomunikator().pozadejOKarty(hrac, karty, "$bang.dialog.general_store_choice", 1, 1, false)
                 .thenAccept(id->{
                     int idKarty;
                     try{

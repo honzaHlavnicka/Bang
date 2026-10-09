@@ -15,7 +15,14 @@
       "indians_discard": "Choose what you'll discard due to Indians!",
       "target_prompt": "Target who?",
       "kit_draw": "Which two will you draw?",
-      "sid_discard": "Choose 2 cards to regain 1 life"
+      "sid_discard": "Choose 2 cards to regain 1 life",
+      "wheel_prison_heading": "Will {{name}} stay in prison?",
+      "wheel_prison_stay": "Prison",
+      "wheel_dynamite_heading": "Will {{name}} explode?",
+      "wheel_dynamite_big": "Big",
+      "wheel_dynamite_explode": "Boom",
+      "wheel_barrel_heading": "Will {{name}} be saved by barrel?",
+      "wheel_barrel_saved": "Saved"
     },
     "status": {
       "choosing_target": "{{name}} is choosing a target...",
@@ -24,6 +31,19 @@
       "duel_choosing": "{{name}} is choosing a player for a duel.",
       "duel_turn": "{{target}} will either lose a life in the duel, or pass it back to {{attacker}}",
       "general_store": "{{name}} is choosing a card from the General Store"
+    },
+    "notification": {
+      "narrowly_saved": "{{name}} was narrowly saved!",
+      "died": "{{name}} died 💔",
+      "too_many_cards": "Too many cards",
+      "hit": "Hit!",
+      "missed": "Missed!",
+      "duel_won": "{{winner}} won the duel",
+      "duel_continues": "Duel continues",
+      "beer_does_not_work": "Beer has no effect"
+    },
+    "button": {
+      "sid_ketchum": "Discard two cards for 1 life"
     }
   }
 }

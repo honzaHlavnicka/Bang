@@ -41,7 +41,7 @@ public class Bang extends Karta implements HratelnaKarta{
         int vzdalenostKamDosahnePodleZbrane = kym.getEfekty().stream().filter(e -> e instanceof Zbran).findAny().map(e -> ((Zbran) e).getVzdalenost()).orElse(1);
         java.util.List<Hrac> hraciNaVyber = kym.vzdalenostPod(vzdalenostKamDosahnePodleZbrane, true);
 
-        hra.getKomunikator().pozadejOHrace(kym, hraciNaVyber, "Vyber koho chceš zastřelit!", 1, 1, true)
+        hra.getKomunikator().pozadejOHrace(kym, hraciNaVyber, "$bang.dialog.shoot_target", 1, 1, true)
             .thenAccept(odpoved -> {
                 try{
                     Hrac naKoho = hra.getHrac(Integer.parseInt(odpoved));
