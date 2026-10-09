@@ -297,4 +297,13 @@ public interface Hrac {
      */
     @PovolenePluginu
     public void pridejVylozenouKartu(VylozitelnaKarta karta, Hrac kym);
+
+    /**
+     * Indikuje, zda je hráč bot bez připojení ws. (Bot, který se připojuje jako normální hráč se počítá jako normální hráč)
+     * @return true pokud je hráč bot
+     */
+    @PovolenePluginu
+    default boolean isBot() {
+        return false;
+    }
 }

@@ -10,6 +10,7 @@ import cz.honzaa.bang.sdk.PovolenePluginu;
 import cz.honzaa.bang.sdk.Chyba;
 import cz.honzaa.bang.HraImp;
 import cz.honzaa.bang.HracImp;
+import cz.honzaa.bang.sdk.HerniBot;
 import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.Karta;
 import cz.honzaa.bang.sdk.Efekt;
@@ -21,6 +22,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.java_websocket.WebSocket;
@@ -181,6 +183,27 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
                     PostHogTracker.trackError("KomunikatorHryImp", "Chyba při vyhazování hráče", ex);
                     posliChybu(hrac, Chyba.CHYBA_PROTOKOLU);
                 }
+                return;
+            }
+
+            if (message.startsWith("pridejBota")) {
+                if (!hrac.equals(getAdmin())) {
+                    posliChybu(hrac, Chyba.NEJSI_ADMIN_HRY);
+                    return;
+                }
+                if (hra.isZahajena()) {
+                    posliChybu(hrac, Chyba.KARTA_NEJDE_ZAHRAT);
+                    return;
+                }
+                if (hra.getHerniPravidla() != null && !hra.getHerniPravidla().podporujeBoty()) {
+                    posliChybu(hrac, Chyba.KARTA_NEJDE_ZAHRAT);
+                    return;
+                }
+                String botJmeno = null;
+                if (message.startsWith("pridejBota:")) {
+                    botJmeno = message.substring("pridejBota:".length()).trim();
+                }
+                pridejBota(botJmeno);
                 return;
             }
 
@@ -386,6 +409,41 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
         }
 
         return true;
+    }
+
+    public synchronized boolean pridejBota(String botJmeno) {
+        if (hra.isZahajena()) {
+            return false;
+        }
+        if (pocetPripojenychHracu.get() >= 30) {
+            return false;
+        }
+
+        HracImp botHrac = hra.novyHrac();
+        botHrac.setJeBot(true);
+        if (botJmeno != null && !botJmeno.isBlank()) {
+            botHrac.setJmeno(botJmeno);
+        } else {
+            botHrac.setJmeno(generujJmenoBota());
+        }
+
+        hra.hracVytvoren(botHrac);
+        posliNovehoHrace(botHrac);
+        pocetPripojenychHracu.incrementAndGet();
+        posliHraceVsem();
+
+        logger.info("Do hry {} byl přidán bot: {}", idHry, botHrac.getJmeno());
+        return true;
+    }
+
+    private String generujJmenoBota() {
+        int botCislo = 1;
+        for (cz.honzaa.bang.sdk.Hrac h : hra.getHraci()) {
+            if (h.isBot()) {
+                botCislo++;
+            }
+        }
+        return "Bot " + botCislo;
     }
     
     public void nactiHru(WebSocket conn){
@@ -641,6 +699,17 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
     @Override
     @PovolenePluginu
     public CompletableFuture<String> pozadejOHrace(Hrac odKoho, List<Hrac> hraci,String nadpis,int min, int max, boolean closable){
+        if (odKoho instanceof HracImp && ((HracImp) odKoho).isBot()) {
+            HracImp botHrac = (HracImp) odKoho;
+            HerniBot bot = botHrac.getBotInstance();
+            if (bot != null) {
+                return CompletableFuture.supplyAsync(
+                    () -> bot.pozadavekNaHrace(hra, odKoho, hraci, nadpis, min, max).join(),
+                    CompletableFuture.delayedExecutor(300, TimeUnit.MILLISECONDS)
+                );
+            }
+        }
+
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
         json.put("nadpis", nadpis);
@@ -665,6 +734,17 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
     @Override
     @PovolenePluginu
     public CompletableFuture<String> pozadejOKarty(Hrac odKoho, List<Karta> karty, String nadpis, int min, int max, boolean closable){
+        if (odKoho instanceof HracImp && ((HracImp) odKoho).isBot()) {
+            HracImp botHrac = (HracImp) odKoho;
+            HerniBot bot = botHrac.getBotInstance();
+            if (bot != null) {
+                return CompletableFuture.supplyAsync(
+                    () -> bot.pozadavekNaKarty(hra, odKoho, karty, nadpis, min, max).join(),
+                    CompletableFuture.delayedExecutor(300, TimeUnit.MILLISECONDS)
+                );
+            }
+        }
+
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
         json.put("nadpis", nadpis);
@@ -691,6 +771,17 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
     @Override
     @PovolenePluginu
     public CompletableFuture<String> pozadejOVyberMoznosti(Hrac odKoho, List<String> moznosti, String nadpis, boolean closable){
+        if (odKoho instanceof HracImp && ((HracImp) odKoho).isBot()) {
+            HracImp botHrac = (HracImp) odKoho;
+            HerniBot bot = botHrac.getBotInstance();
+            if (bot != null) {
+                return CompletableFuture.supplyAsync(
+                    () -> bot.pozadavekNaMoznosti(hra, odKoho, moznosti, nadpis).join(),
+                    CompletableFuture.delayedExecutor(300, TimeUnit.MILLISECONDS)
+                );
+            }
+        }
+
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
         json.put("notClosable", !closable);
@@ -710,6 +801,17 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
     @Override
     @PovolenePluginu
     public CompletableFuture<String> pozadejOText(Hrac odKoho, String nadpis, String placeholder, String buttonText, boolean closable){
+        if (odKoho instanceof HracImp && ((HracImp) odKoho).isBot()) {
+            HracImp botHrac = (HracImp) odKoho;
+            HerniBot bot = botHrac.getBotInstance();
+            if (bot != null) {
+                return CompletableFuture.supplyAsync(
+                    () -> bot.pozadavekNaText(hra, odKoho, nadpis, placeholder).join(),
+                    CompletableFuture.delayedExecutor(300, TimeUnit.MILLISECONDS)
+                );
+            }
+        }
+
         JSONObject json = new JSONObject();
         json.put("id", "data-id");
         json.put("title", nadpis);
@@ -1113,6 +1215,10 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
         kartaObj.put("jeVylozitelna", karta instanceof VylozitelnaKarta);
         kartaObj.put("jeEfekt", karta instanceof Efekt);
         return kartaObj;
+    }
+
+    public HraImp getHra() {
+        return hra;
     }
     
 }

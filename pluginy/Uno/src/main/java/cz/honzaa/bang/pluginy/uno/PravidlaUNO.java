@@ -169,5 +169,9 @@ public class PravidlaUNO implements HerniPravidla{
         // Oznám konec hry
         hra.getKomunikator().posliKonecHry();
     }
-    
+
+    @Override
+    public cz.honzaa.bang.sdk.HerniBot vytvorBota(Hra hra, Hrac hrac) {
+        return new UnoBot();
+    }
 }

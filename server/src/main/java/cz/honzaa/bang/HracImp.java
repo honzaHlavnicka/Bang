@@ -14,11 +14,14 @@ import cz.honzaa.bang.sdk.Hra;
 import cz.honzaa.bang.sdk.Hrac;
 import cz.honzaa.bang.sdk.HratelnaKarta;
 import cz.honzaa.bang.sdk.Karta;
+import cz.honzaa.bang.sdk.HerniBot;
 import cz.honzaa.bang.sdk.KomunikatorHry;
 import cz.honzaa.bang.sdk.NejdeZahratException;
 import cz.honzaa.bang.sdk.Postava;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,11 +44,18 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
     private Hra hra;
     private final int id;
     private static int nextId = 0;
+    private boolean jeBot;
+    private HerniBot botInstance;
  
 
     
     public HracImp(Hra hra){
+        this(hra, false);
+    }
+    
+    public HracImp(Hra hra, boolean jeBot){
         this.hra = hra;
+        this.jeBot = jeBot;
         jmeno = "nepojmenovaný hráč";
         id = nextId;
         nextId++;
@@ -324,7 +334,32 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
         for (Efekt e : new ArrayList<>(efekty)) {
             e.naZacatekTahu(hra, this);
         }
-        hra.getHerniPravidla().zacalTah(this);
+        if (hra.getHerniPravidla() != null) {
+            hra.getHerniPravidla().zacalTah(this);
+        }
+
+        if (jeBot && botInstance != null) {
+            naplanujTahBota();
+        }
+    }
+
+    public void naplanujTahBota() {
+        naplanujTahBota(600);
+    }
+
+    public void naplanujTahBota(long delayMs) {
+        if (botInstance == null || !jeBot) {
+            return;
+        }
+        CompletableFuture.delayedExecutor(delayMs, TimeUnit.MILLISECONDS).execute(() -> {
+            try {
+                if (jeNaTahu() && jeZivy()) {
+                    botInstance.naTahu(hra, this);
+                }
+            } catch (Exception ex) {
+                logger.error("Chyba při vykonávání tahu bota {}: {}", getJmeno(), ex.getMessage(), ex);
+            }
+        });
     }
     
     /**
@@ -776,13 +811,15 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
         sb.append(",\"isAdmin\":");
         sb.append(this.equals(hra.getKomunikator().getAdmin()));
 
-        boolean isOnline = false;
-        if (hra != null && hra.getKomunikator() instanceof cz.honzaa.bang.net.KomunikatorHryImp) {
+        boolean isOnline = jeBot;
+        if (!jeBot && hra != null && hra.getKomunikator() instanceof cz.honzaa.bang.net.KomunikatorHryImp) {
             cz.honzaa.bang.net.KomunikatorHryImp kom = (cz.honzaa.bang.net.KomunikatorHryImp) hra.getKomunikator();
             isOnline = kom.jeHracPripojen(this);
         }
         sb.append(",\"isOnline\":");
         sb.append(isOnline);
+        sb.append(",\"isBot\":");
+        sb.append(jeBot);
 
         sb.append(",\"vylozeneKarty\":[");
         boolean prvniKarta = true;
@@ -815,6 +852,31 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
     @PovolenePluginu
     public int getCelkovyBonusDosahu() {
         return this.getEfekty().stream().mapToInt(Efekt::getBonusDosahu).sum();
+    }
+
+    @Override
+    @PovolenePluginu
+    public boolean isBot() {
+        return jeBot;
+    }
+
+    public boolean isJeBot() {
+        return jeBot;
+    }
+
+    public void setJeBot(boolean jeBot) {
+        this.jeBot = jeBot;
+    }
+
+    public HerniBot getBotInstance() {
+        return botInstance;
+    }
+
+    public void setBotInstance(HerniBot botInstance) {
+        this.botInstance = botInstance;
+        if (botInstance != null) {
+            this.jeBot = true;
+        }
     }
 }
 

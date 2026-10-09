@@ -10,6 +10,7 @@ import cz.honzaa.bang.sdk.PovolenePluginu;
 import cz.honzaa.bang.pravidla.SpravceHernichPravidel;
 import cz.honzaa.bang.sdk.HerniPlugin;
 import cz.honzaa.bang.sdk.HerniPravidla;
+import cz.honzaa.bang.sdk.HerniBot;
 
 import cz.honzaa.bang.net.KomunikatorHryImp;
 import cz.honzaa.bang.sdk.UIPrvek;
@@ -214,12 +215,16 @@ public class HraImp implements cz.honzaa.bang.sdk.Hra{
 
             for (HracImp hrac : hraci) {
                 hrac.zajistiPostavu();
+                if (hrac.isBot() && hrac.getBotInstance() == null && herniPravidla != null) {
+                    HerniBot bot = herniPravidla.vytvorBota(this, hrac);
+                    hrac.setBotInstance(bot);
+                }
             }
 
+            spravceTahu = new SpravceTahuImp(hraci);
             herniPravidla.poSpusteniHry();
             
             komunikator.posliZahajeniHry();
-            spravceTahu = new SpravceTahuImp(hraci);
             
             for (Hrac hrac : hraci) {
                 herniPravidla.pripravitHrace(hrac);

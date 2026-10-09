@@ -181,4 +181,24 @@ public interface HerniPravidla {
     default public void uiButtonClicked(Hrac hrac, int uiId){
         // Výchozí chování - nic se neděje
     }
+
+    /**
+     * Vytvoří instanci bota pro danou hru a hráče.
+     * @param hra instance hry
+     * @param hrac hráč reprezentující bota
+     * @return instance bota implementující HerniBot
+     */
+    @PovolenePluginu
+    default public HerniBot vytvorBota(Hra hra, Hrac hrac) {
+        return new VychoziBot();
+    }
+
+    /**
+     * Indikuje, zda tato hra podporuje boty.
+     * @return true pokud hra podporuje přidání botů
+     */
+    @PovolenePluginu
+    default public boolean podporujeBoty() {
+        return false;
+    }
 }
