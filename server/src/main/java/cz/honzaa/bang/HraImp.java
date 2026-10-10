@@ -10,6 +10,7 @@ import cz.honzaa.bang.sdk.PovolenePluginu;
 import cz.honzaa.bang.pravidla.SpravceHernichPravidel;
 import cz.honzaa.bang.sdk.HerniPlugin;
 import cz.honzaa.bang.sdk.HerniPravidla;
+import cz.honzaa.bang.sdk.HerniBot;
 
 import cz.honzaa.bang.net.KomunikatorHryImp;
 import cz.honzaa.bang.sdk.UIPrvek;
@@ -134,12 +135,14 @@ public class HraImp implements cz.honzaa.bang.sdk.Hra{
     }
     
     /**
-     * Připravý hráče poté, co už je spojen se serverm. měla by se volat hned po novyHrac()
+     * Připravý hráče poté, co už je spojen se serverm. Měla by se volat hned po novyHrac() a po natstaveni jeBot()
      * @param hrac hráč, který by se měl připravit
      */
     @Override
     public void hracVytvoren(Hrac hrac){
         //metoda co se spouští po vytvoření hráče a zařazení ho do komunikátoru
+        
+        // TODO: Oveřit co to tady ještě stále dělá.
 
         if(balicekPostav.size() < 2){//pokud už nezbyde postava, tak to tam nejakou soupne. nemelo by se to stat kvuli maximalnimu poctu hracu, ten ale nemusí být dodren.
             balicekPostav.add(PostavaImp.TESTOVACI);
@@ -214,12 +217,16 @@ public class HraImp implements cz.honzaa.bang.sdk.Hra{
 
             for (HracImp hrac : hraci) {
                 hrac.zajistiPostavu();
+                if (hrac.isBot() && hrac.getBotInstance() == null && herniPravidla != null) {
+                    HerniBot bot = herniPravidla.vytvorBota(this, hrac);
+                    hrac.setBotInstance(bot);
+                }
             }
 
+            spravceTahu = new SpravceTahuImp(hraci);
             herniPravidla.poSpusteniHry();
             
             komunikator.posliZahajeniHry();
-            spravceTahu = new SpravceTahuImp(hraci);
             
             for (Hrac hrac : hraci) {
                 herniPravidla.pripravitHrace(hrac);

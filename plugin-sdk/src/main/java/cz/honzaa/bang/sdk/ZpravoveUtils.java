@@ -91,6 +91,8 @@ public final class ZpravoveUtils {
         return sb.toString();
     }
 
+
+
     /**
      * Pomocná metoda, která připojí na konec sb Object podle toho, jaky typ objektu to je
      * a objekt escapuje.

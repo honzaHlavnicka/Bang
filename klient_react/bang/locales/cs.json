@@ -204,6 +204,9 @@
     "Vy":"Vy",
     "error": {
         "nepripojen_ke_hre": "Nejsi připojen ke hře.",
+        "hra_uz_zahajena": "Hra už byla zahájena.",
+        "hra_nepodporuje_boty": "Tato hra nepodporuje boty.",
+        "hra_nepodporuje": "Tato hra nepodporuje tuto funkci.",
         "karta_neexistuje": "Tato karta neexistuje.",
         "karta_neni_hratelna": "Tato karta není hratelná.",
         "karta_nejde_zahrat": "Tato karta teď nejde zahrát.",

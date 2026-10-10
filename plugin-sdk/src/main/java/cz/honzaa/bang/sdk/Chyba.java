@@ -25,8 +25,9 @@ public enum Chyba {
     DOSLI_KARTY_V_BALICKU("$error.dosli_karty_v_balicku",16,3),
     NEJSI_ADMIN_HRY("$error.nejsi_admin_hry",17,1),
     PLNY_SERVER("$error.plny_server",18,1),
-    VYHOZEN_ZE_HRY("$error.vyhozen_ze_hry",19,1)
-    
+    VYHOZEN_ZE_HRY("$error.vyhozen_ze_hry",19,1),
+    HRA_UZ_ZAHAJENA("$error.hra_uz_zahajena",20,1),
+    HRA_NEPODPORUJE("$error.hra_nepodporuje",21,1)
     ;
     private final String zprava;
     private final int kod;

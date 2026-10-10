@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ZpravoveUtilsTest {
 
     @Test
-    @DisplayName("localize bez parametrů správně doplňuje prefix $ a nezdvojuje ho")
-    public void testLocalizeWithoutParams() {
+    @DisplayName("lokalizuj bez parametrů správně doplňuje prefix $ a nezdvojuje ho")
+    public void testLokalizujWithoutParams() {
         assertEquals("", ZpravoveUtils.lokalizuj(null));
         assertEquals("", ZpravoveUtils.lokalizuj(""));
         assertEquals("$bang.dialog.shoot_target", ZpravoveUtils.lokalizuj("bang.dialog.shoot_target"));
@@ -20,8 +20,8 @@ public class ZpravoveUtilsTest {
     }
 
     @Test
-    @DisplayName("localize s varargs páry klíč-hodnota automaticky escapuje parametry")
-    public void testLocalizeWithVarargs() {
+    @DisplayName("lokalizuj s varargs páry klíč-hodnota automaticky escapuje parametry")
+    public void testLokalizujWithVarargs() {
         String result = ZpravoveUtils.lokalizuj("bang.dialog.shoot_target", "name", "Honza \"Bomba\"");
         assertEquals("$bang.dialog.shoot_target:{\"name\":\"Honza \\\"Bomba\\\"\"}", result);
 
@@ -30,8 +30,8 @@ public class ZpravoveUtilsTest {
     }
 
     @Test
-    @DisplayName("localize s mapou parametrů zachovává a správně serializuje hodnoty")
-    public void testLocalizeWithMap() {
+    @DisplayName("lokalizuj s mapou parametrů zachovává a správně serializuje hodnoty")
+    public void testLokalizujWithMap() {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("name", "Joe");
         map.put("count", 3);
@@ -42,17 +42,10 @@ public class ZpravoveUtilsTest {
     }
 
     @Test
-    @DisplayName("localize vyhodí výjimku při lichém počtu varargs parametrů")
-    public void testLocalizeOddVarargsThrowsException() {
+    @DisplayName("lokalizuj vyhodí výjimku při lichém počtu varargs parametrů")
+    public void testLokalizujOddVarargsThrowsException() {
         assertThrows(IllegalArgumentException.class, () -> {
             ZpravoveUtils.lokalizuj("test.key", "singleKey");
         });
-    }
-
-    @Test
-    @DisplayName("format alias funguje shodně jako localize")
-    public void testFormatAlias() {
-        assertEquals(ZpravoveUtils.lokalizuj("bang.test"), ZpravoveUtils.lokalizuj("bang.test"));
-        assertEquals(ZpravoveUtils.lokalizuj("bang.test", "k", "v"), ZpravoveUtils.lokalizuj("bang.test", "k", "v"));
     }
 }

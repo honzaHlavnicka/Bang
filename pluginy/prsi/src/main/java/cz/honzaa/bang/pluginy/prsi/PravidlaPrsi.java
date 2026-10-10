@@ -11,6 +11,7 @@ package cz.honzaa.bang.pluginy.prsi;
  * @author honza
  */
 import cz.honzaa.bang.sdk.Balicek;
+import cz.honzaa.bang.sdk.HerniBot;
 import cz.honzaa.bang.sdk.UIPrvek;
 import cz.honzaa.bang.sdk.HerniPravidla;
 import cz.honzaa.bang.sdk.Hra;
@@ -141,19 +142,27 @@ public class PravidlaPrsi implements HerniPravidla{
 
     @Override
     public boolean muzeZahrat(Karta co, Hrac kdo) {
-        Karta vrchni = hra.getOdhazovaciBalicek().nahledni();
+        Karta vrchni = hra.getOdhazovaciBalicek() != null ? hra.getOdhazovaciBalicek().nahledni() : null;
         if (vrchni instanceof PrsiSvrsek && ((PrsiSvrsek) vrchni).isCekaNaBarvu()) {
             return false; // Nikdo nemůže hrát, dokud se nevybere barva
         }
         
         //Pokud se má lízat na sedmičku, tak se nemůže hrát nic jiného.
-        if(pocetKaretNaLiznuti <= 0){
-            return true;
-        }else if(co instanceof PrsiSedmicka){
-            return true;
-        }else{
-            return false;
+        if (pocetKaretNaLiznuti > 0) {
+            return co instanceof PrsiSedmicka;
         }
+
+        if (co instanceof PrsiSvrsek) {
+            return true;
+        }
+
+        if (vrchni instanceof PrsiKarta && co instanceof PrsiKarta) {
+            PrsiKarta vrchniPrsi = (PrsiKarta) vrchni;
+            PrsiKarta hranaPrsi = (PrsiKarta) co;
+            return (vrchniPrsi.getBarva() != null && vrchniPrsi.getBarva().equals(hranaPrsi.getBarva())) ||
+                   (vrchniPrsi.getHodnota() != null && vrchniPrsi.getHodnota().equals(hranaPrsi.getHodnota()));
+        }
+        return true;
     }
     
     @Override
@@ -201,8 +210,15 @@ public class PravidlaPrsi implements HerniPravidla{
     public String getVychoziZadniObrazek() {
         return "marias/zezadu";
     }
-    
-    
-    
+
+    @Override
+    public HerniBot vytvorBota(Hra hra, Hrac hrac) {
+        return new PrsiBot();
+    }
+
+    @Override
+    public boolean podporujeBoty() {
+        return true;
+    }
 }
 

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -51,6 +52,10 @@ public class HraImpTest {
     public void setUp() {
         mockKomunikator = mock(KomunikatorHryImp.class);
         when(mockKomunikator.getIdHry()).thenReturn(111);
+        when(mockKomunikator.pozadejOHrace(any(), any(), any(), anyInt(), anyInt(), anyBoolean())).thenReturn(new CompletableFuture<>());
+        when(mockKomunikator.pozadejOKarty(any(), any(), any(), anyInt(), anyInt(), anyBoolean())).thenReturn(new CompletableFuture<>());
+        when(mockKomunikator.pozadejOVyberMoznosti(any(), any(), any(), anyBoolean())).thenReturn(new CompletableFuture<>());
+        when(mockKomunikator.pozadejOText(any(), any(), any(), any(), anyBoolean())).thenReturn(new CompletableFuture<>());
     }
 
     @Test

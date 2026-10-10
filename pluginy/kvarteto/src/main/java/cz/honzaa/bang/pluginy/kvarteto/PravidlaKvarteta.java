@@ -27,6 +27,9 @@ public class PravidlaKvarteta implements HerniPravidla{
     @Override
     public void poSpusteniHry() {
         List<Hrac> hraci = hra.getHrajiciHraci();
+        if (hraci == null || hraci.isEmpty()) {
+            return;
+        }
         int aktualniHrac = 0;
         
         while(!hra.getBalicek().jePrazdny()){

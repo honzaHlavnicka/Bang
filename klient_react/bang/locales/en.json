@@ -192,6 +192,9 @@
     "Vy":"You",
     "error": {
         "nepripojen_ke_hre": "You are not connected to the game.",
+        "hra_uz_zahajena": "Game has already started.",
+        "hra_nepodporuje_boty": "This game does not support bots.",
+        "hra_nepodporuje": "This game does not support this feature.",
         "karta_neexistuje": "This card does not exist.",
         "karta_neni_hratelna": "This card cannot be played.",
         "karta_nejde_zahrat": "This card cannot be played right now.",
