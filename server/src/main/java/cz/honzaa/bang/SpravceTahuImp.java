@@ -91,33 +91,38 @@ public class SpravceTahuImp implements cz.honzaa.bang.sdk.SpravceTahu{
             return naTahu;
         }
         if (kolikatyTah >= nasobicTahu) {
-            Tah tah;
-            if(!zmenenSmer){
-                tah = frontaTahu.pollFirst();
-            }else{
-                tah = frontaTahu.pollLast();
-            }
-            if (tah == null) {
-                throw new IllegalStateException("Ve frontě tahů není žádný hráč.");
-            }
-
-            if (!tah.jednorazovy) {
-                if(zmenenSmer){
-                    frontaTahu.addFirst(tah);
+            int pokusy = 0;
+            int maxPokusu = frontaTahu.size();
+            while (pokusy < maxPokusu) {
+                pokusy++;
+                Tah tah;
+                if(!zmenenSmer){
+                    tah = frontaTahu.pollFirst();
                 }else{
-                    frontaTahu.addLast(tah);
+                    tah = frontaTahu.pollLast();
+                }
+                if (tah == null) {
+                    throw new IllegalStateException("Ve frontě tahů není žádný hráč.");
+                }
+
+                if (!tah.jednorazovy) {
+                    if(zmenenSmer){
+                        frontaTahu.addFirst(tah);
+                    }else{
+                        frontaTahu.addLast(tah);
+                    }
+                }
+
+                poradiAktualni = false;
+
+                if (!tah.docasneZruseny) {
+                    naTahu = (HracImp) tah.hrac;
+                    kolikatyTah = 1;
+                    logger.info("Začíná tah hráče: {}", naTahu.getJmeno());
+                    return naTahu;
                 }
             }
-
-            if (!tah.docasneZruseny) {
-                naTahu = (HracImp) tah.hrac;
-                kolikatyTah = 1;
-                logger.info("Začíná tah hráče: {}", naTahu.getJmeno());
-                return naTahu;
-            } else {
-                // přeskočí vyřazeného hráče
-                return dalsiHrac();
-            }
+            return naTahu;
         }
 
         kolikatyTah++;

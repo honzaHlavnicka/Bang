@@ -372,4 +372,25 @@ public class HracImpTest {
         assertDoesNotThrow(() -> hrac.spalitKartu("1"));
         assertDoesNotThrow(() -> hrac.vylozitKartu("1", "0"));
     }
+
+    @Test
+    public void testKonecTahuVolaDalsiHracPouzeJednou() {
+        Hrac dalsiHrac = mock(Hrac.class);
+        when(mockSpravceTahu.dalsiHrac()).thenReturn(dalsiHrac);
+
+        hrac.konecTahu();
+
+        verify(mockSpravceTahu, times(1)).dalsiHrac();
+        verify(dalsiHrac, times(1)).zahajitTah();
+        verify(mockPravidla).skoncilTah(hrac);
+    }
+
+    @Test
+    public void testKonecTahuPriNullDalsiHrac() {
+        when(mockSpravceTahu.dalsiHrac()).thenReturn(null);
+
+        assertDoesNotThrow(() -> hrac.konecTahu());
+        verify(mockSpravceTahu, times(1)).dalsiHrac();
+        verify(mockPravidla).skoncilTah(hrac);
+    }
 }

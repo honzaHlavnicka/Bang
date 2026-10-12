@@ -236,4 +236,85 @@ public class SpravceTahuImpTest {
         assertNull(spravce.eso(), "Eso v prázdné frontě musí vrátit null");
         assertNull(spravce.dalsiHrac(), "dalsiHrac v prázdné frontě vrátí null");
     }
+
+    @Test
+    public void testCacheZneplatnenaPriDalsiHrac() {
+        SpravceTahuImp spravce = new SpravceTahuImp(List.of(hrac1, hrac2, hrac3));
+
+        // Před zahájením tahu: [hrac1, hrac2, hrac3]
+        List<Hrac> pred = spravce.getHrajiciHraci();
+        assertEquals(List.of(hrac1, hrac2, hrac3), pred);
+
+        // Hrac 1 začíná svůj tah
+        assertEquals(hrac1, spravce.dalsiHrac());
+
+        // Cache musí být zneplatněna: aktuální hráč (hrac1) je na konci, na indexu 0 je další hráč (hrac2)
+        List<Hrac> po = spravce.getHrajiciHraci();
+        assertEquals(List.of(hrac2, hrac3, hrac1), po);
+
+        // Hrac 2 začíná svůj tah
+        assertEquals(hrac2, spravce.dalsiHrac());
+        assertEquals(List.of(hrac3, hrac1, hrac2), spravce.getHrajiciHraci());
+    }
+
+    @Test
+    public void testBezpecnostPriVyrazeniVsechHracu() {
+        SpravceTahuImp spravce = new SpravceTahuImp(List.of(hrac1, hrac2));
+        assertEquals(hrac1, spravce.dalsiHrac());
+
+        spravce.vyraditHrace(hrac1);
+        spravce.vyraditHrace(hrac2);
+
+        // Nesmí skončit StackOverflowError, bezpečně vrátí naTahu
+        assertDoesNotThrow(() -> {
+            Hrac result = spravce.dalsiHrac();
+            assertEquals(hrac1, result);
+        });
+    }
+
+    @Test
+    public void testSpravnePoradiTahuPresKonecTahuHracuTriHraci() {
+        SpravceTahuImp spravce = new SpravceTahuImp(List.of(hrac1, hrac2, hrac3));
+        when(mockHra.getSpravceTahu()).thenReturn(spravce);
+
+        // Hra začne - první hráč začíná tah
+        Hrac prvni = spravce.dalsiHrac();
+        assertEquals(hrac1, prvni);
+        prvni.zahajitTah();
+        assertEquals(hrac1, spravce.getNaTahu());
+
+        // Hráč 1 ukončí tah -> na tahu MUSÍ být hráč 2
+        hrac1.konecTahu();
+        assertEquals(hrac2, spravce.getNaTahu(), "Po hráči 1 musí hrát hráč 2, ne hráč 3!");
+
+        // Hráč 2 ukončí tah -> na tahu MUSÍ být hráč 3
+        hrac2.konecTahu();
+        assertEquals(hrac3, spravce.getNaTahu(), "Po hráči 2 musí hrát hráč 3!");
+
+        // Hráč 3 ukončí tah -> na tahu MUSÍ být znovu hráč 1
+        hrac3.konecTahu();
+        assertEquals(hrac1, spravce.getNaTahu(), "Po hráči 3 se musí tah vrátit hráči 1!");
+
+        // Další cyklus
+        hrac1.konecTahu();
+        assertEquals(hrac2, spravce.getNaTahu());
+    }
+
+    @Test
+    public void testSpravnePoradiTahuPresKonecTahuDvaHraci() {
+        SpravceTahuImp spravce = new SpravceTahuImp(List.of(hrac1, hrac2));
+        when(mockHra.getSpravceTahu()).thenReturn(spravce);
+
+        Hrac prvni = spravce.dalsiHrac();
+        assertEquals(hrac1, prvni);
+        prvni.zahajitTah();
+
+        // Hráč 1 ukončí tah -> MUSÍ hrát hráč 2
+        hrac1.konecTahu();
+        assertEquals(hrac2, spravce.getNaTahu(), "Ve 2 hráčích po hráči 1 musí hrát hráč 2!");
+
+        // Hráč 2 ukončí tah -> MUSÍ hrát hráč 1
+        hrac2.konecTahu();
+        assertEquals(hrac1, spravce.getNaTahu(), "Ve 2 hráčích po hráči 2 musí hrát hráč 1!");
+    }
 }

@@ -46,6 +46,7 @@ public class PravidlaPrsi implements HerniPravidla{
         if(kym.getKarty().isEmpty()){
             // Hráč skončil - přidej ho do pořadí
             poradiVyher.add(kym);
+            hra.getSpravceTahu().vyraditHrace(kym);
             
             int pocetZbyvajicichHracu = hra.getHraci().size() - poradiVyher.size();
             

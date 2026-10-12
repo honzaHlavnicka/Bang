@@ -13,7 +13,6 @@
 
     <modules>
         <module>plugin-sdk</module>
-        <module>server</module>
         <module>plugin-js</module>
         <module>pluginy/VychoziHry</module>
         <module>pluginy/bang</module>
@@ -21,6 +20,7 @@
         <module>pluginy/prsi</module>
         <module>pluginy/kvarteto</module>
         <module>pluginy/vybusnaKotatka</module>
+        <module>server</module>
     </modules>
     
 

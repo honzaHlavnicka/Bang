@@ -427,6 +427,9 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
         if (pocetPripojenychHracu.get() >= 30) {
             return false;
         }
+        if (hra.getHerniPravidla() != null && !hra.getHerniPravidla().podporujeBoty()) {
+            return false;
+        }
 
         HracImp botHrac = hra.novyHrac();
         botHrac.setJeBot(true);

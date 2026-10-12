@@ -765,8 +765,11 @@ public class HracImp implements cz.honzaa.bang.sdk.Hrac{
             e.naKonecTahu(hra, this);
         }
         // zachovat původní pořadí: nejdříve další hráč, pak pravidla.skoncilTah
-        if (hra.getSpravceTahu() != null && hra.getSpravceTahu().dalsiHrac() != null) {
-            hra.getSpravceTahu().dalsiHrac().zahajitTah();
+        if (hra.getSpravceTahu() != null) {
+            Hrac dalsi = hra.getSpravceTahu().dalsiHrac();
+            if (dalsi != null) {
+                dalsi.zahajitTah();
+            }
         }
         if (hra.getHerniPravidla() != null) {
             hra.getHerniPravidla().skoncilTah(this);

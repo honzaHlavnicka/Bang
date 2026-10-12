@@ -47,6 +47,11 @@ public class SpravceHernichPravidel {
         return null;
     }
 
+    public static int pridejPlugin(HerniPlugin plugin) {
+        pluginy.add(plugin);
+        return pluginy.size() - 1;
+    }
+
     public static HerniPravidla vytvorHerniPravidla(int id, HraImp hra) {
         HerniPlugin p = getPlugin(id);
         if (p != null) {

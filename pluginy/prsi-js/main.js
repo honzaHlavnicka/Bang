@@ -220,6 +220,7 @@ const PravidlaPluginu = {
 
             if (!uzTamJe) {
                 poradiVyher.push(kym);
+                hra.getSpravceTahu().vyraditHrace(kym);
                 
                 let hraci = hra.getHraci();
                 let pocetHrajicich = 0;

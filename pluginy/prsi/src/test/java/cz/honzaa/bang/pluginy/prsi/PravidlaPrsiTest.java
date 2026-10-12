@@ -127,13 +127,27 @@ public class PravidlaPrsiTest {
     }
 
     @Test
-    @DisplayName("Když hráč odhodí poslední kartu, zařadí se do pořadí a při zbývajícím 1 hráči hra končí")
+    @DisplayName("Když hráč odhodí poslední kartu, zařadí se do pořadí, vyřadí se ze správce tahu a při zbývajícím 1 hráči hra končí")
     public void testUkonceniHryPoPosledniKarter() {
         when(hrac1.getKarty()).thenReturn(List.of()); // Hráč 1 nemá karty (vyhrál)
 
         pravidla.poOdehrani(hrac1);
 
+        verify(spravceTahu).vyraditHrace(hrac1);
         verify(komunikator).posliVysledky(any(Hrac[][].class));
         verify(komunikator).posliKonecHry();
+    }
+
+    @Test
+    @DisplayName("Když hráč skončí ve hře 3 hráčů, je vyřazen z koloběhu tahů a hra pokračuje pro zbývající")
+    public void testHracVyrazenPriViceZbyvajicichHracich() {
+        Hrac hrac3 = Mockito.mock(Hrac.class);
+        when(hra.getHraci()).thenReturn(List.of(hrac1, hrac2, hrac3));
+        when(hrac1.getKarty()).thenReturn(List.of());
+
+        pravidla.poOdehrani(hrac1);
+
+        verify(spravceTahu).vyraditHrace(hrac1);
+        verify(komunikator, never()).posliKonecHry();
     }
 }
