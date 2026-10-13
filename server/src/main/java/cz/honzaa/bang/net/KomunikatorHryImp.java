@@ -103,8 +103,6 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
                     }
                     String preklady = hra.getPreklady(jazyk);
                     conn.send("preklady:" + preklady);
-                } else if (message.startsWith("nactiHru")) {
-                    nactiHru(conn);
                 } else if (message.startsWith("getIdHry")) {
                     conn.send("setIdHry:" + idHry);
                 } else {

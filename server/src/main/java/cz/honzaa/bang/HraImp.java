@@ -41,6 +41,7 @@ public class HraImp implements cz.honzaa.bang.sdk.Hra{
      */
     private List<HracImp> hraci = new CopyOnWriteArrayList<>(); // lepší pro thread safety (nemění se prakticky nikdy, ale čte se)
     private boolean zahajena = false;
+    private boolean ukoncena = false;
     private final Stack<cz.honzaa.bang.sdk.Postava>  balicekPostav;
     private KomunikatorHryImp komunikator;
     private BalicekImp<Karta> balicek;
@@ -396,6 +397,22 @@ public class HraImp implements cz.honzaa.bang.sdk.Hra{
             return new java.util.ArrayList<>();
         }
         return spravceTahu.getHrajiciHraci();
+    }
+
+    @Override
+    public boolean isUkoncena() {
+        return ukoncena;
+    }
+
+    @Override
+    public void ukoncit() {
+        if(ukoncena){
+            return;
+        }
+        ukoncena = true;
+        spravceTahu = null;
+        // TODO: úklid
+        
     }
 
 }

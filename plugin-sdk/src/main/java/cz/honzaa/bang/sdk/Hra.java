@@ -68,6 +68,9 @@ public interface Hra {
 
     @PovolenePluginu
     public boolean isZahajena();
+    
+    @PovolenePluginu
+    public boolean isUkoncena();
 
     @PovolenePluginu
     public HerniPravidla getHerniPravidla();
@@ -81,6 +84,15 @@ public interface Hra {
      */
     @PovolenePluginu
     public void setZahajena(boolean zahajena);
+    
+    
+    /**
+     * Ukončí hru, uklidí po sobě, vypne boty, pokud je to nutné,
+     * ale neukončí spojení.
+     * 
+     */
+    @PovolenePluginu
+    public void ukoncit();
     
     /**
      * Vrátí originál balíčku

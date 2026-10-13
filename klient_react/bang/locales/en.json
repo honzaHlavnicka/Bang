@@ -149,7 +149,7 @@
     "zadej text": "enter text",
     "Byl jsi pozván do jiné hry. Chceš se tam připojit?": "You have been invited to another game. Do you want to join it?",
     "Potvrzení": "Confirmation",
-    "máš nyní životů": "you now have {{count}} health",
+    "máš nyní životů": "You now have {{count}} health",
     "Konec hry": "Game over",
     "Hru vyhrál hráč . Gratuluji!": "Player {{winner}} has won the game. Congratulations!",
     "Někdo vyhrál, neví se kdo.": "Someone has won, it's not known who.",

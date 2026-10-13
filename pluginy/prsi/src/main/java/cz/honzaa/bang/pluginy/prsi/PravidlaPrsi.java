@@ -205,6 +205,7 @@ public class PravidlaPrsi implements HerniPravidla{
         
         hra.getKomunikator().posliVysledky(vysledky);
         hra.getKomunikator().posliKonecHry();
+        hra.ukoncit();
     }
 
     @Override
