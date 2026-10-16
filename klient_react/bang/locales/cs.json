@@ -202,6 +202,10 @@
     "Podmínky a soukromí": "Podmínky a soukromí",
     "Podpořit": "Podpořit",
     "Vy":"Vy",
+    "Připojen v jiné záložce": "Připojen v jiné záložce",
+    "Hra je otevřena v jiné záložce nebo okně. Chceš přepnout hru sem?": "Hra je otevřena v jiné záložce nebo okně. Chceš přepnout hru sem?",
+    "Přepnout hru sem": "Přepnout hru sem",
+    "Odejít": "Odejít",
     "error": {
         "nepripojen_ke_hre": "Nejsi připojen ke hře.",
         "hra_uz_zahajena": "Hra už byla zahájena.",
@@ -221,6 +225,7 @@
         "nejde_si_liznout": "Teď si nemůžeš líznout kartu.",
         "spatne_heslo": "Špatné heslo.",
         "uz_pripojen": "Už jsi připojen k jiné hře.",
+        "pripojen_v_jine_zalozce": "Připojen v jiné záložce.",
         "dosli_karty_v_balicku": "Došly karty v balíčku.",
         "nejsi_admin_hry": "Nejsi administrátorem této hry.",
         "plny_server": "Server je plný.",

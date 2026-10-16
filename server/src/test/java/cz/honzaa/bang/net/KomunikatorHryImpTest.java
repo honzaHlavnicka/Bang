@@ -188,6 +188,7 @@ public class KomunikatorHryImpTest {
         boolean reconnectOk = komunikator.vraciSeHrac(newConn, token);
         assertTrue(reconnectOk);
 
+        verify(mockConn).send(contains("\"kod\":" + Chyba.PRIPOJEN_V_JINE_ZALOZCE.getKod()));
         verify(mockConn).close(); // Staré spojení musí být uzavřeno
         assertTrue(komunikator.jeHracPripojen(hrac1));
 

@@ -212,11 +212,13 @@ export default function Dialog() {
                         <button className={globalCSS.button} onClick={() => {
                             closeDialog();
                             if(dialog.callback) dialog.callback(true);
-                        }}>{t("dialog.Ano")}</button>
-                        <button className={globalCSS.button} onClick={() => {
-                            closeDialog();
-                            if(dialog.callback) dialog.callback(false);
-                        }}>{t("dialog.Ne")}</button>
+                        }}>{dialog.data.confirmText || t("dialog.Ano")}</button>
+                        {!dialog.data.hideCancel && (
+                            <button className={globalCSS.button} onClick={() => {
+                                closeDialog();
+                                if(dialog.callback) dialog.callback(false);
+                            }}>{dialog.data.cancelText || t("dialog.Ne")}</button>
+                        )}
                     </div>
                 </div>
             );

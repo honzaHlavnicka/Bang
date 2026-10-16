@@ -16,6 +16,7 @@ import { PostHogProvider } from '@posthog/react'
 import config from './config';
 
 import '../i18n.ts';
+import LocalhostAlert from './components/LocalhostAlert.tsx'
 
 const isDebug: boolean = String(import.meta.env.VITE_DEBUG).trim().toLowerCase() === 'true';
 const posthogToken: string = String(import.meta.env.VITE_PUBLIC_POSTHOG_TOKEN);
@@ -85,6 +86,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <PostHogProvider client={posthog}>
       <DialogProvider>
+        <LocalhostAlert/>
         <GameProvider>
           <ZoomProvider >
             <ZoomDialog />

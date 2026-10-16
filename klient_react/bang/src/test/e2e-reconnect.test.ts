@@ -6,7 +6,9 @@ import { handleGameMessage, createGame, connectToGame, startGame } from '../modu
 import { gameStateDefault, type GameStateType } from '../modules/GameContext';
 
 const RECONNECT_PORT = 22218;
+const RESTART_PORT = 22219;
 const WS_URL = `ws://127.0.0.1:${RECONNECT_PORT}/ws`;
+let currentWsUrl = WS_URL;
 
 function killServer(proc: ChildProcess): Promise<void> {
   return new Promise((resolve) => {
@@ -267,10 +269,10 @@ describe('E2E Reconnect & Server Restart Scenarios', () => {
     if (serverProcess) {
       await killServer(serverProcess);
     }
-    const RESTART_PORT = 22219;
     serverProcess = await spawnJavaServer(RESTART_PORT);
+    currentWsUrl = `ws://127.0.0.1:${RESTART_PORT}/ws`;
 
-    const ws = new WebSocket(`ws://127.0.0.1:${RESTART_PORT}/ws`);
+    const ws = new WebSocket(currentWsUrl);
     await new Promise<void>((resolve) => {
       ws.on('open', () => resolve());
     });
@@ -323,5 +325,149 @@ describe('E2E Reconnect & Server Restart Scenarios', () => {
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     ws.close();
+  }, 25000);
+
+  it('Při otevření ve více záložkách a reconnectu v druhé záložce obdrží původní záložka chybu PRIPOJEN_V_JINE_ZALOZCE (kód 22) a je odpojena', async () => {
+    // 1. Založení hry
+    const wsAdmin = new WebSocket(currentWsUrl);
+    await new Promise<void>((resolve) => {
+      wsAdmin.on('open', () => resolve());
+    });
+
+    let gameCode = '';
+    wsAdmin.on('message', (msg) => {
+      const str = msg.toString();
+      if (str.startsWith('novaHra:')) {
+        gameCode = str.replace('novaHra:', '').trim();
+      }
+    });
+
+    wsAdmin.send('novaHra:0');
+    await new Promise<void>((resolve, reject) => {
+      const check = setInterval(() => {
+        if (gameCode) {
+          clearInterval(check);
+          resolve();
+        }
+      }, 50);
+      setTimeout(() => {
+        clearInterval(check);
+        reject(new Error('Admin nezískal kód hry'));
+      }, 5000);
+    });
+
+    // 2. Záložka 1 - Hráč se připojí do hry
+    const tab1Ws = new WebSocket(currentWsUrl);
+    await new Promise<void>((resolve) => {
+      tab1Ws.on('open', () => resolve());
+    });
+
+    let playerToken = '';
+    let tab1OtherTabCalled = false;
+    let tab1ReceivedErrorCode: number | null = null;
+    let tab1Closed = false;
+
+    let tab1State: GameStateType = { ...gameStateDefault };
+    const tab1Ref = { current: tab1State };
+    const setTab1State = (updater: (prev: GameStateType) => GameStateType) => {
+      tab1State = updater(tab1State);
+      tab1Ref.current = tab1State;
+    };
+
+    tab1Ws.on('message', (msg) => {
+      const str = msg.toString();
+      if (str.startsWith('token:')) {
+        playerToken = str.replace('token:', '').trim();
+      }
+      handleGameMessage(
+        { data: str } as MessageEvent,
+        setTab1State,
+        tab1Ref,
+        () => {},
+        tab1Ws as any,
+        () => {},
+        () => {
+          tab1OtherTabCalled = true;
+        }
+      );
+      if (str.startsWith('error:')) {
+        try {
+          const json = JSON.parse(str.replace('error:', ''));
+          tab1ReceivedErrorCode = json.kod;
+        } catch {
+          // ignore
+        }
+      }
+    });
+
+    tab1Ws.on('close', () => {
+      tab1Closed = true;
+    });
+
+    tab1Ws.send(`pripojeniKeHre:${gameCode}`);
+
+    await new Promise<void>((resolve, reject) => {
+      const check = setInterval(() => {
+        if (playerToken) {
+          clearInterval(check);
+          resolve();
+        }
+      }, 50);
+      setTimeout(() => {
+        clearInterval(check);
+        reject(new Error('Hráč v záložce 1 nezískal token'));
+      }, 5000);
+    });
+
+    // 3. Záložka 2 - Hráč otevře hru v nové záložce a zkusí se znovupřipojit s tokenem
+    const tab2Ws = new WebSocket(currentWsUrl);
+    await new Promise<void>((resolve) => {
+      tab2Ws.on('open', () => resolve());
+    });
+
+    let tab2Reconnected = false;
+    tab2Ws.on('message', (msg) => {
+      const str = msg.toString();
+      if (str === 'pripojenKeHre') {
+        tab2Reconnected = true;
+      }
+    });
+
+    tab2Ws.send(`vraceniSe:${playerToken}`);
+
+    // Záložka 2 musí být úspěšně znovupřipojena
+    await new Promise<void>((resolve, reject) => {
+      const check = setInterval(() => {
+        if (tab2Reconnected) {
+          clearInterval(check);
+          resolve();
+        }
+      }, 50);
+      setTimeout(() => {
+        clearInterval(check);
+        reject(new Error('Záložka 2 se nepřipojila'));
+      }, 5000);
+    });
+
+    // Záložka 1 musí obdržet kód chyby 22 (PRIPOJEN_V_JINE_ZALOZCE), zavolat onOtherTabConnected a socket musí být zavřen
+    await new Promise<void>((resolve, reject) => {
+      const check = setInterval(() => {
+        if (tab1OtherTabCalled && tab1ReceivedErrorCode === 22 && tab1Closed) {
+          clearInterval(check);
+          resolve();
+        }
+      }, 50);
+      setTimeout(() => {
+        clearInterval(check);
+        reject(new Error(`Záložka 1 neobdržela očekávané odpojení. called=${tab1OtherTabCalled}, code=${tab1ReceivedErrorCode}, closed=${tab1Closed}`));
+      }, 5000);
+    });
+
+    expect(tab1OtherTabCalled).toBe(true);
+    expect(tab1ReceivedErrorCode).toBe(22);
+    expect(tab1Closed).toBe(true);
+
+    wsAdmin.close();
+    tab2Ws.close();
   }, 25000);
 });

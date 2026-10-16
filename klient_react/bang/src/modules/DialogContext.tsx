@@ -47,6 +47,9 @@ type confirmDialog = {
     data:{
         message?:string,
         title?:string,
+        confirmText?:string,
+        cancelText?:string,
+        hideCancel?:boolean,
     },
     callback?:(confirmed:boolean)=>void;
 }

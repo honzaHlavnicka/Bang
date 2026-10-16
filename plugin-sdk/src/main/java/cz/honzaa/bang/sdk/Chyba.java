@@ -27,7 +27,8 @@ public enum Chyba {
     PLNY_SERVER("$error.plny_server",18,1),
     VYHOZEN_ZE_HRY("$error.vyhozen_ze_hry",19,1),
     HRA_UZ_ZAHAJENA("$error.hra_uz_zahajena",20,1),
-    HRA_NEPODPORUJE("$error.hra_nepodporuje",21,1)
+    HRA_NEPODPORUJE("$error.hra_nepodporuje",21,1),
+    PRIPOJEN_V_JINE_ZALOZCE("$error.pripojen_v_jine_zalozce",22,2)
     ;
     private final String zprava;
     private final int kod;

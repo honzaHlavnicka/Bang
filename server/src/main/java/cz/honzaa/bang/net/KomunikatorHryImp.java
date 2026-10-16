@@ -550,6 +550,14 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
     @PovolenePluginu
     public void posliChybu(cz.honzaa.bang.sdk.Hrac komu, Chyba chyba, String vlastniPopis) {
         WebSocket conn = websocketPodleHracu.get(komu);
+        posliChybu(conn, chyba, vlastniPopis);
+    }
+
+    public void posliChybu(WebSocket conn, Chyba chyba) {
+        posliChybu(conn, chyba, chyba != null ? chyba.getZprava() : "");
+    }
+
+    public void posliChybu(WebSocket conn, Chyba chyba, String vlastniPopis) {
         if (conn != null && conn.isOpen()) {
             try {
                 String popis = (vlastniPopis != null) ? vlastniPopis : (chyba != null ? chyba.getZprava() : "");
@@ -557,7 +565,7 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
                 int skupina = chyba != null ? chyba.getSkupina() : 0;
                 conn.send("error:{\"error\":\"" + JsonUtils.escapeJson(popis) + "\",\"kod\":" + kod + ",\"skupina\":" + skupina + "}");
             } catch (Exception ex) {
-                logger.error("Chyba při posílání chyby hráči: {}", ex.getMessage());
+                logger.error("Chyba při posílání chyby socketu: {}", ex.getMessage());
             }
         }
     }
@@ -874,10 +882,11 @@ public class KomunikatorHryImp implements cz.honzaa.bang.sdk.KomunikatorHry{
         }
         
         WebSocket puvodniHrac = websocketPodleHracu.get(hrac);    
-        if(puvodniHrac != null){
-         //hráč už je připojen. je potřeba ho odpojit a nahradit novým pripojenim
-         puvodniHrac.close();
-         hraciPodleWebsocketu.remove(puvodniHrac);
+        if(puvodniHrac != null && puvodniHrac != conn){
+            //hráč už je připojen. je potřeba ho odpojit a nahradit novým pripojenim
+            posliChybu(puvodniHrac, Chyba.PRIPOJEN_V_JINE_ZALOZCE);
+            puvodniHrac.close();
+            hraciPodleWebsocketu.remove(puvodniHrac);
         }
         
         hraciPodleWebsocketu.put(conn, hrac);

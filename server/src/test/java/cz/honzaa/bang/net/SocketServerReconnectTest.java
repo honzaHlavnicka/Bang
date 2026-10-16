@@ -188,7 +188,8 @@ public class SocketServerReconnectTest {
         when(hrac2NewConn.isOpen()).thenReturn(true);
         server.onMessage(hrac2NewConn, "vraceniSe:" + hrac2Token);
 
-        // Starý socket musí být zavřen
+        // Starý socket musí obdržet chybu PRIPOJEN_V_JINE_ZALOZCE a být zavřen
+        verify(hrac2OldConn).send(contains("\"kod\":" + Chyba.PRIPOJEN_V_JINE_ZALOZCE.getKod()));
         verify(hrac2OldConn).close();
     }
 

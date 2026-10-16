@@ -190,6 +190,10 @@
     "Podmínky a soukromí": "Terms and Privacy",
     "Podpořit": "Donate",
     "Vy":"You",
+    "Připojen v jiné záložce": "Connected in another tab",
+    "Hra je otevřena v jiné záložce nebo okně. Chceš přepnout hru sem?": "The game is open in another tab or window. Do you want to switch the game here?",
+    "Přepnout hru sem": "Switch game here",
+    "Odejít": "Leave",
     "error": {
         "nepripojen_ke_hre": "You are not connected to the game.",
         "hra_uz_zahajena": "Game has already started.",
@@ -209,6 +213,7 @@
         "nejde_si_liznout": "You cannot draw a card right now.",
         "spatne_heslo": "Wrong password.",
         "uz_pripojen": "You are already connected to another game.",
+        "pripojen_v_jine_zalozce": "Connected in another tab.",
         "dosli_karty_v_balicku": "Out of cards in deck.",
         "nejsi_admin_hry": "You are not the administrator of this game.",
         "plny_server": "Server is full.",

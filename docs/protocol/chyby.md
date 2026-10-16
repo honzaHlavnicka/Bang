@@ -501,6 +501,7 @@ function handleError(errorData) {
 | 15 | UZ_PRIPOJEN | Už jsi připojen ke hře. | 2 |
 | 16 | DOSLI_KARTY_V_BALICKU | Došly karty v balíčku. | 3 |
 | 17 | NEJSI_ADMIN_HRY | Nejsi administrátor hry. | 1 |
+| 22 | PRIPOJEN_V_JINE_ZALOZCE | Připojen v jiné záložce. | 2 |
 
 ## Poznámky k implementaci
 

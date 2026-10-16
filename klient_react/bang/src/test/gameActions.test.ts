@@ -169,4 +169,49 @@ describe('gameActions - handleGameMessage', () => {
       dispatch('');
     }).not.toThrow();
   });
+
+  it('zpracuje chybu 22 (PRIPOJEN_V_JINE_ZALOZCE) a zavolá onOtherTabConnected callback', () => {
+    const onOtherTabConnected = vi.fn();
+    state.inGame = true;
+    stateRef.current = state;
+
+    handleGameMessage(
+      { data: 'error:{"error":"$error.pripojen_v_jine_zalozce","kod":22,"skupina":2}' } as MessageEvent,
+      setGameState,
+      stateRef,
+      openDialog,
+      socket,
+      notify,
+      onOtherTabConnected
+    );
+
+    expect(onOtherTabConnected).toHaveBeenCalled();
+    // inGame stav nesmí být shozen na false
+    expect(state.inGame).toBe(true);
+  });
+
+  it('zpracuje chybu 22 bez onOtherTabConnected a otevře dialog pro přepnutí hry sem', () => {
+    state.inGame = true;
+    stateRef.current = state;
+
+    handleGameMessage(
+      { data: 'error:{"error":"$error.pripojen_v_jine_zalozce","kod":22,"skupina":2}' } as MessageEvent,
+      setGameState,
+      stateRef,
+      openDialog,
+      socket,
+      notify
+    );
+
+    expect(openDialog).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: 'CONFIRM',
+        notClosable: true,
+        data: expect.objectContaining({
+          confirmText: expect.stringContaining('Přepnout hru sem'),
+        }),
+      })
+    );
+    expect(state.inGame).toBe(true);
+  });
 });

@@ -24,6 +24,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         stateRef.current = gameState;
     }, [gameState]);
 
+    const isOtherTabConnectedRef = useRef(false);
+
     useEffect(() => {
         let isUnmounted = false;
         let reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -139,9 +141,63 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
                 }
             };
 
+            const handleOtherTabConnected = () => {
+                isOtherTabConnectedRef.current = true;
+                if (reconnectTimeout) {
+                    clearTimeout(reconnectTimeout);
+                    reconnectTimeout = null;
+                }
+                if (resetAttemptTimeout) {
+                    clearTimeout(resetAttemptTimeout);
+                    resetAttemptTimeout = null;
+                }
+                toast.dismiss("reconnect-toast");
+
+                openDialog({
+                    type: "CONFIRM",
+                    notClosable: true,
+                    dialogHeader: t("Připojen v jiné záložce"),
+                    data: {
+                        title: t("Připojen v jiné záložce"),
+                        message: t("Hra je otevřena v jiné záložce nebo okně. Chceš přepnout hru sem?"),
+                        confirmText: t("Přepnout hru sem"),
+                        cancelText: t("Odejít"),
+                    },
+                    callback: (confirmed) => {
+                        if (confirmed) {
+                            isOtherTabConnectedRef.current = false;
+                            reconnectAttempt = 0;
+                            stateRef.current = {
+                                ...gameStateDefault,
+                                name: stateRef.current.name,
+                                gameCode: stateRef.current.gameCode,
+                                gameTypesAvailable: stateRef.current.gameTypesAvailable,
+                                inGame: true,
+                                startedConection: true
+                            };
+                            setGameState(prev => ({
+                                ...gameStateDefault,
+                                name: prev.name,
+                                gameCode: prev.gameCode,
+                                gameTypesAvailable: prev.gameTypesAvailable,
+                                inGame: true,
+                                startedConection: true
+                            }));
+                            connectSocket();
+                        } else {
+                            isOtherTabConnectedRef.current = false;
+                            stateRef.current = { ...stateRef.current, inGame: false, gameCode: null };
+                            setGameState(prev => ({ ...prev, inGame: false, gameCode: null }));
+                            reconnectAttempt = 0;
+                            connectSocket();
+                        }
+                    }
+                });
+            };
+
             socket.onmessage = (event) => {
                 if (isUnmounted) return;
-                handleGameMessage(event, setGameState, stateRef, openDialog, socket, notify);
+                handleGameMessage(event, setGameState, stateRef, openDialog, socket, notify, handleOtherTabConnected);
             };
 
             socket.onclose = () => {
@@ -152,6 +208,11 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
                 if (resetAttemptTimeout) {
                     clearTimeout(resetAttemptTimeout);
                     resetAttemptTimeout = null;
+                }
+
+                if (isOtherTabConnectedRef.current) {
+                    console.log("WebSocket closed because connected in another tab. Skipping auto-reconnect.");
+                    return;
                 }
 
                 // Pokus o automatické znovupřipojení
@@ -206,6 +267,10 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         const handleVisibilityChange = () => {
             if (document.visibilityState === "visible") {
                 console.log("Tab became visible. Checking connection status...");
+                if (isOtherTabConnectedRef.current) {
+                    console.log("Tab was disconnected due to another tab. Skipping auto-reconnect on visibility change.");
+                    return;
+                }
                 // Pokud nejsme připojeni k serveru, vynutíme okamžitý pokus o připojení
                 if (!activeSocket || activeSocket.readyState === WebSocket.CLOSED || activeSocket.readyState === WebSocket.CLOSING) {
                     console.log("Active socket is closed. Auto-reconnecting immediately...");

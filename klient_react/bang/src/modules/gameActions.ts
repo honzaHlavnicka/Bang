@@ -65,7 +65,8 @@ export function handleGameMessage(
     stateRef: RefObject<GameStateType>,
     openDialog: (dialog: DialogState) => void,
     socket:WebSocket | null,
-    notify: (text: string) => void
+    notify: (text: string) => void,
+    onOtherTabConnected?: () => void
 ) {
     console.log("%c" + event.data, "color: green");
 
@@ -100,8 +101,28 @@ export function handleGameMessage(
             try {
                 const json = JSON.parse(payload) as { error: string, kod?: number };
                 const translatedError = translateServerText(json.error);
-                toast.error(translatedError);
                 posthog.capture('server_error_received', { error_message: translatedError, error_code: json.kod, raw_error: json.error });
+
+                if (json.kod === 22 || json.error === "$error.pripojen_v_jine_zalozce") {
+                    if (onOtherTabConnected) {
+                        onOtherTabConnected();
+                    } else if (openDialog) {
+                        openDialog({
+                            type: "CONFIRM",
+                            notClosable: true,
+                            dialogHeader: t("Připojen v jiné záložce"),
+                            data: {
+                                title: t("Připojen v jiné záložce"),
+                                message: t("Hra je otevřena v jiné záložce nebo okně. Chceš přepnout hru sem?"),
+                                confirmText: t("Přepnout hru sem"),
+                                cancelText: t("Odejít"),
+                            }
+                        });
+                    }
+                    break;
+                }
+
+                toast.error(translatedError);
 
                 if (json.kod === 19) {
                     sessionStorage.removeItem("gameToken");
