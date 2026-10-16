@@ -77,30 +77,38 @@ Dokumentace chybových zpráv:
        │ 1. WebSocket Connection                         │
        │─────────────────────────────────────────────────>│
        │                                                  │
-       │ 2. welcome                                       │
+       │ 2. posthogId:<id>                                │
+       │─────────────────────────────────────────────────>│
+       │                                                  │
+       │ 3. welcome                                       │
        │<─────────────────────────────────────────────────│
        │                                                  │
-       │ 3. FÁZE PŘED HROU                                │
+       │ 4. FÁZE PŘED HROU (Lobby)                        │
        │    - infoHer                                     │
        │    - novaHra / pripojeniKeHre                    │
+       │    - overeniTokenu, vraceniSe                    │
        │    - noveJmeno, setPostava                       │
+       │    - nactiPreklady, preklady                     │
+       │    - pridejBota, vyhodHrace, nahradHru           │
        │    - zahajeniHry                                 │
        │<────────────────────────────────────────────────>│
        │                                                  │
-       │ 4. ZAHÁJENÍ HRY                                  │
+       │ 5. ZAHÁJENÍ HRY                                  │
        │    - hraZacala                                   │
        │    - role, noveIdHrace                           │
        │    - počáteční karty a životy                    │
        │<─────────────────────────────────────────────────│
        │                                                  │
-       │ 5. FÁZE HRA                                      │
-       │    - tahy hráčů                                  │
-       │    - líznutí karet, hraní karet                  │
-       │    - dialogy a interakce                         │
+       │ 6. FÁZE HRA                                      │
+       │    - tahy hráčů (tvujTahZacal, tahZacal)         │
+       │    - líznutí (linuti), hraní (odehrani, vylozeni)│
+       │    - dialogy (vyberAkci, vyberHrace, vyberText)  │
+       │    - vlastní UI (noveUI, odebratUI, uiClick)     │
+       │    - animace a stav (koloStesti, stavHry)        │
        │<────────────────────────────────────────────────>│
        │                                                  │
-       │ 6. KONEC HRY                                     │
-       │    - vyhral                                      │
+       │ 7. KONEC HRY                                     │
+       │    - vysledkyHry, konecHry, vyhral               │
        │<─────────────────────────────────────────────────│
        │                                                  │
 ```
@@ -123,59 +131,66 @@ Všechny JSON objekty v payload jsou obvykle:
 ### Broadcast zprávy
 
 Některé zprávy jsou automaticky rozesílány všem hráčům ve hře:
-- `novyHrac` - nový hráč se připojil
+- `novyHrac` - nový hráč (nebo bot) se připojil
+- `pripojeniHrace` - odpojený hráč se znovu připojil
+- `odpojeniHrace` - hráč ztratil spojení
 - `noveJmeno` - změna jména
 - `setPostava` - změna postavy
-- `odehrat` - odehrání karty
-- `vylozeni` - vyložení karty
-- `spalit` - spálení karty
+- `odehrat` - odehrání karty (-1 pro otočení karty z balíčku)
+- `vylozeni` - vyložení karty na stůl
+- `spalit` - spálení karty z ruky/stolu
 - `spalenaVylozena` - spálení vyložené karty
 - `hracSkoncil` - hráč byl vyřazen
-- `tahZacal` - začátek tahu
+- `tahZacal` - začátek tahu jiného hráče
 - `pocetZivotu` - změna životů
-- `chat` - chat zprávy
-- `rychleOznameni` - rychlé oznámení
+- `chat` - chat zpráva
+- `rychleOznameni` - rychlé oznámení (toast)
+- `stavHry` - stavová hláška v centru obrazovky
+- `obrazekDobiracihoBalicku` - grafika balíčku
+- `koloStesti` - animace kola štěstí
+- `vysledkyHry` - výsledková listina
+- `konecHry` - ukončení partie
 
 ### Token systém
 
 Po připojení k hře server pošle token:
 - Formát: `<kodHry><identifikator>` (6 číslic + 16 znaků)
-- Použití: pro znovupřipojení po výpadku
-- Uložení: localStorage nebo podobné trvalé úložiště
+- Použití: pro znovupřipojení po výpadku i po obnovení stránky
+- Uložení: localStorage / sessionStorage
+- Ověření: zpráva `overeniTokenu:<token>` umožňuje ověřit platnost ještě před pokusem o připojení
 
 ### Chybové zprávy
 
 Všechny chyby mají formát:
 ```json
 {
-  "error": "popis chyby",
-  "kod": 1,
-  "skupina": 2
+  "error": "$error.karta_nejde_zahrat",
+  "kod": 4,
+  "skupina": 3
 }
 ```
+Kódy chyb jsou v rozsahu 1–22. Text v poli `error` typicky obsahuje lokalizační klíč `$error.<nazev>`, který klient překládá do jazyka uživatele.
 
 ## Implementační poznámky
 
-### Bezpečnost
+### Bezpečnost a více záložek
 
-- Token je jediný autentizační mechanismus
-- ServerInfo je chráněn heslem
-- Validace na serveru je povinná
-- Klient by měl provádět základní validaci pro UX
+- Token je hlavní autentizační mechanismus hráče.
+- Administrátorské zprávy (`serverInfo`, `gameInfo`, `restartovatPluginy`) jsou chráněny heslem.
+- **Ochrana proti více záložkám:** Pokud se hráč připojí z jiné záložky či zařízení se stejným tokenem, server předchozí relaci ukončí s chybou `PRIPOJEN_V_JINE_ZALOZCE` (kód 22). Původní klient zablokuje automatický reconnect a nabídne tlačítko pro přepnutí hry sem.
 
-### Synchronizace
+### Synchronizace a administrace
 
-- Server je autoritativní zdroj pravdy
-- Klient udržuje lokální kopii stavu
-- Všechny změny jsou potvrzeny serverem
-- Zprávy jsou zpracovávány v pořadí příchodu
+- Server je autoritativní zdroj pravdy.
+- Klient udržuje lokální kopii stavu.
+- **Migrace administrátora:** Při odpojení zakladatele hry přechází administrátorská práva na dalšího připojeného hráče.
+- **Dynamická lokalizace:** Klient stahuje překlady přímo z pluginu dané hry (`nactiPreklady:<jazyk>`).
 
-### Výkon
+### Výkon a limity
 
-- WebSocket pro obousměrnou komunikaci
-- Minimální latence díky persistentnímu spojení
-- JSON pro jednoduchost a čitelnost
-- Neaktivní hry se automaticky mažou (5 min timeout)
+- WebSocket pro obousměrnou komunikaci v reálném čase.
+- Maximální kapacita jedné místnosti: 30 hráčů.
+- **Timeout neaktivní hry:** 1 hodina (3 600 000 ms) od odpojení všech hráčů. Při návratu jakéhokoliv hráče se časovač ruší.
 
 ## Časté problémy a řešení
 
@@ -184,10 +199,19 @@ Všechny chyby mají formát:
 **Problém:** WebSocket spojení se přerušilo
 
 **Řešení:**
-1. Načíst uložený token
+1. Ověřit platnost uloženého tokenu (`overeniTokenu:<token>`)
 2. Obnovit WebSocket spojení
 3. Poslat `vraceniSe:<token>`
-4. Server pošle aktuální stav
+4. Server pošle aktuální stav (`nactiHru`) a hra plynule pokračuje
+
+### Připojení ve více záložkách
+
+**Problém:** Hra se otevře ve dvou záložkách téhož prohlížeče
+
+**Řešení:**
+1. Server staré záložce pošle chybu kód 22 (`PRIPOJEN_V_JINE_ZALOZCE`) a odpojí ji
+2. Stará záložka zastaví auto-reconnect a zobrazí dialog "Přepnout hru sem"
+3. Nová záložka převezme hru bez reconnect smyčky
 
 ### Desynchronizace stavu
 
@@ -195,7 +219,7 @@ Všechny chyby mají formát:
 
 **Řešení:**
 1. Poslat `nactiHru`
-2. Server pošle aktuální stav
+2. Server pošle aktuální stav (hráči, karty, UI prvky)
 3. Přepsat lokální stav
 
 ### Neočekávaná chyba
@@ -203,9 +227,9 @@ Všechny chyby mají formát:
 **Problém:** Server vrátil `error:<json>`
 
 **Řešení:**
-1. Parsovat JSON a zobrazit chybu
-2. Pokud je kritická, vrátit se na hlavní obrazovku
-3. Logovat pro debugging
+1. Parsovat JSON a přeložit text pomocí `translateServerText`
+2. Pokud je chyba kritická (např. kód 1 `NEPRIPOJEN_KE_HRE` nebo 19 `VYHOZEN_ZE_HRY`), promazat token a vrátit se do lobby
+3. Pokud jde o kód 22 (`PRIPOJEN_V_JINE_ZALOZCE`), zastavit auto-reconnect a nabídnout dialog
 
 ## Verze protokolu
 

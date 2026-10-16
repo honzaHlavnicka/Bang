@@ -145,23 +145,43 @@ konecTahu
 ---
 
 #### `dialog:<id>,<data>`
-**Účel:** Odpověď na dialog (výběr akce, hráče, karty, apod.)
+**Účel:** Odpověď na dialog (výběr akce, hráče, karty nebo zadání textu)
 
 **Payload:** ID dialogu a data oddělené čárkou
 
-**Kdy poslat:** Jako odpověď na `vyberAkci` nebo `vyberHrace`
+**Kdy poslat:** Jako odpověď na `vyberAkci`, `vyberHrace`, `vyberKartu` nebo `vyberText`
 
 **Formát dat:**
 - Pro `vyberAkci`: ID vybrané akce (číslo)
-- Pro `vyberHrace`: ID vybraného hráče (číslo)
+- Pro `vyberHrace`: ID vybraného hráče nebo čárkami oddělená ID vybraných hráčů (např. `2` nebo `1,2`)
+- Pro `vyberKartu`: ID vybrané karty nebo čárkami oddělená ID karet (např. `42` nebo `42,15`)
+- Pro `vyberText`: zadaný textový řetězec
 
 **Příklad:**
 ```
 dialog:1,0
 dialog:2,3
+dialog:3,42,15
+dialog:4,Nějaký text
 ```
 
 **Odpověď serveru:** Závisí na kontextu dialogu, obvykle aktualizace stavu hry
+
+---
+
+#### `uiClick:<id>`
+**Účel:** Kliknutí na vlastní UI tlačítko přidané pluginem hry (zaslané dříve přes `noveUI`)
+
+**Payload:** číselné ID tlačítka
+
+**Kdy poslat:** Když hráč klikne na vlastní akční tlačítko v rozhraní
+
+**Příklad:**
+```
+uiClick:1
+```
+
+**Odpověď serveru:** Vyvolání obslužné akce pluginu a případná aktualizace stavu nebo dialog.
 
 ---
 
@@ -248,9 +268,11 @@ noveIdHrace:0
 **Struktura:**
 ```json
 {
+  "id": 42,
   "jmeno": "bang",
-  "obrazek": "cesta/k/obrazku.png",
-  "id": 42
+  "obrazek": "bang.png",
+  "vylozitelna": false,
+  "hratelna": true
 }
 ```
 
@@ -263,8 +285,8 @@ noveIdHrace:0
 
 **Příklad:**
 ```
-novaKarta:{"jmeno":"bang","obrazek":"bang.png","id":42}
-novaKarta:{"jmeno":"pivo","obrazek":"pivo.png","id":15}
+novaKarta:{"id":42,"jmeno":"bang","obrazek":"bang.png","vylozitelna":false,"hratelna":true}
+novaKarta:{"id":15,"jmeno":"pivo","obrazek":"pivo.png","vylozitelna":false,"hratelna":true}
 ```
 
 ---
@@ -349,13 +371,13 @@ tahZacal:2
 ---
 
 #### `odehrat:<idHrace>|<json>`
-**Účel:** Informace o odehrané kartě
+**Účel:** Informace o odehrané kartě z ruky na odhazovací balíček
 
-**Payload:** ID hráče a JSON s informacemi o kartě oddělené znakem `|`
+**Payload:** ID hráče a JSON s informacemi o kartě oddělené znakem `|`. Speciální případ: `idHrace === "-1"` indikuje otočení vrchní karty balíčku bez vazby na konkrétního hráče.
 
 **Struktura:**
 ```
-<idHrace>|{"jmeno":"bang","obrazek":"bang.png","id":42}
+<idHrace>|{"id":42,"jmeno":"bang","obrazek":"bang.png","vylozitelna":false,"hratelna":true}
 ```
 
 **Kdy čekat:** Po odeslání `odehrani:<idKarty>` nebo když jiný hráč odehraje kartu
@@ -367,8 +389,8 @@ tahZacal:2
 
 **Příklad:**
 ```
-odehrat:0|{"jmeno":"bang","obrazek":"bang.png","id":42}
-odehrat:1|{"jmeno":"pivo","obrazek":"pivo.png","id":15}
+odehrat:0|{"id":42,"jmeno":"bang","obrazek":"bang.png","vylozitelna":false,"hratelna":true}
+odehrat:-1|{"id":15,"jmeno":"srdcove_eso","obrazek":"eso.png","vylozitelna":false,"hratelna":true}
 ```
 
 ---
@@ -384,29 +406,29 @@ odehrat:1|{"jmeno":"pivo","obrazek":"pivo.png","id":15}
 
 **Struktura:**
 ```
-<idHraceKym>,<idHracePredKoho>,{"jmeno":"barel","obrazek":"barel.png","id":15}
+<idHraceKym>,<idHracePredKoho>,{"id":15,"jmeno":"barel","obrazek":"barel.png","vylozitelna":true,"hratelna":false}
 ```
 
 **Kdy čekat:** Po odeslání `vylozeni:<idKarty>` nebo když jiný hráč vyloží kartu
 
 **Co dělat:**
 - Přidat kartu do vyložených karet hráče (`idHracePredKoho`)
-- Zobrazit kartu před hráčem
+- Zobrazit kartu před hráčem na stole
 
 **Příklad:**
 ```
-vylozeni:0,0,{"jmeno":"barel","obrazek":"barel.png","id":15}
-vylozeni:0,1,{"jmeno":"remington","obrazek":"remington.png","id":20}
+vylozeni:0,0,{"id":15,"jmeno":"barel","obrazek":"barel.png","vylozitelna":true,"hratelna":false}
+vylozeni:0,1,{"id":20,"jmeno":"vezeni","obrazek":"vezeni.png","vylozitelna":true,"hratelna":false}
 ```
 
-**Poznámka:** První dva parametry jsou obvykle stejné (hráč vyloží kartu před sebe), ale mohou být různé u speciálních karet.
+**Poznámka:** První dva parametry jsou obvykle stejné (hráč vyloží kartu před sebe), ale mohou být různé u speciálních karet (např. Vězení, Dynamit).
 
 ---
 
 #### `vyberAkci:<json>`
 **Účel:** Dialog pro výběr akce
 
-**Payload:** JSON objekt s ID dialogu a seznamem akcí
+**Payload:** JSON objekt s ID dialogu, seznamem akcí, nadpisem a příznakem zavíratelnosti
 
 **Struktura:**
 ```json
@@ -415,35 +437,39 @@ vylozeni:0,1,{"jmeno":"remington","obrazek":"remington.png","id":20}
   "akce": [
     {"id": 0, "nazev": "Ano"},
     {"id": 1, "nazev": "Ne"}
-  ]
+  ],
+  "nadpis": "Chceš použít schopnost?",
+  "notClosable": true
 }
 ```
 
 **Kdy čekat:** Když je potřeba, aby hráč vybral z více možností (např. použít barel, reagovat na útok)
 
 **Co dělat:** 
-- Zobrazit dialog s možnostmi
+- Zobrazit dialog s možnostmi (podporuje překlad `$key`)
 - Po výběru poslat `dialog:<id>,<idAkce>`
 
 **Příklad:**
 ```
-vyberAkci:{"id":1,"akce":[{"id":0,"nazev":"Použít barel"},{"id":1,"nazev":"Nepoužít"}]}
-vyberAkci:{"id":2,"akce":[{"id":0,"nazev":"Ano"},{"id":1,"nazev":"Ne"}]}
+vyberAkci:{"id":1,"akce":[{"id":0,"nazev":"Použít barel"},{"id":1,"nazev":"Nepoužít"}],"nadpis":"Použít barel?","notClosable":true}
 ```
 
 ---
 
 #### `vyberHrace:<json>`
-**Účel:** Dialog pro výběr hráče
+**Účel:** Dialog pro výběr jednoho nebo více hráčů
 
-**Payload:** JSON objekt s ID dialogu, seznamem ID hráčů a volitelným nadpisem
+**Payload:** JSON objekt s ID dialogu, seznamem ID hráčů, min/max limity a volitelným nadpisem
 
 **Struktura:**
 ```json
 {
   "id": 2,
-  "hraci": [0, 1, 2],
-  "nadpis": "Vyber hráče na kterého chceš střílet"
+  "hraci": [1, 2, 3],
+  "nadpis": "Vyber hráče na kterého chceš střílet",
+  "min": 1,
+  "max": 1,
+  "notClosable": true
 }
 ```
 
@@ -452,12 +478,11 @@ vyberAkci:{"id":2,"akce":[{"id":0,"nazev":"Ano"},{"id":1,"nazev":"Ne"}]}
 **Co dělat:**
 - Zobrazit dialog se seznamem hráčů
 - Zvýraznit vybratelné hráče
-- Po výběru poslat `dialog:<id>,<idHrace>`
+- Po výběru poslat `dialog:<id>,<idHrace>` (nebo čárkami oddělená ID hráčů)
 
 **Příklad:**
 ```
-vyberHrace:{"id":2,"hraci":[1,2,3],"nadpis":"Vyber hráče na kterého chceš střílet"}
-vyberHrace:{"id":3,"hraci":[0,2],"nadpis":"Vyber hráče"}
+vyberHrace:{"id":2,"hraci":[1,2,3],"nadpis":"Vyber hráče na kterého chceš střílet","min":1,"max":1,"notClosable":true}
 ```
 
 ---
@@ -469,7 +494,7 @@ vyberHrace:{"id":3,"hraci":[0,2],"nadpis":"Vyber hráče"}
 
 **Struktura:**
 ```
-<idHrace>|{"jmeno":"bang","obrazek":"bang.png","id":42}
+<idHrace>|{"id":42,"jmeno":"bang","obrazek":"bang.png","vylozitelna":false,"hratelna":true}
 ```
 
 **Kdy čekat:** Po odeslání `spaleni:<idKarty>` nebo když jiný hráč spálí kartu
@@ -480,7 +505,7 @@ vyberHrace:{"id":3,"hraci":[0,2],"nadpis":"Vyber hráče"}
 
 **Příklad:**
 ```
-spalit:0|{"jmeno":"bang","obrazek":"bang.png","id":42}
+spalit:0|{"id":42,"jmeno":"bang","obrazek":"bang.png","vylozitelna":false,"hratelna":true}
 ```
 
 ---
@@ -490,7 +515,7 @@ spalit:0|{"jmeno":"bang","obrazek":"bang.png","id":42}
 
 **Payload:** ID karty a ID hráče oddělené čárkou
 
-**Kdy čekat:** Když je spálena trvalá karta z pole před hráčem
+**Kdy čekat:** Když je spálena trvalá karta z pole před hráčem (např. Cat Balou)
 
 **Co dělat:**
 - Odebrat kartu z vyložených karet daného hráče
@@ -528,7 +553,7 @@ hracSkoncil:2
 
 **Kdy čekat:** Na začátku hry a po každé změně stavu hry, která ovlivňuje dostupné akce
 
-**Co dělat:** Zobrazit/skrýt příslušné herní prvky (dobírací balíček, odhadovací balíček atd.)
+**Co dělat:** Zobrazit/skrýt příslušné herní prvky (dobírací balíček, odhazovací balíček atd.)
 
 **Příklad:**
 ```
@@ -537,12 +562,53 @@ povoleneUI:["ODHAZOVACI_BALICEK","DOBIRACI_BALICEK"]
 
 ---
 
+#### `noveUI:<json>`
+**Účel:** Přidání nebo aktualizace vlastního akčního tlačítka definovaného herním pluginem
+
+**Payload:** JSON objekt s ID tlačítka, textem a informací o stavu disabled
+
+**Struktura JSON:**
+```json
+{
+  "id": 1,
+  "text": "Vzít dynamit",
+  "disabled": false
+}
+```
+
+**Kdy čekat:** Kdykoliv plugin hráči zpřístupní speciální akci
+
+**Co dělat:** Vykreslit tlačítko v sekci vlastního UI; při kliknutí odeslat `uiClick:<id>`
+
+**Příklad:**
+```
+noveUI:{"id":1,"text":"Vzít dynamit","disabled":false}
+```
+
+---
+
+#### `odebratUI:<id>`
+**Účel:** Odstranění vlastního akčního tlačítka
+
+**Payload:** číselné ID tlačítka
+
+**Kdy čekat:** Když plugin zruší dostupnost speciální akce
+
+**Co dělat:** Odstranit tlačítko z rozhraní
+
+**Příklad:**
+```
+odebratUI:1
+```
+
+---
+
 #### `rychleOznameni:<text>`
-**Účel:** Rychlé textové oznámení hráči
+**Účel:** Rychlé textové oznámení hráči (toast)
 
-**Payload:** text oznámení
+**Payload:** text oznámení (nebo lokalizační klíč `$key`)
 
-**Kdy čekat:** Kdykoliv během hry pro informativní zprávy (např. změna barvy ve hře UNO)
+**Kdy čekat:** Kdykoliv během hry pro informativní zprávy
 
 **Co dělat:** Zobrazit krátké oznámení (toast nebo notifikaci)
 
@@ -553,55 +619,170 @@ rychleOznameni:Barva změněna na červenou
 
 ---
 
-#### `vyberKartu:<json>`
-**Účel:** Dialog pro výběr karty
+#### `stavHry:<text>`
+**Účel:** Stavové oznámení zobrazené v centru herní obrazovky
 
-**Payload:** JSON objekt s ID dialogu, seznamem karet a volitelným nadpisem
+**Payload:** text zprávy nebo lokalizační formát `$key:{"param":"hodnota"}`
+
+**Kdy čekat:** Při významných událostech (začátek duelu, indická invaze apod.)
+
+**Co dělat:** Zobrazit oznámení uprostřed obrazovky
+
+**Příklad:**
+```
+stavHry:Probíhá duel!
+stavHry:$stav.duel:{"hrac1":"Honza","hrac2":"Petr"}
+```
+
+---
+
+#### `obrazekDobiracihoBalicku:<nazev>`
+**Účel:** Nastavení grafiky vrchní karty nebo rubu balíčku
+
+**Payload:** název nebo cesta obrázku
+
+**Kdy čekat:** Při změně grafiky balíčku pluginem
+
+**Příklad:**
+```
+obrazekDobiracihoBalicku:karta_zadni_modra
+```
+
+---
+
+#### `koloStesti:<json>`
+**Účel:** Zobrazení animovaného kola štěstí řízeného serverem
+
+**Payload:** JSON se seznamem výsečí, vybraným indexem a nadpisem
+
+**Struktura JSON:**
+```json
+{
+  "moznosti": [
+    {"id": 0, "name": "Zásah", "barva": "#ff0000", "velikost": 1},
+    {"id": 1, "name": "Minul", "barva": "#00ff00", "velikost": 2}
+  ],
+  "vybranaMoznost": 1,
+  "nadpis": "Barel"
+}
+```
+
+**Kdy čekat:** Při vyhodnocení náhodných efektů (server plně řídí výsledek, klient animuje)
+
+**Co dělat:** Zobrazit dialog s kolem štěstí
+
+**Příklad:**
+```
+koloStesti:{"moznosti":[{"id":0,"name":"Zásah","barva":"#ff0000","velikost":1},{"id":1,"name":"Minul","barva":"#00ff00","velikost":2}],"vybranaMoznost":1,"nadpis":"Barel"}
+```
+
+---
+
+#### `vyberKartu:<json>`
+**Účel:** Dialog pro výběr jedné nebo více karet
+
+**Payload:** JSON objekt s ID dialogu, seznamem karet, limity a nadpisem
 
 **Struktura:**
 ```json
 {
   "id": 3,
   "karty": [
-    {"jmeno": "bang", "obrazek": "bang.png", "id": 42},
-    {"jmeno": "pivo", "obrazek": "pivo.png", "id": 43}
+    {"id": 42, "jmeno": "bang", "obrazek": "bang.png"},
+    {"id": 43, "jmeno": "pivo", "obrazek": "pivo.png"}
   ],
-  "nadpis": "Vyber kartu"
+  "nadpis": "Vyber kartu k odebrání",
+  "min": 1,
+  "max": 1,
+  "notClosable": true
 }
 ```
 
-**Kdy čekat:** Když je potřeba, aby hráč vybral kartu (např. při efektu karty Cat Balou)
+**Kdy čekat:** Když pravidla vyžadují výběr karty (např. Cat Balou, Panika)
 
 **Co dělat:**
 - Zobrazit dialog s kartami
-- Po výběru poslat `dialog:<id>,<idKarty>`
+- Po výběru poslat `dialog:<id>,<idKarty>` (nebo čárkami oddělená ID)
 
 **Příklad:**
 ```
-vyberKartu:{"id":3,"karty":[{"jmeno":"bang","obrazek":"bang.png","id":42}],"nadpis":"Vyber kartu k odebrání"}
+vyberKartu:{"id":3,"karty":[{"id":42,"jmeno":"bang","obrazek":"bang.png"}],"nadpis":"Vyber kartu k odebrání","min":1,"max":1,"notClosable":true}
+```
+
+---
+
+#### `vyberText:<json>`
+**Účel:** Dialog pro zadání volného textu hráčem
+
+**Payload:** JSON objekt s ID dialogu, titulkem, placeholderem a textem tlačítka
+
+**Struktura:**
+```json
+{
+  "id": 4,
+  "title": "Hádej slovo",
+  "placeholder": "Zadej svůj tip...",
+  "buttonText": "Odeslat",
+  "notClosable": false
+}
+```
+
+**Kdy čekat:** Když herní plugin vyžaduje textový vstup hráče
+
+**Co dělat:**
+- Zobrazit dialog s textovým polem
+- Po odeslání poslat `dialog:<id>,<text>`
+
+**Příklad:**
+```
+vyberText:{"id":4,"title":"Zadej slovo","placeholder":"Tip","buttonText":"Potvrdit","notClosable":false}
+```
+
+---
+
+#### `vysledkyHry:<json>`
+**Účel:** Oznámení konečného pořadí hráčů
+
+**Payload:** JSON 2D pole čísel (skupiny ID hráčů podle umístění)
+
+**Kdy čekat:** Při vyhodnocení konce hry před `konecHry`
+
+**Příklad:**
+```
+vysledkyHry:[[0],[1,2],[3]]
+```
+
+---
+
+#### `konecHry`
+**Účel:** Oznámení o ukončení herní partie
+
+**Payload:** žádný
+
+**Kdy čekat:** Po dohrání hry
+
+**Co dělat:** Zobrazit konečné skóre a uvolnit překlady pluginu
+
+**Příklad:**
+```
+konecHry
 ```
 
 ---
 
 #### `vyhral:<idHrace>`
-**Účel:** Konec hry - oznámení výherce
+**Účel:** Oznámení výherce hry
 
 **Payload:** ID hráče, který vyhrál
 
-**Kdy čekat:** Když jsou splněny výherní podmínky (např. všichni bandité jsou mrtví)
+**Kdy čekat:** Když jsou splněny výherní podmínky
 
-**Co dělat:**
-- Zobrazit obrazovku s gratulací výherci
-- Ukázat finální stav hry
-- Nabídnout možnost hrát znovu nebo odejít
+**Co dělat:** Zobrazit dialog s oznámením vítěze
 
 **Příklad:**
 ```
 vyhral:0
-vyhral:2
 ```
-
-**Poznámka:** V budoucích verzích bude server pravděpodobně posílat více zpráv s podrobnostmi o konci hry.
 
 ---
 
@@ -625,30 +806,29 @@ chat:Dobře zahráno! [od: Petr]
 #### `error:<json>`
 **Účel:** Chybová zpráva
 
-**Payload:** JSON objekt s informací o chybě
+**Payload:** JSON objekt s informací o chybě, kódem a skupinou
 
 **Struktura:**
 ```json
 {
-  "error": "popis chyby",
-  "kod": 100,
-  "skupina": "PROTOKOL"
+  "error": "$error.karta_nejde_zahrat",
+  "kod": 4,
+  "skupina": 3
 }
 ```
 
 **Kdy čekat:** Kdykoliv, když dojde k chybě (např. neplatný tah, nelze líznout kartu)
 
-**Co dělat:** Zobrazit chybovou zprávu uživateli
+**Co dělat:** Zobrazit chybovou zprávu uživateli (s přeložením `$error` klíče)
 
 **Příklady chyb během hry:**
 ```
-error:{"error":"Nejsi na tahu"}
-error:{"error":"Už jsi líznul maximální počet karet"}
-error:{"error":"Tuto kartu nemůžeš odehrát"}
-error:{"error":"Musíš zahodit karty"}
+error:{"error":"$error.nejsi_na_tahu","kod":7,"skupina":3}
+error:{"error":"$error.nejde_si_liznout","kod":13,"skupina":3}
+error:{"error":"$error.karta_neni_hratelna","kod":3,"skupina":1}
+error:{"error":"$error.nemuzes_ukoncit_tah","kod":8,"skupina":3}
+error:{"error":"$error.pripojen_v_jine_zalozce","kod":22,"skupina":2}
 ```
-
-**Poznámka:** Podrobné informace o kódech chyb a jejich skupinách naleznete v [chyby.md](chyby.md).
 
 ---
 
@@ -659,14 +839,14 @@ error:{"error":"Musíš zahodit karty"}
 ```
 1. Server → Všem: tahZacal:0 (nebo tvujTahZacal pro hráče 0)
 2. Klient → Server: linuti
-3. Server → Klient: novaKarta:{"obrazek":"bang.png","id":42}
+3. Server → Klient: novaKarta:{"id":42,"jmeno":"bang","obrazek":"bang.png","vylozitelna":false,"hratelna":true}
 4. Klient → Server: linuti
-5. Server → Klient: novaKarta:{"obrazek":"pivo.png","id":43}
+5. Server → Klient: novaKarta:{"id":43,"jmeno":"pivo","obrazek":"pivo.png","vylozitelna":false,"hratelna":true}
 6. Klient → Server: odehrani:42
-7. Server → Všem: odehrat:0|{"obrazek":"bang.png","id":42}
-8. Server → Cílový hráč: vyberHrace:{"id":1,"hraci":[1,2],"nadpis":"Vyber cíl"}
+7. Server → Všem: odehrat:0|{"id":42,"jmeno":"bang","obrazek":"bang.png","vylozitelna":false,"hratelna":true}
+8. Server → Cílový hráč: vyberHrace:{"id":1,"hraci":[1,2],"nadpis":"Vyber cíl","min":1,"max":1,"notClosable":true}
 9. Klient → Server: dialog:1,1
-10. Server → Hráč 1: vyberAkci:{"id":2,"akce":[{"id":0,"nazev":"Minul"},{"id":1,"nazev":"Použít barel"}]}
+10. Server → Hráč 1: vyberAkci:{"id":2,"akce":[{"id":0,"nazev":"Minul"},{"id":1,"nazev":"Použít barel"}],"nadpis":"Obrana","notClosable":true}
 11. Klient (hráč 1) → Server: dialog:2,1
 12. Server → Všem: aktualizace stavu (např. žádná změna, pokud barel fungoval)
 13. Klient → Server: konecTahu
@@ -678,8 +858,8 @@ error:{"error":"Musíš zahodit karty"}
 ```
 1. Server → Klient: tvujTahZacal
 2. Klient → Server: vylozeni:15
-3. Server → Všem: vylozit:0,0,{"obrazek":"barel.png","id":15}
-4. Server → Klient: zmenaPoctuKaret:0,4
+3. Server → Všem: vylozeni:0,0,{"id":15,"jmeno":"barel","obrazek":"barel.png","vylozitelna":true,"hratelna":false}
+4. Server → Všem: zmenaPoctuKaret:0,4
 5. Klient → Server: konecTahu
 6. Server → Všem: tahZacal:1
 ```
@@ -688,11 +868,13 @@ error:{"error":"Musíš zahodit karty"}
 
 ```
 1. Klient → Server: odehrani:50 (Bang! na posledního banditu)
-2. Server → Všem: odehrat:0|{"obrazek":"bang.png","id":50}
+2. Server → Všem: odehrat:0|{"id":50,"jmeno":"bang","obrazek":"bang.png","vylozitelna":false,"hratelna":true}
 3. Server → Cílový hráč: vyberAkci:...
 4. Klient → Server: dialog:...
 5. Server → Všem: pocetZivotu:2,0 (bandita zemřel)
-6. Server → Všem: vyhral:0 (šerif vyhrál)
+6. Server → Všem: vysledkyHry:[[0],[1],[2]]
+7. Server → Všem: vyhral:0 (šerif vyhrál)
+8. Server → Všem: konecHry
 ```
 
 ### Scénář 4: Použití piva
@@ -700,7 +882,7 @@ error:{"error":"Musíš zahodit karty"}
 ```
 1. Server → Klient: tvujTahZacal
 2. Klient → Server: odehrani:43 (pivo)
-3. Server → Všem: odehrat:0|{"obrazek":"pivo.png","id":43}
+3. Server → Všem: odehrat:0|{"id":43,"jmeno":"pivo","obrazek":"pivo.png","vylozitelna":false,"hratelna":true}
 4. Server → Všem: pocetZivotu:0,4 (hráč 0 si vyléčil život)
 5. Klient → Server: konecTahu
 ```
@@ -710,36 +892,47 @@ error:{"error":"Musíš zahodit karty"}
 ### Synchronizace stavu
 
 Klient by měl udržovat kompletní stav hry:
-- Seznam všech hráčů a jejich vlastnosti (životy, karty v ruce, vyložené karty)
-- Vlastní karty v ruce
-- Aktuální hráč na tahu
-- Odkladový balíček (viditelné odehrané karty)
+- Seznam všech hráčů a jejich vlastnosti (životy, karty v ruce, vyložené karty, online stav, admin příznak)
+- Vlastní karty v ruce (s příznaky `hratelna` a `vylozitelna`)
+- Vlastní vyložené karty na stole
+- Vlastní akční tlačítka ze zpráv `noveUI`
+- Aktuální hráč na tahu (`tvujTahZacal` / `tahZacal`)
+- Odkládací balíček (poslední odehraná nebo spálená karta)
+- Dobírací balíček (`obrazekDobiracihoBalicku`)
+
+### Dynamická lokalizace a řetězce $key
+
+Server odesílá lokalizovatelné texty ve dvou formátech:
+1. `$klic` – jednoduchý překladový klíč (např. `$error.karta_nejde_zahrat`)
+2. `$klic:{"parametr":"hodnota", ...}` – překladový klíč s parametry pro interpolaci (např. `$stav.duel:{"hrac1":"Honza"}`)
+
+Klient před zobrazením textu uživateli (v chybách, dialogových nadpisech, oznámeních i vlastních tlačítkách) tyto řetězce rekurzivně vyhledává v lokalizačním balíčku pluginu načteném přes `nactiPreklady:<jazyk>`.
+
+### Vlastní UI prvky pluginu
+
+Herní pluginy mohou dynamicky vytvářet vlastní tlačítka v klientském rozhraní:
+- Pomocí `noveUI:<json>` server pošle tlačítko s jeho ID, textem a stavem `disabled`.
+- Při kliknutí na tlačítko klient odešle `uiClick:<id>`.
+- Pomocí `odebratUI:<id>` server tlačítko odstraní.
+- Při reconnectu hráče server automaticky pošle všechna aktivní tlačítka znovu.
 
 ### Validace na straně klienta
 
 I když server vždy validuje všechny akce, klient by měl provádět základní validaci pro lepší UX:
-- Zablokovat tlačítka, když nejste na tahu
-- Zobrazit pouze odehratelné karty
-- Zablokovat konec tahu, pokud nemůžete ukončit (např. máte moc karet)
+- Zablokovat tlačítka a interakce, když hráč není na tahu (pokud nejde o reakci na výzvu/dialog)
+- Zvýraznit pouze hratelné karty (`hratelna: true`) a vyložitelné karty (`vylozitelna: true`)
+- Zablokovat konec tahu, pokud pravidla nepovolují ukončení (např. nadbytek karet v ruce)
 
-### Časování zpráv
+### Časování zpráv a dialogy
 
-Některé zprávy přicházejí v rychlém sledu (např. při začátku hry). Klient by měl:
-- Zpracovávat zprávy v pořadí, v jakém přicházejí
-- Používat animace, aby bylo jasné, co se děje
-- Nedělat uživatelské rozhraní neresponsivní
+- Dialogy mají unikátní ID přidělené serverem. Klient musí poslat odpověď ve formátu `dialog:<id>,<odpoved>`.
+- Pokud je u dialogu uvedeno `"notClosable": true`, dialog nelze zavřít bez výběru možnosti.
+- Při znovupřipojení se stav hry znovu načte a čekající dialogy či tlačítka se znovu aktivují.
 
-### Odpojení během hry
+### Odpojení během hry a více záložek
 
 Pokud se hráč odpojí během hry:
-1. Uložte token pro znovupřipojení
-2. Po obnovení spojení pošlete `vraceniSe:<token>`
-3. Server pošle aktuální stav hry
-4. Aktualizujte UI na základě stavu
-
-### Chybové stavy
-
-Vždy zpracovávejte chybové zprávy:
-- Zobrazujte chyby uživateli srozumitelně
-- Při kritických chybách (např. "Nejsi připojen ke hře") vraťte se na hlavní obrazovku
-- Při drobných chybách (např. "Nejsi na tahu") pouze informujte uživatele
+1. Uložený token v localStorage/sessionStorage zůstává platný po dobu 1 hodiny.
+2. Po obnovení spojení pošle klient `vraceniSe:<token>`.
+3. Pokud byla hra otevřena v jiné záložce, server původní spojení uzavře s chybou `PRIPOJEN_V_JINE_ZALOZCE` (kód 22), čímž zamezí nekonečné reconnect smyčce.
+4. Server pošle nový stav hry a hráč plynule pokračuje v partii.

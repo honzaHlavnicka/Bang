@@ -26,6 +26,21 @@ Komunikace se dělí na následující fáze:
 
 ### 2.1 Fáze připojení
 
+#### Klient → Server
+
+##### `posthogId:<id>`
+Zaslání analytického ID klienta (nebo `posthogId:ignore`) pro asociaci telemetrie na serveru. Klient posílá tuto zprávu okamžitě po navázání spojení.
+
+**Payload:** ID klienta nebo `ignore`
+
+**Příklad:**
+```
+posthogId:user_abc123
+posthogId:ignore
+```
+
+---
+
 #### Server → Klient
 
 ##### `welcome`
@@ -90,8 +105,22 @@ pripojeniKeHre:123456
 
 ---
 
+##### `overeniTokenu:<token>`
+Ověření platnosti herního tokenu před pokusem o znovupřipojení.
+
+**Payload:** token ve formátu `<kodHry(6)><identifikator>`
+
+**Příklad:**
+```
+overeniTokenu:123456abcdef123456
+```
+
+**Odpověď serveru:** `overeniTokenu:true` nebo `overeniTokenu:false`
+
+---
+
 ##### `vraceniSe:<token>`
-Opětovné připojení hráče k hře pomocí tokenu.
+Opětovné připojení hráče k hře pomocí tokenu. Pokud byl hráč již připojen v jiné záložce/okně, staré spojení obdrží chybu `PRIPOJEN_V_JINE_ZALOZCE` (kód 22) a bude uzavřeno.
 
 **Payload:** token ve formátu `<kodHry><identifikator>` (6 číslic + token)
 
@@ -132,8 +161,65 @@ setPostava:BART_CASSIDY
 
 ---
 
+##### `pridejBota` / `pridejBota:<jmeno>`
+Přidání počítačem řízeného hráče (bota) do lobby (pouze pro administrátora hry). Hra musí boty podporovat (`podporujeBoty()`).
+
+**Payload:** volitelné jméno bota
+
+**Příklad:**
+```
+pridejBota
+pridejBota:Bot Pepa
+```
+
+**Odpověď serveru:** rozeslání `novyHrac:<json>` s `"isBot": true`, případně chyba `HRA_NEPODPORUJE` (kód 21).
+
+---
+
+##### `vyhodHrace:<idHrace>`
+Vyhození hráče z lobby před zahájením hry (pouze pro administrátora hry).
+
+**Payload:** ID vyhazovaného hráče
+
+**Příklad:**
+```
+vyhodHrace:2
+```
+
+**Odpověď serveru:** Vyhozenému hráči je poslána chyba `VYHOZEN_ZE_HRY` (kód 19) a jeho spojení je ukončeno. Všem ostatním se odešle aktualizovaný seznam hráčů.
+
+---
+
+##### `nahradHru:<typHry>`
+Změna typu hry v lobby (pouze pro administrátora hry).
+
+**Payload:** ID typu hry
+
+**Příklad:**
+```
+nahradHru:1
+```
+
+**Odpověď serveru:** `nahradHru:<typHry>` nebo `nahradHruBezPtani:<typHry>`
+
+---
+
+##### `nactiPreklady` / `nactiPreklady:<jazyk>`
+Požadavek na stažení lokalizačních řetězců daného herního pluginu pro zvolený jazyk.
+
+**Payload:** volitelný kód jazyka (např. `cs`, `en`)
+
+**Příklad:**
+```
+nactiPreklady:cs
+```
+
+**Odpověď serveru:** `preklady:<json>`
+
+---
+
 ##### `zahajeniHry`
-Požadavek na zahájení hry (může poslat pouze host/první hráč).
+Požadavek na zahájení hry (může poslat pouze administrátor hry).
 
 **Payload:** žádný
 
@@ -171,6 +257,20 @@ serverInfo:heslo123
 ```
 
 **Odpověď serveru:** `serverDataHTML:<html>` nebo `error:<json>` (kod: 14)
+
+---
+
+##### `gameInfo:<kod>:<heslo>`
+Požadavek na herní stav dané hry v JSON formátu (pouze pro administrátory).
+
+**Payload:** kód hry a heslo serveru oddělené dvojtečkou
+
+**Příklad:**
+```
+gameInfo:123456:heslo123
+```
+
+**Odpověď serveru:** `gameInfoJSON:<json>` nebo `error:<json>` (kod: 14 nebo 5 nebo 12)
 
 ---
 
@@ -283,6 +383,19 @@ token:123456abcdef123456
 
 ---
 
+##### `overeniTokenu:<boolean>`
+Odpověď na dotaz `overeniTokenu:<token>` s informací o platnosti tokenu hráče.
+
+**Payload:** `true` nebo `false`
+
+**Příklad:**
+```
+overeniTokenu:true
+overeniTokenu:false
+```
+
+---
+
 ##### `novyHrac:<json>`
 Informace o novém hráči, který se připojil ke hře (rozesláno všem).
 
@@ -291,19 +404,46 @@ Informace o novém hráči, který se připojil ke hře (rozesláno všem).
 **Struktura JSON:**
 ```json
 {
+  "id": 0,
   "jmeno": "Hráč 1",
   "zivoty": 4,
-  "maximumZivotu": 4,
-  "role": "?",
-  "id": 0,
   "pocetKaret": 0,
-  "postava": ""
+  "postava": "BART_CASSIDY",
+  "maximumZivotu": 4,
+  "isAdmin": true,
+  "isOnline": true,
+  "isBot": false,
+  "vylozeneKarty": []
 }
 ```
 
 **Příklad:**
 ```
-novyHrac:{"jmeno":"Hráč 1","zivoty":4,"maximumZivotu":4,"role":"?","id":0,"pocetKaret":0}
+novyHrac:{"id":0,"jmeno":"Hráč 1","zivoty":4,"pocetKaret":0,"maximumZivotu":4,"isAdmin":true,"isOnline":true,"isBot":false,"vylozeneKarty":[]}
+```
+
+---
+
+##### `pripojeniHrace:<idHrace>`
+Oznámení, že se dříve odpojený hráč znovu připojil (rozesláno všem).
+
+**Payload:** ID hráče
+
+**Příklad:**
+```
+pripojeniHrace:1
+```
+
+---
+
+##### `odpojeniHrace:<idHrace>`
+Oznámení, že hráč ztratil spojení se serverem (rozesláno všem).
+
+**Payload:** ID hráče
+
+**Příklad:**
+```
+odpojeniHrace:1
 ```
 
 ---
@@ -365,20 +505,49 @@ Seznam všech hráčů ve hře.
 ```json
 [
   {
+    "id": 0,
     "jmeno": "Hráč 1",
     "zivoty": 4,
-    "maximumZivotu": 4,
-    "role": "šerif",
-    "id": 0,
     "pocetKaret": 5,
-    "postava": "BART_CASSIDY"
+    "role": "šerif",
+    "postava": "BART_CASSIDY",
+    "maximumZivotu": 4,
+    "isAdmin": true,
+    "isOnline": true,
+    "isBot": false,
+    "vylozeneKarty": []
   }
 ]
 ```
 
 **Příklad:**
 ```
-hraci:[{"jmeno":"Hráč 1","zivoty":4,"maximumZivotu":4,"role":"šerif","id":0,"pocetKaret":5,"postava":"BART_CASSIDY"}]
+hraci:[{"id":0,"jmeno":"Hráč 1","zivoty":4,"pocetKaret":5,"role":"šerif","postava":"BART_CASSIDY","maximumZivotu":4,"isAdmin":true,"isOnline":true,"isBot":false,"vylozeneKarty":[]}]
+```
+
+---
+
+##### `nahradHru:<noveId>,<jmeno>` / `nahradHruBezPtani:<noveId>,<jmeno>`
+Pozvánka do nově vytvořené hry (odesíláno při nahrazení hry administrátorem). `nahradHruBezPtani` je poslána administrátorovi, který akci vyvolal; ostatním hráčům je zaslána `nahradHru` s dialogem pro potvrzení přechodu.
+
+**Payload:** nové ID hry a jméno hráče
+
+**Příklad:**
+```
+nahradHru:654321,Honza
+nahradHruBezPtani:654321,Honza
+```
+
+---
+
+##### `preklady:<json>`
+Sada lokalizačních řetězců daného herního pluginu pro aktuální jazyk klienta.
+
+**Payload:** JSON mapa klíčů a přeložených textů
+
+**Příklad:**
+```
+preklady:{"karta.bang":"Bang!","popis.bang":"Vystřelí na jiného hráče."}
 ```
 
 ---
@@ -475,13 +644,31 @@ konecTahu
 ---
 
 ##### `dialog:<id>,<data>`
-Odpověď na dialog (výběr akce, hráče, apod.).
+Odpověď na dialog (výběr akce, hráče, karty nebo zadání textu).
 
-**Payload:** ID dialogu a data oddělené čárkou
+**Payload:** ID dialogu a data oddělené čárkou. Formát dat závisí na typu dialogu:
+- Výběr akce: ID vybrané akce (číslo)
+- Výběr hráče: ID vybraného hráče nebo čárkou oddělená ID (např. `1` nebo `1,2`)
+- Výběr karty: ID vybrané karty nebo čárkou oddělená ID karet
+- Zadání textu: zadaný textový řetězec
 
 **Příklad:**
 ```
 dialog:1,2
+dialog:2,1,3
+dialog:3,Ahoj světe
+```
+
+---
+
+##### `uiClick:<id>`
+Kliknutí na vlastní UI tlačítko přidané pluginem hry (přes `noveUI`).
+
+**Payload:** číselné ID UI tlačítka
+
+**Příklad:**
+```
+uiClick:1
 ```
 
 ---
@@ -546,14 +733,17 @@ Nová karta přidána hráči do ruky.
 **Struktura JSON:**
 ```json
 {
-  "obrazek": "cesta/k/obrazku.png",
-  "id": 42
+  "id": 42,
+  "jmeno": "bang",
+  "obrazek": "bang.png",
+  "vylozitelna": false,
+  "hratelna": true
 }
 ```
 
 **Příklad:**
 ```
-novaKarta:{"obrazek":"bang.png","id":42}
+novaKarta:{"id":42,"jmeno":"bang","obrazek":"bang.png","vylozitelna":false,"hratelna":true}
 ```
 
 ---
@@ -607,48 +797,48 @@ tahZacal:1
 ---
 
 ##### `odehrat:<idHrace>|<json>`
-Karta byla odehrána.
+Karta byla odehrána z ruky na odhazovací balíček. Pokud je `idHrace` rovno `-1`, jde o otočení vrchní karty balíčku bez vazby na konkrétního hráče.
 
 **Payload:** ID hráče a JSON s informacemi o kartě oddělené znakem `|`
 
 **Struktura:**
 ```
-<idHrace>|{"jmeno":"bang","obrazek":"bang.png","id":42}
+<idHrace>|{"id":42,"jmeno":"bang","obrazek":"bang.png","vylozitelna":false,"hratelna":true}
 ```
 
 **Příklad:**
 ```
-odehrat:0|{"jmeno":"bang","obrazek":"bang.png","id":42}
+odehrat:0|{"id":42,"jmeno":"bang","obrazek":"bang.png","vylozitelna":false,"hratelna":true}
 ```
 
 ---
 
 ##### `vylozeni:<idHraceKym>,<idHracePredKoho>,<json>`
-Karta byla vyložena.
+Karta byla vyložena na stůl (před sebe nebo jiného hráče).
 
 **Payload:** ID hráče který kartu vyložil, ID hráče před koho, JSON s kartou (odděleno čárkami)
 
 **Příklad:**
 ```
-vylozeni:0,0,{"jmeno":"barel","obrazek":"barel.png","id":15}
+vylozeni:0,0,{"id":15,"jmeno":"barel","obrazek":"barel.png","vylozitelna":true,"hratelna":false}
 ```
 
 ---
 
 ##### `spalit:<idHrace>|<json>`
-Karta byla spálena (zahozena na odkladací balíček).
+Karta byla spálena (zahozena z ruky nebo stolu na odkládací balíček).
 
 **Payload:** ID hráče a JSON s informacemi o kartě oddělené znakem `|`
 
 **Příklad:**
 ```
-spalit:0|{"jmeno":"bang","obrazek":"bang.png","id":42}
+spalit:0|{"id":42,"jmeno":"bang","obrazek":"bang.png","vylozitelna":false,"hratelna":true}
 ```
 
 ---
 
 ##### `spalenaVylozena:<idKarty>,<idHrace>`
-Vyložená (trvalá) karta byla spálena.
+Vyložená (trvalá) karta byla spálena ze stolu daného hráče.
 
 **Payload:** ID karty a ID hráče oddělené čárkou
 
@@ -660,7 +850,7 @@ spalenaVylozena:15,0
 ---
 
 ##### `hracSkoncil:<idHrace>`
-Hráč byl vyřazen ze hry.
+Hráč byl vyřazen ze hry (životy klesly na 0).
 
 **Payload:** ID hráče
 
@@ -683,8 +873,41 @@ povoleneUI:["ODHAZOVACI_BALICEK","DOBIRACI_BALICEK"]
 
 ---
 
+##### `noveUI:<json>`
+Přidání nebo aktualizace vlastního akčního tlačítka vytvořeného pluginem hry.
+
+**Payload:** JSON s ID, textem a příznakem neaktivity
+
+**Struktura JSON:**
+```json
+{
+  "id": 1,
+  "text": "Speciální akce",
+  "disabled": false
+}
+```
+
+**Příklad:**
+```
+noveUI:{"id":1,"text":"Vzít dynamit","disabled":false}
+```
+
+---
+
+##### `odebratUI:<id>`
+Odebrání vlastního akčního tlačítka.
+
+**Payload:** číselné ID tlačítka
+
+**Příklad:**
+```
+odebratUI:1
+```
+
+---
+
 ##### `rychleOznameni:<text>`
-Rychlé textové oznámení hráči.
+Krátké textové oznámení (toast/notifikace). Podporuje lokalizační klíče `$key`.
 
 **Payload:** text oznámení
 
@@ -695,33 +918,86 @@ rychleOznameni:Barva změněna na červenou
 
 ---
 
-##### `vyberKartu:<json>`
-Dialog pro výběr karty.
+##### `stavHry:<text>`
+Stavové oznámení zobrazené v centru herní obrazovky (např. probíhající fáze hry, duely apod.). Podporuje lokalizační syntaxi `$key:{"param":"hodnota"}`.
 
-**Payload:** JSON objekt s ID dialogu, seznamem karet a volitelným nadpisem
+**Payload:** text zprávy nebo lokalizační řetězec
+
+**Příklad:**
+```
+stavHry:Probíhá duel mezi hráčem Petr a Honza
+```
+
+---
+
+##### `obrazekDobiracihoBalicku:<nazev>`
+Nastavení obrázku vrchní karty nebo rubu dobíracího balíčku.
+
+**Payload:** název/cesta obrázku
+
+**Příklad:**
+```
+obrazekDobiracihoBalicku:karta_zadni_zelena
+```
+
+---
+
+##### `koloStesti:<json>`
+Zobrazení serverem řízené animace kola štěstí. Výsledek je plně určen serverem.
+
+**Payload:** JSON se seznamem možností, vybraným indexem a nadpisem
+
+**Struktura JSON:**
+```json
+{
+  "moznosti": [
+    {"id": 0, "name": "Zásah", "barva": "#ff0000", "velikost": 1},
+    {"id": 1, "name": "Minul", "barva": "#00ff00", "velikost": 2}
+  ],
+  "vybranaMoznost": 1,
+  "nadpis": "Kolo štěstí"
+}
+```
+
+**Příklad:**
+```
+koloStesti:{"moznosti":[{"id":0,"name":"Zásah","barva":"#ff0000","velikost":1},{"id":1,"name":"Minul","barva":"#00ff00","velikost":2}],"vybranaMoznost":1,"nadpis":"Barel"}
+```
+
+---
+
+##### `vyberKartu:<json>`
+Dialog pro výběr jedné nebo více karet.
+
+**Payload:** JSON objekt s ID dialogu, seznamem karet, min/max počtem, zda je dialog zavíratelný a volitelným nadpisem
 
 **Struktura JSON:**
 ```json
 {
   "id": 3,
   "karty": [
-    {"jmeno": "bang", "obrazek": "bang.png", "id": 42}
+    {"id": 42, "jmeno": "bang", "obrazek": "bang.png"}
   ],
-  "nadpis": "Vyber kartu"
+  "nadpis": "Vyber kartu k odhození",
+  "min": 1,
+  "max": 1,
+  "notClosable": true
 }
 ```
 
 **Příklad:**
 ```
-vyberKartu:{"id":3,"karty":[{"jmeno":"bang","obrazek":"bang.png","id":42}],"nadpis":"Vyber kartu k odebrání"}
+vyberKartu:{"id":3,"karty":[{"id":42,"jmeno":"bang","obrazek":"bang.png"}],"nadpis":"Vyber kartu k odhození","min":1,"max":1,"notClosable":true}
 ```
+
+**Očekávaná odpověď:** `dialog:<id>,<idKarty>` (nebo čárkou oddělená ID karet)
 
 ---
 
 ##### `vyberAkci:<json>`
-Dialog pro výběr akce.
+Dialog pro výběr z možností.
 
-**Payload:** JSON objekt s ID dialogu a seznamem akcí
+**Payload:** JSON objekt s ID dialogu, seznamem akcí, nadpisem a příznakem zavíratelnosti
 
 **Struktura JSON:**
 ```json
@@ -730,13 +1006,15 @@ Dialog pro výběr akce.
   "akce": [
     {"id": 0, "nazev": "Ano"},
     {"id": 1, "nazev": "Ne"}
-  ]
+  ],
+  "nadpis": "Chceš použít schopnost?",
+  "notClosable": true
 }
 ```
 
 **Příklad:**
 ```
-vyberAkci:{"id":1,"akce":[{"id":0,"nazev":"Ano"},{"id":1,"nazev":"Ne"}]}
+vyberAkci:{"id":1,"akce":[{"id":0,"nazev":"Ano"},{"id":1,"nazev":"Ne"}],"nadpis":"Použít barel?","notClosable":true}
 ```
 
 **Očekávaná odpověď:** `dialog:<id>,<idAkce>`
@@ -744,30 +1022,82 @@ vyberAkci:{"id":1,"akce":[{"id":0,"nazev":"Ano"},{"id":1,"nazev":"Ne"}]}
 ---
 
 ##### `vyberHrace:<json>`
-Dialog pro výběr hráče.
+Dialog pro výběr jednoho nebo více hráčů.
 
-**Payload:** JSON objekt s ID dialogu, seznamem ID hráčů a volitelným nadpisem
+**Payload:** JSON objekt s ID dialogu, seznamem ID hráčů, min/max limity a volitelným nadpisem
 
 **Struktura JSON:**
 ```json
 {
   "id": 2,
   "hraci": [0, 1, 2],
-  "nadpis": "Vyber hráče na kterého chceš střílet"
+  "nadpis": "Vyber hráče na kterého chceš střílet",
+  "min": 1,
+  "max": 1,
+  "notClosable": true
 }
 ```
 
 **Příklad:**
 ```
-vyberHrace:{"id":2,"hraci":[0,1,2],"nadpis":"Vyber hráče"}
+vyberHrace:{"id":2,"hraci":[0,1,2],"nadpis":"Vyber hráče","min":1,"max":1,"notClosable":true}
 ```
 
-**Očekávaná odpověď:** `dialog:<id>,<idHrace>`
+**Očekávaná odpověď:** `dialog:<id>,<idHrace>` (nebo čárkou oddělená ID hráčů)
+
+---
+
+##### `vyberText:<json>`
+Dialog s textovým vstupem pro hráče.
+
+**Payload:** JSON objekt s ID dialogu, titulkem, zástupným textem, textem tlačítka a příznakem zavíratelnosti
+
+**Struktura JSON:**
+```json
+{
+  "id": 4,
+  "title": "Zadej heslo",
+  "placeholder": "Zde napiš...",
+  "buttonText": "Potvrdit",
+  "notClosable": false
+}
+```
+
+**Příklad:**
+```
+vyberText:{"id":4,"title":"Hádej slovo","placeholder":"Napiš tip","buttonText":"Odeslat","notClosable":false}
+```
+
+**Očekávaná odpověď:** `dialog:<id>,<text>`
+
+---
+
+##### `vysledkyHry:<json>`
+Matice konečného pořadí hráčů. Jednotlivé řádky odpovídají umístěním (1. místo je na indexu 0).
+
+**Payload:** JSON 2D pole čísel (ID hráčů)
+
+**Příklad:**
+```
+vysledkyHry:[[0],[1,2],[3]]
+```
+
+---
+
+##### `konecHry`
+Oznámení o ukončení hry. Klient vyresetuje načtené překlady pluginu a zobrazí dialog konce hry.
+
+**Payload:** žádný
+
+**Příklad:**
+```
+konecHry
+```
 
 ---
 
 ##### `vyhral:<idHrace>`
-Konec hry - hráč vyhrál.
+Konec hry - konkrétní hráč vyhrál.
 
 **Payload:** ID výherce
 
@@ -793,40 +1123,55 @@ chat:Ahoj všichni! [od: Honza]
 ### 2.4 Chybové zprávy
 
 ##### `error:<json>`
-Chybová zpráva.
-
-**Payload:** JSON objekt s informacemi o chybě
+Chybová zpráva. Všechny chyby definované v serverovém enumu `cz.honzaa.bang.sdk.Chyba` obsahují číselný kód (1–22), skupinu (0–3) a lokalizační klíč nebo zprávu v poli `error`.
 
 **Struktura JSON:**
 ```json
 {
-  "error": "popis chyby",
-  "kod": 1,
-  "skupina": 2
+  "error": "$error.karta_nejde_zahrat",
+  "kod": 4,
+  "skupina": 3
 }
 ```
 
-**Příklady chyb:**
-- `{"error":"Už jsi připojen ke hře.","kod":15,"skupina":2}` - hráč se pokusil připojit k další hře
-- `{"error":"Hra, ke které se snažíš připojit neexistuje.","kod":5,"skupina":1}` - neplatný kód hry
-- `{"error":"tato hra už byla zahájena. Bohužel se už nejde připojit."}` - hra již začala
-- `{"error":"Nejsi připojen ke hře"}` - pokus o herní akci bez připojení ke hře
-- `{"error":"hráč v této hře nenalezen"}` - neplatný token při vracení se do hry
-- `{"error":"špatné heslo"}` - neplatné heslo pro serverInfo
+**Skupiny chyb:**
+- `0` - Interní chyba serveru
+- `1` - Špatný formát zprávy / neplatná operace
+- `2` - Chybějící data / spojení
+- `3` - Nedodržení herních pravidel
 
-**Příklad:**
-```
-error:{"error":"Hra neexistuje"}
-```
+**Přehled kódů chyb (1–22):**
+- `1`: `NEPRIPOJEN_KE_HRE` ("$error.nepripojen_ke_hre", skupina 2)
+- `2`: `KARTA_NEEXISTUJE` ("$error.karta_neexistuje", skupina 2)
+- `3`: `KARTA_NENI_HRATELNA` ("$error.karta_neni_hratelna", skupina 1)
+- `4`: `KARTA_NEJDE_ZAHRAT` ("$error.karta_nejde_zahrat", skupina 3)
+- `5`: `HRA_NEEXISTUJE` ("$error.hra_neexistuje", skupina 1)
+- `6`: `POSTAVA_NENI_NA_VYBER` ("$error.postava_neni_na_vyber", skupina 1)
+- `7`: `NEJSI_NA_TAHU` ("$error.nejsi_na_tahu", skupina 3)
+- `8`: `NEMUZES_UKONCIT_TAH` ("$error.nemuzes_ukoncit_tah", skupina 3)
+- `9`: `KARTA_NEJDE_SPALIT` ("$error.karta_nejde_spalit", skupina 1)
+- `10`: `NENI_VYLOZITELNA` ("$error.neni_vylozitelna", skupina 1)
+- `11`: `KARTU_NEJDE_VYLOZIT` ("$error.kartu_nejde_vylozit", skupina 3)
+- `12`: `CHYBA_PROTOKOLU` ("$error.chyba_protokolu", skupina 1)
+- `13`: `NEJDE_SI_LIZNOUT` ("$error.nejde_si_liznout", skupina 3)
+- `14`: `SPATNE_HESLO` ("$error.spatne_heslo", skupina 1)
+- `15`: `UZ_PRIPOJEN` ("$error.uz_pripojen", skupina 2)
+- `16`: `DOSLI_KARTY_V_BALICKU` ("$error.dosli_karty_v_balicku", skupina 3)
+- `17`: `NEJSI_ADMIN_HRY` ("$error.nejsi_admin_hry", skupina 1)
+- `18`: `PLNY_SERVER` ("$error.plny_server", skupina 1)
+- `19`: `VYHOZEN_ZE_HRY` ("$error.vyhozen_ze_hry", skupina 1)
+- `20`: `HRA_UZ_ZAHAJENA` ("$error.hra_uz_zahajena", skupina 1)
+- `21`: `HRA_NEPODPORUJE` ("$error.hra_nepodporuje", skupina 1)
+- `22`: `PRIPOJEN_V_JINE_ZALOZCE` ("$error.pripojen_v_jine_zalozce", skupina 2)
 
-**Poznámka:** Podrobné informace o všech chybách, jejich kódech a skupinách naleznete v [chyby.md](chyby.md).
+**Poznámka:** Podrobné informace o všech chybách naleznete v [chyby.md](chyby.md).
 
 ---
 
 ### 2.5 Ostatní zprávy
 
 ##### `Echo: <zprava>`
-Echo zpráva (pro debugování, bude pravděpodobně odstraněno).
+Echo zpráva (pro debugování spojení).
 
 **Payload:** původní zpráva
 
@@ -837,14 +1182,14 @@ Echo: konecTahu
 
 ---
 
-##### `popoup:<text>` (překlep v implementaci)
-Vyskakovací okno s textem. Tato zpráva je určena pouze pro speciální účely a běžný uživatel by se s ní neměl setkat.
+##### `popoup:<text>`
+Vyskakovací okno s textem (používáno zřídka pro mimořádná oznámení).
 
 **Payload:** text zprávy
 
 **Příklad:**
 ```
-popoup:Nějaká důležitá zpráva
+popoup:Důležitá zpráva
 ```
 
 ---
@@ -855,50 +1200,61 @@ popoup:Nějaká důležitá zpráva
 
 ```
 1. Klient → Server: připojení WebSocket
-2. Server → Klient: welcome
-3. Klient → Server: infoHer
-4. Server → Klient: infoHer:<json se seznamem her>
-5. Klient → Server: novaHra:0
-6. Server → Klient: novaHra:123456
-7. Server → Klient: pripojenKeHre
-8. Server → Klient: token:123456abcdef...
-9. Server → Klient: novyHrac:<json>
-10. Klient → Server: noveJmeno:Honza
-11. Server → Klient: noveJmeno:0,Honza
+2. Klient → Server: posthogId:<id>
+3. Server → Klient: welcome
+4. Klient → Server: infoHer
+5. Server → Klient: infoHer:<json se seznamem her>
+6. Klient → Server: novaHra:0
+7. Server → Klient: novaHra:123456
+8. Server → Klient: pripojenKeHre
+9. Server → Klient: token:123456abcdef...
+10. Server → Klient: novyHrac:<json>
+11. Klient → Server: noveJmeno:Honza
+12. Server → Klient: noveJmeno:0,Honza
+13. Klient → Server: nactiPreklady:cs
+14. Server → Klient: preklady:<json>
 ```
 
 ### 3.2 Připojení k existující hře
 
 ```
 1. Klient → Server: připojení WebSocket
-2. Server → Klient: welcome
-3. Klient → Server: infoHer
-4. Server → Klient: infoHer:<json>
-5. Klient → Server: pripojeniKeHre:123456
-6. Server → Klient: pripojenKeHre
-7. Server → Klient: token:123456xyz...
-8. Server → Klient: novyHrac:<json>
-9. Server → všem: novyHrac:<json nového hráče>
-10. Klient → Server: noveJmeno:Petr
-11. Server → všem: noveJmeno:1,Petr
+2. Klient → Server: posthogId:<id>
+3. Server → Klient: welcome
+4. Klient → Server: pripojeniKeHre:123456
+5. Server → Klient: pripojenKeHre
+6. Server → Klient: token:123456xyz...
+7. Server → Klient: novyHrac:<json>
+8. Server → všem: novyHrac:<json nového hráče>
+9. Klient → Server: noveJmeno:Petr
+10. Server → všem: noveJmeno:1,Petr
+11. Klient → Server: nactiPreklady:cs
+12. Server → Klient: preklady:<json>
 ```
 
-### 3.3 Znovupřipojení k hře
+### 3.3 Znovupřipojení k hře a řešení více záložek
 
 ```
 1. Klient → Server: připojení WebSocket
-2. Server → Klient: welcome
-3. Klient → Server: vraceniSe:123456abcdef...
-4. Server → Klient: pripojenKeHre
-5. Server → Klient: hraZacala (pokud hra již běží)
-6. Server → Klient: načtení aktuálního stavu hry
+2. Klient → Server: posthogId:<id>
+3. Server → Klient: welcome
+4. Klient → Server: overeniTokenu:123456abcdef...
+5. Server → Klient: overeniTokenu:true
+6. Klient → Server: vraceniSe:123456abcdef...
+   - Pokud byl hráč připojen v jiné záložce:
+     Server → staré spojení: error:{"error":"$error.pripojen_v_jine_zalozce","kod":22,"skupina":2}
+     Server uzavře staré WebSocket spojení
+     Stará záložka zastaví auto-reconnect a zobrazí dialog "Přepnout hru sem"
+7. Server → Klient: pripojenKeHre
+8. Server → Klient: hraZacala (pokud již hra běží)
+9. Server → Klient: nactiHru (kompletní stav: hraci, role, novaKarta, vylozene karty, UI tlačítka)
 ```
 
 ### 3.4 Odehrání karty v hře
 
 ```
 1. Klient → Server: odehrani:42
-2. Server → všem: odehrat:0|{"obrazek":"bang.png","id":42}
+2. Server → všem: odehrat:0|{"id":42,"jmeno":"bang","obrazek":"bang.png","vylozitelna":false,"hratelna":true}
 3. Server → cílový hráč: vyberAkci:<json s možnostmi reakce>
 4. Klient → Server: dialog:1,0
 5. Server → všem: aktualizace stavu podle výsledku akce
@@ -906,22 +1262,21 @@ popoup:Nějaká důležitá zpráva
 
 ## 4. Poznámky k implementaci
 
-### 4.1 Bezpečnost
-- Token pro znovupřipojení obsahuje kód hry (6 číslic) + unikátní identifikátor
-- ServerInfo je chráněn heslem (TODO: přesunout do env proměnných)
-- Po odpojení všech hráčů se hra automaticky smaže po 5 minutách
+### 4.1 Bezpečnost a autentizace
+- Token pro znovupřipojení obsahuje kód hry (6 číslic) + unikátní kryptograficky náhodný identifikátor.
+- Administrátorské zprávy (`serverInfo`, `gameInfo`, `restartovatPluginy`) jsou chráněny heslem (konfigurovatelné přes `ADMIN_PASSWORD`).
+- Při reconnectu z jiné záložky dochází k bezpečnému odpojení předchozí relace s kódem chyby 22 (`PRIPOJEN_V_JINE_ZALOZCE`), aby nedocházelo k souběhu zpráv a cyklickému znovupřipojování.
 
-### 4.2 Limity
-- Kód hry: 6-místné číslo (100000-999999)
-- Maximální počet hráčů: určen pravidly hry
-- Timeout neaktivní hry: 300 000 ms (5 minut)
+### 4.2 Limity a časování
+- Kód hry: 6-místné číslo (100000–999999).
+- Maximální počet hráčů v jedné místnosti: 30 (limit serveru).
+- **Timeout neaktivní hry:** 3 600 000 ms (1 hodina) od odpojení posledního hráče. Pokud se jakýkoliv hráč v průběhu této doby znovu připojí, timeout je okamžitě zrušen.
+- **Správa administrátora hry:** Pokud místnost opustí nebo se odpojí její zakladatel (administrátor hry), server automaticky deleguje administrátorská práva na dalšího připojeného hráče.
 
-### 4.3 JSON formát
-JSON objekty v payload jsou obvykle bez mezer a v jednom řádku (doporučeno, ale není zaručeno).
+### 4.3 Lokalizace
+Protokol podporuje dynamickou lokalizaci:
+- Klient může pomocí `nactiPreklady:<jazyk>` stáhnout lokalizační slovník konkrétního herního pluginu (`preklady:<json>`).
+- Server v textech (chyby, `stavHry`, dialogy, názvy tlačítek) posílá buď klíč `$klic`, nebo klíč s parametry `$klic:{"parametr":"hodnota"}`. Klient rekurzivně překládá tyto hodnoty přes i18n bundle.
 
-### 4.4 Budoucí vylepšení
-- Odstranění Echo zpráv
-- Přidání heartbeat mechanismu
-- Lepší error handling s kódy chyb
-- Autentizace a autorizace
-- Rate limiting
+### 4.4 JSON formát
+JSON objekty v payload jsou posílány bez mezer a na jednom řádku v kódování UTF-8. Klient by měl být odolný vůči novým polím v JSON objektech.

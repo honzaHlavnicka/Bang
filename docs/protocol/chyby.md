@@ -1,6 +1,6 @@
 # Dokumentace chyb
 
-Tento dokument obsahuje podrobné informace o chybových zprávách v protokolu, jejich kódech a skupinách podle implementace v `src/main/java/cz/honzaa/bang/net/Chyba.java`.
+Tento dokument obsahuje podrobné informace o chybových zprávách v protokolu, jejich kódech a skupinách podle implementace v `plugin-sdk/src/main/java/cz/honzaa/bang/sdk/Chyba.java`.
 
 ## Formát chybové zprávy
 
@@ -15,18 +15,18 @@ error:<json>
 Server posílá chyby ve dvou formátech:
 
 #### 1. Úplný formát (s kódem a skupinou)
-Pro chyby definované v Chyba.java enum:
+Pro chyby definované v `Chyba.java` enum:
 
 ```json
 {
-  "error": "popis chyby",
-  "kod": 1,
-  "skupina": 2
+  "error": "$error.karta_nejde_zahrat",
+  "kod": 4,
+  "skupina": 3
 }
 ```
 
 #### 2. Zjednodušený formát (pouze zpráva)
-Pro některé chyby spojení a protokolu:
+Pro některé starší chyby spojení a protokolu (ze SocketServer.java):
 
 ```json
 {
@@ -36,9 +36,9 @@ Pro některé chyby spojení a protokolu:
 
 ### Pole JSON objektu
 
-- **error** (String, povinné): Lidsky čitelný popis chyby v češtině
-- **kod** (Number, volitelné): Číselný kód chyby pro programové zpracování (1-17)
-- **skupina** (Number, volitelné): Číselný kód skupiny chyby (0-3)
+- **error** (String, povinné): Překladový klíč začínající `$error.<nazev>` (např. `$error.karta_nejde_zahrat`) nebo lidsky čitelný popis chyby. Klient řetězce začínající `$` překládá přes i18n lokalizační slovník.
+- **kod** (Number, volitelné): Číselný kód chyby pro programové zpracování (1–22)
+- **skupina** (Number, volitelné): Číselný kód skupiny chyby (0–3)
 
 ## Skupiny chyb
 
@@ -302,15 +302,92 @@ Následující chyby jsou definovány v `Chyba.java` enum a jsou posílány s k�
 ---
 
 ### NEJSI_ADMIN_HRY
-**Zpráva:** "Nejsi administrátor hry."  
+**Zpráva:** "$error.nejsi_admin_hry" ("Nejsi administrátor hry.")  
 **Kód:** 17  
 **Skupina:** 1 (špatný formát zprávy)
 
-**Kdy nastane:** Pokus o administrátorskou akci (např. `novaHraSHracema`) bez práv administrátora hry
+**Kdy nastane:** Pokus o administrátorskou akci (např. `novaHraSHracema`, `pridejBota`, `vyhodHrace`) bez práv administrátora hry
 
 **Příklad:**
 ```json
-{"error":"Nejsi administrátor hry.","kod":17,"skupina":1}
+{"error":"$error.nejsi_admin_hry","kod":17,"skupina":1}
+```
+
+---
+
+### PLNY_SERVER
+**Zpráva:** "$error.plny_server" ("Server nebo herní místnost je plná.")  
+**Kód:** 18  
+**Skupina:** 1 (špatný formát zprávy)
+
+**Kdy nastane:** Pokus o připojení k místnosti nebo přidání bota, když je dosažen limit 30 hráčů
+
+**Příklad:**
+```json
+{"error":"$error.plny_server","kod":18,"skupina":1}
+```
+
+---
+
+### VYHOZEN_ZE_HRY
+**Zpráva:** "$error.vyhozen_ze_hry" / "$error.vyhozen_ze_hry_adminem" ("Byl jsi vyhozen ze hry administrátorem.")  
+**Kód:** 19  
+**Skupina:** 1 (špatný formát zprávy)
+
+**Kdy nastane:** Administrátor hry vyhodil hráče z lobby před začátkem hry (zpráva `vyhodHrace:<id>`)
+
+**Doporučená reakce klienta:** Odstranit uložený token ze sessionStorage/localStorage, informovat hráče a vrátit se na úvodní obrazovku výběru hry.
+
+**Příklad:**
+```json
+{"error":"$error.vyhozen_ze_hry_adminem:{\"admin\":\"Honza\"}","kod":19,"skupina":1}
+```
+
+---
+
+### HRA_UZ_ZAHAJENA
+**Zpráva:** "$error.hra_uz_zahajena" ("Tato hra již byla zahájena.")  
+**Kód:** 20  
+**Skupina:** 1 (špatný formát zprávy)
+
+**Kdy nastane:** Pokus o přidání bota nebo změnu parametrů v místnosti, kde hra již běží
+
+**Příklad:**
+```json
+{"error":"$error.hra_uz_zahajena","kod":20,"skupina":1}
+```
+
+---
+
+### HRA_NEPODPORUJE
+**Zpráva:** "$error.hra_nepodporuje" / "$error.hra_nepodporuje_boty" ("Tato hra tuto funkci nepodporuje.")  
+**Kód:** 21  
+**Skupina:** 1 (špatný formát zprávy)
+
+**Kdy nastane:** Pokus o akci, kterou vybraný herní plugin nepodporuje (např. přidání bota do hry, jejíž plugin boty nepodporuje)
+
+**Příklad:**
+```json
+{"error":"$error.hra_nepodporuje_boty","kod":21,"skupina":1}
+```
+
+---
+
+### PRIPOJEN_V_JINE_ZALOZCE
+**Zpráva:** "$error.pripojen_v_jine_zalozce" ("Připojen v jiné záložce.")  
+**Kód:** 22  
+**Skupina:** 2 (chybějící data / relace)
+
+**Kdy nastane:** Hráč se se stejným tokenem znovupřipojil v jiné záložce či okně prohlížeče. Server tuto chybu zašle původnímu připojení těsně před tím, než jej odpojí.
+
+**Doporučená reakce klienta:**
+- **Okamžitě zablokovat automatický reconnect!** (jinak nastane nekonečná smyčka odpojování mezi záložkami).
+- Zobrazit modální dialog s upozorněním: "Hra je otevřena v jiné záložce. Chceš přepnout hru sem?"
+- Tlačítko "Přepnout hru sem" teprve vyvolá ruční znovupřipojení (`vraceniSe:<token>`).
+
+**Příklad:**
+```json
+{"error":"$error.pripojen_v_jine_zalozce","kod":22,"skupina":2}
 ```
 
 ---
@@ -439,16 +516,37 @@ function handleError(errorData) {
   // Log pro debugging
   console.error("Server error:", errorData);
   
-  // Zobrazit zprávu uživateli
-  const zprava = errorData.error;
+  // Získat překlad chyby (pokud začíná $)
+  const zprava = translateServerText(errorData.error);
   
   // Rozhodnout podle kódu nebo zprávy
   if (errorData.kod !== undefined) {
     const kod = errorData.kod;
     const skupina = errorData["skupina"];
     
+    // Připojen v jiné záložce - zastavit reconnect smyčku!
+    if (kod === 22) {
+      stopAutoReconnect();
+      showConfirmDialog({
+        title: "Připojen v jiné záložce",
+        message: "Hra je otevřena v jiné záložce. Chceš přepnout hru sem?",
+        confirmText: "Přepnout hru sem",
+        onConfirm: () => manualReconnect()
+      });
+      return;
+    }
+
+    // Vyhozen ze hry administrátorem
+    if (kod === 19) {
+      localStorage.removeItem("gameToken");
+      sessionStorage.removeItem("gameToken");
+      toast.error(zprava);
+      navigateToLobby();
+      return;
+    }
+    
     // Kritické chyby - vrátit na lobby
-    if (kod === 1) { // NEPRIPOJEN_KE_HRE
+    if (kod === 1 || kod === 5) {
       toast.error(zprava);
       navigateToLobby();
       return;
@@ -482,26 +580,30 @@ function handleError(errorData) {
 
 ## Tabulka kódů chyb
 
-| Kód | Název konstanty | Zpráva | Skupina |
-|-----|----------------|--------|---------|
-| 1 | NEPRIPOJEN_KE_HRE | Nejsi připojen ke hře. | 2 |
-| 2 | KARTA_NEEXISTUJE | Tato karta neexistuje | 2 |
-| 3 | KARTA_NENI_HRATELNA | Tato karta není hratelná. | 1 |
-| 4 | KARTA_NEJDE_ZAHRAT | Tuto kartu ted nemuzes zahrat. | 3 |
-| 5 | HRA_NEEXISTUJE | Hra, ke které se snažíš připojit neexistuje. | 1 |
-| 6 | POSTAVA_NENI_NA_VYBER | Postava není na výběr | 1 |
-| 7 | NEJSI_NA_TAHU | Nejsi na tahu. | 3 |
-| 8 | NEMUZES_UKONCIT_TAH | Takhle tah ukončit nejde. | 3 |
-| 9 | KARTA_NEJDE_SPALIT | Tuhle kartu bohužel nemůžeš spálit. | 1 |
-| 10 | NENI_VYLOZITELNA | Tahle karta není vyložitelná. | 1 |
-| 11 | KARTU_NEJDE_VYLOZIT | Tuhle kartu teď nemůžeš vyložit. | 3 |
-| 12 | CHYBA_PROTOKOLU | Nastala chyba při komunikaci.\nZkontrolujte, zda používáte správnou verzi. | 1 |
-| 13 | NEJDE_SI_LIZNOUT | Teď si nemůžeš líznout. | 3 |
-| 14 | SPATNE_HESLO | Špatné heslo. | 1 |
-| 15 | UZ_PRIPOJEN | Už jsi připojen ke hře. | 2 |
-| 16 | DOSLI_KARTY_V_BALICKU | Došly karty v balíčku. | 3 |
-| 17 | NEJSI_ADMIN_HRY | Nejsi administrátor hry. | 1 |
-| 22 | PRIPOJEN_V_JINE_ZALOZCE | Připojen v jiné záložce. | 2 |
+| Kód | Název konstanty | Lokalizační klíč | Výchozí zpráva | Skupina |
+|-----|----------------|------------------|----------------|---------|
+| 1 | `NEPRIPOJEN_KE_HRE` | `$error.nepripojen_ke_hre` | Nejsi připojen ke hře. | 2 |
+| 2 | `KARTA_NEEXISTUJE` | `$error.karta_neexistuje` | Tato karta neexistuje | 2 |
+| 3 | `KARTA_NENI_HRATELNA` | `$error.karta_neni_hratelna` | Tato karta není hratelná. | 1 |
+| 4 | `KARTA_NEJDE_ZAHRAT` | `$error.karta_nejde_zahrat` | Tuto kartu ted nemuzes zahrat. | 3 |
+| 5 | `HRA_NEEXISTUJE` | `$error.hra_neexistuje` | Hra, ke které se snažíš připojit neexistuje. | 1 |
+| 6 | `POSTAVA_NENI_NA_VYBER` | `$error.postava_neni_na_vyber` | Postava není na výběr | 1 |
+| 7 | `NEJSI_NA_TAHU` | `$error.nejsi_na_tahu` | Nejsi na tahu. | 3 |
+| 8 | `NEMUZES_UKONCIT_TAH` | `$error.nemuzes_ukoncit_tah` | Takhle tah ukončit nejde. | 3 |
+| 9 | `KARTA_NEJDE_SPALIT` | `$error.karta_nejde_spalit` | Tuhle kartu bohužel nemůžeš spálit. | 1 |
+| 10 | `NENI_VYLOZITELNA` | `$error.neni_vylozitelna` | Tahle karta není vyložitelná. | 1 |
+| 11 | `KARTU_NEJDE_VYLOZIT` | `$error.kartu_nejde_vylozit` | Tuhle kartu teď nemůžeš vyložit. | 3 |
+| 12 | `CHYBA_PROTOKOLU` | `$error.chyba_protokolu` | Nastala chyba při komunikaci. | 1 |
+| 13 | `NEJDE_SI_LIZNOUT` | `$error.nejde_si_liznout` | Teď si nemůžeš líznout. | 3 |
+| 14 | `SPATNE_HESLO` | `$error.spatne_heslo` | Špatné heslo. | 1 |
+| 15 | `UZ_PRIPOJEN` | `$error.uz_pripojen` | Už jsi připojen ke hře. | 2 |
+| 16 | `DOSLI_KARTY_V_BALICKU` | `$error.dosli_karty_v_balicku` | Došly karty v balíčku. | 3 |
+| 17 | `NEJSI_ADMIN_HRY` | `$error.nejsi_admin_hry` | Nejsi administrátor hry. | 1 |
+| 18 | `PLNY_SERVER` | `$error.plny_server` | Server nebo herní místnost je plná. | 1 |
+| 19 | `VYHOZEN_ZE_HRY` | `$error.vyhozen_ze_hry` | Byl jsi vyhozen ze hry administrátorem. | 1 |
+| 20 | `HRA_UZ_ZAHAJENA` | `$error.hra_uz_zahajena` | Tato hra již byla zahájena. | 1 |
+| 21 | `HRA_NEPODPORUJE` | `$error.hra_nepodporuje` | Tato hra tuto funkci nepodporuje. | 1 |
+| 22 | `PRIPOJEN_V_JINE_ZALOZCE` | `$error.pripojen_v_jine_zalozce` | Připojen v jiné záložce. | 2 |
 
 ## Poznámky k implementaci
 
@@ -509,11 +611,13 @@ function handleError(errorData) {
 
 1. **Dva různé formáty:** Některé chyby mají kód a skupinu, jiné ne. Klient musí být připraven na oba formáty.
 
-2. **Duplicitní zprávy:** Některé chyby existují ve dvou variantách - jedna s kódem (z Chyba.java) a jedna bez (z SocketServer.java). Například "Nejsi připojen ke hře" (bez kódu, ze SocketServer.java) vs "Nejsi připojen ke hře." (s tečkou, s kódem 1, z Chyba.java).
+2. **Lokalizace chyb:** Všechny chyby z `Chyba.java` v poli `error` vracejí lokalizační klíč začínající `$error.` (např. `$error.pripojen_v_jine_zalozce`), případně doplněný o JSON parametry (např. `$error.vyhozen_ze_hry_adminem:{"admin":"Honza"}`). Klient je překládá pomocí svého lokalizačního slovníku.
+
+3. **Duplicitní zprávy:** Některé chyby existují ve dvou variantách - jedna s kódem (z Chyba.java) a jedna bez (ze SocketServer.java). Například "Nejsi připojen ke hře" (bez kódu, ze SocketServer.java) vs "$error.nepripojen_ke_hre" (s kódem 1, z Chyba.java).
 
 ## Související dokumentace
 
 - [index.md](index.md) - Kompletní reference protokolu
 - [behem-hry.md](behem-hry.md) - Herní fáze a možné chyby
 - [predHrou.md](predHrou.md) - Fáze před hrou a možné chyby
-- `src/main/java/cz/honzaa/bang/net/Chyba.java` - Zdrojový kód definic chyb
+- `plugin-sdk/src/main/java/cz/honzaa/bang/sdk/Chyba.java` - Zdrojový kód definic chyb
