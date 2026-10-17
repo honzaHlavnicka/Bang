@@ -4,7 +4,7 @@ import Players from "../components/game/Players";
 import CentralPanel from "../components/game/CentralPanel";
 import GlobalNotifications from "../components/GlobalNotifications";
 import { DndContext, type DragEndEvent } from "@dnd-kit/core";
-import { useGame } from "../modules/GameContext";
+import { useGame } from "@bang/core";
 
 
 export default function GamePage() {

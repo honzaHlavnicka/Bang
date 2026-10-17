@@ -1,20 +1,26 @@
 import React, { useEffect, useState, useRef } from "react";
-import { GameContext, gameStateDefault } from "./GameContext";
-import type { GameStateType } from "./GameContext";
+import { GameContext, type GameStateType, gameStateDefault } from "./GameContext";
 import { handleGameMessage, connectToGame, changePlayerName, chooseCharacter, createGame, startGame, playCard, drawCard, returnToGame, endTurn, fireCard, putCardInPlay, putCardInPlayOnPlayer, clickUIButton, startNewGameAndDeleteThisOne, kickPlayer } from "./gameActions";
-import toast from "react-hot-toast";
+import { notifications as toast, setNotificationHandler, type NotificationHandler } from "./notifications";
 import { useDialog } from "./DialogContext";
 import { notify } from "./notify";
-import { useTranslation } from "react-i18next";
-import i18n from "i18next";
+import i18n, { t } from "./i18n";
 import posthog from "./posthog";
 import { getMockActions } from "./mockData";
 
-export function GameProvider({ children }: { children: React.ReactNode }) {
+export function GameProvider({
+    children,
+    notificationHandler
+}: {
+    children: React.ReactNode;
+    notificationHandler?: Partial<NotificationHandler> | null;
+}) {
+    if (notificationHandler) {
+        setNotificationHandler(notificationHandler);
+    }
     const [gameState, setGameState] = useState<GameStateType>(gameStateDefault);
     const [ws, setWs] = useState<WebSocket | null>(null);
     const { openDialog, closeDialog } = useDialog();
-    const { t } = useTranslation();
 
     const isMock = import.meta.env.DEV && new URLSearchParams(window.location.search).has("mock");
 
@@ -286,16 +292,16 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
             }
         };
 
-        i18n.on('languageChanged', handleLanguageChange);
+        i18n.on?.('languageChanged', handleLanguageChange);
 
         connectSocket();
         document.addEventListener("visibilitychange", handleVisibilityChange);
 
         return () => {
             isUnmounted = true;
-            i18n.off('languageChanged', handleLanguageChange);
+            i18n.off?.('languageChanged', handleLanguageChange);
             ['cs', 'en', i18n.language].filter(Boolean).forEach(lng => {
-                i18n.removeResourceBundle(lng, 'plugin');
+                i18n.removeResourceBundle?.(lng, 'plugin');
             });
             document.removeEventListener("visibilitychange", handleVisibilityChange);
             if (activeSocket) {

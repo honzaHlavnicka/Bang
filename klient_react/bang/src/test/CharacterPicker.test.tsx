@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import CharacterPicker from '../components/CharacterPicker';
-import * as GameContextModule from '../modules/GameContext';
+import * as GameContextModule from '@bang/core';
 import { ZoomProvider } from '../modules/ZoomContext';
 
 vi.mock('@posthog/react', () => ({

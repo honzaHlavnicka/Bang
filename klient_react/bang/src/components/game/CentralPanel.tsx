@@ -1,14 +1,11 @@
 import { Deck } from "./Deck";
 import Card from "../Card";
 import ZoomToggleButton from "../ZoomButton";
-import { useGame } from "../../modules/GameContext";
+import { useGame, useDialog, useIsMobile, translateServerText } from "@bang/core";
 import globalCSS from "../../styles/global.module.css";
 
 import Fire from "./Fire";
-import { useDialog } from "../../modules/DialogContext";
 import { useTranslation } from "react-i18next";
-import { useIsMobile } from "../../modules/useWindowDimentions";
-import { translateServerText } from "../../modules/gameActions";
 
 
 export default function CentralPanel() {

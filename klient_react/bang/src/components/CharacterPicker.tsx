@@ -1,4 +1,4 @@
-import { useGame } from "../modules/GameContext";
+import { useGame } from "@bang/core";
 import Card from "./Card";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";

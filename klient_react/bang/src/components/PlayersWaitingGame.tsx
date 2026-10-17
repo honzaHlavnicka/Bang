@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { useGame } from "../modules/GameContext";
+import { useGame } from "@bang/core";
 import { useEffect } from "react";
 import { usePostHog } from "@posthog/react";
 import  trashIcon  from "../assets/trashIcon.svg"

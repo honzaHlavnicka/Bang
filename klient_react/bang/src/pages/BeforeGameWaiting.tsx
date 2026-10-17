@@ -1,6 +1,6 @@
 import CharacterPicker from "../components/CharacterPicker";
 import PlayersWaitingGame from "../components/PlayersWaitingGame";
-import { useGame } from "../modules/GameContext";
+import { useGame } from "@bang/core";
 import WaitingRoom from "./WaitingRoom";
 import css from "../styles/waitingPage.module.css";
 import { useTranslation } from "react-i18next";

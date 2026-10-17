@@ -5,9 +5,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { GameProvider } from './modules/GameProvider.tsx'
+import { GameProvider, DialogProvider, setNotificationHandler } from '@bang/core'
 import toast, { Toaster } from 'react-hot-toast'
-import { DialogProvider } from './modules/DialogProvider.tsx'
 import Dialog from './components/Dialog.tsx'
 import { ZoomProvider } from './modules/ZoomContext.tsx'
 import ZoomDialog from './components/zoomDialog.tsx'
@@ -17,6 +16,8 @@ import config from './config';
 
 import '../i18n.ts';
 import LocalhostAlert from './components/LocalhostAlert.tsx'
+
+setNotificationHandler(toast);
 
 const isDebug: boolean = String(import.meta.env.VITE_DEBUG).trim().toLowerCase() === 'true';
 const posthogToken: string = String(import.meta.env.VITE_PUBLIC_POSTHOG_TOKEN);

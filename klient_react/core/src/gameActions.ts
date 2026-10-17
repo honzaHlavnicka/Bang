@@ -1,8 +1,8 @@
-import toast from "react-hot-toast";
+import { notifications as toast } from "./notifications";
 import { type CardType, type GameStateType, gameStateDefault } from "./GameContext";
 import { type DialogState } from "./DialogContext";
 import type { RefObject } from "react";
-import i18n, { t } from "i18next";
+import i18n, { t } from "./i18n";
 import posthog from "./posthog";
 
 export function translateServerText(text: string): string {
@@ -85,7 +85,7 @@ export function handleGameMessage(
             try {
                 const json = JSON.parse(payload);
                 const currentLang = i18n.language || "cs";
-                i18n.addResourceBundle(currentLang, 'plugin', json, true, true);
+                i18n.addResourceBundle?.(currentLang, 'plugin', json, true, true);
                 console.log("Překlady pluginu načteny pro jazyk:", currentLang, json);
             } catch (error) {
                 console.error("Chyba při zpracování překladů ze serveru:", error, payload);
@@ -692,7 +692,7 @@ export function handleGameMessage(
             }
             setGameState(prev=>({...prev, gameEnded:true}));
             ['cs', 'en', i18n.language].filter(Boolean).forEach(lng => {
-                i18n.removeResourceBundle(lng, 'plugin');
+                i18n.removeResourceBundle?.(lng, 'plugin');
             });
             break;
         }

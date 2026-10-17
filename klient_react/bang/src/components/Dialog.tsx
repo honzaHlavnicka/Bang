@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import css from "../styles/dialog.module.css";
-import { useDialog } from "../modules/DialogContext";
+import { useDialog, type CardType } from "@bang/core";
 import Card from "./Card";
-import type { CardType } from "../modules/GameContext";
 import ZoomToggleButton from "./ZoomButton";
 import toast from "react-hot-toast";
 import DarkModeSwitch from "./DarkModeSwitch";

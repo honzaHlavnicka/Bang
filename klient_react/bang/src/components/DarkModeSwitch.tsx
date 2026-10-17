@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import posthog from "../modules/posthog";
+import { posthog } from "@bang/core";
 
 const updateBackground = (isDark: boolean) => {
     const width = window.innerWidth;

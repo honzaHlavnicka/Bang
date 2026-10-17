@@ -2,7 +2,7 @@ import Card from "../Card";
 import SmallCards from "./SmallCards";
 import NameTag from "./NameTag";
 import Cards from "../Cards";
-import {type CardType } from "../../modules/GameContext";
+import { type CardType } from "@bang/core";
 import { useDroppable } from "@dnd-kit/core";
 import { useTranslation } from "react-i18next";
 

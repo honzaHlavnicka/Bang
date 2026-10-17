@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import css from '../styles/loginPage.module.css';
-import { useGame } from '../modules/GameContext';
+import { useGame } from '@bang/core';
 import toast from 'react-hot-toast';
 import DarkModeSwitch from '../components/DarkModeSwitch';
 import globalCSS from "../styles/global.module.css";

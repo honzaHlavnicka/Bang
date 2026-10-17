@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useGame, type Player } from "../../modules/GameContext";
+import { useGame, type Player } from "@bang/core";
 import NameTag from "./NameTag";
 import Card from "../Card";
 import globalCss from "../../styles/global.module.css";

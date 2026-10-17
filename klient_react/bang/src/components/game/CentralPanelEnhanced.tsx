@@ -3,12 +3,11 @@
 import { Deck } from "./Deck";
 import Card from "../Card";
 import ZoomToggleButton from "../ZoomButton";
-import { useGame } from "../../modules/GameContext";
+import { useGame, useDialog } from "@bang/core";
 import globalCSS from "../../styles/global.module.css";
 import gameStateCSS from "../../styles/gameStateMessage.module.css";
 
 import Fire from "./Fire";
-import { useDialog } from "../../modules/DialogContext";
 import { useTranslation } from "react-i18next";
 
 export default function CentralPanelEnhanced() {

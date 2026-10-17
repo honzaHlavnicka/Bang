@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { subscribe,  } from "../modules/notify";
-import type {NotificationMessage} from "../modules/notify";
+import { subscribe, type NotificationMessage } from "@bang/core";
 import css from "../styles/notification.module.css";
 export default function GlobalNotifications() {
   const [messages, setMessages] = useState<NotificationMessage[]>([]);

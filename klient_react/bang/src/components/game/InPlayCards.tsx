@@ -1,6 +1,6 @@
 import { useDroppable } from "@dnd-kit/core";
 import Cards from "../Cards";
-import type { CardType } from "../../modules/GameContext";
+import type { CardType } from "@bang/core";
 
 export default function InPlayCards({vylozeneKarty}: {vylozeneKarty: CardType[]}) {
     const { setNodeRef, isOver } = useDroppable({ id: "InPlayCards" });

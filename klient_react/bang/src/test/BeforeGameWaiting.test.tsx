@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import BeforeGameWaiting from '../pages/BeforeGameWaiting';
-import * as GameContextModule from '../modules/GameContext';
+import * as GameContextModule from '@bang/core';
 
 vi.mock('@posthog/react', () => ({
   usePostHog: () => ({ capture: vi.fn() }),

@@ -1,8 +1,7 @@
 import Player from "./Player";
 import { useRef, useEffect, useMemo } from "react";
 import css from "../../styles/scrolable.module.css"
-import { useGame } from "../../modules/GameContext";
-import { useIsMobile } from "../../modules/useWindowDimentions";
+import { useGame, useIsMobile } from "@bang/core";
 import PlayerMobile from "./PlayerMobile";
 
 export default function Players() {

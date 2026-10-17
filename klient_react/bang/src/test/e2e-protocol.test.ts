@@ -2,8 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { spawn, type ChildProcess } from 'child_process';
 import WebSocket from 'ws';
 import path from 'path';
-import { handleGameMessage, createGame, connectToGame, startGame } from '../modules/gameActions';
-import { gameStateDefault, type GameStateType } from '../modules/GameContext';
+import { handleGameMessage, createGame, connectToGame, startGame, gameStateDefault, type GameStateType } from '@bang/core';
 
 const TEST_PORT = 22216;
 const WS_URL = `ws://127.0.0.1:${TEST_PORT}/ws`;
@@ -141,7 +140,7 @@ describe('E2E Full-Stack Protocol Integration (Java Server + React Logic)', () =
     // Počkáme, až Klient 2 potvrdí připojení a Klient 1 uvidí 2 hráče v seznamu
     await new Promise<void>((resolve, reject) => {
       const check = setInterval(() => {
-        if (state2.inGame && state1.players && state1.players.length >= 2) {
+        if (state2.inGame && state1.players && state1.players.length >= 2 && state1.players.some(p => p.name === 'HostujiciHrac2')) {
           clearInterval(check);
           resolve();
         }

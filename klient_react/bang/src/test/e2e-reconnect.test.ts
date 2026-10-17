@@ -2,8 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { spawn, type ChildProcess } from 'child_process';
 import WebSocket from 'ws';
 import path from 'path';
-import { handleGameMessage, createGame, connectToGame, startGame } from '../modules/gameActions';
-import { gameStateDefault, type GameStateType } from '../modules/GameContext';
+import { handleGameMessage, createGame, connectToGame, startGame, gameStateDefault, type GameStateType } from '@bang/core';
 
 const RECONNECT_PORT = 22218;
 const RESTART_PORT = 22219;

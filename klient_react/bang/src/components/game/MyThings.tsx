@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { useGame, type CardType } from "../../modules/GameContext";
+import { useGame, useDialog, useIsMobile, type CardType } from "@bang/core";
 import Card from "../Card";
 import Cards from "../Cards";
 import InPlayCards from "./InPlayCards";
 import NameTag from "./NameTag";
 import { useTranslation } from 'react-i18next';
-import { useDialog } from "../../modules/DialogContext";
-import { useIsMobile } from "../../modules/useWindowDimentions";
 
 export default function MyThings() {
     const {t} = useTranslation();

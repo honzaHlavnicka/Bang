@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { handleGameMessage, translateServerText } from '../modules/gameActions';
-import { gameStateDefault, type GameStateType } from '../modules/GameContext';
+import { handleGameMessage, translateServerText, gameStateDefault, type GameStateType } from '@bang/core';
 import type { RefObject } from 'react';
 
 describe('gameActions - translateServerText', () => {

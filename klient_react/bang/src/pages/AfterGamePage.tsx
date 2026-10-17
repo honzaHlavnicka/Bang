@@ -3,7 +3,7 @@ import css from "../styles/waitingPage.module.css";
 import DarkModeSwitch from "../components/DarkModeSwitch";
 import globalCSS from "../styles/global.module.css";
 import Card from "../components/Card";
-import { useGame } from "../modules/GameContext";
+import { useGame } from "@bang/core";
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 

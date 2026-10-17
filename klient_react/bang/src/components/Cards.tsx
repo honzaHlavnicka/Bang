@@ -1,4 +1,4 @@
-import type { CardType } from "../modules/GameContext";
+import type { CardType } from "@bang/core";
 import Card, { type CardSizeType } from "./Card";
 import DragableCard from "./game/DragableCard";
 

@@ -1,4 +1,4 @@
-import toast from "react-hot-toast";
+import { notifications } from "./notifications";
 import type { GameStateType } from "./GameContext";
 
 // --- MOCK DATA PRO VÝVOJ BEZ SERVERU ---
@@ -157,7 +157,7 @@ export const getMockActions = (
                     { jmeno: "Suzy Lafayette", obrazek: "SUZY_LAFAYTTE", popis: "Jakmile nemá v ruce žádné karty, lízne si novou kartu." }
                 ]
             }));
-            toast.success("Mock: Připojeno do lobby");
+            notifications.success("Mock: Připojeno do lobby");
         },
         createGame: (_gameTypeId: number, name: string) => {
             actions.connectToGame("MOCK123", name);
@@ -168,7 +168,7 @@ export const getMockActions = (
                 name: newName,
                 players: prev.players ? prev.players.map(p => p.id === 1 ? { ...p, name: newName } : p) : null
             }));
-            toast.success(`Mock: Jméno změněno na ${newName}`);
+            notifications.success(`Mock: Jméno změněno na ${newName}`);
         },
         chooseCharacter: (characterName: string) => {
             setGameState(prev => ({
@@ -176,14 +176,14 @@ export const getMockActions = (
                 character: characterName,
                 players: prev.players ? prev.players.map(p => p.id === 1 ? { ...p, character: characterName } : p) : null
             }));
-            toast.success(`Mock: Vybrána postava ${characterName}`);
+            notifications.success(`Mock: Vybrána postava ${characterName}`);
         },
         startGame: () => {
             setGameState(prev => {
                 const initial = getInitialMockGameState(prev.name || "Honza");
                 return initial;
             });
-            toast.success("Mock: Hra odstartována");
+            notifications.success("Mock: Hra odstartována");
         },
         drawCard: () => {
             const randomCardInfo = mockCardsPool[Math.floor(Math.random() * mockCardsPool.length)];
@@ -198,7 +198,7 @@ export const getMockActions = (
                     deckCount: Math.max(0, prev.deckCount - 1)
                 };
             });
-            toast.success(`Mock: Dobral jsi kartu ${randomCardInfo.name}`);
+            notifications.success(`Mock: Dobral jsi kartu ${randomCardInfo.name}`);
         },
         playCard: (cardId: number) => {
             setGameState(prev => {
@@ -213,7 +213,7 @@ export const getMockActions = (
                     discardPile: [card.image, ...prev.discardPile]
                 };
             });
-            toast.success("Mock: Karta zahozena");
+            notifications.success("Mock: Karta zahozena");
         },
         putCardInPlay: (cardId: number) => {
             setGameState(prev => {
@@ -229,7 +229,7 @@ export const getMockActions = (
                     players: nextPlayers
                 };
             });
-            toast.success("Mock: Karta vyložena");
+            notifications.success("Mock: Karta vyložena");
         },
         putCardInPlayOnPlayer: (cardId: number, playerId: number) => {
             setGameState(prev => {
@@ -250,7 +250,7 @@ export const getMockActions = (
                     players: nextPlayers
                 };
             });
-            toast.success("Mock: Karta vyložena na soupeře");
+            notifications.success("Mock: Karta vyložena na soupeře");
         },
         fireCard: (cardId: number) => {
             actions.playCard(cardId);
@@ -268,7 +268,7 @@ export const getMockActions = (
                     players: nextPlayers
                 };
             });
-            toast.success("Mock: Konec tvého tahu. Hraje Pepa...");
+            notifications.success("Mock: Konec tvého tahu. Hraje Pepa...");
             
             // Pepa plays
             setTimeout(() => {
@@ -284,7 +284,7 @@ export const getMockActions = (
                         players: nextPlayers
                     };
                 });
-                toast.success("Mock: Pepa ukončil tah. Hraje Alena...");
+                notifications.success("Mock: Pepa ukončil tah. Hraje Alena...");
                 
                 // Alena plays
                 setTimeout(() => {
@@ -300,7 +300,7 @@ export const getMockActions = (
                             players: nextPlayers
                         };
                     });
-                    toast.success("Mock: Alena ukončila tah. Hraje Karel...");
+                    notifications.success("Mock: Alena ukončila tah. Hraje Karel...");
                     
                     // Karel plays
                     setTimeout(() => {
@@ -316,7 +316,7 @@ export const getMockActions = (
                                 players: nextPlayers
                             };
                         });
-                        toast.success("Mock: Karel ukončil tah. Jsi na řadě!");
+                        notifications.success("Mock: Karel ukončil tah. Jsi na řadě!");
                     }, 1500);
                 }, 1500);
             }, 1500);
@@ -325,12 +325,10 @@ export const getMockActions = (
             setGameState(prev => ({ ...prev, inGame: true }));
         },
         clickUIButton: (buttonId: number) => {
-            toast.success(`Mock: Kliknuto na tlačítko ${buttonId}`);
+            notifications.success(`Mock: Kliknuto na tlačítko ${buttonId}`);
         },
 
-        // Simulovat nahrazení hry není třeba, mnohem lepší je využít jako ukončovač hry.
         startNewGameAndDeleteThisOne: () => {
-
             setGameState((prev) => ({
                 ...prev,
                 gameEnded: true,
