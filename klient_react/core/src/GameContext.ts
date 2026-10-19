@@ -28,6 +28,7 @@ export type Player = {
     inPlayCards: Array<CardType> | null;
     isAdmin?: boolean;
     isOnline?: boolean;
+    isBot?: boolean;
 }
 
 export type GameStateType = {

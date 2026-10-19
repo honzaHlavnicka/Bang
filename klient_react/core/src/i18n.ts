@@ -1,16 +1,28 @@
 import i18n from 'i18next';
+import csTranslation from './locales/cs.json';
+import enTranslation from './locales/en.json';
 
-// Pokud spotřebitelská aplikace i18n ještě neinicializovala, inicializujeme základní konfiguraci,
-// aby byly okamžitě dostupné metody t, addResourceBundle, removeResourceBundle, on, off.
+// Inicializace výchozích jazykových balíčků pro bezchybný překlad hlášek a chyb
 if (!i18n.isInitialized) {
   i18n.init({
     lng: 'cs',
     fallbackLng: 'cs',
-    resources: {},
+    supportedLngs: ['cs', 'en'],
+    resources: {
+      cs: { translation: csTranslation },
+      en: { translation: enTranslation },
+    },
     interpolation: {
       escapeValue: false,
     },
   });
+} else {
+  if (!i18n.hasResourceBundle?.('cs', 'translation')) {
+    i18n.addResourceBundle?.('cs', 'translation', csTranslation, true, false);
+  }
+  if (!i18n.hasResourceBundle?.('en', 'translation')) {
+    i18n.addResourceBundle?.('en', 'translation', enTranslation, true, false);
+  }
 }
 
 export const t = (key: string, opts?: any): string => String(i18n.t(key, opts));

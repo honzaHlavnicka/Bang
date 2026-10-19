@@ -52,6 +52,7 @@ type ServerPlayer = {
     postava?: string;
     isAdmin?: boolean;
     isOnline?: boolean;
+    isBot?: boolean;
     vylozeneKarty?: ServerCard[];
 };
 
@@ -202,6 +203,7 @@ export function handleGameMessage(
                             inPlayCards: inPlayCards,
                             isAdmin: player.isAdmin ?? false,
                             isOnline: player.isOnline ?? true,
+                            isBot: player.isBot ?? false,
                         };
                     });
 
@@ -252,6 +254,7 @@ export function handleGameMessage(
                         inPlayCards: inPlayCards,
                         isAdmin: json.isAdmin ?? false,
                         isOnline: json.isOnline ?? true,
+                        isBot: json.isBot ?? false,
                     };
 
                     const isMe = prev.playerId === json.id;
@@ -779,6 +782,8 @@ export function handleGameMessage(
                 if(confirmed){
                     posthog.capture('game_replacement_accepted');
                     sessionStorage.setItem("autoconnect", payload);
+                    sessionStorage.removeItem("gameToken");
+                    localStorage.removeItem("gameToken");
                     window.location.reload();
                 } else {
                     posthog.capture('game_replacement_declined');
@@ -789,6 +794,8 @@ export function handleGameMessage(
         case "nahradHruBezPtani": {
             posthog.capture('game_replacement_forced');
             sessionStorage.setItem("autoconnect", payload);
+            sessionStorage.removeItem("gameToken");
+            localStorage.removeItem("gameToken");
             window.location.reload();
             break;
         }

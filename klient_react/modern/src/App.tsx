@@ -1,20 +1,58 @@
-import { useGame, useDialog } from '@bang/core';
+import React from "react";
+import { useGame } from "@bang/core";
+import { LobbyPage } from "./pages/LobbyPage";
+import { WaitingRoomPage } from "./pages/WaitingRoomPage";
+import { GamePlayPage } from "./pages/GamePlayPage";
+import { GameOverPage } from "./pages/GameOverPage";
+import { DialogManager } from "./components/DialogManager";
+import { GlobalNotifications } from "./components/GlobalNotifications";
 
 export default function App() {
-  const { gameState, isConnected } = useGame();
-  const { dialog, closeDialog } = useDialog();
+  const { gameState } = useGame();
+
+  const renderContent = () => {
+    // Čekání na první navázání spojení
+    if (!gameState.startedConection) {
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#161311] text-[#f5ede3] text-center select-none">
+          <div className="w-10 h-10 border-3 border-amber-500/30 border-t-amber-500 rounded-full animate-spin mb-4" />
+          <h2 className="text-lg font-semibold text-[#f5ede3]">Připojování k hernímu serveru...</h2>
+          <p className="text-xs text-[#b5a596] mt-1 max-w-sm">
+            Pokud se obrazovka nezmění během několika sekund, zkontroluj prosím své internetové připojení.
+          </p>
+        </div>
+      );
+    }
+
+    // 1. Hráč ještě není v žádné místnosti: Lobby
+    if (!gameState.inGame) {
+      return <LobbyPage />;
+    }
+
+    // 2. V místnosti před spuštěním hry: Čekací místnost
+    if (!gameState.gameStarted) {
+      return <WaitingRoomPage />;
+    }
+
+    // 3. Po skončení hry: Vyhlášení vítězů
+    if (gameState.gameEnded) {
+      return <GameOverPage />;
+    }
+
+    // 4. Probíhající hra: Herní stůl
+    return <GamePlayPage />;
+  };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-2">Nový frontend</h1>
-      <p className="text-sm text-gray-500 mb-4">
-        Stav připojení: {isConnected ? 'Připojeno' : 'Odpojeno'} | Ve hře: {gameState.inGame ? 'Ano' : 'Ne'}
-      </p>
+    <>
+      {/* Rychlá vyskakovací hlášení ze serveru (GlobalNotifications) */}
+      <GlobalNotifications />
 
-      {/* Základní kostra připravená pro naprogramování nového vzhledu */}
-      <div className="border border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-8 text-center text-gray-500">
-        Tady bude nová verse hry.
-      </div>
-    </div>
+      {/* Globální modální dialogy z herního jádra (dostupné na všech stránkách včetně konce hry) */}
+      <DialogManager />
+
+      {/* Aktuální stránka */}
+      {renderContent()}
+    </>
   );
 }
