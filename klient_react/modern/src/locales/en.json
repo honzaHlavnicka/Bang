@@ -1,0 +1,46 @@
+{
+  "lobby": {
+    "title": "Card Games",
+    "subtitle": "Play Bang!, Mau-Mau and other board games online with friends.",
+    "heroTagline": "Favorite card tables right in your browser",
+    "heroDesc": "Join your friends or create your own room. No installation or registration required.",
+    "activeGameTitle": "You have an active game!",
+    "activeGameDesc": "You can return to the table immediately.",
+    "returnToGame": "Return to game",
+    "nicknameLabel": "Your nickname",
+    "nicknamePlaceholder": "e.g. John",
+    "joinTab": "Join Game",
+    "createTab": "Create New Game",
+    "gameCodeLabel": "Game Code",
+    "gameCodePlaceholder": "e.g. ABCD",
+    "joinBtn": "Enter Game",
+    "createBtn": "Create Game",
+    "selectGameLabel": "Choose game",
+    "selectedBadge": "Selected",
+    "errorNickname": "Please enter your name",
+    "errorCode": "Please enter game code",
+    "features": {
+      "noInstall": "No installation",
+      "realtime": "Real-time gameplay",
+      "community": "Friendly community",
+      "customRules": "Multiple game modes"
+    },
+    "footerNotice": "Runs entirely in your browser • Free & open",
+    "connectedStatus": "Connected to server",
+    "connectingStatus": "Connecting..."
+  },
+  "dialog": {
+    "confirmChoice": "Confirm choice",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "understand": "Understood",
+    "selectCard": "Select card",
+    "selectPlayer": "Select player",
+    "information": "Information",
+    "pressEnterToConfirm": "Press Enter to confirm"
+  },
+  "inplay": {
+    "emptyDropzone": "Cards in play",
+    "emptyDropzoneHint": "(drop blue or green cards here)"
+  }
+}

@@ -104,4 +104,162 @@ describe('DialogManager component', () => {
     expect(closeDialog).toHaveBeenCalled();
     expect(callback).toHaveBeenCalledWith(2);
   });
+
+  it('confirms SELECT_CARD dialog with Enter key', () => {
+    const callback = vi.fn();
+    const closeDialog = vi.fn();
+
+    const dialogState: DialogState = {
+      type: 'SELECT_CARD',
+      data: {
+        cards: [
+          { id: 21, name: 'Pivo', image: 'beer', isPlayable: true, isPutInPlayable: false },
+        ],
+        min: 1,
+        max: 1,
+      },
+      callback,
+    };
+
+    render(
+      <DialogContext.Provider value={{ dialog: dialogState, openDialog: vi.fn(), closeDialog }}>
+        <DialogManager />
+      </DialogContext.Provider>
+    );
+
+    // Select the card
+    const card = screen.getByAltText('Pivo');
+    fireEvent.click(card);
+
+    // Press Enter to confirm
+    fireEvent.keyDown(window, { key: 'Enter' });
+
+    expect(closeDialog).toHaveBeenCalled();
+    expect(callback).toHaveBeenCalledWith([21]);
+  });
+
+  it('confirms CONFIRM dialog with Enter key and cancels with Escape', () => {
+    const callback = vi.fn();
+    const closeDialog = vi.fn();
+
+    const dialogState: DialogState = {
+      type: 'CONFIRM',
+      data: {
+        title: 'Dotaz',
+        message: 'Opravdu chceš ukončit hru?',
+      },
+      callback,
+    };
+
+    const { rerender } = render(
+      <DialogContext.Provider value={{ dialog: dialogState, openDialog: vi.fn(), closeDialog }}>
+        <DialogManager />
+      </DialogContext.Provider>
+    );
+
+    // Press Enter
+    fireEvent.keyDown(window, { key: 'Enter' });
+    expect(closeDialog).toHaveBeenCalled();
+    expect(callback).toHaveBeenCalledWith(true);
+
+    // Reset mocks and test Escape
+    vi.clearAllMocks();
+    rerender(
+      <DialogContext.Provider value={{ dialog: dialogState, openDialog: vi.fn(), closeDialog }}>
+        <DialogManager />
+      </DialogContext.Provider>
+    );
+
+    fireEvent.keyDown(window, { key: 'Escape' });
+    expect(closeDialog).toHaveBeenCalled();
+    expect(callback).toHaveBeenCalledWith(false);
+  });
+
+  it('closes INFO dialog with Enter or Space key', () => {
+    const closeDialog = vi.fn();
+
+    const dialogState: DialogState = {
+      type: 'INFO',
+      data: {
+        header: 'Nápověda',
+        message: 'Tohle je vysvětlující text.',
+      },
+    };
+
+    render(
+      <DialogContext.Provider value={{ dialog: dialogState, openDialog: vi.fn(), closeDialog }}>
+        <DialogManager />
+      </DialogContext.Provider>
+    );
+
+    expect(screen.getByText('Tohle je vysvětlující text.')).toBeDefined();
+
+    // Press Enter to dismiss
+    fireEvent.keyDown(window, { key: 'Enter' });
+    expect(closeDialog).toHaveBeenCalled();
+  });
+
+  it('transitions between null and multiple dialog types without hook order violations', () => {
+    const closeDialog = vi.fn();
+    const { rerender } = render(
+      <DialogContext.Provider value={{ dialog: null, openDialog: vi.fn(), closeDialog }}>
+        <DialogManager />
+      </DialogContext.Provider>
+    );
+
+    // Open SELECT_CARD
+    rerender(
+      <DialogContext.Provider
+        value={{
+          dialog: {
+            type: 'SELECT_CARD',
+            data: {
+              cards: [{ id: 1, name: 'Bang!', image: 'bang', isPlayable: true, isPutInPlayable: false }],
+              min: 1,
+              max: 1,
+            },
+          },
+          openDialog: vi.fn(),
+          closeDialog,
+        }}
+      >
+        <DialogManager />
+      </DialogContext.Provider>
+    );
+    expect(screen.getByText('Vyber kartu')).toBeDefined();
+
+    // Close to null
+    rerender(
+      <DialogContext.Provider value={{ dialog: null, openDialog: vi.fn(), closeDialog }}>
+        <DialogManager />
+      </DialogContext.Provider>
+    );
+    expect(screen.queryByText('Vyber kartu')).toBeNull();
+
+    // Open INFO dialog
+    rerender(
+      <DialogContext.Provider
+        value={{
+          dialog: {
+            type: 'INFO',
+            data: { header: 'Info Test', message: 'Zpráva' },
+          },
+          openDialog: vi.fn(),
+          closeDialog,
+        }}
+      >
+        <DialogManager />
+      </DialogContext.Provider>
+    );
+    expect(screen.getByText('Info Test')).toBeDefined();
+
+    // Close back to null
+    rerender(
+      <DialogContext.Provider value={{ dialog: null, openDialog: vi.fn(), closeDialog }}>
+        <DialogManager />
+      </DialogContext.Provider>
+    );
+    expect(screen.queryByText('Info Test')).toBeNull();
+  });
 });
+

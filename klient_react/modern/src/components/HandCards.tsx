@@ -259,9 +259,19 @@ export const HandCards: React.FC = () => {
                 return (
                   <div
                     key={card.id}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={translateServerText(card.name)}
+                    aria-pressed={isSel}
                     onPointerDown={(e) => handlePointerDown(card, e)}
                     onClick={() => setSelectedCardId(isSel ? null : card.id)}
-                    className={`shrink-0 relative cursor-grab active:cursor-grabbing select-none transition-transform duration-100 ${
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+                        e.preventDefault();
+                        setSelectedCardId(isSel ? null : card.id);
+                      }
+                    }}
+                    className={`shrink-0 relative cursor-grab active:cursor-grabbing select-none transition-transform duration-100 rounded-[6px] focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none ${
                       isBeingDragged ? "opacity-30 scale-95" : "hover:-translate-y-2 hover:z-20"
                     }`}
                     style={{ touchAction: "pan-x" }}

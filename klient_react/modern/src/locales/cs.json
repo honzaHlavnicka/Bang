@@ -1,0 +1,46 @@
+{
+  "lobby": {
+    "title": "Karetní hry",
+    "subtitle": "Hraj Bang!, Prší a další společenské hry online s přáteli.",
+    "heroTagline": "Oblíbené karetní stoly přímo v prohlížeči",
+    "heroDesc": "Připoj se k přátelům nebo založ vlastní místnost. Žádná instalace ani registrace není nutná.",
+    "activeGameTitle": "Máš rozehranou hru!",
+    "activeGameDesc": "Můžeš se ihned vrátit ke stolu.",
+    "returnToGame": "Vrátit se do hry",
+    "nicknameLabel": "Tvoje přezdívka",
+    "nicknamePlaceholder": "Např. Honza",
+    "joinTab": "Vstoupit do hry",
+    "createTab": "Založit novou hru",
+    "gameCodeLabel": "Kód hry",
+    "gameCodePlaceholder": "Např. ABCD",
+    "joinBtn": "Vstoupit do hry",
+    "createBtn": "Vytvořit hru",
+    "selectGameLabel": "Vyber hru",
+    "selectedBadge": "Zvoleno",
+    "errorNickname": "Zadej prosím své jméno",
+    "errorCode": "Zadej kód hry",
+    "features": {
+      "noInstall": "Bez instalace",
+      "realtime": "Rychlé hraní v reálném čase",
+      "community": "Přátelská komunita",
+      "customRules": "Více herních variant"
+    },
+    "footerNotice": "Hra běží ve vašem prohlížeči • Žádná instalace ani registrace",
+    "connectedStatus": "Připojeno k serveru",
+    "connectingStatus": "Připojování..."
+  },
+  "dialog": {
+    "confirmChoice": "Potvrdit výběr",
+    "cancel": "Zrušit",
+    "confirm": "Potvrdit",
+    "understand": "Rozumím",
+    "selectCard": "Vyber kartu",
+    "selectPlayer": "Vyber hráče",
+    "information": "Informace",
+    "pressEnterToConfirm": "Stiskni Enter pro potvrzení"
+  },
+  "inplay": {
+    "emptyDropzone": "Vyložené karty",
+    "emptyDropzoneHint": "(přetáhni sem modrou nebo zelenou kartu)"
+  }
+}

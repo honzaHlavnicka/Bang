@@ -12,7 +12,7 @@ export * from "./gameActions";
 export * from "./notifications";
 export * from "./notify";
 export { default as posthog } from "./posthog";
-export { default as i18n } from "./i18n";
+export { default as i18n, t } from "./i18n";
 
 // Mock data & testing
 export * from "./mockData";

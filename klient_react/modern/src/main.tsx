@@ -4,6 +4,7 @@ import { GameProvider, DialogProvider, setNotificationHandler, posthog } from '@
 import { PostHogProvider } from '@posthog/react';
 import { toast, Toaster } from 'sonner';
 import App from './App';
+import './i18n';
 import './index.css';
 
 // Propojení Sonner toastů s headless herním jádrem

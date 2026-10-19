@@ -137,9 +137,18 @@ export const MyStatus: React.FC = () => {
                 return (
                   <div
                     key={card.id}
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`Vyložená karta: ${translateServerText(card.name)}`}
                     onPointerDown={(e) => handleInPlayPointerDown(card, e)}
                     onClick={() => setSelectedInPlayCard(card)}
-                    className={`cursor-pointer shrink-0 select-none ${
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+                        e.preventDefault();
+                        setSelectedInPlayCard(card);
+                      }
+                    }}
+                    className={`cursor-pointer shrink-0 select-none rounded-[5px] focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none ${
                       isBeingDragged ? "opacity-30 scale-95" : "hover:-translate-y-1 hover:z-20"
                     }`}
                     title={`${translateServerText(card.name)} (klikni pro akce nebo přetáhni)`}
