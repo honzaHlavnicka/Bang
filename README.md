@@ -178,7 +178,7 @@ cd klient_react/bang/
 npm install --
 npm run build
 ```
-
+Kromě `klient_react/bang/` existuje ještě verze `modern`, pro kterou je instalace identická. Změní se pouze cesta v `cd` z `bang` na `modern`.
 > Před buildem zkontroluj, že `.env` soubory serveru i klienta mají nastavený stejný port a doménu.
 
 ---
