@@ -62,7 +62,7 @@ const SelectCardDialog: React.FC<SelectCardDialogProps> = ({ dialog, closeDialog
       subtitle={`Vyber ${min === max ? min : `${min} až ${max}`} ${max === 1 ? "kartu" : max < 5 ? "karty" : "karet"}`}
       maxWidth="lg"
     >
-      <div className="flex flex-wrap justify-center gap-5 sm:gap-7 p-4 sm:p-6 max-h-[58vh] overflow-y-auto">
+      <div className="flex flex-wrap justify-center gap-6 sm:gap-8 p-4 sm:p-6 max-h-[58vh] overflow-y-auto bg-[#170e09] rounded-xl border border-[#382b22] shadow-inner">
         {cards.map((card: CardType) => {
           const isSel = selectedCards.includes(card.id);
           return (
@@ -91,7 +91,7 @@ const SelectCardDialog: React.FC<SelectCardDialogProps> = ({ dialog, closeDialog
           );
         })}
       </div>
-      <div className="flex justify-end gap-2 pt-3 border-t border-[#382f28]">
+      <div className="flex justify-end gap-2 pt-3 border-t border-[#382b22]">
         {!dialog.notClosable && (
           <Button variant="ghost" onClick={closeDialog}>
             Zrušit
@@ -172,14 +172,14 @@ const SelectPlayerDialog: React.FC<SelectPlayerDialogProps> = ({ dialog, closeDi
               onClick={() => togglePlayer(p.id)}
               className={`flex items-center justify-between p-3 rounded-xl border text-left transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:outline-none ${
                 isSel
-                  ? "bg-amber-600/20 border-amber-500 text-[#f5ede3] shadow-md ring-1 ring-amber-500"
-                  : "bg-[#2d2520] border-[#423830] text-[#b5a596] hover:text-[#f5ede3] hover:border-[#54463c]"
+                  ? "bg-[#281810] border-amber-500/80 text-[#f5ede3] shadow-sm ring-1 ring-amber-500/40"
+                  : "bg-[#201610] border-[#382b22] text-[#bcae9f] hover:text-[#f5ede3] hover:border-[#4d382b]"
               }`}
             >
               <div className="flex items-center gap-2.5">
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    isSel ? "bg-amber-500 text-black font-bold" : "bg-[#1c1714] text-[#b5a596]"
+                    isSel ? "bg-amber-500 text-stone-950 font-bold" : "bg-[#18100a] text-[#bcae9f] border border-[#382b22]"
                   }`}
                 >
                   <User className="w-4 h-4" />
@@ -191,7 +191,7 @@ const SelectPlayerDialog: React.FC<SelectPlayerDialogProps> = ({ dialog, closeDi
           );
         })}
       </div>
-      <div className="flex justify-end gap-2 pt-3 border-t border-[#382f28]">
+      <div className="flex justify-end gap-2 pt-3 border-t border-[#382b22]">
         {!dialog.notClosable && (
           <Button variant="ghost" onClick={closeDialog}>
             Zrušit
@@ -297,7 +297,7 @@ const InfoDialog: React.FC<InfoDialogProps> = ({ dialog, closeDialog }) => {
       <div className="text-sm text-[#f5ede3] leading-relaxed whitespace-pre-line py-1">
         {translateServerText(message)}
       </div>
-      <div className="flex justify-end pt-3 border-t border-[#382f28]">
+      <div className="flex justify-end pt-3 border-t border-[#382b22]">
         <Button variant="primary" autoFocus={true} shortcutHint="Enter" onClick={closeDialog}>
           Rozumím
         </Button>
@@ -354,7 +354,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({ dialog, closeDialog }) =>
           {translateServerText(message)}
         </p>
       )}
-      <div className="flex justify-end gap-2 pt-3 border-t border-[#382f28]">
+      <div className="flex justify-end gap-2 pt-3 border-t border-[#382b22]">
         {!hideCancel && (
           <Button variant="ghost" onClick={handleCancelAction}>
             {cancelText ? translateServerText(cancelText) : "Zrušit"}
@@ -406,7 +406,7 @@ const TextDialog: React.FC<TextDialogProps> = ({ dialog, closeDialog }) => {
           onChange={(e) => setTextValue(e.target.value)}
           placeholder={placeholder ? translateServerText(placeholder) : "Napiš zde..."}
         />
-        <div className="flex justify-end gap-2 pt-2">
+        <div className="flex justify-end gap-2 pt-3 border-t border-[#382b22]">
           {!dialog.notClosable && (
             <Button type="button" variant="ghost" onClick={closeDialog}>
               Zrušit

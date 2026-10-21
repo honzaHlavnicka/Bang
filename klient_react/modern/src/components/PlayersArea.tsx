@@ -29,12 +29,13 @@ export const PlayersArea: React.FC = () => {
 
   return (
     <div className="w-full px-2 py-1 select-none">
-      <div className="flex items-stretch justify-start md:justify-center gap-2.5 overflow-x-auto pb-2 scroll-smooth">
+      <div className="flex items-stretch justify-start md:justify-center gap-2 sm:gap-3 lg:gap-4 overflow-x-auto pb-2 scroll-smooth">
         {otherPlayers.map((player: Player) => {
           const isTurn = player.id === gameState.turnPlayerId;
           const dropZoneId = `player-${player.id}`;
           const hasLives = gameState.allowedUIElements.includes("ZIVOTY");
           const showCharacter = gameState.allowedUIElements.includes("POSTAVA");
+          const hasRole = gameState.allowedUIElements.includes("ROLE");
           const isDead = hasLives && player.health <= 0;
           const isOffline = player.isOnline === false;
           const charInfo = getCharacterDesc(player.character);
@@ -47,16 +48,16 @@ export const PlayersArea: React.FC = () => {
               key={player.id}
               id={dropZoneId}
               data-dropzone={dropZoneId}
-              className={`shrink-0 relative flex flex-col justify-between p-1.5 sm:p-2 md:p-2.5 rounded-xl border transition-all duration-150 min-w-[125px] sm:min-w-[165px] md:min-w-[200px] max-w-[155px] sm:max-w-[230px] ${
+              className={`shrink-0 relative flex flex-col justify-start p-1.5 sm:p-2 md:p-2.5 rounded-xl border transition-all duration-150 min-w-[130px] sm:min-w-[160px] md:min-w-[180px] max-w-[260px] ${
                 isPlayerHovered
-                  ? "bg-amber-950/60 border-amber-400 ring-2 ring-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.5)] scale-[1.02]"
+                  ? "bg-[#341b10] border-amber-400 ring-2 ring-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.5)] scale-[1.02]"
                   : isDead
-                  ? "bg-[#18120f]/80 border-red-950/40 opacity-55 grayscale-[0.6]"
+                  ? "bg-[#160e0a]/80 border-[#2e2017] opacity-55 grayscale-[0.6]"
                   : isOffline
-                  ? "bg-[#18120f]/80 border-[#382f28] opacity-50 grayscale-[0.5]"
+                  ? "bg-[#160e0a]/80 border-[#33251c] opacity-50 grayscale-[0.5]"
                   : isTurn
-                  ? "bg-[#2d241d] border-amber-500 shadow-[0_0_15px_rgba(217,119,6,0.3)] ring-1 ring-amber-400"
-                  : "bg-[#211a16] border-[#382f28] hover:border-[#4d4036]"
+                  ? "bg-[#2c1e15] border-amber-500/80 shadow-[0_0_15px_rgba(217,119,6,0.25)] ring-1 ring-amber-400/50"
+                  : "bg-[#201711] border-[#382b22] hover:border-[#4d3c30]"
               } ${isDragging && !isPlayerHovered ? "hover:border-amber-400/80" : ""}`}
             >
               {/* 1. Hlavička hráče: jméno, admin a indikátor tahu */}
@@ -78,7 +79,7 @@ export const PlayersArea: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   {isOffline && (
-                    <Badge variant="neutral" size="sm" className="bg-red-950/60 text-red-300 border-red-800/40 text-[9px] px-1 py-0">
+                    <Badge variant="neutral" size="sm" className="bg-red-950/70 text-red-300 border-red-800/60 text-[9px] px-1 py-0">
                       Off
                     </Badge>
                   )}
@@ -96,7 +97,7 @@ export const PlayersArea: React.FC = () => {
                 </div>
               </div>
 
-              {/* 2. Postava a statistiky */}
+              {/* 2. Herní stanoviště: Postava a statistiky */}
               <div className="flex items-center gap-1.5 sm:gap-2 mb-1 sm:mb-1.5">
                 {/* Karta postavy (pouze pokud je povolena v UI) */}
                 {showCharacter && player.character && (
@@ -129,7 +130,7 @@ export const PlayersArea: React.FC = () => {
                     </div>
                   )}
 
-                  {gameState.allowedUIElements.includes("ROLE") && player.role && (
+                  {hasRole && player.role && (
                     <span className="inline-block text-[9px] sm:text-[10px] font-medium px-1 sm:px-1.5 py-0 sm:py-0.5 rounded bg-[#2b221c] border border-[#3d3229] text-amber-300 mt-0.5 truncate max-w-[80px] sm:max-w-none">
                       {translateServerText(player.role)}
                     </span>
@@ -137,7 +138,7 @@ export const PlayersArea: React.FC = () => {
 
                   {/* Životy a karty v ruce */}
                   <div className="flex items-center gap-2 sm:gap-3 mt-1 text-xs">
-                    {gameState.allowedUIElements.includes("ZIVOTY") && (
+                    {hasLives && (
                       <div className="flex items-center gap-0.5 sm:gap-1 text-red-400 font-bold tabular-nums text-[11px] sm:text-xs">
                         <Heart className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-red-500 text-red-500" />
                         <span>{player.health}</span>
@@ -207,7 +208,7 @@ export const PlayersArea: React.FC = () => {
                   )}
                 </div>
                 {getCharacterDesc(inspectingPlayer.character)?.popis && (
-                  <p className="text-xs text-[#b5a596] bg-[#1a1410] p-3 rounded-xl border border-[#382f28] leading-relaxed">
+                  <p className="text-xs text-[#bcae9f] bg-[#170f0a] p-3 rounded-xl border border-[#3d2c1e] leading-relaxed shadow-inner">
                     {getCharacterDesc(inspectingPlayer.character)!.popis}
                   </p>
                 )}

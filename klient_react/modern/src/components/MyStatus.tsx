@@ -58,14 +58,14 @@ export const MyStatus: React.FC = () => {
   };
 
   return (
-    <div className="w-full px-2 sm:px-3 py-1 sm:py-1.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-1.5 sm:gap-2.5 text-xs border-t border-[#2e2620] bg-[#1a1512]/95 select-none z-20">
+    <div className="w-full px-2 sm:px-3 py-1.5 sm:py-2 flex flex-wrap sm:flex-nowrap items-center justify-between gap-1.5 sm:gap-2.5 text-xs border-t border-[#382b22] bg-[#1a120c]/90 backdrop-blur-xs shadow-lg select-none z-20">
       {/* 1. Postava a Role */}
-      <div className="flex items-center gap-1.5 sm:gap-2.5">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         {/* Postava (POSTAVA) */}
         {gameState.allowedUIElements.includes("POSTAVA") && gameState.character && (
           <div
             onClick={() => setIsCharacterModalOpen(true)}
-            className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-xl bg-[#261f1a] border border-[#3f342b] hover:border-amber-500/70 transition-colors cursor-pointer group shadow-sm"
+            className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-xl bg-[#221812] border border-[#382b22] hover:border-amber-500/60 transition-colors cursor-pointer group shadow-sm"
             title="Klikni pro zobrazení schopnosti postavy"
           >
             <div className="w-5 h-7 sm:w-6 sm:h-8 rounded-[4px] overflow-hidden shrink-0 border border-amber-600/40">
@@ -84,9 +84,9 @@ export const MyStatus: React.FC = () => {
 
         {/* Role (ROLE) */}
         {gameState.allowedUIElements.includes("ROLE") && gameState.role && (
-          <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-xl bg-[#261f1a] border border-[#3f342b]">
+          <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-xl bg-[#221812] border border-[#382b22] shadow-sm">
             <Shield className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 shrink-0" />
-            <span className="text-[#b5a596] hidden sm:inline">Role:</span>
+            <span className="text-[#bcae9f] hidden sm:inline">Role:</span>
             <span className="font-semibold text-[#f5ede3] text-[11px] sm:text-xs">
               {translateServerText(gameState.role)}
             </span>
@@ -103,7 +103,7 @@ export const MyStatus: React.FC = () => {
 
       {/* 2. Životy (ZIVOTY) */}
       {gameState.allowedUIElements.includes("ZIVOTY") && (
-        <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-0.5 sm:py-1 rounded-xl bg-[#261f1a] border border-[#3f342b]">
+        <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-0.5 sm:py-1 rounded-xl bg-[#221812] border border-[#382b22] shadow-sm">
           <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-red-500 text-red-500 shrink-0" />
           <span className="font-bold text-xs sm:text-sm text-[#f5ede3] tabular-nums">
             {health} / {maxHealth}
@@ -126,11 +126,11 @@ export const MyStatus: React.FC = () => {
         <div
           id="inplay"
           data-dropzone="inplay"
-          className="flex items-center gap-1.5 p-1 rounded-xl border border-dashed border-[#3d3229] bg-[#211a15]/80 min-h-[40px] sm:min-h-[48px] 2xl:min-w-[360px] 3xl:min-w-[480px] 2xl:flex-1 2xl:max-w-xl 2xl:justify-center 2xl:py-2.5 2xl:px-4"
+          className="flex items-center gap-1.5 p-1 rounded-xl border border-dashed border-[#382b22] bg-[#140e0a]/80 min-h-[40px] sm:min-h-[48px] shadow-inner"
           title="Tvoje vyložené karty (klikni na kartu pro akce nebo ji přetáhni)"
         >
           {gameState.inPlayCards && gameState.inPlayCards.length > 0 ? (
-            <div className="flex items-center gap-1.5 2xl:gap-3">
+            <div className="flex items-center gap-1.5">
               {gameState.inPlayCards.map((card) => {
                 const isBeingDragged = draggedCard?.id === card.id;
 
@@ -153,17 +153,19 @@ export const MyStatus: React.FC = () => {
                     }`}
                     title={`${translateServerText(card.name)} (klikni pro akce nebo přetáhni)`}
                   >
-                    <CardView image={card.image} name={translateServerText(card.name)} size="sm" />
+                    <CardView
+                      image={card.image}
+                      name={translateServerText(card.name)}
+                      size="sm"
+                      isPlayable={card.isPlayable}
+                    />
                   </div>
                 );
               })}
             </div>
           ) : (
-            <div className="flex items-center gap-1.5 text-[#7a6c60] px-2">
-              <span className="text-[11px] 2xl:text-xs">Vyložené karty</span>
-              <span className="hidden 2xl:inline text-[11px] text-[#54463c]">
-                (přetáhni sem modrou nebo zelenou kartu)
-              </span>
+            <div className="flex items-center gap-1.5 text-[#887869] px-2">
+              <span className="text-[11px]">Vyložené karty</span>
             </div>
           )}
         </div>

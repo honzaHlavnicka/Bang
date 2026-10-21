@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { PlayersArea } from '../components/PlayersArea';
 import { DragProvider } from '../components/DragContext';
 import { GameContext, DialogContext, gameStateDefault } from '@bang/core';
@@ -107,5 +107,47 @@ describe('PlayersArea component', () => {
 
     const dropZone = container.querySelector('[data-dropzone="player-1"]');
     expect(dropZone).toBeDefined();
+  });
+
+  it('opens character inspection modal portalled to document.body when clicking on a player', () => {
+    const mockCtx = createMockGameContext({
+      allowedUIElements: ['ZIVOTY', 'POSTAVA'],
+    });
+    const { container } = render(
+      <GameContext.Provider value={mockCtx}>
+        <DialogContext.Provider value={mockDialogContext}>
+          <DragProvider>
+            <PlayersArea />
+          </DragProvider>
+        </DialogContext.Provider>
+      </GameContext.Provider>
+    );
+
+    // Click on Bart Cassidy (character name)
+    const characterName = screen.getByText('Bart Cassidy');
+    fireEvent.click(characterName);
+
+    // Modal should be opened and present in document.body
+    expect(screen.getByText('Hráč: Petr')).toBeDefined();
+    // Modal is in document.body, outside of component container
+    const dialog = document.body.querySelector('[role="dialog"]');
+    expect(dialog).toBeDefined();
+    expect(container.contains(dialog)).toBe(false);
+  });
+
+  it('renders safely without throwing when used without DragProvider', () => {
+    const mockCtx = createMockGameContext();
+    expect(() =>
+      render(
+        <GameContext.Provider value={mockCtx}>
+          <DialogContext.Provider value={mockDialogContext}>
+            <PlayersArea />
+          </DialogContext.Provider>
+        </GameContext.Provider>
+      )
+    ).not.toThrow();
+
+    expect(screen.getByText('Petr')).toBeDefined();
+    expect(screen.getByText('Bart Cassidy')).toBeDefined();
   });
 });

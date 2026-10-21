@@ -45,25 +45,25 @@ export const HandCards: React.FC = () => {
       }
 
       // Akce s vybranou kartou
-      if (selectedCardId !== null) {
-        // F / Delete pro spálení
-        if (e.key === "f" || e.key === "F" || e.key === "Delete") {
+      if (selectedCardId !== null && selectedCard) {
+        // F / Delete pro spálení (pokud je povolen oheň)
+        if ((e.key === "f" || e.key === "F" || e.key === "Delete") && gameState.allowedUIElements.includes("OHEN")) {
           e.preventDefault();
           fireCard(selectedCardId);
           setSelectedCardId(null);
           return;
         }
 
-        // Enter / P pro zahrání
-        if (e.key === "Enter" || e.key === "p" || e.key === "P") {
+        // Enter / P pro zahrání (pouze pokud je karta hratelná)
+        if ((e.key === "Enter" || e.key === "p" || e.key === "P") && selectedCard.isPlayable) {
           e.preventDefault();
           playCard(selectedCardId);
           setSelectedCardId(null);
           return;
         }
 
-        // V pro vyložení
-        if (e.key === "v" || e.key === "V") {
+        // V pro vyložení (pouze pokud je karta vyložitelná)
+        if ((e.key === "v" || e.key === "V") && selectedCard.isPutInPlayable) {
           e.preventDefault();
           putCardInPlay(selectedCardId);
           setSelectedCardId(null);
@@ -136,27 +136,31 @@ export const HandCards: React.FC = () => {
       <AnimatePresence>
         {selectedCard && (
           <motion.div
-            initial={{ opacity: 0, y: 8, x: "-50%" }}
+            initial={{ opacity: 0, y: 10, x: "-50%" }}
             animate={{ opacity: 1, y: 0, x: "-50%" }}
             exit={{ opacity: 0, y: 8, x: "-50%" }}
-            className="absolute -top-12 left-1/2 flex items-center gap-1 sm:gap-1.5 p-1 sm:p-1.5 bg-[#261e18] border border-amber-500/70 rounded-xl shadow-2xl z-40 max-w-[96vw] overflow-x-auto whitespace-nowrap"
+            className="absolute -top-12 sm:-top-13 left-1/2 flex items-center gap-1 sm:gap-1.5 p-1 sm:p-1.5 bg-[#241911] border-2 border-amber-500/80 rounded-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_8px_24px_rgba(0,0,0,0.6)] z-40 max-w-[96vw] overflow-x-auto whitespace-nowrap"
           >
             <span className="text-xs font-semibold px-1.5 sm:px-2 text-[#f5ede3] max-w-[85px] sm:max-w-[130px] truncate">
               {translateServerText(selectedCard.name)}
             </span>
-            <Button
-              size="sm"
-              variant="primary"
-              icon={<Play className="w-3.5 h-3.5" />}
-              shortcutHint="Enter"
-              className="px-2 py-1 sm:px-3 sm:py-1.5 text-xs shrink-0"
-              onClick={() => {
-                playCard(selectedCard.id);
-                setSelectedCardId(null);
-              }}
-            >
-              Zahrát
-            </Button>
+            {/* Tlačítko Zahrát – zobrazí se POUZE pokud je karta hratelná */}
+            {selectedCard.isPlayable && (
+              <Button
+                size="sm"
+                variant="primary"
+                icon={<Play className="w-3.5 h-3.5" />}
+                shortcutHint="Enter"
+                className="px-2 py-1 sm:px-3 sm:py-1.5 text-xs shrink-0"
+                onClick={() => {
+                  playCard(selectedCard.id);
+                  setSelectedCardId(null);
+                }}
+              >
+                Zahrát
+              </Button>
+            )}
+            {/* Tlačítko Vyložit – zobrazí se POUZE pokud je karta vyložitelná */}
             {selectedCard.isPutInPlayable && (
               <Button
                 size="sm"
@@ -172,6 +176,7 @@ export const HandCards: React.FC = () => {
                 Vyložit
               </Button>
             )}
+            {/* Tlačítko Spálit – zobrazí se POUZE pokud je povoleno spálení na stole */}
             {gameState.allowedUIElements.includes("OHEN") && (
               <Button
                 size="sm"
@@ -186,6 +191,12 @@ export const HandCards: React.FC = () => {
               >
                 Spálit
               </Button>
+            )}
+            {/* Pokud karta teď nemá žádnou herní akci, zobrazíme vysvětlení */}
+            {!selectedCard.isPlayable && !selectedCard.isPutInPlayable && !gameState.allowedUIElements.includes("OHEN") && (
+              <span className="text-[11px] text-[#b5a596] italic px-1 shrink-0">
+                Nyní nelze zahrát
+              </span>
             )}
             {/* Decentní tlačítko pro zvětšení karty */}
             <Button
@@ -222,7 +233,7 @@ export const HandCards: React.FC = () => {
               onClick={() => {
                 scrollContainerRef.current?.scrollBy({ left: -140, behavior: "smooth" });
               }}
-              className="absolute left-1 bottom-8 z-40 p-1.5 rounded-full bg-[#201813]/90 border border-amber-600/50 text-amber-300 hover:text-white transition-all shadow-lg active:scale-90"
+              className="absolute left-1 bottom-8 z-40 p-1.5 rounded-full bg-[#261a12] border border-amber-600/50 text-amber-300 hover:text-white transition-all shadow-sm active:scale-95"
               title="Posunout doleva"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -232,7 +243,7 @@ export const HandCards: React.FC = () => {
               onClick={() => {
                 scrollContainerRef.current?.scrollBy({ left: 140, behavior: "smooth" });
               }}
-              className="absolute right-1 bottom-8 z-40 p-1.5 rounded-full bg-[#201813]/90 border border-amber-600/50 text-amber-300 hover:text-white transition-all shadow-lg active:scale-90"
+              className="absolute right-1 bottom-8 z-40 p-1.5 rounded-full bg-[#261a12] border border-amber-600/50 text-amber-300 hover:text-white transition-all shadow-sm active:scale-95"
               title="Posunout doprava"
             >
               <ChevronRight className="w-4 h-4" />
@@ -249,7 +260,7 @@ export const HandCards: React.FC = () => {
             scrollbarWidth: "none",
           }}
         >
-          <div className="flex items-end min-w-full w-max justify-center gap-1.5 sm:gap-3 md:gap-4 lg:gap-5 px-1 sm:px-2">
+          <div className="flex items-end min-w-full w-max justify-center gap-1.5 sm:gap-3 md:gap-4 px-1 sm:px-2">
             <AnimatePresence mode="popLayout">
               {hand.map((card, index) => {
                 const isSel = selectedCardId === card.id;
@@ -280,7 +291,7 @@ export const HandCards: React.FC = () => {
                       image={card.image}
                       name={translateServerText(card.name)}
                       size="md"
-                      isPlayable={card.isPlayable}
+                      isPlayable={card.isPlayable || card.isPutInPlayable}
                       isSelected={isSel}
                       badge={
                         shortcutKey ? (

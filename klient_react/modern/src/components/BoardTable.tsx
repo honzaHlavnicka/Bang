@@ -47,7 +47,7 @@ export const BoardTable: React.FC = () => {
     <div className="w-full flex flex-col items-center justify-center p-1.5 sm:p-2 md:p-3 select-none">
       {/* 1. Hlášení ze serveru / Informační stav */}
       {(gameState.gameStateMessege || gameState.gameStateMessegeFull) && (
-        <div className="mb-1.5 sm:mb-2 md:mb-3 flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-xl bg-[#261f1a] border border-[#3f342b] shadow-sm max-w-lg text-center animate-in fade-in duration-150">
+        <div className="mb-1.5 sm:mb-2 md:mb-3 flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 rounded-xl bg-[#221811] border border-[#382b22] shadow-sm max-w-lg text-center animate-in fade-in duration-150">
           <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 shrink-0" />
           <span className="text-[11px] sm:text-xs md:text-sm text-[#f5ede3] font-medium truncate">
             {gameState.gameStateMessege ? translateServerText(gameState.gameStateMessege) : ""}
@@ -89,10 +89,10 @@ export const BoardTable: React.FC = () => {
                 className="border-amber-600/40 group-hover:border-amber-400 shadow-xl"
               />
             </div>
-            <div className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs text-[#b5a596] font-medium mt-1">
+            <div className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs text-[#bcae9f] font-medium mt-1">
               <Layers className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               <span className="tabular-nums">{gameState.deckCount || 0}</span>
-              <kbd className="hidden sm:inline-block px-1 text-[9px] bg-[#2d2520] text-[#f5ede3]/70 rounded border border-[#423830]">
+              <kbd className="hidden sm:inline-block px-1 text-[9px] bg-[#241912] text-[#e8ded3] rounded border border-[#382b22]">
                 D
               </kbd>
             </div>
@@ -107,7 +107,7 @@ export const BoardTable: React.FC = () => {
               isDraggingCard={isDragging}
               isActive={isTableActive}
             />
-            <span className="text-[11px] sm:text-xs text-[#b5a596] mt-1 font-medium truncate max-w-[85px] sm:max-w-none">
+            <span className="text-[11px] sm:text-xs text-[#bcae9f] mt-1 font-medium truncate max-w-[85px] sm:max-w-none">
               Odhazovací balíček
             </span>
           </div>
@@ -119,12 +119,12 @@ export const BoardTable: React.FC = () => {
             <div
               id="fire"
               data-dropzone="fire"
-              className={`w-16 sm:w-22 md:w-28 aspect-[660/1035] rounded-xl border-2 border-dashed flex flex-col items-center justify-center p-1.5 sm:p-2 text-center transition-all duration-150 cursor-pointer ${
+              className={`w-16 sm:w-22 md:w-28 aspect-[660/1035] rounded-xl border border-dashed flex flex-col items-center justify-center p-1.5 sm:p-2 text-center transition-all duration-150 cursor-pointer ${
                 isFireActive
-                  ? "border-red-400 bg-red-950/80 ring-4 ring-red-500 scale-105 shadow-[0_0_25px_rgba(239,68,68,0.7)]"
+                  ? "border-red-400 bg-red-950/80 ring-2 ring-red-500 scale-105 shadow-[0_0_20px_rgba(239,68,68,0.7)]"
                   : isDragging
-                  ? "border-red-400 bg-red-950/50 ring-2 ring-red-500/70 scale-[1.02]"
-                  : "border-red-900/50 bg-[#1e1311]/70 hover:border-red-700/70"
+                  ? "border-red-400/80 bg-red-950/50 ring-1 ring-red-500/70 scale-[1.02]"
+                  : "border-red-900/50 bg-[#1a0f0d] hover:border-red-700/70 shadow-inner"
               }`}
             >
               <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-red-950/80 border border-red-800/60 flex items-center justify-center text-red-400 mb-0.5 sm:mb-1">
@@ -133,13 +133,13 @@ export const BoardTable: React.FC = () => {
               <span className="text-[10px] sm:text-xs font-semibold text-[#f5ede3] leading-tight">
                 Spálit kartu
               </span>
-              <span className="text-[9px] text-[#b5a596] mt-0.5 leading-tight hidden sm:block">
+              <span className="text-[9px] text-[#bcae9f] mt-0.5 leading-tight hidden sm:block">
                 Pusť sem kartu
               </span>
             </div>
             <div className="flex items-center gap-1 text-[11px] sm:text-xs text-red-400/90 font-medium mt-1">
               <span>Spáleniště</span>
-              <kbd className="hidden sm:inline-block px-1 text-[9px] bg-red-950/60 text-red-300 rounded border border-red-800/40">
+              <kbd className="hidden sm:inline-block px-1 text-[9px] bg-[#341410] text-red-300 rounded border border-red-900/50">
                 F
               </kbd>
             </div>

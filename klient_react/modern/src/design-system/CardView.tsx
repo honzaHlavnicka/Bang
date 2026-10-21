@@ -54,16 +54,19 @@ export const CardView: React.FC<CardViewProps> = ({
     lg: "w-36 sm:w-44 md:w-52 aspect-[660/1035] rounded-[8px] text-sm",
   }[size];
 
-  // Zřetelné interaktivní stavy (včetně silného a nepřehlédnutelného zvýraznění výběru)
-  let stateClass = "border-[#382f28] shadow-sm";
-  if (isSelected) {
+  // Zřetelné interaktivní stavy:
+  // - Vybraná karta: výrazný amber ring a vyvýšení
+  // - Hratelná / vyložitelná karta: zlatavý okraj, hover efekt a jemný stín
+  // - Běžná / vyložená / odhozená karta: plně ostrá, 100% neprůhledná
+  let stateClass = "border-[#382f28]/70 shadow-sm";
+  if (disabled) {
+    stateClass = "border-[#2b231d] opacity-50 grayscale-[0.4] pointer-events-none";
+  } else if (isSelected) {
     stateClass =
-      "border-amber-300 ring-4 ring-amber-400 shadow-[0_0_25px_rgba(251,191,36,0.65)] -translate-y-2.5 scale-105 z-30 cursor-pointer";
-  } else if (isPlayable && !disabled) {
+      "border-amber-300 ring-4 ring-amber-400 shadow-[0_0_20px_rgba(251,191,36,0.6)] -translate-y-2 scale-105 z-30 cursor-pointer";
+  } else if (isPlayable) {
     stateClass =
       "border-amber-500/80 ring-1 ring-amber-500/40 hover:border-amber-300 hover:ring-2 hover:ring-amber-400 hover:-translate-y-1.5 cursor-pointer shadow-md";
-  } else if (disabled) {
-    stateClass = "border-[#2b231d] opacity-50 grayscale-[0.3]";
   }
 
     const transitionClass = className.includes("transition-none")

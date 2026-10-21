@@ -128,4 +128,43 @@ describe('HandCards component', () => {
     fireEvent.click(closeBtn);
     expect(screen.queryByText('Zavřít')).toBeNull();
   });
+
+  it('respects isPlayable and isPutInPlayable by hiding and showing appropriate action buttons', () => {
+    const mockCtx = createMockGameContext({
+      handCards: [
+        { id: 201, name: 'Bang!', image: 'bang', isPlayable: true, isPutInPlayable: false },
+        { id: 202, name: 'Barel', image: 'barel', isPlayable: false, isPutInPlayable: true },
+        { id: 203, name: 'Dynamit', image: 'dynamit', isPlayable: false, isPutInPlayable: false },
+      ],
+      allowedUIElements: ['ZIVOTY', 'UKONCENI_TAHU', 'POSTAVA', 'ROLE'], // OHEN is disabled
+    });
+
+    render(
+      <GameContext.Provider value={mockCtx}>
+        <DragProvider>
+          <HandCards />
+        </DragProvider>
+      </GameContext.Provider>
+    );
+
+    // Select Card 1 (Playable only)
+    fireEvent.keyDown(window, { key: '1' });
+    expect(screen.getByText('Zahrát')).toBeDefined();
+    expect(screen.queryByText('Vyložit')).toBeNull();
+    expect(screen.queryByText('Spálit')).toBeNull();
+
+    // Select Card 2 (Put-in-play only)
+    fireEvent.keyDown(window, { key: '2' });
+    expect(screen.queryByText('Zahrát')).toBeNull();
+    expect(screen.getByText('Vyložit')).toBeDefined();
+    expect(screen.queryByText('Spálit')).toBeNull();
+
+    // Select Card 3 (Neither playable nor put-in-play, and fire is disabled)
+    fireEvent.keyDown(window, { key: '3' });
+    expect(screen.queryByText('Zahrát')).toBeNull();
+    expect(screen.queryByText('Vyložit')).toBeNull();
+    expect(screen.queryByText('Spálit')).toBeNull();
+    expect(screen.getByText('Nyní nelze zahrát')).toBeDefined();
+  });
 });
+

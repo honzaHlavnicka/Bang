@@ -2,7 +2,14 @@
 
 @layer base {
   body {
-    background-color: #161311;
+    background-color: #16120f;
+    background-image: 
+      radial-gradient(ellipse at center, rgba(28, 22, 18, 0.72) 0%, rgba(12, 9, 8, 0.94) 100%),
+      url("/img/pozadi-tmave-desktop.webp");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: #f5ede3;
     overscroll-behavior-y: none;
     -webkit-font-smoothing: antialiased;

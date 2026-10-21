@@ -8,8 +8,10 @@ export default defineConfig({
     dedupe: ['react', 'react-dom'],
     alias: {
       '@bang/core': path.resolve(__dirname, '../core/src'),
-      'react': path.resolve(__dirname, '../bang/node_modules/react'),
-      'react-dom': path.resolve(__dirname, '../bang/node_modules/react-dom'),
+      'react': path.resolve(__dirname, 'node_modules/react'),
+      'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
+      'i18next': path.resolve(__dirname, 'node_modules/i18next'),
+      'posthog-js': path.resolve(__dirname, 'node_modules/posthog-js'),
     }
   },
   test: {

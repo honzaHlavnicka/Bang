@@ -95,4 +95,19 @@ describe('DragContext Portal Drag Overlay', () => {
 
     expect(mockCtx.fireCard).toHaveBeenCalledWith(999);
   });
+
+  it('gracefully returns fallback values when useDrag is used outside DragProvider', () => {
+    let result: any;
+    const TestConsumer = () => {
+      result = useDrag();
+      return <div data-testid="fallback-test">{result.isDragging ? 'yes' : 'no'}</div>;
+    };
+
+    expect(() => render(<TestConsumer />)).not.toThrow();
+    expect(screen.getByTestId('fallback-test').textContent).toBe('no');
+    expect(result.draggedCard).toBeNull();
+    expect(result.source).toBeNull();
+    expect(result.activeDropTarget).toBeNull();
+    expect(typeof result.startDrag).toBe('function');
+  });
 });

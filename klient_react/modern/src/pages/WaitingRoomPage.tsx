@@ -32,15 +32,15 @@ export const WaitingRoomPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-8 flex flex-col items-center justify-center bg-[#161311] text-[#f5ede3] selection:bg-amber-600/30 select-none">
-      <div className="w-full max-w-2xl bg-[#221c18] border border-[#382f28] rounded-2xl shadow-2xl p-6 md:p-8 space-y-6">
+    <div className="min-h-screen p-4 md:p-8 flex flex-col items-center justify-center bg-transparent text-[#f5ede3] selection:bg-amber-600/30 select-none">
+      <div className="w-full max-w-2xl bg-[#211710] border border-[#3d2f25] rounded-2xl shadow-2xl p-6 md:p-8 space-y-6">
         {/* Hlavička místnosti s kódem hry */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#382f28]">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-[#382b22]">
           <div>
-            <span className="text-xs text-[#b5a596]">Čekací místnost</span>
-            <h2 className="text-2xl font-bold tracking-tight text-[#f5ede3] flex items-center gap-2 mt-0.5">
+            <span className="text-xs text-[#bcae9f]">Čekací místnost</span>
+            <h2 className="text-2xl font-bold tracking-tight text-[#f5ede3] flex items-center gap-2.5 mt-0.5">
               <span>Hra</span>
-              <span className="font-mono text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-lg border border-amber-500/30">
+              <span className="font-mono text-amber-200 bg-[#281810] px-3.5 py-0.5 rounded-xl border border-amber-600/50 shadow-sm tracking-widest">
                 {gameCode}
               </span>
             </h2>
@@ -75,8 +75,8 @@ export const WaitingRoomPage: React.FC = () => {
 
         {/* Vybraná postava po volbě */}
         {gameState.character && gameState.allowedUIElements.includes("POSTAVA") && (
-          <div className="p-3.5 rounded-xl bg-[#1c1714] border border-[#382f28] flex items-center justify-between">
-            <span className="text-xs text-[#b5a596]">Tvoje vybraná postava:</span>
+          <div className="p-3.5 rounded-xl bg-[#170e09] border border-[#33241a] flex items-center justify-between shadow-sm">
+            <span className="text-xs text-[#bcae9f]">Tvoje vybraná postava:</span>
             <Badge variant="amber" size="md">
               {gameState.character}
             </Badge>
@@ -86,11 +86,11 @@ export const WaitingRoomPage: React.FC = () => {
         {/* Seznam připojených hráčů */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-[#f5ede3] flex items-center gap-2">
+            <h3 className="text-sm font-bold text-[#f7eee4] flex items-center gap-2">
               <span>Připojení hráči</span>
-              <span className="text-xs text-[#b5a596]">({players.length})</span>
+              <span className="text-xs text-[#bcae9f]">({players.length})</span>
             </h3>
-            <span className="text-xs text-[#7a6c60]">Hra vyžaduje alespoň 2 hráče</span>
+            <span className="text-xs text-[#8c7b6c]">Hra vyžaduje alespoň 2 hráče</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -99,18 +99,18 @@ export const WaitingRoomPage: React.FC = () => {
               return (
                 <div
                   key={p.id}
-                  className={`flex items-center justify-between p-3 rounded-xl border ${
+                  className={`flex items-center justify-between p-3 rounded-xl border shadow-xs transition-all ${
                     isMe
-                      ? "bg-[#2d2520] border-amber-500/40 text-[#f5ede3]"
-                      : "bg-[#1c1714] border-[#382f28] text-[#b5a596]"
+                      ? "bg-[#281a11] border-amber-500/60 text-[#f5ede3]"
+                      : "bg-[#18100a] border-[#33241a] text-[#bcae9f]"
                   }`}
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <div
-                      className={`w-2 h-2 rounded-full shrink-0 ${
+                      className={`w-2.5 h-2.5 rounded-full shrink-0 ${
                         p.isOnline === false
                           ? "bg-red-500 shadow-[0_0_6px_rgba(239,68,68,0.5)]"
-                          : "bg-emerald-400"
+                          : "bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.5)]"
                       }`}
                       title={p.isOnline === false ? "Odpojen" : "Připojen"}
                     />
@@ -148,7 +148,7 @@ export const WaitingRoomPage: React.FC = () => {
         </div>
 
         {/* Spodní akční lišta pro zahájení */}
-        <div className="pt-4 border-t border-[#382f28] flex flex-wrap items-center justify-between gap-3">
+        <div className="pt-4 border-t border-[#382b22] flex flex-wrap items-center justify-between gap-3">
           <Button
             variant="ghost"
             size="sm"
@@ -177,7 +177,7 @@ export const WaitingRoomPage: React.FC = () => {
               {players.length < 2 ? "Čeká se na další hráče" : "Spustit hru"}
             </Button>
           ) : (
-            <div className="text-xs text-[#b5a596] flex items-center gap-2">
+            <div className="text-xs text-[#bcae9f] flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
               <span>Čeká se na správce místnosti pro spuštění hry...</span>
             </div>

@@ -15,12 +15,17 @@ interface DragContextType {
 
 const DragContext = createContext<DragContextType | null>(null);
 
-export const useDrag = () => {
+const fallbackDragContext: DragContextType = {
+  draggedCard: null,
+  source: null,
+  activeDropTarget: null,
+  startDrag: () => {},
+  isDragging: false,
+};
+
+export const useDrag = (): DragContextType => {
   const ctx = useContext(DragContext);
-  if (!ctx) {
-    throw new Error("useDrag must be used within a DragProvider");
-  }
-  return ctx;
+  return ctx || fallbackDragContext;
 };
 
 export const DragProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -84,7 +89,11 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (dropId === "fire") {
           fireCard(card.id);
         } else if (dropId === "inplay" && currentSource === "hand") {
-          putCardInPlay(card.id);
+          if (card.isPutInPlayable) {
+            putCardInPlay(card.id);
+          } else if (card.isPlayable) {
+            playCard(card.id);
+          }
         } else if (dropId?.startsWith("player-")) {
           const playerId = parseInt(dropId.replace("player-", ""), 10);
           if (!isNaN(playerId)) {
@@ -93,7 +102,11 @@ export const DragProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else if (dropId === "table" || e.clientY < window.innerHeight * 0.68) {
           // Puštěno na stůl nebo směrem vzhůru na herní plochu
           if (currentSource === "hand") {
-            playCard(card.id);
+            if (card.isPlayable) {
+              playCard(card.id);
+            } else if (card.isPutInPlayable) {
+              putCardInPlay(card.id);
+            }
           } else if (currentSource === "inplay" && card.isPlayable) {
             playCard(card.id);
           }

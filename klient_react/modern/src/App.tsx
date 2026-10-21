@@ -6,6 +6,7 @@ import { GamePlayPage } from "./pages/GamePlayPage";
 import { GameOverPage } from "./pages/GameOverPage";
 import { DialogManager } from "./components/DialogManager";
 import { GlobalNotifications } from "./components/GlobalNotifications";
+import { DragProvider } from "./components/DragContext";
 
 export default function App() {
   const { gameState } = useGame();
@@ -44,7 +45,7 @@ export default function App() {
   };
 
   return (
-    <>
+    <DragProvider>
       {/* Rychlá vyskakovací hlášení ze serveru (GlobalNotifications) */}
       <GlobalNotifications />
 
@@ -53,6 +54,6 @@ export default function App() {
 
       {/* Aktuální stránka */}
       {renderContent()}
-    </>
+    </DragProvider>
   );
 }

@@ -44,9 +44,9 @@ export const CharacterPicker: React.FC = () => {
   }
 
   return (
-    <div className="p-4 rounded-2xl bg-[#1c1714] border border-amber-500/40 shadow-xl space-y-3 text-center animate-in fade-in duration-200">
+    <div className="p-4 sm:p-5 rounded-2xl bg-[#18100a] border border-[#3d2c20] shadow-xl space-y-3 text-center animate-in fade-in duration-200">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-[#f5ede3]">
+        <h3 className="text-sm font-bold text-[#f7eee4] tracking-tight">
           Vyber si svou postavu
         </h3>
         <Badge variant="amber" size="sm">
@@ -54,7 +54,7 @@ export const CharacterPicker: React.FC = () => {
         </Badge>
       </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-4 py-2">
+      <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 py-2">
         {characters.map((char, index) => {
           const cardImg = `/img/karty/postavy/${char.obrazek}.png`;
 
@@ -70,9 +70,9 @@ export const CharacterPicker: React.FC = () => {
                   name={char.jmeno}
                   size="md"
                   isPlayable={true}
-                  className="border-amber-500/60 group-hover:border-amber-400 group-hover:ring-2 group-hover:ring-amber-400 shadow-xl"
+                  className="border-amber-500/60 group-hover:border-amber-400 shadow-xl"
                   badge={
-                    <span className="w-5 h-5 rounded-full bg-amber-500 text-black font-bold text-xs flex items-center justify-center shadow-md">
+                    <span className="w-5 h-5 rounded-full bg-amber-500 text-stone-950 font-bold text-xs flex items-center justify-center shadow-md">
                       {index + 1}
                     </span>
                   }
@@ -83,7 +83,7 @@ export const CharacterPicker: React.FC = () => {
                 <span className="font-bold text-xs text-[#f5ede3] block">
                   {char.jmeno}
                 </span>
-                <p className="text-[11px] text-[#b5a596] leading-tight line-clamp-2 mt-0.5">
+                <p className="text-[11px] text-[#bcae9f] leading-tight line-clamp-2 mt-0.5">
                   {char.popis}
                 </p>
               </div>

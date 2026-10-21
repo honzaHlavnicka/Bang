@@ -34,9 +34,9 @@ export const DiscardDeck: React.FC<DiscardDeckProps> = ({
       data-dropzone="table"
       className={`relative w-16 sm:w-22 md:w-28 aspect-[660/1035] rounded-xl flex items-center justify-center transition-all duration-150 select-none ${
         isActive
-          ? "ring-4 ring-amber-400 bg-amber-500/30 scale-105 shadow-[0_0_25px_rgba(245,158,11,0.6)]"
+          ? "ring-2 ring-amber-400 bg-amber-500/20 scale-105 shadow-[0_0_15px_rgba(245,158,11,0.4)]"
           : isDraggingCard
-          ? "ring-2 ring-amber-400/80 bg-amber-500/20 scale-[1.02]"
+          ? "ring-1 ring-amber-400/60 scale-[1.02]"
           : "hover:ring-1 hover:ring-amber-500/30"
       }`}
     >
@@ -61,14 +61,14 @@ export const DiscardDeck: React.FC<DiscardDeckProps> = ({
                 <CardView
                   image={cardName}
                   size="md"
-                  className={isTop ? "shadow-xl" : "shadow-md opacity-90"}
+                  className={isTop ? "shadow-xl" : "shadow-md"}
                 />
               </div>
             );
           })}
         </div>
       ) : (
-        <div className="w-full h-full border-2 border-dashed border-[#382f28] rounded-[7px] flex flex-col items-center justify-center text-[#7a6c60] p-2 text-center bg-[#1c1714]/60">
+        <div className="w-full h-full border border-dashed border-[#382f28] rounded-[6px] flex flex-col items-center justify-center text-[#7a6c60] p-2 text-center bg-[#1c1714]">
           <Layers className="w-6 h-6 mb-1 opacity-40" />
           <span className="text-[11px] font-medium text-[#b5a596]">Odhazovací balíček</span>
           <span className="text-[9px] text-[#7a6c60] mt-0.5">Sem se odhazují karty</span>
